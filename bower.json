@@ -1,0 +1,25 @@
+{
+    "name": "crowd-sim",
+    "version": "0.0.0",
+    "homepage": "https://github.com/Jacq/crowd-sim",
+    "authors": [
+    "https://github.com/Jacq"
+  ],
+    "description": "a 2D crowd simulator engine for the web",
+    "main": "dist/crowd-sim.min.js",
+    "keywords": [
+    "javascript",
+    "canvas",
+    "html5",
+    "crowd",
+    "crowd engine",
+  ],
+    "license": "MIT",
+    "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
