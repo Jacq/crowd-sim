@@ -35,6 +35,14 @@ module.exports = function (config) {
         // Start these browsers
         browsers: ['PhantomJS'],
 
+        plugins: [
+            'karma-junit-reporter',
+            'karma-chrome-launcher',
+            'karma-firefox-launcher',
+            'karma-phantomjs-launcher',
+            'karma-jasmine'
+            ],
+
         // If browser does not capture in given timeout [ms], kill it
         captureTimeout: 60000,
 
