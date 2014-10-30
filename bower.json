@@ -1,25 +1,29 @@
 {
-    "name": "crowd-sim",
-    "version": "0.0.0",
-    "homepage": "https://github.com/Jacq/crowd-sim",
-    "authors": [
+  "name": "crowd-sim",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Jacq/crowd-sim",
+  "authors": [
     "https://github.com/Jacq"
   ],
-    "description": "a 2D crowd simulator engine for the web",
-    "main": "dist/crowd-sim.min.js",
-    "keywords": [
+  "description": "a 2D crowd simulator engine for the web",
+  "main": "dist/crowd-sim.min.js",
+  "keywords": [
     "javascript",
     "canvas",
     "html5",
     "crowd",
-    "crowd engine",
+    "crowd engine"
   ],
-    "license": "MIT",
-    "ignore": [
+  "license": "MIT",
+  "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "pixi.js": "~2.0.0"
+  },
+  "devDependencies": {}
 }

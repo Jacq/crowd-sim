@@ -1,5 +1,5 @@
 /**
-* crowd-sim-dev.min.js 0.1.2-dev 2014-10-24
+* crowd-sim-dev.min.js 0.1.2-dev 2014-10-25
 * 
 * License: 
 */
@@ -7,7 +7,7 @@
 (function() {
   "use strict";
   var CrowdSim = {};
-  CrowdSim.World = Word;
+  CrowdSim.World = {};
   if (typeof exports !== "undefined") {
     if (typeof module !== "undefined" && module.exports) {
       exports = module.exports = CrowdSim;

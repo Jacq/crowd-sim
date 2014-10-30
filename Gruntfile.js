@@ -100,16 +100,16 @@ module.exports = function (grunt) {
         },
         karma: {
             unit: {
-                configFile: 'config/karma.conf.js',
+                configFile: 'karma.conf.js',
                 backkground: true
             },
             travis: {
-                configFile: 'config/karma.conf.js',
+                configFile: 'karma.conf.js',
                 singleRun: true,
                 browsers: ['PhantomJS']
             },
             build: {
-                configFile: 'config/karma.conf.js',
+                configFile: 'karma.conf.js',
                 singleRun: true,
             }
         }
@@ -124,7 +124,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-yuidoc');
     grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('default', ['jshint', 'karma:build', 'build']);
+    grunt.registerTask('default', ['jshint', 'karma:build', 'build', 'doc']);
     grunt.registerTask('test', ['jshint', 'karma:travis']);
     //grunt.registerTask('dev', ['build:dev', 'connect:watch', 'watch']);
     grunt.registerTask('dev', ['karma:unit', 'watch']);

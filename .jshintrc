@@ -1,6 +1,7 @@
 {
     "globalstrict": true,
     "globals": {
+        "debuger": false,
         "angular": false,
         "describe": false,
         "it": false,

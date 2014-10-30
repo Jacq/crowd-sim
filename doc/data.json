@@ -1,0 +1,32 @@
+{
+    "project": {
+        "name": "node-js-getting-started.js Crowd Simulator API Documentation for v0.1.2",
+        "description": "Crowd Simulator App",
+        "version": "v0.1.2",
+        "url": ""
+    },
+    "files": {
+        "src\\core.js": {
+            "name": "src\\core.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {},
+    "classitems": [
+        {
+            "file": "src\\core.js",
+            "line": 4,
+            "description": "My property description.  Like other pieces of your comment blocks,\nthis can span multiple lines.",
+            "itemtype": "property",
+            "name": "propertyName",
+            "type": "{Object}",
+            "default": "\"foo\"",
+            "class": ""
+        }
+    ],
+    "warnings": []
+}

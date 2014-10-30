@@ -1,5 +1,5 @@
 /**
-* crowd-sim.js 0.1.2-edge 2014-10-24
+* crowd-sim.js 0.1.2-edge 2014-10-28
 * 
 * License: 
 */
@@ -9,10 +9,31 @@
 (function () {
     'use strict';
 
+    /**
+     * My property description.  Like other pieces of your comment blocks,
+     * this can span multiple lines.
+     *
+     * @property propertyName
+     * @type {Object}
+     * @default "foo"
+     */
     var CrowdSim = {};
 
+    var Engine = {
+        running: false
+    };
+    Engine.run = function () {
+        this.running = true;
+    };
+    Engine.stop = function () {
+        this.running = false;
+    };
+    Engine.reset = function () {
+        this.running = false;
+    };
 
-    CrowdSim.World = Word;
+    CrowdSim.World = {};
+    CrowdSim.Engine = Engine;
 
     // CommonJS module
     if (typeof exports !== 'undefined') {
