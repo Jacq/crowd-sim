@@ -15,6 +15,10 @@
         "process": false,
         "__dirname": false,
         "__filename": false,
-        "CrowdSim": true
+        "CrowdSim": true,
+        "PIXI": true,
+        "document": true,
+        "requestAnimFrame": true,
+        "window": true
     }
 }

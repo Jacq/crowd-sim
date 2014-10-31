@@ -24,7 +24,23 @@
         this.running = false;
     };
 
-    CrowdSim.World = {};
+    CrowdSim.World = {
+        entities: [],
+        add: function (entity) {
+            this.entities.push(entity);
+        }
+    };
+
+    CrowdSim.Single = function (x, y, size, direction) {
+        this.position = {
+            x: x,
+            y: y
+        };
+        this.size = size;
+        this.direction = direction;
+        this.view = {};
+    };
+
     CrowdSim.Engine = Engine;
 
     // CommonJS module
