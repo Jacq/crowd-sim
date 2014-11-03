@@ -5,4 +5,4 @@ crowd-sim
 
 ## Demo:
 
-https://enigmatic-bayou-3084.herokuapp.com/demo/
+https://fierce-meadow-7344.herokuapp.com/demo
