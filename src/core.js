@@ -19,6 +19,7 @@
         STEP: 60
     };
     Engine.init = function (world, options) {
+        //this.entities_save = JSON.parse(JSON.stringify(world.entities));
         this.world = world;
         this.options = options;
         return this.world;
@@ -26,10 +27,15 @@
     Engine.run = function () {
         if (this.running) return;
         this.running = true;
-        Engine.step();
+        Engine._step();
     };
 
     Engine.step = function () {
+        if (this.running) return;
+        Engine._step();
+    };
+
+    Engine._step = function () {
         for (var i in this.world.entities) {
             var entity = this.world.entities[i];
             entity.acceleration.x = (Math.random() - 0.5) / 1000;
@@ -62,7 +68,7 @@
         this.iterations++;
         //  console.log(single);
         if (this.running) {
-            setTimeout(Engine.step.bind(this), Engine.STEP);
+            setTimeout(Engine._step.bind(this), Engine.STEP);
         }
 
     };
