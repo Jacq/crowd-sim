@@ -4,7 +4,8 @@
     "description": "Crowd Simulator App",
     "main": "./dist/crowd-sim.js",
     "scripts": {
-        "test": "grunt test"
+        "test": "grunt test",
+        "postinstall": "bower install && grunt build"
     },
     "devDependencies": {
         "grunt": "0.4.x",
