@@ -5,7 +5,7 @@
   "main": "./dist/crowd-sim.js",
   "scripts": {
     "test": "grunt test",
-    "postinstall": "bower install && grunt build"
+    "postinstall": "bower install"
   },
   "devDependencies": {    
     "grunt": "0.4.x",
