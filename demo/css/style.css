@@ -1,8 +1,36 @@
-
+* {
+    padding: 0;
+    margin: 0;
+}
 html,
-
 body {
-
-    height: 100%
-
+    height: 100%;
+}
+canvas {
+    display: block;
+}
+.info_panel {
+    background-color: gray;
+    padding: 0px;
+    margin: 0px;
+}
+.info_panel ul {
+    list-style-type: none;
+}
+#control {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 100px;
+    opacity: 0.8;
+}
+#display {
+    position: absolute;
+    bottom: 10px;
+    color: lightgray;
+    opacity: 0.8;
+    right: 10px;
+}
+#display ul li {
+    display: inline;
 }

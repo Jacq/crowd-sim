@@ -9,28 +9,37 @@
 
 <body>
 
-    <div id='tree'>
+    <div id='control' class='info_panel'>
         <ul>
-            <li>tree a</li>
-            <li>tree b</li>
+            <li>
+                <button class="pure-button" onclick="Demo.Start()">Start</button>
+            </li>
+            <li>
+                <button class="pure-button" onclick="Demo.Stop()">Stop</button>
+            </li>
+            <li>
+                <button class="pure-button" onclick="Demo.Step()">Step</button>
+            </li>
+            <li>
+                <button class="pure-button" onclick="Demo.Reset()">Reset</button>
+            </li>
         </ul>
     </div>
     <div id='menu'>
-        <ul>
-            <li>menu a</li>
-            <li>menu b</li>
-        </ul>
+
     </div>
-    <div id='log'>
+    <div id='display' class='info_panel'>
         <ul>
-            <li>log a</li>
-            <li>log b</li>
+            <li>Running?: <span id='runnning'></span>
+            </li>
+            <li>Iterations: <span id='iterations'></span>
+            </li>
         </ul>
     </div>
     <div id='canvas'></div>
     <footer>
         <script src="../src/core.js"></script>
-        <script src="./js/bower_components/pixi.js/bin/pixi.js"></script>
+        <script src="./bower_components/pixi.js/bin/pixi.js"></script>
         <script src="./js/demo.js"></script>
     </footer>
 </body>

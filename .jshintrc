@@ -1,24 +1,6 @@
 {
-    "globalstrict": true,
-    "globals": {
-        "debuger": false,
-        "angular": false,
-        "describe": false,
-        "it": false,
-        "expect": false,
-        "beforeEach": false,
-        "afterEach": false,
-        "module": false,
-        "inject": false,
-        "console": false,
-        "require": false,
-        "process": false,
-        "__dirname": false,
-        "__filename": false,
-        "CrowdSim": true,
-        "PIXI": true,
-        "document": true,
-        "requestAnimFrame": true,
-        "window": true
-    }
+    "browser": true,
+    "devel": true,
+
+    "globals": {}
 }

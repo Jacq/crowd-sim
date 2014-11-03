@@ -1,4 +1,4 @@
 {
-  "directory": "demo/js/bower_components/",
-  "analytics": false
+    "directory": "demo/bower_components/",
+    "analytics": false
 }

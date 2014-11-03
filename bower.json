@@ -23,7 +23,8 @@
     "tests"
   ],
   "dependencies": {
-    "pixi.js": "~2.0.0"
+    "pixi.js": "~2.0.0",
+    "pure": "~0.5.0"
   },
   "devDependencies": {}
 }
