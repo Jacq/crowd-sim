@@ -27,48 +27,49 @@
     Engine.run = function () {
         if (this.running) return;
         this.running = true;
-        Engine._step();
+        this._step();
     };
 
     Engine.step = function () {
         if (this.running) return;
-        Engine._step();
+        this._step();
     };
 
     Engine._step = function () {
-        for (var i in this.world.entities) {
-            var entity = this.world.entities[i];
-            entity.acceleration.x = (Math.random() - 0.5) / 1000;
-            entity.acceleration.y = (Math.random() - 0.5) / 1000;
-            entity.velocity.x += entity.acceleration.x * Engine.STEP;
-            entity.velocity.y += entity.acceleration.y * Engine.STEP;
-            entity.direction = Math.atan2(entity.velocity.y, entity.velocity.x);
-            entity.position.x += entity.velocity.x * Engine.STEP;
-            entity.position.y += entity.velocity.y * Engine.STEP;
+        if (this.world && this.world.entities) {
+            for (var i in this.world.entities) {
+                var entity = this.world.entities[i];
+                entity.acceleration.x = (Math.random() - 0.5) / 1000;
+                entity.acceleration.y = (Math.random() - 0.5) / 1000;
+                entity.velocity.x += entity.acceleration.x * Engine.STEP;
+                entity.velocity.y += entity.acceleration.y * Engine.STEP;
+                entity.direction = Math.atan2(entity.velocity.y, entity.velocity.x);
+                entity.position.x += entity.velocity.x * Engine.STEP;
+                entity.position.y += entity.velocity.y * Engine.STEP;
 
-            if (this.world.wrap) {
-                if (entity.position.x > this.world.MAX_X) {
-                    entity.position.x = this.world.MIN_X + entity.position.x - this.world.MAX_X;
+                if (this.world.wrap) {
+                    if (entity.position.x > this.world.MAX_X) {
+                        entity.position.x = this.world.MIN_X + entity.position.x - this.world.MAX_X;
+                    }
+                    if (entity.position.x < this.world.MIN_X) {
+                        entity.position.x = this.world.MAX_X - (this.world.MIN_X - entity.position.x);
+                    }
+                    if (entity.position.y > this.world.MAX_Y) {
+                        entity.position.y = this.world.MIN_Y + entity.position.y - this.world.MAX_Y;
+                    }
+                    if (entity.position.y < this.world.MIN_Y) {
+                        entity.position.y = this.world.MAX_Y - (this.world.MIN_Y - entity.position.y);
+                    }
                 }
-                if (entity.position.x < this.world.MIN_X) {
-                    entity.position.x = this.world.MAX_X - (this.world.MIN_X - entity.position.x);
+                if (this.options.onStep) {
+                    this.options.onStep(this);
                 }
-                if (entity.position.y > this.world.MAX_Y) {
-                    entity.position.y = this.world.MIN_Y + entity.position.y - this.world.MAX_Y;
-                }
-                if (entity.position.y < this.world.MIN_Y) {
-                    entity.position.y = this.world.MAX_Y - (this.world.MIN_Y - entity.position.y);
-                }
-            }
-            if (this.options.onStep) {
-                this.options.onStep(this);
             }
         }
-
         this.iterations++;
-        //  console.log(single);
         if (this.running) {
-            setTimeout(Engine._step.bind(this), Engine.STEP);
+            var that=this;
+            setTimeout(function(){that._step();}, this.STEP);
         }
 
     };

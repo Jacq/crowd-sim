@@ -1,8 +1,8 @@
 // <reference path = "core.js">
-
-"use strict";
+/* global describe,it, expect, CrowdSim */
 
 describe("Core tests", function () {
+    "use strict";
     //debugger;
     it("Exist namespace", function () {
         expect(CrowdSim).not.toBeNull();
