@@ -10,9 +10,10 @@ canvas {
     display: block;
 }
 .info_panel {
-    background-color: gray;
+    background-color: lightgray;
     padding: 0px;
     margin: 0px;
+    opacity: 0.6;
 }
 .info_panel ul {
     list-style-type: none;
@@ -24,13 +25,29 @@ canvas {
     width: 100px;
     opacity: 0.8;
 }
-#display {
+#console {
     position: absolute;
-    bottom: 10px;
-    color: lightgray;
+    bottom:0px;
     opacity: 0.8;
-    right: 10px;
+    right: 0px;
+    width: 100%;
 }
-#display ul li {
+.console_show {
+    height: 20%;
+}
+.console_hide {
+    height: 30px;
+}
+
+#console ul li {
     display: inline;
+}
+button {
+    margin: 2px;
+    border: 1px solid black;
+    padding: 2px;
+}
+
+button:active{
+    background-color: gray;
 }

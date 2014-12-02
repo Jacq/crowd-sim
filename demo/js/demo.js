@@ -1,61 +1,42 @@
+var Demo = {};
+
 (function () {
     'use strict';
 
-    var display = {
-        running: document.getElementById("runnning"),
-        iterations: document.getElementById("iterations")
+    Demo.options = {
+        display: {
+            running: document.getElementById("runnning"),
+            mouse: document.getElementById("mouse"),
+            iterations: document.getElementById("iterations"),
+            console: document.getElementById("console"),
+            children: document.getElementById("children"),
+            entity: document.getElementById("entity")
+        },
+        interactive: true
     };
 
-    var Demo = function () {
+    Demo.init = function () {
         var canvas = document.getElementById("canvas");
         var w = canvas.width = window.innerWidth;
         var h = canvas.height = window.innerHeight;
 
         // create an new instance of a pixi stage
-        var stage = new PIXI.Stage(0x000000);
-
+        var stage = new PIXI.Stage(0x000000, Demo.options.interactive);
+        if(Demo.options.interactive){
+            Demo._events(stage);
+        }
         // create a renderer instance.
-        var renderer = PIXI.autoDetectRenderer(w, h, canvas);
-
-
+        var renderer = PIXI.autoDetectRenderer(w, h, canvas);        
         // add the renderer view element to the DOM
         canvas.appendChild(renderer.view);
+        
         var world = new CrowdSim.World(w, h);
         for (var i = 0; i < 10; i++) {
             var x = Math.random() * w;
             var y = Math.random() * h;
 
-            var single = new CrowdSim.Single(x, y, 5, 0);
-            world.add(single);
-        }
-
-        var SingleRender = function (single, stage) {
-            this.single = single;
-            var graphics = new PIXI.Graphics();
-            // add it the stage so we see it on our screens..
-            this.graphics = graphics;
-            stage.addChild(graphics);
-
-            this.render = function () {
-                this.clear();
-                var e = this.single;
-                // begin a green fill..
-                graphics.lineStyle(1, 0xFF0000);
-                // draw a triangle using lines
-                graphics.drawCircle(e.position.x, e.position.y, e.size);
-                graphics.moveTo(e.position.x, e.position.y);
-                var end_x = Math.cos(e.direction);
-                var end_y = Math.sin(e.direction);
-                graphics.lineTo(e.position.x + end_x * e.size * 1.5, e.position.y + end_y * e.size * 1.5);
-            };
-            this.clear = function () {
-                this.graphics.clear();
-            };
-        };
-
-        for (var j in world.entities) {
-            var entity = world.entities[j];
-            entity.view = new SingleRender(entity, stage);
+            var entity = new CrowdSim.Entity(i, x, y, 5, 0);
+            world.add(entity);
         }
 
         function fullscreen() {
@@ -68,36 +49,99 @@
             }
         }
 
-        this._renderer = renderer;
-        this._stage = stage;
-        this.world = world;
+        Demo._renderer = renderer;
+        Demo._stage = stage;
 
-        function updateDisplay(engine) {
-            display.running.innerHTML = engine.running;
-            display.iterations.innerHTML = engine.iterations;
-        }
         var options = {
-            onStep: updateDisplay
+            onStep: Demo._updateDisplay
         };
-
-        CrowdSim.Engine.init(this.world, options);
-        updateDisplay(CrowdSim.Engine);
-        window.requestAnimFrame(this._animate.bind(this));
-        // canvas.addEventListener("click", fullscreen);
+        CrowdSim.Engine.init(world, options);
+        Demo._initRender(world);
     };
 
-    Demo.prototype.constructor = Demo;
+    Demo._events = function (stage) {
+        stage.mouseover = function (mouseData) {
+            //console.log("MOUSE OVER!");
+        };
+
+        stage.mouseout = function (mouseData) {
+            //console.log("MOUSE OUT!");
+        };
+
+        stage.mousedown = stage.touchstart = function (mouseData) {
+            //console.log("MOUSE DOWN!");
+        };
+
+        stage.mouseup = stage.mouseupoutside =stage.touchend = function (mouseData) {
+            //console.log("MOUSE UP!");
+        };
+
+        stage.click = function (mouseData) {
+            //console.log("CLICK!");
+            var global = mouseData.global;
+            var world = CrowdSim.Engine.getWorld();
+            var entity = new CrowdSim.Entity(world.entities.length, global.x, global.y, 5, 0);
+                entity.view = new Render.Entity(entity, Demo._stage);
+            world.add(entity);
+            Demo._animateOnce();
+        };
+        
+        stage.tap = function (touchData) {
+            //console.log("TAP!");
+        };
+        
+        stage.mousemove = stage.touchmove = function (mouseMove) {
+            //console.log("Move!");
+            //console.log(mouseMove.global);
+            Demo.options.display.mouse.innerHTML = "("+mouseMove.global.x + ","+mouseMove.global.y+")";
+        };
+        
+    };
+
+    Demo._updateDisplay = function () {
+        var engine = CrowdSim.Engine;
+        var world = engine.getWorld();
+        var display = Demo.options.display;
+        display.running.innerHTML = engine.running;
+        display.iterations.innerHTML = engine.iterations;
+        display.children.innerHTML = world.entities.length;
+        display.entity.innerHTML = world.entitiy_selected ? world.entitiy_selected.id : '';
+    };
 
 
-    Demo.prototype._animate = function () {
-        this._renderer.render(this._stage);
-        for (var i in this.world.entities) {
-            var entity = this.world.entities[i];
+    Demo._initRender = function () {
+        Demo.running = false;
+        var world = CrowdSim.Engine.world;
+        Demo._stage.removeChildren();
+        for (var j in world.entities) {
+            var entity = world.entities[j];
+            entity.view = new Render.Entity(entity, Demo._stage);
+        }
+
+        Demo._updateDisplay(CrowdSim.Engine);
+        Demo._animateOnce(); // to draw everything
+        
+        // canvas.addEventListener("click", fullscreen);
+        //window.requestAnimFrame(Demo._animate);
+    };
+
+
+    Demo._animateOnce = function(){
+        Demo.refresh_once = true;
+        window.requestAnimFrame(Demo._animate);
+    };
+    
+    Demo._animate = function () {
+        Demo._renderer.render(Demo._stage);
+        var world = CrowdSim.Engine.world;
+        for (var i in world.entities) {
+            var entity = world.entities[i];
             entity.view.render();
         }
 
-        if (this.running) {
-            window.requestAnimFrame(this._animate.bind(this));
+        if (Demo.running || Demo.refresh_once) {
+            Demo.refresh_once=false;
+            window.requestAnimFrame(Demo._animate);
         }
         // single.render.;
         // render the stage   
@@ -105,30 +149,46 @@
 
 
 
-    Demo.prototype.Start = function () {
+    Demo.Start = function () {
         CrowdSim.Engine.run();
-        window.requestAnimFrame(this._animate.bind(this));
+        window.requestAnimFrame(Demo._animate);
         console.log('running');
-        this.running = true;
+        Demo.running = true;
     };
 
-    Demo.prototype.Stop = function () {
+    Demo.Stop = function () {
         CrowdSim.Engine.stop();
         console.log('stopped');
-        this.running = false;
+        Demo.running = false;
     };
-    Demo.prototype.Step = function () {
+    Demo.Step = function () {
         CrowdSim.Engine.step();
-        window.requestAnimFrame(this._animate.bind(this));
+        window.requestAnimFrame(Demo._animate);
     };
 
-    Demo.prototype.Reset = function () {
+    Demo.Reset = function () {
         CrowdSim.Engine.reset();
         console.log('reset');
-        this.running = false;
+        Demo._initRender();
+    };
+
+    Demo.ToggleDisplay = function () {
+        var classNames = display.console.className.split(" ");
+        var hide_index = classNames.indexOf('console_hide');
+        var show_index = classNames.indexOf('console_show');
+        if (hide_index !== -1) {
+            delete classNames[hide_index];
+            classNames[hide_index] = 'console_show';
+        } else if (show_index !== -1) {
+            delete classNames[show_index];
+            classNames[show_index] = 'console_hide';
+        }
+        display.console.className = classNames.join(" ");
     };
 
 
-    var demo = new Demo();
-    window.Demo = demo;
+    /* var demo = new Demo();
+    window.Demo = demo;*/
 })();
+
+Demo.init();

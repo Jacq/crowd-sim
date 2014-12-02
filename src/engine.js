@@ -1,37 +1,27 @@
-/**
-* crowd-sim.js 0.1.2-edge 2014-11-10
-* 
-* License: 
-*/
-
-// Begin src/core.js
-
-/* global window,module, exports : true, define */
+var Engine = {
+    running: false,
+    iterations: 0,
+    STEP: 60,
+    world : {}
+};
 
 (function () {
-    'use strict';
-
-    /**
-     * My property description.  Like other pieces of your comment blocks,
-     * this can span multiple lines.
-     *
-     * @property propertyName
-     * @type {Object}
-     * @default "foo"
-     */
-    var CrowdSim = {};
-
-    var Engine = {
-        running: false,
-        iterations: 0,
-        STEP: 60
+    Engine.setWorld = function(world){
+        this.world = world;
     };
+    
+    Engine.getWorld = function(){
+        return this.world;
+    };
+    
     Engine.init = function (world, options) {
         //this.entities_save = JSON.parse(JSON.stringify(world.entities));
         this.world = world;
+        this.world.save();
         this.options = options;
         return this.world;
     };
+    
     Engine.run = function () {
         if (this.running) return;
         this.running = true;
@@ -45,8 +35,12 @@
 
     Engine._step = function () {
         if (this.world && this.world.entities) {
-            for (var i in this.world.entities) {
+            for (var i in this.world.entities) {                
                 var entity = this.world.entities[i];
+                if(entity.selected){
+                    this.world.entitiy_selected=entity;
+                    continue;
+                }
                 entity.acceleration.x = (Math.random() - 0.5) / 1000;
                 entity.acceleration.y = (Math.random() - 0.5) / 1000;
                 entity.velocity.x += entity.acceleration.x * Engine.STEP;
@@ -76,8 +70,10 @@
         }
         this.iterations++;
         if (this.running) {
-            var that=this;
-            setTimeout(function(){that._step();}, this.STEP);
+            var that = this;
+            setTimeout(function () {
+                that._step();
+            }, this.STEP);
         }
 
     };
@@ -89,61 +85,7 @@
     Engine.reset = function () {
         this.iterations = 0;
         this.running = false;
+        this.world.restore();
     };
-
-    CrowdSim.World = function (w, h) {
-        this.entities = [];
-        this.wrap = true;
-        this.MAX_X = w;
-        this.MIN_X = 0;
-        this.MAX_Y = h;
-        this.MIN_Y = 0;
-        this.add = function (entity) {
-            this.entities.push(entity);
-        };
-    };
-
-    CrowdSim.Single = function (x, y, size, direction) {
-        this.position = {
-            x: x,
-            y: y
-        };
-        this.velocity = {
-            x: 0,
-            y: 0
-        };
-        this.acceleration = {
-            x: 0,
-            y: 0
-        };
-        this.size = size;
-        this.direction = direction;
-        this.view = {};
-    };
-
-    CrowdSim.Engine = Engine;
-
-    // CommonJS module
-    if (typeof exports !== 'undefined') {
-        if (typeof module !== 'undefined' && module.exports) {
-            exports = module.exports = CrowdSim;
-        }
-        exports.CrowdSim = CrowdSim;
-    }
-
-    // AMD module
-    if (typeof define === 'function' && define.amd) {
-        define('CrowdSim', [], function () {
-            return CrowdSim;
-        });
-    }
-
-    // browser
-    if (typeof window === 'object' && typeof window.document === 'object') {
-        window.CrowdSim = CrowdSim;
-    }
 
 })();
-
-;   // End src/core.js
-

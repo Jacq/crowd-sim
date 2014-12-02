@@ -12,13 +12,19 @@
     <div id='control' class='info_panel'>
         <ul>
             <li>
-                <button class="pure-button" onclick="Demo.Start()">Start</button>
+                <button onclick="Demo.Start()">Start</button>
             </li>
             <li>
-                <button class="pure-button" onclick="Demo.Stop()">Stop</button>
+                <button onclick="Demo.Stop()">Stop</button>
             </li>
             <li>
-                <button class="pure-button" onclick="Demo.Step()">Step</button>
+                <button onclick="Demo.Step()">Step</button>
+            </li>
+            <li>
+                <hr>
+            </li>
+            <li>
+                <button onclick="Demo.Reset()">Reset</button>
             </li>
             <!--  <li>
                 <button class="pure-button" onclick="Demo.Reset()">Reset</button>
@@ -28,18 +34,32 @@
     <div id='menu'>
 
     </div>
-    <div id='display' class='info_panel'>
+    <div id='console' class='info_panel console_show'>
+        <div>
+        <button style="float:right" onclick="Demo.ToggleDisplay()">O</button>        
+        </div>
         <ul>
             <li>Running?: <span id='runnning'></span>
             </li>
             <li>Iterations: <span id='iterations'></span>
             </li>
+            <li>Children: <span id='children'></span>
+            </li>
+            <li>Mouse: <span id='mouse'></span>
+            </li>
+            <li>Entity: <span id='entity'></span>
+            </li>
         </ul>
     </div>
     <div id='canvas'></div>
     <footer>
+        <script src="../src/entity.js"></script>
+        <script src="../src/world.js"></script>
+        <script src="../src/engine.js"></script>
         <script src="../src/core.js"></script>
+        
         <script src="./bower_components/pixi.js/bin/pixi.js"></script>
+        <script src="./js/render.js"></script>
         <script src="./js/demo.js"></script>
     </footer>
 </body>
