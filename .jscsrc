@@ -1,0 +1,8 @@
+{
+    "preset": "google",
+    "excludeFiles": [
+      "node_modules/**",
+      "demo/bower_componentes/**"
+    ],
+    "maximumLineLength"  : 160
+}

@@ -10,6 +10,16 @@
 <body>
 
     <div id='control' class='info_panel'>
+       File
+        <ul>
+            <li>
+                <button onclick="Demo.Export()">Export</button>
+            </li>
+            <li>
+                <button onclick="Demo.Import()">Import</button>
+            </li>
+        </ul>
+        Run
         <ul>
             <li>
                 <button onclick="Demo.Start()">Start</button>
@@ -36,7 +46,7 @@
     </div>
     <div id='console' class='info_panel console_show'>
         <div>
-        <button style="float:right" onclick="Demo.ToggleDisplay()">O</button>        
+            <button style="float:right" onclick="Demo.ToggleDisplay()">O</button>
         </div>
         <ul>
             <li>Running?: <span id='runnning'></span>
@@ -57,7 +67,7 @@
         <script src="../src/world.js"></script>
         <script src="../src/engine.js"></script>
         <script src="../src/core.js"></script>
-        
+
         <script src="./bower_components/pixi.js/bin/pixi.js"></script>
         <script src="./js/render.js"></script>
         <script src="./js/demo.js"></script>

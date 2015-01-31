@@ -110,7 +110,7 @@ module.exports = function (grunt) {
             },
             build: {
                 configFile: 'karma.conf.js',
-                singleRun: true,
+                singleRun: true
             }
         }
     });
@@ -163,8 +163,9 @@ module.exports = function (grunt) {
             isRelease = (mode === 'release'),
             isEdge = (mode === 'edge');
 
-        if (isEdge)
+        if (isEdge) {
             grunt.config.set('docVersion', 'edge version (master)');
+        }
 
         grunt.task.run('yuidoc');
     });

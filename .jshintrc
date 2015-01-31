@@ -1,6 +1,6 @@
 {
-    "browser": true,
+    "browser": true,    
     "devel": true,
-
-    "globals": {}
+    "predef"        : [         // Extra globals.
+        "require"]
 }
