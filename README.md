@@ -18,7 +18,11 @@ crowd-sim
 - Bower : dependency manager
 - Heroku : Online deploying
 - Travis.ci : Online Continuous integration
-(- Node and Express : Server implementation) 
+(- Node and Express : Server implementation)
 
 ## Demo ##
 **https://fierce-meadow-7344.herokuapp.com/demo**
+
+## Crowd Simulators
+- http://pedsim.silmaril.org/
+- http://www.tbx.com.sg/crowdsapi/

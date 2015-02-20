@@ -1,3 +1,20 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* global window,module, exports : true, define */
+
+module.exports = CrowdSim;
+
+var CrowdSim = module.exports =  {
+  Entity: require('./Entity'),
+  World: require('./World'),
+  Engine: require('./Engine')
+};
+
+// browser
+if (typeof window === 'object' && typeof window.document === 'object') {
+  window.CrowdSim = CrowdSim;
+}
+
+},{"./Engine":2,"./Entity":3,"./World":4}],2:[function(require,module,exports){
 
 var Engine = {
   running: false,
@@ -94,3 +111,56 @@ Engine.reset = function() {
 };
 
 module.exports = Engine;
+
+},{}],3:[function(require,module,exports){
+/* global window,module, exports : true, define */
+
+Entity = function(id, x, y, size, direction) {
+  this.id = id;
+  this.position = {
+    x: x,
+    y: y
+  };
+  this.velocity = {
+    x: 0,
+    y: 0
+  };
+  this.acceleration = {
+    x: 0,
+    y: 0
+  };
+  this.size = size;
+  this.direction = direction;
+  this.view = {};
+};
+
+module.exports = Entity;
+
+},{}],4:[function(require,module,exports){
+/* global window,module, exports : true, define */
+
+World = function(w, h) {
+  this.entities = [];
+  this.wrap = true;
+  this.MAX_X = w;
+  this.MIN_X = 0;
+  this.MAX_Y = h;
+  this.MIN_Y = 0;
+};
+
+World.prototype.add = function(entity) {
+  this.entities.push(entity);
+};
+World.prototype.save = function() {
+  this.entitiesSave = JSON.stringify(this.entities);
+};
+World.prototype.restore = function() {
+  this.entities = JSON.parse(this.entitiesSave);
+};
+
+module.exports = World;
+
+},{}]},{},[1])
+
+
+//# sourceMappingURL=CrowdSim.js.map

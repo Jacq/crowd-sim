@@ -2,7 +2,6 @@ var Demo = {};
 
 (function() {
   'use strict';
-
   Demo.options = {
     display: {
       running: document.getElementById('runnning'),

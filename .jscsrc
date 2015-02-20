@@ -1,5 +1,6 @@
 {
     "preset": "google",
+    "disallowMultipleVarDecl" : null,
     "excludeFiles": [
       "node_modules/**",
       "demo/bower_componentes/**"
