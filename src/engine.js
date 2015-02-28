@@ -1,28 +1,26 @@
 
-var Engine = {
-  running: false,
-  iterations: 0,
-  STEP: 60,
-  world: {}
-};
-
-Engine.setWorld = function(world) {
-  this.world = world;
-};
-
-Engine.getWorld = function() {
-  return this.world;
-};
-
-Engine.init = function(world, options) {
+Engine = function(world, options) {
+  this.running = false;
+  this.iterations = 0;
   //this.entitiesSave = JSON.parse(JSON.stringify(world.entities));
-  this.world = world;
+  this.world = world || {};
   this.world.save();
-  this.options = options;
+
+  var defaultOptions = {
+    step: 60
+  };
+  this.options = Lazy(options).defaults(defaultOptions).toObject();
+};
+
+Engine.prototype.setWorld = function(world) {
+  this.world = world;
+};
+
+Engine.prototype.getWorld = function() {
   return this.world;
 };
 
-Engine.run = function() {
+Engine.prototype.run = function() {
   if (this.running) {
     return;
   }
@@ -30,14 +28,14 @@ Engine.run = function() {
   this._step();
 };
 
-Engine.step = function() {
+Engine.prototype.step = function() {
   if (this.running) {
     return;
   }
   this._step();
 };
 
-Engine._step = function() {
+Engine.prototype._step = function() {
   if (this.world && this.world.entities) {
     for (var i in this.world.entities) {
       var entity = this.world.entities[i];
@@ -47,11 +45,11 @@ Engine._step = function() {
       }
       entity.acceleration.x = (Math.random() - 0.5) / 1000;
       entity.acceleration.y = (Math.random() - 0.5) / 1000;
-      entity.velocity.x += entity.acceleration.x * Engine.STEP;
-      entity.velocity.y += entity.acceleration.y * Engine.STEP;
+      entity.velocity.x += entity.acceleration.x * this.options.step;
+      entity.velocity.y += entity.acceleration.y * this.options.step;
       entity.direction = Math.atan2(entity.velocity.y, entity.velocity.x);
-      entity.position.x += entity.velocity.x * Engine.STEP;
-      entity.position.y += entity.velocity.y * Engine.STEP;
+      entity.position.x += entity.velocity.x * this.options.step;
+      entity.position.y += entity.velocity.y * this.options.step;
 
       if (this.world.wrap) {
         if (entity.position.x > this.world.MAX_X) {
@@ -81,13 +79,13 @@ Engine._step = function() {
   }
 };
 
-Engine.stop = function() {
+Engine.prototype.stop = function() {
   if (!this.running) {
     return;
   }
   this.running = false;
 };
-Engine.reset = function() {
+Engine.prototype.reset = function() {
   this.iterations = 0;
   this.running = false;
   this.world.restore();

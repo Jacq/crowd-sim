@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Demo</title>
+    <link rel="stylesheet" href="./bower_components/normalize.css/normalize.css" type="text/css">
     <link rel="stylesheet" href="./css/style.css" type="text/css">
 </head>
 
 <body>
-
-    <div id='control' class='info_panel'>
+    <div id='control' class='control info_panel'>
        File
         <ul>
             <li>
@@ -44,10 +44,7 @@
     <div id='menu'>
 
     </div>
-    <div id='console' class='info_panel console_show'>
-        <div>
-            <button style="float:right" onclick="Demo.ToggleDisplay()">O</button>
-        </div>
+    <div id='console' class='console info_panel'>
         <ul>
             <li>Running?: <span id='runnning'></span>
             </li>
@@ -65,8 +62,9 @@
     <footer>
 
     </footer>
+    <script src="./bower_components/lazy.js/lazy.min.js"></script>
     <script src="./bower_components/pixi.js/bin/pixi.js"></script>
-    <script src="./js/lib/CrowdSim.js"></script>    
+    <script src="./js/lib/CrowdSim.js"></script>
 
     <script src="./js/render.js"></script>
     <script src="./js/demo.js"></script>

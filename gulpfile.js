@@ -4,7 +4,7 @@
 var gulp = require('gulp'),
  del = require('del'),
  server = require('karma').server,
- args = require('yargs'),
+ args = require('yargs').argv,
  browserify = require('browserify'),
  watchify = require('watchify'),
  browserSync = require('browser-sync'),
@@ -76,7 +76,7 @@ gulp.task('vet', function() {
 });
 
 gulp.task('test', function(done) {
-  log('Running tests');
+  log('Running tests, singleRun=' + !args.dev);
   var options = {
     configFile: __dirname + '/karma.conf.js',
     singleRun: !args.dev,
@@ -104,7 +104,7 @@ gulp.task('build', ['vet', 'test'], function() {
     .pipe(gulp.dest(config.dist));
 });
 
-gulp.task('js', ['clean'],function() {
+gulp.task('dev', ['clean'],function() {
   var port = 8080;
   log('Starting BrowserSync on port ' + port);
   var options = {

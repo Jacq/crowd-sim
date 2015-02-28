@@ -1,12 +1,12 @@
 /* global window,module, exports : true, define */
 
-module.exports = CrowdSim;
-
-var CrowdSim = module.exports =  {
+var CrowdSim = {
   Entity: require('./Entity'),
   World: require('./World'),
   Engine: require('./Engine')
 };
+
+module.exports = CrowdSim;
 
 // browser
 if (typeof window === 'object' && typeof window.document === 'object') {

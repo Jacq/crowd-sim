@@ -8,7 +8,9 @@
     "postinstall": "bower install"
   },
   "devDependencies": {
+    "brfs": "^1.4.0",
     "browserify": "^11.0.1",
+    "browserify-shim": "^3.8.10",
     "del": "^1.2.0",
     "gulp": "^3.0.0",
     "gulp-concat": "^2.0.0",
@@ -31,6 +33,7 @@
     "jshint-stylish": "^2.0.1",
     "karma": "^0.12.24",
     "karma-brackets": "^0.2.1",
+    "karma-browserify": "^4.2.1",
     "karma-chrome-launcher": "^0.1.5",
     "karma-firefox-launcher": "^0.1.3",
     "karma-htmlfile-reporter": "^0.1.2",
@@ -39,6 +42,7 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "lodash": "^3.10.0",
     "lodash.assign": "^3.2.0",
+    "node-notifier": "^4.2.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.3.0"
@@ -60,5 +64,8 @@
     "heroku",
     "gulp"
   ],
-  "license": ""
+  "license": "",
+  "browserify-shim": {
+    "external": "global:External"
+  }
 }

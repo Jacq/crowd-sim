@@ -1,7 +1,5 @@
-* {
-  padding: 0;
-  margin: 0;
-}
+
+
 html, body {
   height: 100%;
 }
@@ -10,25 +8,26 @@ canvas {
 }
 .info_panel {
   background-color: lightgray;
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   opacity: 0.6;
 }
 .info_panel ul {
   list-style-type: none;
 }
-#control {
+
+.control {
   position: absolute;
   top: 50%;
-  left: 0%;
+  left: 0;
   width: 100px;
   opacity: 0.8;
 }
-#console {
+.console {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   opacity: 0.8;
-  right: 0px;
+  right: 0;
   width: 100%;
 }
 .console_show {
@@ -37,7 +36,11 @@ canvas {
 .console_hide {
   height: 30px;
 }
-#console ul li {
+
+.hide {
+  display:none;
+}
+.console ul li {
   display: inline;
 }
 button {
