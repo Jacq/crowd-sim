@@ -1,6 +1,6 @@
 /* global window,module, exports : true, define */
 
-Entity = function(id, x, y, size, direction) {
+Agent = function(id, x, y, size) {
   this.id = id;
   this.position = {
     x: x,
@@ -15,8 +15,8 @@ Entity = function(id, x, y, size, direction) {
     y: 0
   };
   this.size = size;
-  this.direction = direction;
-  this.view = {};
+
+  this.extra = {};
 };
 
-module.exports = Entity;
+module.exports = Agent;

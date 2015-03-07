@@ -1,4 +1,8 @@
 
+var bowerFiles = require('main-bower-files')();
+var wiredep = require('wiredep');
+//var bowerFiles = wiredep({devDependencies: true}).js;
+
 module.exports = function(config) {
   'use strict';
   config.set({
@@ -10,10 +14,11 @@ module.exports = function(config) {
     frameworks: ['browserify', 'jasmine'],
 
     // list of files / patterns to load in the browser
-    files: [
+    files: [].concat(
+        bowerFiles,
         'src/**/*.js',
         'test/**/*Spec.js'
-    ],
+    ),
 
     // list of files to exclude
     exclude: [

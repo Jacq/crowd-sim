@@ -1,4 +1,7 @@
 {
-    "directory": "demo/bower_components/",
-    "analytics": false
+    "directory": "bower_components",
+    "analytics": false,
+    "scripts": {
+		    "postinstall": "gulp wiredep"
+	  }
 }

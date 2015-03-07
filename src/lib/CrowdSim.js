@@ -1,7 +1,8 @@
 /* global window,module, exports : true, define */
 
 var CrowdSim = {
-  Entity: require('./Entity'),
+  Agent: require('./Agent'),
+  Group: require('./Group'),
   World: require('./World'),
   Engine: require('./Engine')
 };

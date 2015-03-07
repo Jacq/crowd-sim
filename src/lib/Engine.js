@@ -2,7 +2,7 @@
 Engine = function(world, options) {
   this.running = false;
   this.iterations = 0;
-  //this.entitiesSave = JSON.parse(JSON.stringify(world.entities));
+  //this.agentsSave = JSON.parse(JSON.stringify(world.agents));
   this.world = world || {};
   this.world.save();
 
@@ -36,9 +36,9 @@ Engine.prototype.step = function() {
 };
 
 Engine.prototype._step = function() {
-  if (this.world && this.world.entities) {
-    for (var i in this.world.entities) {
-      var entity = this.world.entities[i];
+  if (this.world && this.world.agents) {
+    for (var i in this.world.agents) {
+      var entity = this.world.agents[i];
       if (entity.selected) {
         this.world.entitySelected = entity;
         continue;

@@ -4,8 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Demo</title>
-    <link rel="stylesheet" href="./bower_components/normalize.css/normalize.css" type="text/css">
-    <link rel="stylesheet" href="./css/style.css" type="text/css">
+    <!-- build:css css/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+    <!-- endinject -->
+    <!-- endbuild -->
+
+    <!-- build:css css/demo.css-->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/dist/demo/css/demo.css">
+    <!-- endinject -->
+    <!-- endbuild -->
 </head>
 
 <body>
@@ -62,12 +71,30 @@
     <footer>
 
     </footer>
-    <script src="./bower_components/lazy.js/lazy.min.js"></script>
-    <script src="./bower_components/pixi.js/bin/pixi.js"></script>
-    <script src="./js/lib/CrowdSim.js"></script>
+    <!-- build:js js/Vendor.js -->
+    <!-- bower:js -->
+    <script src="/bower_components/pixi.js/bin/pixi.dev.js"></script>
+    <script src="/bower_components/lazy.js/lazy.js"></script>
+    <!-- endinject -->
+    <!-- endbuild -->
 
-    <script src="./js/render.js"></script>
-    <script src="./js/demo.js"></script>
+    <!-- build:js js/CrowdSim.js-->
+    <!-- lib:js -->
+    <script src="/src/lib/Agent.js"></script>
+    <script src="/src/lib/CrowdSim.js"></script>
+    <script src="/src/lib/Engine.js"></script>
+    <script src="/src/lib/Group.js"></script>
+    <script src="/src/lib/World.js"></script>
+    <!-- endinject -->
+    <!-- endbuild -->
+
+    <!-- build:js js/Demo.js-->
+    <!-- demo:js -->
+    <script src="/src/demo/js/AgentRender.js"></script>
+    <script src="/src/demo/js/Demo.js"></script>
+    <!-- endinject -->
+    <!-- endbuild -->
+
 </body>
 
 </html>
