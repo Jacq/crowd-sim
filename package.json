@@ -2,7 +2,7 @@
   "name": "CrowdSim",
   "version": "0.1.2",
   "description": "Crowd Simulator App",
-  "main": "./dist/lib/crowd-sim.min.js",
+  "main": "./dist/CrowdSim.min.js",
   "scripts": {
     "test": "gulp test",
     "postinstall": "bower install"

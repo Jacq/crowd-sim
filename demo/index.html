@@ -6,13 +6,13 @@
     <title>Demo</title>
     <!-- build:css css/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="/bower_components/normalize.css/normalize.css">
+    <link rel="stylesheet" href="../bower_components/normalize.css/normalize.css">
     <!-- endinject -->
     <!-- endbuild -->
 
     <!-- build:css css/demo.css-->
     <!-- inject:css -->
-    <link rel="stylesheet" href="/dist/demo/css/demo.css">
+    <link rel="stylesheet" href="/demo/css/demo.css">
     <!-- endinject -->
     <!-- endbuild -->
 </head>
@@ -22,28 +22,28 @@
        File
         <ul>
             <li>
-                <button onclick="Demo.Export()">Export</button>
+                <button id="export">Export</button>
             </li>
             <li>
-                <button onclick="Demo.Import()">Import</button>
+                <button id="import">Import</button>
             </li>
         </ul>
         Run
         <ul>
             <li>
-                <button onclick="Demo.Start()">Start</button>
+                <button id="start">Start</button>
             </li>
             <li>
-                <button onclick="Demo.Stop()">Stop</button>
+                <button id="stop">Stop</button>
             </li>
             <li>
-                <button onclick="Demo.Step()">Step</button>
+                <button id="step">Step</button>
             </li>
             <li>
                 <hr>
             </li>
             <li>
-                <button onclick="Demo.Reset()">Reset</button>
+                <button id="reset">Reset</button>
             </li>
             <!--  <li>
                 <button class="pure-button" onclick="Demo.Reset()">Reset</button>
@@ -73,28 +73,16 @@
     </footer>
     <!-- build:js js/Vendor.js -->
     <!-- bower:js -->
-    <script src="/bower_components/pixi.js/bin/pixi.dev.js"></script>
-    <script src="/bower_components/lazy.js/lazy.js"></script>
+    <script src="../bower_components/pixi.js/bin/pixi.dev.js"></script>
+    <script src="../bower_components/lazy.js/lazy.js"></script>
     <!-- endinject -->
     <!-- endbuild -->
 
     <!-- build:js js/CrowdSim.js-->
-    <!-- lib:js -->
-    <script src="/src/lib/Agent.js"></script>
-    <script src="/src/lib/CrowdSim.js"></script>
-    <script src="/src/lib/Engine.js"></script>
-    <script src="/src/lib/Group.js"></script>
-    <script src="/src/lib/World.js"></script>
+    <!-- inject:js -->
+    <script src="../dist/CrowdSim.js"></script>
+    <script src="../dist/Demo.js"></script>
     <!-- endinject -->
     <!-- endbuild -->
-
-    <!-- build:js js/Demo.js-->
-    <!-- demo:js -->
-    <script src="/src/demo/js/AgentRender.js"></script>
-    <script src="/src/demo/js/Demo.js"></script>
-    <!-- endinject -->
-    <!-- endbuild -->
-
 </body>
-
 </html>

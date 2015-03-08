@@ -3,6 +3,14 @@ var AgentRender = require('./AgentRender');
 
 var Demo = {};
 Demo.options = {
+  buttons: {
+    exportConfig: document.getElementById('export'),
+    importConfig: document.getElementById('import'),
+    start: document.getElementById('start'),
+    stop: document.getElementById('stop'),
+    step: document.getElementById('step'),
+    reset: document.getElementById('reset')
+  },
   display: {
     running: document.getElementById('runnning'),
     mouse: document.getElementById('mouse'),
@@ -15,6 +23,13 @@ Demo.options = {
 };
 
 Demo.init = function() {
+  exportConfig.addEventListener('click', Demo.exportConfig);
+  importConfig.addEventListener('click', Demo.importConfig);
+  start.addEventListener('click', Demo.start);
+  stop.addEventListener('click', Demo.stop);
+  step.addEventListener('click', Demo.step);
+  reset.addEventListener('click', Demo.reset);
+
   var canvas = document.getElementById('canvas');
   var w = canvas.width = window.innerWidth;
   var h = canvas.height = window.innerHeight;
@@ -135,27 +150,28 @@ Demo._animate = function() {
   // render the stage
 };
 
-Demo.Start = function() {
+Demo.start = function() {
   Demo._engine.run();
   window.requestAnimFrame(Demo._animate);
   console.log('running');
   Demo.running = true;
 };
 
-Demo.Stop = function() {
+Demo.stop = function() {
   Demo._engine.stop();
   console.log('stopped');
   Demo.running = false;
 };
-Demo.Step = function() {
+Demo.step = function() {
   Demo._engine.step();
   window.requestAnimFrame(Demo._animate);
 };
 
-Demo.Reset = function() {
+Demo.reset = function() {
   Demo._engine.reset();
   console.log('reset');
   Demo._initRender();
 };
 
+Demo.init();
 module.exports = Demo;
