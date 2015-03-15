@@ -5,17 +5,15 @@ module.exports = function() {
   var src = './src/';
   var dist = './dist/';
   var demo = './demo/';
-  var mainLib = 'CrowdSim.js';
-  var mainDemo = 'Demo.js';
-  var srcMainLib = src + mainLib;
-  var srcMainDemo = demo + 'js/' + mainDemo;
+  var main = 'CrowdSim.js';
+  var srcMain = src + main;
 
   var config = {
   src: src,
   dist: dist,
   demo: demo,
-  srcMainLib: srcMainLib,
-  srcMainDemo: srcMainDemo,
+  main: main,
+  srcMain: srcMain,
   sass: demo + 'sass/**/*.scss',
   css: demo + 'css/',
   index: demo + 'index.html',
@@ -25,20 +23,12 @@ module.exports = function() {
     dist: dist + '**/*.js'
   },
   bower: bowerrc,
-  optimized: {
-    lib: mainLib,
-    demo: mainDemo
-  },
   report: './report/',
   watchify: {
-    optsLib: {
-      entries: [srcMainLib],
+    opts: {
+      entries: [srcMain],
       debug: true
     },
-    optsDemo: {
-      entries: [srcMainDemo],
-      debug: true
-    }
   },
 };
 

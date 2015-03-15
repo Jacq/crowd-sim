@@ -13,6 +13,7 @@ var config = require('./gulp.config')(),
   assign = require('lodash.assign'),
   source = require('vinyl-source-stream'),
   buffer = require('vinyl-buffer'),
+  spawn = require('child_process').spawn, // for gulp reload on gulpfile change
   $ = require('gulp-load-plugins')({
     lazy: true
   });
@@ -69,7 +70,7 @@ gulp.task('vet', function() {
       .pipe($.jscs());
 });
 
-gulp.task('styles', ['clean-styles'], function() {
+gulp.task('styles' , function() {
   log('Compiling SASS ==> CSS');
   return gulp.src(config.sass)
     .pipe($.sass())
@@ -88,9 +89,10 @@ gulp.task('inject', ['styles'], function() {
   return gulp
       .src(config.index)
       //.pipe($.inject(gulp.src(config.lib, {read: false})))
-      .pipe($.inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower',relative: true}))
-      .pipe($.inject(gulp.src(config.js.dist, {read: false}), {relative: true}))
-      .pipe($.inject(gulp.src(config.css + 'demo.css', {read: false})))
+      .pipe($.inject(gulp.src(bowerFiles(), {read: false}), {relative: true, name: 'bower'}))
+      .pipe($.inject(gulp.src(config.js.demo, {read: false}), {relative: true, name: 'demo'}))
+      .pipe($.inject(gulp.src(config.js.dist, {read: false}), {relative: true, name: 'lib'}))
+      .pipe($.inject(gulp.src(config.css + 'demo.css', {read: false}),{relative: true}))
       //.pipe($.inject(gulp.src(config.js.demo, {read: false}), {name: 'demo'}))
       .pipe(gulp.dest(config.demo));
 });
@@ -104,33 +106,42 @@ gulp.task('test', function(done) {
   server.start(options, done);
 });
 
-gulp.task('build', ['bundle-lib', 'bundle-demo'] , function() {
-  log('Building lib and demo');
-});
-
-gulp.task('bundle-demo', function() {
-  log('Building bundle from ' + config.srcMainDemo + ' into ' + config.dist + config.optimized.demo);
-  doBrowserify(config.optimized.demo, browserify(config.srcMainDemo))
+gulp.task('build', function() {
+  log('Building bundle from ' + config.srcMain + ' into ' + config.dist + config.main);
+  doBrowserify(config.main, browserify(config.srcMain))
     .pipe(gulp.dest(config.dist));
 });
 
-gulp.task('bundle-lib', function() {
-  log('Building bundle from ' + config.srcMainLib + ' into ' + config.dist + config.optimized.lib);
-  doBrowserify(config.optimized.lib, browserify(config.srcMainLib))
-    .pipe(gulp.dest(config.dist));
+// http://noxoc.de/2014/06/25/reload-gulpfile-js-on-change/
+gulp.task('dev-gulp', function() {
+  var process;
+  function restart() {
+    log('Restarting gulp');
+    if (process) {
+      process.kill();
+    }
+    process = spawn('gulp', ['dev'], {stdio: 'inherit'});
+  }
+  gulp.watch(__filename, restart);
+  restart();
 });
 
-gulp.task('dev', ['clean', 'build'], function() {
+gulp.task('dev', ['clean', 'inject', 'build'], function() {
   var port = 8080;
   gulp.watch([config.sass], ['styles'])
     .on('change', changeEvent);
+
   log('Starting BrowserSync on port ' + port);
 
   var options = {
       //proxy: 'localhost:' + port,
       server: {
         baseDir: './',
-        index: config.index
+        index: config.index,
+        routes: {
+          '/css': config.css,
+          '/js': config.demo + 'js/',
+        }
       },
       port: 3000,
       files: [
@@ -146,17 +157,14 @@ gulp.task('dev', ['clean', 'build'], function() {
       },
       injectChanges: true,
       logFileChanges: true,
-      logLevel: 'info',
+      logLevel: 'debug',
       logPrefix: 'crowd-sim',
       notify: true,
-      reloadDelay: 0 //1000
+      reloadDelay: 1000
     } ;
   browserSync(options);
-  var wLib = setupWatchify(config.optimized.lib, config.watchify.optsLib);
-  var wDemo = setupWatchify(config.optimized.demo, config.watchify.optsDemo);
-
-  doBrowserify(config.optimized.lib, wLib);
-  doBrowserify(config.optimized.demo, wDemo);
+  var w = setupWatchify(config.main, config.watchify.opts);
+  doBrowserify(config.main, w);
 });
 
 function setupWatchify(main, options) {
@@ -178,7 +186,8 @@ function doBrowserify(mainFile, b) {
   .pipe(source(mainFile))
   .pipe(buffer())
   .pipe($.sourcemaps.init({loadMaps: true})) // loads map from browserify file
-  .pipe($.sourcemaps.write('./')); // writes .map file
+  .pipe($.sourcemaps.write('./' ,{sourceRoot: '.'})) // writes .map file
+  .pipe(gulp.dest(config.dist));
 }
 
 /**

@@ -1,5 +1,5 @@
 
-Engine = function(world, options) {
+var Engine = function(world, options) {
   this.running = false;
   this.iterations = 0;
   //this.agentsSave = JSON.parse(JSON.stringify(world.agents));
@@ -7,7 +7,7 @@ Engine = function(world, options) {
   this.world.save();
 
   var defaultOptions = {
-    step: 60
+    step: 0.1
   };
   this.options = Lazy(options).defaults(defaultOptions).toObject();
 };
@@ -36,40 +36,18 @@ Engine.prototype.step = function() {
 };
 
 Engine.prototype._step = function() {
-  if (this.world && this.world.agents) {
-    for (var i in this.world.agents) {
-      var entity = this.world.agents[i];
-      if (entity.selected) {
-        this.world.entitySelected = entity;
-        continue;
-      }
-      entity.acceleration.x = (Math.random() - 0.5) / 1000;
-      entity.acceleration.y = (Math.random() - 0.5) / 1000;
-      entity.velocity.x += entity.acceleration.x * this.options.step;
-      entity.velocity.y += entity.acceleration.y * this.options.step;
-      entity.direction = Math.atan2(entity.velocity.y, entity.velocity.x);
-      entity.position.x += entity.velocity.x * this.options.step;
-      entity.position.y += entity.velocity.y * this.options.step;
-
-      if (this.world.wrap) {
-        if (entity.position.x > this.world.MAX_X) {
-          entity.position.x = this.world.MIN_X + entity.position.x - this.world.MAX_X;
-        }
-        if (entity.position.x < this.world.MIN_X) {
-          entity.position.x = this.world.MAX_X - (this.world.MIN_X - entity.position.x);
-        }
-        if (entity.position.y > this.world.MAX_Y) {
-          entity.position.y = this.world.MIN_Y + entity.position.y - this.world.MAX_Y;
-        }
-        if (entity.position.y < this.world.MIN_Y) {
-          entity.position.y = this.world.MAX_Y - (this.world.MIN_Y - entity.position.y);
-        }
-      }
-      if (this.options.onStep) {
-        this.options.onStep(this);
-      }
+  var world = this.world;
+  var options = this.options;
+  this.world.getAgents().each(function(agent) {
+    if (agent.selected) {
+      world.agentSelected = agent;
+      return;
     }
-  }
+    agent.step(world,options.step);
+    if (options.onStep) {
+      options.onStep(world);
+    }
+  });
   this.iterations++;
   if (this.running) {
     var that = this;

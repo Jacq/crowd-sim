@@ -2,87 +2,112 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Demo</title>
-    <!-- build:css css/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="../bower_components/normalize.css/normalize.css">
-    <!-- endinject -->
-    <!-- endbuild -->
+  <meta charset="UTF-8">
+  <title>Demo</title>
+  <!-- build:css css/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="../bower_components/normalize.css/normalize.css">
+  <link rel="stylesheet" href="../bower_components/components-font-awesome/css/font-awesome.css">
+  <!-- endinject -->
+  <!-- endbuild -->
 
-    <!-- build:css css/demo.css-->
-    <!-- inject:css -->
-    <link rel="stylesheet" href="/demo/css/demo.css">
-    <!-- endinject -->
-    <!-- endbuild -->
+  <!-- build:css css/demo.css-->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="css/demo.css">
+  <!-- endinject -->
+  <!-- endbuild -->
 </head>
 
 <body>
-    <div id='control' class='control info_panel'>
-       File
-        <ul>
-            <li>
-                <button id="export">Export</button>
-            </li>
-            <li>
-                <button id="import">Import</button>
-            </li>
-        </ul>
-        Run
-        <ul>
-            <li>
-                <button id="start">Start</button>
-            </li>
-            <li>
-                <button id="stop">Stop</button>
-            </li>
-            <li>
-                <button id="step">Step</button>
-            </li>
-            <li>
-                <hr>
-            </li>
-            <li>
-                <button id="reset">Reset</button>
-            </li>
-            <!--  <li>
+  <div id='control' class='control info_panel'>
+    <ul>
+      <li>
+        <button id="select"><i class="fa fa-mouse-pointer"></i>
+      </li>
+      <li>
+        <button id="groupAdd"><i class="fa fa-users"></i>
+      </li>
+      <li>
+        <button id="wallAdd"><i class="fa fa-plus-circle"></i>
+      </li>
+    </ul>
+    File
+    <ul>
+      <li>
+        <button id="select"><i class="fa fa-mouse-pointer"></i>
+      </li>
+      <button id="export">Export</button>
+      </li>
+      <li>
+        <button id="import">Import</button>
+      </li>
+    </ul>
+    Run
+    <ul>
+      <li>
+        <button id="start"><i class="fa fa-play" title="Start"></i></button>
+      </li>
+      <li>
+        <button id="stop"><i class="fa fa-stop" title="Stop"></i></button>
+      </li>
+      <li>
+        <button id="step"><i class="fa fa-step-forward" title="Step"></i></button>
+      </li>
+      <li>
+        <hr>
+      </li>
+      <li>
+        <button id="reset">Reset</button>
+      </li>
+      <!--  <li>
                 <button class="pure-button" onclick="Demo.Reset()">Reset</button>
             </li>-->
-        </ul>
-    </div>
-    <div id='menu'>
+    </ul>
+  </div>
+  <div id='menu'>
 
-    </div>
-    <div id='console' class='console info_panel'>
-        <ul>
-            <li>Running?: <span id='runnning'></span>
-            </li>
-            <li>Iterations: <span id='iterations'></span>
-            </li>
-            <li>Children: <span id='children'></span>
-            </li>
-            <li>Mouse: <span id='mouse'></span>
-            </li>
-            <li>Entity: <span id='entity'></span>
-            </li>
-        </ul>
-    </div>
-    <div id='canvas'></div>
-    <footer>
+  </div>
+  <div id='statuses' class='console info_panel'>
+    <ul>
+      <li>Mode:
+        <span id='edit-mode'>None</span>
+      <li>Running?:
+        <span id='running'></span>
+      </li>
+      <li>Iterations:
+        <span id='iterations'></span>
+      </li>
+      <li>Children:
+        <span id='children'></span>
+      </li>
+      <li>Mouse:
+        <span id='mouse'></span>
+      </li>
+      <li>Agent:
+        <span id='agent'></span>
+      </li>
+    </ul>
+  </div>
+  <div id='canvas'></div>
+  <footer>
 
-    </footer>
-    <!-- build:js js/Vendor.js -->
-    <!-- bower:js -->
-    <script src="../bower_components/pixi.js/bin/pixi.dev.js"></script>
-    <script src="../bower_components/lazy.js/lazy.js"></script>
-    <!-- endinject -->
-    <!-- endbuild -->
+  </footer>
+  <!-- build:js js/Vendor.js -->
+  <!-- bower:js -->
+  <script src="../bower_components/pixi.js/bin/pixi.dev.js"></script>
+  <script src="../bower_components/lazy.js/lazy.js"></script>
+  <script src="../bower_components/gl-matrix/dist/gl-matrix-min.js"></script>
+  <!-- endinject -->
+  <!-- endbuild -->
 
-    <!-- build:js js/CrowdSim.js-->
-    <!-- inject:js -->
-    <script src="../dist/CrowdSim.js"></script>
-    <script src="../dist/Demo.js"></script>
-    <!-- endinject -->
-    <!-- endbuild -->
+  <!-- build:js js/CrowdSim.js-->
+  <!-- lib:js -->
+  <script src="../dist/CrowdSim.js"></script>
+  <!-- endinject -->
+  <!-- demo:js -->
+  <script src="js/Demo.js"></script>
+  <!-- endinject -->
+  <!-- endbuild -->
 </body>
+
 </html>

@@ -4,7 +4,9 @@ var CrowdSim = {
   Agent: require('./Agent'),
   Group: require('./Group'),
   World: require('./World'),
-  Engine: require('./Engine')
+  Wall: require('./Wall'),
+  Engine: require('./Engine'),
+  Render: require('./Render')
 };
 
 module.exports = CrowdSim;

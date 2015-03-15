@@ -6,6 +6,21 @@ html, body {
 canvas {
   display: block;
 }
+
+button {
+  text-align: center;
+  $size : 14px;
+  font-size:$size;
+  width: $size+5px;
+  height: $size+5px;
+  margin: 2px;
+  border: 1px solid black;
+  padding: 0;
+  &:active {
+    background-color: gray;
+  }
+}
+
 .info_panel {
   background-color: lightgray;
   padding: 0;
@@ -42,12 +57,4 @@ canvas {
 }
 .console ul li {
   display: inline;
-}
-button {
-  margin: 2px;
-  border: 1px solid black;
-  padding: 2px;
-}
-button:active {
-  background-color: gray;
 }

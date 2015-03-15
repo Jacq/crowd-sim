@@ -1,34 +1,87 @@
-
-var AgentRender = require('./AgentRender');
-
 var Demo = {};
 Demo.options = {
-  buttons: {
-    exportConfig: document.getElementById('export'),
-    importConfig: document.getElementById('import'),
-    start: document.getElementById('start'),
-    stop: document.getElementById('stop'),
-    step: document.getElementById('step'),
-    reset: document.getElementById('reset')
-  },
-  display: {
-    running: document.getElementById('runnning'),
-    mouse: document.getElementById('mouse'),
-    iterations: document.getElementById('iterations'),
-    console: document.getElementById('console'),
-    children: document.getElementById('children'),
-    entity: document.getElementById('entity')
-  },
+  buttons: {},
+  statuses: {},
   interactive: true
 };
 
+Demo.modes = {
+  select: {
+    id: select,
+    label: 'Select'
+  },
+  groupAdd: {
+    id: groupAdd,
+    label: 'Add Group'
+  },
+  wallAdd: {
+    id: wallAdd,
+    label: 'Add Wall'
+  },
+};
+
+Demo.onClick = {
+  select: function() {
+    Demo.changeMode('select');
+  },
+  groupAdd: function() {
+    Demo.changeMode('groupAdd');
+  },
+  wallAdd: function() {
+    Demo.changeMode('wallAdd');
+  },
+  start: function() {
+    Demo._engine.run();
+    window.requestAnimFrame(Demo._animate);
+    console.log('running');
+    Demo.running = true;
+  },
+  stop: function() {
+    Demo._engine.stop();
+    console.log('stopped');
+    Demo.running = false;
+  },
+  step: function() {
+    Demo._engine.step();
+    window.requestAnimFrame(Demo._animate);
+  },
+  reset: function() {
+    Demo._engine.reset();
+    console.log('reset');
+    Demo._initRender();
+  }
+};
+
+Demo.statusSet = function(values) {
+  for (var i in values) {
+    if (!Demo.options.statuses[i]) {
+      console.log('Status display not defined: ' + i);
+    }
+    Demo.options.statuses[i].innerHTML = values[i];
+  }
+};
+
+Demo.changeMode = function(newMode) {
+  Demo.mode = Demo.modes[newMode];
+  Demo.statusSet({
+    'edit-mode': Demo.mode.label
+  });
+};
+
 Demo.init = function() {
-  exportConfig.addEventListener('click', Demo.exportConfig);
-  importConfig.addEventListener('click', Demo.importConfig);
-  start.addEventListener('click', Demo.start);
-  stop.addEventListener('click', Demo.stop);
-  step.addEventListener('click', Demo.step);
-  reset.addEventListener('click', Demo.reset);
+  // init buttons
+  var buttons = document.getElementsByTagName('button');
+  for (var i = 0; i < buttons.length; i++) {
+    var btn = buttons[i];
+    Demo.options.buttons[btn.id] = btn;
+    btn.addEventListener('click', Demo.onClick[btn.id]);
+  }
+  // init status bar
+  var statuses = document.getElementById('statuses').getElementsByTagName('span');
+  for (var j = 0; j < statuses.length; j++) {
+    var st = statuses[j];
+    Demo.options.statuses[st.id] = st;
+  }
 
   var canvas = document.getElementById('canvas');
   var w = canvas.width = window.innerWidth;
@@ -45,16 +98,20 @@ Demo.init = function() {
   canvas.appendChild(renderer.view);
 
   Demo._world = new CrowdSim.World(w, h);
-
   Demo._renderer = renderer;
   Demo._stage = stage;
-  var options = {
+  Demo._engine = new CrowdSim.Engine(Demo._world, {
     onStep: Demo._updateDisplay
-  };
-
-  Demo._engine = new CrowdSim.Engine(Demo._world, options);
-  group = new CrowdSim.Group(10,[0,0,w,h]);
-  Demo._world.add(group);
+  });
+  var size = 300;
+  var door = 50;
+  var cx = w / 3, cy =  h / 3;
+  var groupOpts = {overlap: false, size: 4, waypoints: [[100,100], [200,210], [310,300], [410,410]]};
+  group = new CrowdSim.Group(100, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
+  var room = [[cx + size / 2 - door, cy + size], [cx, cy + size], [cx, cy], [cx + size, cy], [cx + size, cy + size], [cx + size / 2 + door, cy + size]];
+  wall = new CrowdSim.Wall(room);
+  Demo._world.addGroup(group);
+  Demo._world.addWall(wall);
 
   function fullscreen() {
     var el = document.getElementById('canvas');
@@ -79,7 +136,14 @@ Demo._events = function(stage) {
   };
 
   stage.mousedown = stage.touchstart = function(mouseData) {
-    //console.log('MOUSE DOWN!');
+    switch (Demo.mode) {
+      case Demo.modes.select:
+        break;
+      case Demo.modes.groupAdd:
+        break;
+      case Demo.modes.wallAdd:
+        break;
+    }
   };
 
   stage.mouseup = stage.mouseupoutside = stage.touchend = function(mouseData) {
@@ -88,10 +152,11 @@ Demo._events = function(stage) {
 
   stage.click = function(mouseData) {
     //console.log('CLICK!');
+    var defaultGroup = Demo._world.getDefaultGroup();
     var global = mouseData.global;
-    var agent = new CrowdSim.Agent(Demo._world.entities.length, global.x, global.y, 5, 0);
-    agent.extra.view = new AgentRender(agent, Demo._stage);
-    Demo._world.add(agent);
+    var agent = new CrowdSim.Agent(Demo._world.groups.length, global.x, global.y, 5, 0);
+    agent.extra.view = new CrowdSim.Render.Agent(agent, Demo._stage);
+    defaultGroup.addAgent(agent);
     Demo._animateOnce();
   };
 
@@ -102,26 +167,40 @@ Demo._events = function(stage) {
   stage.mousemove = stage.touchmove = function(mouseMove) {
     //console.log('Move!');
     //console.log(mouseMove.global);
-    Demo.options.display.mouse.innerHTML = '(' + mouseMove.global.x + ',' + mouseMove.global.y + ')';
+    var optSet = {
+      mouse: '(' + mouseMove.global.x + ',' + mouseMove.global.y + ')'
+    };
+    Demo.statusSet(optSet);
   };
 
 };
 
 Demo._updateDisplay = function() {
-  var display = Demo.options.display;
-  display.running.innerHTML = Demo._engine.running;
-  display.iterations.innerHTML = Demo._engine.iterations;
-  display.children.innerHTML = Demo._world.entities.length;
-  display.agent.innerHTML = Demo._world.agentSelected ? Demo._world.agentSelected.id : '';
+  var setOpts = {
+    running: Demo._engine.running,
+    iterations: Demo._engine.iterations,
+    children: Demo._world.groups.length,
+    agent: Demo._world.agentSelected ? Demo._world.agentSelected.id : ''
+  };
+
+  Demo.statusSet(setOpts);
 };
 
 Demo._initRender = function() {
   Demo.running = false;
   Demo._stage.removeChildren();
-  for (var j in Demo._world.agents) {
-    var agent = Demo._world.agents[j];
-    agent.extra.view = new AgentRender.Agent(agent, Demo._stage);
-  }
+  var agents = Demo._world.getAgents();
+  agents.each(function(a) {
+    new CrowdSim.Render.Agent(a, Demo._stage);
+  });
+  var walls = Demo._world.getWalls();
+  walls.each(function(a) {
+    new CrowdSim.Render.Wall(a, Demo._stage);
+  });
+  var groups = Demo._world.getGroups();
+  groups.each(function(a) {
+    new CrowdSim.Render.Group(a, Demo._stage);
+  });
 
   Demo._updateDisplay();
   Demo._animateOnce(); // to draw everything
@@ -137,10 +216,17 @@ Demo._animateOnce = function() {
 
 Demo._animate = function() {
   Demo._renderer.render(Demo._stage);
-  for (var i in Demo._world.entities) {
-    var entity = Demo._world.entities[i];
-    entity.extra.view.render();
-  }
+  Demo._world.getAgents().each(function(a) {
+    a.extra.view.render();
+  });
+
+  Demo._world.getWalls().each(function(a) {
+    a.extra.view.render();
+  });
+
+  Demo._world.getGroups().each(function(a) {
+    a.extra.view.render();
+  });
 
   if (Demo.running || Demo.refreshOnce) {
     Demo.refreshOnce = false;
@@ -150,28 +236,4 @@ Demo._animate = function() {
   // render the stage
 };
 
-Demo.start = function() {
-  Demo._engine.run();
-  window.requestAnimFrame(Demo._animate);
-  console.log('running');
-  Demo.running = true;
-};
-
-Demo.stop = function() {
-  Demo._engine.stop();
-  console.log('stopped');
-  Demo.running = false;
-};
-Demo.step = function() {
-  Demo._engine.step();
-  window.requestAnimFrame(Demo._animate);
-};
-
-Demo.reset = function() {
-  Demo._engine.reset();
-  console.log('reset');
-  Demo._initRender();
-};
-
 Demo.init();
-module.exports = Demo;
