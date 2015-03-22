@@ -27,3 +27,4 @@ crowd-sim
 - http://pedsim.silmaril.org/
 - http://www.tbx.com.sg/crowdsapi/
 - http://gamma.cs.unc.edu/research/crowds/
+- https://github.com/makokal/crowdsim

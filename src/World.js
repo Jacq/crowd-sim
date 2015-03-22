@@ -1,7 +1,7 @@
 /* global window,module, exports : true, define */
 
 var World = function(x1, y1, x2, y2) {
-  this.groups = [new CrowdSim.Group(0)];
+  this.groups = Lazy([new CrowdSim.Group(0)]);
   this.walls = [];
   this.wrap = true;
   this.x1 = x1;
@@ -11,7 +11,7 @@ var World = function(x1, y1, x2, y2) {
 };
 
 World.prototype.getDefaultGroup = function() {
-  return this.groups[0];
+  return this.groups.first();
 };
 
 World.prototype.addGroup = function(group) {

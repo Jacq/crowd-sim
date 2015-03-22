@@ -32,7 +32,7 @@ Demo.onClick = {
   },
   start: function() {
     Demo._engine.run();
-    window.requestAnimFrame(Demo._animate);
+    window.requestAnimFrame(Demo._render);
     console.log('running');
     Demo.running = true;
   },
@@ -43,7 +43,7 @@ Demo.onClick = {
   },
   step: function() {
     Demo._engine.step();
-    window.requestAnimFrame(Demo._animate);
+    window.requestAnimFrame(Demo._render);
   },
   reset: function() {
     Demo._engine.reset();
@@ -69,6 +69,14 @@ Demo.changeMode = function(newMode) {
 };
 
 Demo.init = function() {
+  // init stats
+  var stats = new Stats();
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = '0px';
+  stats.domElement.style.top = '0px';
+  document.body.appendChild(stats.domElement);
+  Demo.stats = stats;
+
   // init buttons
   var buttons = document.getElementsByTagName('button');
   for (var i = 0; i < buttons.length; i++) {
@@ -90,7 +98,7 @@ Demo.init = function() {
   // create an new instance of a pixi stage
   var stage = new PIXI.Stage(0x000000, Demo.options.interactive);
   if (Demo.options.interactive) {
-    Demo._events(stage);
+    Demo._events(stage, canvas);
   }
   // create a renderer instance.
   var renderer = PIXI.autoDetectRenderer(w, h, canvas);
@@ -107,7 +115,7 @@ Demo.init = function() {
   var door = 50;
   var cx = w / 3, cy =  h / 3;
   var groupOpts = {overlap: false, size: 4, waypoints: [[100,100], [200,210], [310,300], [410,410]]};
-  group = new CrowdSim.Group(100, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
+  group = new CrowdSim.Group(500, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
   var room = [[cx + size / 2 - door, cy + size], [cx, cy + size], [cx, cy], [cx + size, cy], [cx + size, cy + size], [cx + size / 2 + door, cy + size]];
   wall = new CrowdSim.Wall(room);
   Demo._world.addGroup(group);
@@ -126,7 +134,7 @@ Demo.init = function() {
   Demo._initRender(Demo._world);
 };
 
-Demo._events = function(stage) {
+Demo._events = function(stage, canvas) {
   stage.mouseover = function(mouseData) {
     //console.log('MOUSE OVER!');
   };
@@ -154,10 +162,10 @@ Demo._events = function(stage) {
     //console.log('CLICK!');
     var defaultGroup = Demo._world.getDefaultGroup();
     var global = mouseData.global;
-    var agent = new CrowdSim.Agent(Demo._world.groups.length, global.x, global.y, 5, 0);
+    var agent = new CrowdSim.Agent(global.x, global.y, 5);
     agent.extra.view = new CrowdSim.Render.Agent(agent, Demo._stage);
     defaultGroup.addAgent(agent);
-    Demo._animateOnce();
+    Demo._renderOnce();
   };
 
   stage.tap = function(touchData) {
@@ -172,6 +180,41 @@ Demo._events = function(stage) {
     };
     Demo.statusSet(optSet);
   };
+
+  window.addEventListener('keydown', keydown);
+  canvas.addEventListener('keydown', keydown);
+  function keydown(event) {
+    var render = CrowdSim.Render;
+    switch (event.keyCode) { // ctrlKey shiftKey
+      case 65: // a
+        if (event.ctrlKey) {
+          render.Agent.show.body = !render.Agent.show.body;
+        }else if (event.shiftKey) {
+          render.Agent.show.direction = !render.Agent.show.direction;
+        }else {
+          render.Agent.show.all = !render.Agent.show.all;
+        }
+        break;
+      case 71: // g
+        if (event.ctrlKey) {
+          render.Group.show.area = !render.Group.show.area;
+        }else if (event.shiftKey) {
+          render.Group.show.waypoints = !render.Group.show.waypoints;
+        }else {
+          render.Group.show.all = !render.Group.show.all;
+        }
+        break;
+      case 87: // w
+        if (event.ctrlKey) {
+          render.Wall.show.path = !render.Wall.show.path;
+        }else if (event.shiftKey) {
+          render.Wall.show.corners = !render.Wall.show.corners;
+        }else {
+          render.Wall.show.all = !render.Wall.show.all;
+        }
+        break;
+    }
+  }
 
 };
 
@@ -203,19 +246,19 @@ Demo._initRender = function() {
   });
 
   Demo._updateDisplay();
-  Demo._animateOnce(); // to draw everything
+  Demo._renderOnce(); // to draw everything
 
   // canvas.addEventListener('click', fullscreen);
-  //window.requestAnimFrame(Demo._animate);
+  //window.requestAnimFrame(Demo._render);
 };
 
-Demo._animateOnce = function() {
+Demo._renderOnce = function() {
   Demo.refreshOnce = true;
-  window.requestAnimFrame(Demo._animate);
+  window.requestAnimFrame(Demo._render);
 };
 
-Demo._animate = function() {
-  Demo._renderer.render(Demo._stage);
+Demo._render = function() {
+  Demo.stats.begin();
   Demo._world.getAgents().each(function(a) {
     a.extra.view.render();
   });
@@ -228,12 +271,17 @@ Demo._animate = function() {
     a.extra.view.render();
   });
 
+  Demo._renderer.render(Demo._stage);
   if (Demo.running || Demo.refreshOnce) {
     Demo.refreshOnce = false;
-    window.requestAnimFrame(Demo._animate);
+    window.requestAnimFrame(Demo._render);
+
   }
   // single.render.;
   // render the stage
+  Demo.stats.end();
 };
 
 Demo.init();
+
+//# sourceURL=Demo.js

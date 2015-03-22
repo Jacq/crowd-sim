@@ -40,6 +40,10 @@ Group.prototype.getArea = function() {
   };
 };
 
+Group.prototype.addAgent = function(agent) {
+  this.agents.concat(agent);
+};
+
 Group.id = 0;
 
 module.exports = Group;
