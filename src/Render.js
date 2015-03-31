@@ -10,21 +10,21 @@ var Colors = {
 /*
 * Base render prototype
 */
-var Entity = function(entity, stage) {
+var Entity = function(entity, container, display) {
   this.entitiyModel = entity;
   this.entitiyModel.extra.view = this;
-  this.graphics = new PIXI.Graphics();
-  // add it the stage so we see it on our screens..
-  this.graphics.interactive = true;
-  this.graphics.buttonMode = true;
-  this.graphics.mouseover = this.mouseover;
-  this.graphics.mouseout = this.mouseout;
-  this.graphics._entityView = this;
-  stage.addChild(this.graphics);
+  // add it the container so we see it on our screens..
+  display.interactive = true;
+  display.buttonMode = true;
+  display.mouseover = this.mouseover;
+  display.mouseout = this.mouseout;
+  display._entityView = this;
+  this.display = display;
+  container.addChild(this.display);
 };
 
-Entity.prototype.render = function() {
-  //this.graphics.clear();
+Entity.prototype.update = function() {
+  //this.display.clear();
 };
 
 Entity.prototype.mouseover = function() {
@@ -37,25 +37,22 @@ Entity.prototype.mouseout = function() {
   this._entityView.entityModel.selected = false;
 };
 
-var Agent = function(agent, stage) {
-  Entity.call(this, agent, stage);
-
-  this.graphics.beginFill(Colors.Agent);
+var Agent = function(agent, container, options) {
+  var display = new PIXI.Graphics();
+  Entity.call(this, agent, container, display);
+  this.display.beginFill(Colors.Agent);
   this.circle = new PIXI.Circle(agent.pos.x, agent.pos.y, agent.size);
-  this.text = new PIXI.Text(agent.id, {font: '12px Arial', fill: 'yellow'});
-  this.text.pos = agent.pos;
-  this.text.anchor.x = 0.5;
-  this.text.anchor.y = 0.5;
-  this.render();
+
+  this.update();
 };
 
-Agent.prototype.render = function() {
+Agent.prototype.update = function() {
   if (!Agent.show || !Agent.show.all) {
-    this.graphics.clear();
+    this.display.clear();
     return;
   }
-  Entity.prototype.render.call(this);
-  this.graphics.clear();
+  Entity.prototype.update.call(this);
+
   var e = this.entitiyModel;
   // direction line
   var scale = 10;
@@ -63,59 +60,87 @@ Agent.prototype.render = function() {
   this.circle.y = e.pos.y;
 
   if (Agent.show.body) {
-    this.graphics.beginFill(Colors.Agent);
-    this.graphics.drawShape(this.circle);
-    this.graphics.lineStyle(1, Colors.Agent);
+    this.display.beginFill(Colors.Agent);
+    this.display.drawShape(this.circle);
+    this.display.lineStyle(1, Colors.Agent);
   }
   if (Agent.show.direction) {
-    this.graphics.moveTo(e.pos.x, e.pos.y);
-    this.graphics.lineTo(e.pos.x + e.vel.x * scale, e.pos.y + e.vel.y * scale);
-    this.graphics.endFill();
+    this.display.moveTo(e.pos.x, e.pos.y);
+    this.display.lineTo(e.pos.x + e.vel.x * scale, e.pos.y + e.vel.y * scale);
+    this.display.endFill();
   }
   //console.log(e);
 };
 Agent.show = {body: true, direction: true, all: true};
 
-var Wall = function(wall, stage) {
-  Entity.call(this, wall, stage);
+var AgentSprite = function(agent, container, texture) {
+  var sprite = new PIXI.Sprite(texture);
+  //var display = new PIXI.Sprite(options.texture);
+  Entity.call(this, agent, container, sprite);
+  this.display.visible = Agent.show.body;
+  this.display.anchor.set(0.5);
+  //this.display.alpha = 0.5;
+  this.display.height = agent.size;
+  this.display.width = agent.size;
+  this.display.position.x = agent.pos.x;
+  this.display.position.y = agent.pos.y;
+  this.update();
+};
+
+AgentSprite.prototype.update = function() {
+  if (!Agent.show || !Agent.show.all) {
+    return;
+  }
+  Entity.prototype.update.call(this);
+
+  var e = this.entitiyModel;
+  this.display.position.set(e.pos.x, e.pos.y);
+  this.display.rotation = Math.atan2(e.vel.y / e.vel.x);
+};
+AgentSprite.show = {body: true, direction: true, all: true};
+
+var Wall = function(wall, container) {
+  var display = new PIXI.Graphics();
+  Entity.call(this, wall, container, display);
   this.joints = [];
   for (var j in wall.path) {
     var joint = wall.path[j];
     var circle = new PIXI.Circle(joint[0], joint[1], wall.width);
     this.joints.push(circle);
   }
-  this.render();
+  this.update();
 };
 
-Wall.prototype.render = function(options) {
+Wall.prototype.update = function(options) {
   if (!Wall.show || !Wall.show.all) {
-    this.graphics.clear();
+    this.display.clear();
     return;
   }
-  Entity.prototype.render.call(this);
-  this.graphics.clear();
+  Entity.prototype.update.call(this);
+  //this.display.clear();
   var path = wall.path;
   if (Wall.show.path) {
-    this.graphics.beginFill(Colors.Wall, 0.2);
-    this.graphics.lineStyle(wall.width, Colors.Wall);
-    this.graphics.moveTo(path[0][0], path[0][1]);
+    //this.display.beginFill(Colors.Wall, 0.1);
+    this.display.lineStyle(wall.width, Colors.Wall);
+    this.display.moveTo(path[0][0], path[0][1]);
     for (var i = 1; i < path.length ; i++) {
-      this.graphics.lineTo(path[i][0], path[i][1]);
+      this.display.lineTo(path[i][0], path[i][1]);
     }
-    this.graphics.endFill();
+    //this.display.endFill();
   }
   if (Wall.show.corners) {
-    this.graphics.beginFill(Colors.Joint);
+    this.display.beginFill(Colors.Joint);
     for (var j in this.joints) {
-      this.graphics.drawShape(this.joints[j]);
+      this.display.drawShape(this.joints[j]);
     }
-    this.graphics.endFill();
+    this.display.endFill();
   }
 };
 Wall.show = {path: true, corners: true, all: true};
 
-var Group = function(group, stage) {
-  Entity.call(this, group, stage);
+var Group = function(group, container) {
+  var display = new PIXI.Graphics();
+  Entity.call(this, group, container, display);
   this.area = new PIXI.Rectangle(0, 0, 0, 0);
   var wps = group.waypoints;
   if (wps) {
@@ -126,18 +151,17 @@ var Group = function(group, stage) {
       this.waypoints.push(circle);
     }
   }
-  this.render();
+  this.update();
 };
 
-Group.prototype.render = function(options) {
+Group.prototype.update = function(options) {
   if (!Group.show || !Group.show.all) {
-    this.graphics.clear();
+    this.display.clear();
     return;
   }
-  this.graphics.clear();
-  Entity.prototype.render.call(this);
+  this.display.clear();
+  Entity.prototype.update.call(this);
   var group = this.entitiyModel;
-  this.graphics.clear();
   if (!group.agents || group.agents.length === 0) {
     return;
   }
@@ -148,22 +172,22 @@ Group.prototype.render = function(options) {
     this.area.width = limits.xmax - limits.xmin;
     this.area.height = limits.ymax - limits.ymin;
 
-    this.graphics.beginFill(Colors.Group, 0.3);
-    this.graphics.drawShape(this.area);
-    this.graphics.endFill();
+    this.display.beginFill(Colors.Group, 0.2);
+    this.display.drawShape(this.area);
+    this.display.endFill();
   }
   var wps = this.waypoints;
   if (Group.show.waypoints && wps) {
-    this.graphics.lineStyle(1, Colors.Group);
-    this.graphics.beginFill(Colors.Joint);
+    this.display.lineStyle(1, Colors.Group);
+    this.display.beginFill(Colors.Joint);
     for (var i in wps) {
-      this.graphics.drawShape(wps[i]);
+      this.display.drawShape(wps[i]);
     }
-    this.graphics.endFill();
+    this.display.endFill();
     //
-    this.graphics.moveTo(wps[0].x, wps[0].y);
+    this.display.moveTo(wps[0].x, wps[0].y);
     for (var j = 1; j < wps.length; j++) {
-      this.graphics.lineTo(wps[j].x, wps[j].y);
+      this.display.lineTo(wps[j].x, wps[j].y);
     }
   }
 };
@@ -171,5 +195,6 @@ Group.prototype.render = function(options) {
 Group.show = {area: true, waypoints: true, all: true};
 
 module.exports.Agent = Agent;
+module.exports.AgentSprite = AgentSprite;
 module.exports.Wall = Wall;
 module.exports.Group = Group;

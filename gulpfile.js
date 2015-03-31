@@ -140,6 +140,7 @@ gulp.task('dev', ['clean', 'inject', 'build'], function() {
         index: config.index,
         routes: {
           '/css': config.css,
+          '/img': config.img,
           '/js': config.demo + 'js/',
         }
       },

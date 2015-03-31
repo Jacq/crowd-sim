@@ -1,0 +1,20 @@
+{"frames": {
+
+"swvclt.png":
+{
+	"frame": {"x":2,"y":2,"w":744,"h":743},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":744,"h":743},
+	"sourceSize": {"w":744,"h":743}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "swvclt.png",
+	"format": "RGBA8888",
+	"size": {"w":748,"h":747},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:022a90d387cb66aa1d31d140e298a1c3:06d7be7ffc75c3903fc4fed6e313d5c4:e2d11bca212c94e0cdf60813f117c69c$"
+}
+}

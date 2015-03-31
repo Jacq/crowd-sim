@@ -23,7 +23,7 @@
     "tests"
   ],
   "dependencies": {
-    "pixi.js": "~2.0.0",
+    "pixi.js": "3.0.6",
     "normalize.css": "~3.0.3",
     "lazy.js": "~0.4.0",
     "gl-matrix": "~2.3.1",

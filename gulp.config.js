@@ -16,6 +16,7 @@ module.exports = function() {
   srcMain: srcMain,
   sass: demo + 'sass/**/*.scss',
   css: demo + 'css/',
+  img: demo + 'img/',
   index: demo + 'index.html',
   js: {
     src: src + '**/*.js',

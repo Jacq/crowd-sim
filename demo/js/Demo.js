@@ -20,6 +20,8 @@ Demo.modes = {
   },
 };
 
+Demo.assets = ['img/swvclt.json'];
+
 Demo.onClick = {
   select: function() {
     Demo.changeMode('select');
@@ -32,7 +34,7 @@ Demo.onClick = {
   },
   start: function() {
     Demo._engine.run();
-    window.requestAnimFrame(Demo._render);
+    requestAnimationFrame(Demo._update);
     console.log('running');
     Demo.running = true;
   },
@@ -43,7 +45,7 @@ Demo.onClick = {
   },
   step: function() {
     Demo._engine.step();
-    window.requestAnimFrame(Demo._render);
+    requestAnimationFrame(Demo._update);
   },
   reset: function() {
     Demo._engine.reset();
@@ -95,27 +97,42 @@ Demo.init = function() {
   var w = canvas.width = window.innerWidth;
   var h = canvas.height = window.innerHeight;
 
-  // create an new instance of a pixi stage
-  var stage = new PIXI.Stage(0x000000, Demo.options.interactive);
+  // create a renderer instance.
+  var renderer = PIXI.autoDetectRenderer(w, h);
+
+  // add the renderer view element to the DOM
+  canvas.appendChild(renderer.view);
+
+  // create root container
+  var stage = new PIXI.Container();
+  // create agents container
+  var worldContainer = new PIXI.Container();
+  var agentsContainer = new PIXI.Container(10000, {
+    scale: true,
+    position: true,
+    rotation: true,
+    uvs: true,
+    alpha: true
+  });
+  stage.addChild(agentsContainer);
+  stage.addChild(worldContainer);
   if (Demo.options.interactive) {
     Demo._events(stage, canvas);
   }
-  // create a renderer instance.
-  var renderer = PIXI.autoDetectRenderer(w, h, canvas);
-  // add the renderer view element to the DOM
-  canvas.appendChild(renderer.view);
 
   Demo._world = new CrowdSim.World(w, h);
   Demo._renderer = renderer;
   Demo._stage = stage;
+  Demo._agentsContainer = agentsContainer;
+  Demo._worldContainer = worldContainer;
   Demo._engine = new CrowdSim.Engine(Demo._world, {
     onStep: Demo._updateDisplay
   });
   var size = 300;
   var door = 50;
   var cx = w / 3, cy =  h / 3;
-  var groupOpts = {overlap: false, size: 4, waypoints: [[100,100], [200,210], [310,300], [410,410]]};
-  group = new CrowdSim.Group(500, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
+  var groupOpts = {overlap: false, size: 4, waypoints: [[100, 100], [200, 210], [310, 300], [410, 410]]};
+  group = new CrowdSim.Group(10, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
   var room = [[cx + size / 2 - door, cy + size], [cx, cy + size], [cx, cy], [cx + size, cy], [cx + size, cy + size], [cx + size / 2 + door, cy + size]];
   wall = new CrowdSim.Wall(room);
   Demo._world.addGroup(group);
@@ -131,6 +148,7 @@ Demo.init = function() {
     }
   }
 
+  //var loader = new PIXI.AssetLoader(Demo.assets);
   Demo._initRender(Demo._world);
 };
 
@@ -163,7 +181,7 @@ Demo._events = function(stage, canvas) {
     var defaultGroup = Demo._world.getDefaultGroup();
     var global = mouseData.global;
     var agent = new CrowdSim.Agent(global.x, global.y, 5);
-    agent.extra.view = new CrowdSim.Render.Agent(agent, Demo._stage);
+    agent.extra.view = new CrowdSim.Render.Agent(agent, Demo._agentsContainer);
     defaultGroup.addAgent(agent);
     Demo._renderOnce();
   };
@@ -230,55 +248,59 @@ Demo._updateDisplay = function() {
 };
 
 Demo._initRender = function() {
+  var baseTextures = PIXI.Texture.fromImage('img/flt.png');
+  var agentTexture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(26, 16, 51, 36));
+
   Demo.running = false;
-  Demo._stage.removeChildren();
+  Demo._worldContainer.removeChildren();
+  Demo._agentsContainer.removeChildren();
+
   var agents = Demo._world.getAgents();
   agents.each(function(a) {
-    new CrowdSim.Render.Agent(a, Demo._stage);
+    new CrowdSim.Render.AgentSprite(a, Demo._agentsContainer, agentTexture);
   });
   var walls = Demo._world.getWalls();
   walls.each(function(a) {
-    new CrowdSim.Render.Wall(a, Demo._stage);
+    new CrowdSim.Render.Wall(a, Demo._worldContainer);
   });
   var groups = Demo._world.getGroups();
   groups.each(function(a) {
-    new CrowdSim.Render.Group(a, Demo._stage);
+    new CrowdSim.Render.Group(a, Demo._worldContainer);
   });
 
   Demo._updateDisplay();
   Demo._renderOnce(); // to draw everything
 
   // canvas.addEventListener('click', fullscreen);
-  //window.requestAnimFrame(Demo._render);
+  //requestAnimFrame(Demo._update);
 };
 
 Demo._renderOnce = function() {
   Demo.refreshOnce = true;
-  window.requestAnimFrame(Demo._render);
+  requestAnimationFrame(Demo._update);
 };
 
-Demo._render = function() {
+Demo._update = function() {
   Demo.stats.begin();
   Demo._world.getAgents().each(function(a) {
-    a.extra.view.render();
+    a.extra.view.update();
   });
 
   Demo._world.getWalls().each(function(a) {
-    a.extra.view.render();
+    a.extra.view.update();
   });
 
   Demo._world.getGroups().each(function(a) {
-    a.extra.view.render();
+    a.extra.view.update();
   });
 
+  // render the stage
   Demo._renderer.render(Demo._stage);
   if (Demo.running || Demo.refreshOnce) {
     Demo.refreshOnce = false;
-    window.requestAnimFrame(Demo._render);
-
+    requestAnimationFrame(Demo._update);
   }
-  // single.render.;
-  // render the stage
+
   Demo.stats.end();
 };
 

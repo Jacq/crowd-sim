@@ -28,3 +28,7 @@ crowd-sim
 - http://www.tbx.com.sg/crowdsapi/
 - http://gamma.cs.unc.edu/research/crowds/
 - https://github.com/makokal/crowdsim
+
+## Sprites
+- https://www.pinterest.com/pin/318489004873451306/
+- http://i2.tinypic.com/swvclt.png
