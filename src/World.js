@@ -1,8 +1,11 @@
 /* global window,module, exports : true, define */
 
 var World = function(x1, y1, x2, y2) {
-  this.groups = Lazy([new CrowdSim.Group(0)]);
-  this.walls = [];
+  this.entities = {
+    groups: [new CrowdSim.Group(this,0)],
+    agents: [],
+    walls: []
+  };
   this.wrap = true;
   this.x1 = x1;
   this.y1 = y1;
@@ -11,34 +14,23 @@ var World = function(x1, y1, x2, y2) {
 };
 
 World.prototype.getDefaultGroup = function() {
-  return this.groups.first();
+  return this.entities.groups.first();
 };
 
 World.prototype.addGroup = function(group) {
-  this.groups = Lazy(this.groups).concat(group);
+  this.entities.groups = this.entities.groups.concat(group);
+  this.entities.agents = this.entities.agents.concat(group.agents);
 };
 
 World.prototype.addWall = function(wall) {
-  this.walls = Lazy(this.walls).concat(wall);
+  this.entities.walls = this.entities.walls.concat(wall);
 };
 
 World.prototype.save = function() {
   this.agentsSave = JSON.stringify(this.agents);
 };
 World.prototype.restore = function() {
-  this.agents = JSON.parse(this.agentsSave);
-};
-
-World.prototype.getGroups = function() {
-  return Lazy(this.groups);
-};
-
-World.prototype.getAgents = function() {
-  return Lazy(this.groups).map(function(g) { return g.agents; }).flatten();
-};
-
-World.prototype.getWalls = function() {
-  return Lazy(this.walls);
+  this.entities.agents = JSON.parse(this.agentsSave);
 };
 
 module.exports = World;

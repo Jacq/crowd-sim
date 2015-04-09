@@ -7,7 +7,7 @@ var Engine = function(world, options) {
   this.world.save();
 
   var defaultOptions = {
-    step: 0.1
+    timestep: 10 / 60
   };
   this.options = Lazy(options).defaults(defaultOptions).toObject();
 };
@@ -25,25 +25,27 @@ Engine.prototype.run = function() {
     return;
   }
   this.running = true;
-  this._step();
+  this.step();
 };
 
 Engine.prototype.step = function() {
   if (this.running) {
     return;
   }
-  this._step();
+  this.step();
 };
 
-Engine.prototype._step = function() {
+Engine.prototype.step = function() {
   var world = this.world;
   var options = this.options;
-  this.world.getAgents().each(function(agent) {
+  var timestep = options.timestep;
+  var entities = this.world.entities;
+  Lazy(entities.agents).each(function(agent) {
     if (agent.selected) {
       world.agentSelected = agent;
       return;
     }
-    agent.step(world,options.step);
+    agent.step(timestep);
     if (options.onStep) {
       options.onStep(world);
     }
@@ -52,8 +54,8 @@ Engine.prototype._step = function() {
   if (this.running) {
     var that = this;
     setTimeout(function() {
-      that._step();
-    }, this.STEP);
+      that.step();
+    }, timestep);
   }
 };
 

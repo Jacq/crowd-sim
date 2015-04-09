@@ -34,7 +34,7 @@ Demo.onClick = {
   },
   start: function() {
     Demo._engine.run();
-    requestAnimationFrame(Demo._update);
+    requestAnimationFrame(Demo._render);
     console.log('running');
     Demo.running = true;
   },
@@ -45,7 +45,7 @@ Demo.onClick = {
   },
   step: function() {
     Demo._engine.step();
-    requestAnimationFrame(Demo._update);
+    requestAnimationFrame(Demo._render);
   },
   reset: function() {
     Demo._engine.reset();
@@ -107,7 +107,7 @@ Demo.init = function() {
   var stage = new PIXI.Container();
   // create agents container
   var worldContainer = new PIXI.Container();
-  var agentsContainer = new PIXI.Container(10000, {
+  var agentsContainer = new PIXI.ParticleContainer(200000, {
     scale: true,
     position: true,
     rotation: true,
@@ -126,13 +126,13 @@ Demo.init = function() {
   Demo._agentsContainer = agentsContainer;
   Demo._worldContainer = worldContainer;
   Demo._engine = new CrowdSim.Engine(Demo._world, {
-    onStep: Demo._updateDisplay
+    onStep: null
   });
   var size = 300;
   var door = 50;
   var cx = w / 3, cy =  h / 3;
-  var groupOpts = {overlap: false, size: 4, waypoints: [[100, 100], [200, 210], [310, 300], [410, 410]]};
-  group = new CrowdSim.Group(10, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
+  var groupOpts = {overlap: false, size: 10, waypoints: [[100, 100], [200, 210], [310, 300], [410, 410]]};
+  group = new CrowdSim.Group(Demo._world,10000, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
   var room = [[cx + size / 2 - door, cy + size], [cx, cy + size], [cx, cy], [cx + size, cy], [cx + size, cy + size], [cx + size / 2 + door, cy + size]];
   wall = new CrowdSim.Wall(room);
   Demo._world.addGroup(group);
@@ -237,10 +237,11 @@ Demo._events = function(stage, canvas) {
 };
 
 Demo._updateDisplay = function() {
+  var entities = Demo._world.entities;
   var setOpts = {
     running: Demo._engine.running,
     iterations: Demo._engine.iterations,
-    children: Demo._world.groups.length,
+    children: entities.agents.length,
     agent: Demo._world.agentSelected ? Demo._world.agentSelected.id : ''
   };
 
@@ -254,56 +255,55 @@ Demo._initRender = function() {
   Demo.running = false;
   Demo._worldContainer.removeChildren();
   Demo._agentsContainer.removeChildren();
-
-  var agents = Demo._world.getAgents();
-  agents.each(function(a) {
+  var entities = Demo._world.entities;
+  Lazy(entities.agents).each(function(a) {
     new CrowdSim.Render.AgentSprite(a, Demo._agentsContainer, agentTexture);
   });
-  var walls = Demo._world.getWalls();
-  walls.each(function(a) {
+  Lazy(entities.walls).each(function(a) {
     new CrowdSim.Render.Wall(a, Demo._worldContainer);
   });
-  var groups = Demo._world.getGroups();
-  groups.each(function(a) {
+  Lazy(entities.groups).each(function(a) {
     new CrowdSim.Render.Group(a, Demo._worldContainer);
   });
 
   Demo._updateDisplay();
   Demo._renderOnce(); // to draw everything
-
   // canvas.addEventListener('click', fullscreen);
-  //requestAnimFrame(Demo._update);
+  //requestAnimFrame(Demo._render);
 };
 
 Demo._renderOnce = function() {
   Demo.refreshOnce = true;
-  requestAnimationFrame(Demo._update);
+  requestAnimationFrame(Demo._render);
 };
 
-Demo._update = function() {
+Demo._render = function() {
   Demo.stats.begin();
-  Demo._world.getAgents().each(function(a) {
-    a.extra.view.update();
+  var entities = Demo._world.entities;
+  var agents = entities.agents;
+  for (var i in agents) {
+    agents[i].extra.view.update();
+  }
+  /*
+  Lazy(entities.walls).each(function(a) {
+      a.extra.view.update();
   });
 
-  Demo._world.getWalls().each(function(a) {
-    a.extra.view.update();
-  });
-
-  Demo._world.getGroups().each(function(a) {
-    a.extra.view.update();
-  });
+  Lazy(entities.groups).each(function(a) {
+      a.extra.view.update();
+  });*/
 
   // render the stage
   Demo._renderer.render(Demo._stage);
   if (Demo.running || Demo.refreshOnce) {
     Demo.refreshOnce = false;
-    requestAnimationFrame(Demo._update);
+    requestAnimationFrame(Demo._render);
   }
-
+  Demo._updateDisplay();
   Demo.stats.end();
 };
 
 Demo.init();
+Demo.onClick.start();
 
 //# sourceURL=Demo.js

@@ -95,7 +95,7 @@ AgentSprite.prototype.update = function() {
 
   var e = this.entitiyModel;
   this.display.position.set(e.pos.x, e.pos.y);
-  this.display.rotation = Math.atan2(e.vel.y / e.vel.x);
+  this.display.rotation = Math.atan2(e.vel.y, e.vel.x) - Math.PI / 2;
 };
 AgentSprite.show = {body: true, direction: true, all: true};
 
