@@ -15,7 +15,8 @@ var Agent = function(group, x, y, size) {
     y: 0
   };
   this.size = size;
-  this.waypoint = null;
+  this.mobility = 1.0;
+  this.behaviour = null; // individual dataset by group
 };
 
 Agent.prototype.step = function(step) {

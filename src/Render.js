@@ -19,8 +19,8 @@ var Entity = function(entity, container, display) {
   display.mouseover = this.mouseover;
   display.mouseout = this.mouseout;
   display._entityView = this;
+  container.addChild(display);
   this.display = display;
-  container.addChild(this.display);
 };
 
 Entity.prototype.update = function() {
@@ -37,44 +37,13 @@ Entity.prototype.mouseout = function() {
   this._entityView.entityModel.selected = false;
 };
 
-var Agent = function(agent, container, options) {
-  var display = new PIXI.Graphics();
-  Entity.call(this, agent, container, display);
-  this.display.beginFill(Colors.Agent);
-  this.circle = new PIXI.Circle(agent.pos.x, agent.pos.y, agent.size);
-
-  this.update();
-};
-
-Agent.prototype.update = function() {
-  if (!Agent.show || !Agent.show.all) {
-    this.display.clear();
-    return;
-  }
-  Entity.prototype.update.call(this);
-
-  var e = this.entitiyModel;
-  // direction line
-  var scale = 10;
-  this.circle.x = e.pos.x;
-  this.circle.y = e.pos.y;
-
-  if (Agent.show.body) {
-    this.display.beginFill(Colors.Agent);
-    this.display.drawShape(this.circle);
-    this.display.lineStyle(1, Colors.Agent);
-  }
-  if (Agent.show.direction) {
-    this.display.moveTo(e.pos.x, e.pos.y);
-    this.display.lineTo(e.pos.x + e.vel.x * scale, e.pos.y + e.vel.y * scale);
-    this.display.endFill();
-  }
-  //console.log(e);
-};
-Agent.show = {body: true, direction: true, all: true};
-
-var AgentSprite = function(agent, container, texture) {
+var Agent = function(agent, container, texture, debugContainer) {
   var sprite = new PIXI.Sprite(texture);
+  if (debugContainer) {
+    this.graphics = new PIXI.Graphics();
+    debugContainer.addChild(this.graphics);
+    this.circle = new PIXI.Circle(agent.pos.x, agent.pos.y, agent.size / 2);
+  }
   //var display = new PIXI.Sprite(options.texture);
   Entity.call(this, agent, container, sprite);
   this.display.visible = Agent.show.body;
@@ -87,7 +56,7 @@ var AgentSprite = function(agent, container, texture) {
   this.update();
 };
 
-AgentSprite.prototype.update = function() {
+Agent.prototype.update = function() {
   if (!Agent.show || !Agent.show.all) {
     return;
   }
@@ -95,9 +64,27 @@ AgentSprite.prototype.update = function() {
 
   var e = this.entitiyModel;
   this.display.position.set(e.pos.x, e.pos.y);
-  this.display.rotation = Math.atan2(e.vel.y, e.vel.x) - Math.PI / 2;
+  direction =  Math.atan2(e.vel.y, e.vel.x) - Math.PI / 2;
+  this.display.rotation = direction;
+  if (this.circle) {
+    this.graphics.clear();
+    this.circle.x = e.pos.x;
+    this.circle.y = e.pos.y;
+
+    if (Agent.show.body) {
+      this.graphics.lineStyle(1, Colors.Agent);
+      this.graphics.drawShape(this.circle);
+    }
+    if (Agent.show.direction) {
+      var scale = 10;
+      this.graphics.moveTo(e.pos.x, e.pos.y);
+      this.graphics.lineTo(e.pos.x + e.vel.x * scale, e.pos.y + e.vel.y * scale);
+      this.graphics.endFill();
+    }
+  }
+
 };
-AgentSprite.show = {body: true, direction: true, all: true};
+Agent.show = {body: true, direction: true, all: true};
 
 var Wall = function(wall, container) {
   var display = new PIXI.Graphics();
@@ -195,6 +182,6 @@ Group.prototype.update = function(options) {
 Group.show = {area: true, waypoints: true, all: true};
 
 module.exports.Agent = Agent;
-module.exports.AgentSprite = AgentSprite;
+module.exports.Agent = Agent;
 module.exports.Wall = Wall;
 module.exports.Group = Group;

@@ -47,7 +47,14 @@ Group.prototype.addAgent = function(agent) {
   this.agents.concat(agent);
 };
 
+Group.prototype.behaviorRandom = function(agent, step) {
+  agentBehavior = agent.behavior;
+  var desiredForce = {x: Math.random() * 2 - 1, y: Math.random() * 2 - 1};
+}
+
 Group.prototype.behaviorWaypoints = function(agent, step) {
+  agentBehavior = agent.behavior;
+
   var accel = {x: Math.random() * 2 - 1, y: Math.random() * 2 - 1};
   agent.vel.x += accel.x * step;
   agent.vel.y += accel.y * step;

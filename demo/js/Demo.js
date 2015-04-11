@@ -114,8 +114,10 @@ Demo.init = function() {
     uvs: true,
     alpha: true
   });
+  var debugContainer = new PIXI.Container();
   stage.addChild(agentsContainer);
   stage.addChild(worldContainer);
+  stage.addChild(debugContainer);
   if (Demo.options.interactive) {
     Demo._events(stage, canvas);
   }
@@ -125,14 +127,17 @@ Demo.init = function() {
   Demo._stage = stage;
   Demo._agentsContainer = agentsContainer;
   Demo._worldContainer = worldContainer;
+  Demo._debugContainer = debugContainer;
   Demo._engine = new CrowdSim.Engine(Demo._world, {
     onStep: null
   });
   var size = 300;
   var door = 50;
-  var cx = w / 3, cy =  h / 3;
-  var groupOpts = {overlap: false, size: 10, waypoints: [[100, 100], [200, 210], [310, 300], [410, 410]]};
-  group = new CrowdSim.Group(Demo._world,10000, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
+  var cx = 500, cy =  400;
+  var groupOpts = {overlap: false, size: 10,
+      waypoints: [[100, 100], [200, 210], [310, 300], [410, 410], [410, 750], [550, 800], [650, 700], [650, 600]]
+    };
+  group = new CrowdSim.Group(Demo._world,100, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
   var room = [[cx + size / 2 - door, cy + size], [cx, cy + size], [cx, cy], [cx + size, cy], [cx + size, cy + size], [cx + size / 2 + door, cy + size]];
   wall = new CrowdSim.Wall(room);
   Demo._world.addGroup(group);
@@ -257,7 +262,7 @@ Demo._initRender = function() {
   Demo._agentsContainer.removeChildren();
   var entities = Demo._world.entities;
   Lazy(entities.agents).each(function(a) {
-    new CrowdSim.Render.AgentSprite(a, Demo._agentsContainer, agentTexture);
+    new CrowdSim.Render.Agent(a, Demo._agentsContainer, agentTexture,Demo._debugContainer);
   });
   Lazy(entities.walls).each(function(a) {
     new CrowdSim.Render.Wall(a, Demo._worldContainer);
