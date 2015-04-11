@@ -42,7 +42,7 @@ var Agent = function(agent, container, texture, debugContainer) {
   if (debugContainer) {
     this.graphics = new PIXI.Graphics();
     debugContainer.addChild(this.graphics);
-    this.circle = new PIXI.Circle(agent.pos.x, agent.pos.y, agent.size / 2);
+    this.circle = new PIXI.Circle(agent.pos[0], agent.pos[1], agent.size / 2);
   }
   //var display = new PIXI.Sprite(options.texture);
   Entity.call(this, agent, container, sprite);
@@ -51,8 +51,8 @@ var Agent = function(agent, container, texture, debugContainer) {
   //this.display.alpha = 0.5;
   this.display.height = agent.size;
   this.display.width = agent.size;
-  this.display.position.x = agent.pos.x;
-  this.display.position.y = agent.pos.y;
+  this.display.position.x = agent.pos[0];
+  this.display.position.y = agent.pos[1];
   this.update();
 };
 
@@ -63,13 +63,12 @@ Agent.prototype.update = function() {
   Entity.prototype.update.call(this);
 
   var e = this.entitiyModel;
-  this.display.position.set(e.pos.x, e.pos.y);
-  direction =  Math.atan2(e.vel.y, e.vel.x) - Math.PI / 2;
-  this.display.rotation = direction;
+  this.display.position.set(e.pos[0], e.pos[1]);
+  this.display.rotation = Math.atan2(e.vel[1], e.vel[0]) - Math.PI / 2;
   if (this.circle) {
     this.graphics.clear();
-    this.circle.x = e.pos.x;
-    this.circle.y = e.pos.y;
+    this.circle.x = e.pos[0];
+    this.circle.y = e.pos[1];
 
     if (Agent.show.body) {
       this.graphics.lineStyle(1, Colors.Agent);
@@ -77,8 +76,8 @@ Agent.prototype.update = function() {
     }
     if (Agent.show.direction) {
       var scale = 10;
-      this.graphics.moveTo(e.pos.x, e.pos.y);
-      this.graphics.lineTo(e.pos.x + e.vel.x * scale, e.pos.y + e.vel.y * scale);
+      this.graphics.moveTo(e.pos[0], e.pos[1]);
+      this.graphics.lineTo(e.pos[0] + e.vel[0] * scale, e.pos[1] + e.vel[1] * scale);
       this.graphics.endFill();
     }
   }
@@ -181,7 +180,6 @@ Group.prototype.update = function(options) {
 
 Group.show = {area: true, waypoints: true, all: true};
 
-module.exports.Agent = Agent;
 module.exports.Agent = Agent;
 module.exports.Wall = Wall;
 module.exports.Group = Group;

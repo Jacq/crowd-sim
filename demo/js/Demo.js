@@ -107,7 +107,7 @@ Demo.init = function() {
   var stage = new PIXI.Container();
   // create agents container
   var worldContainer = new PIXI.Container();
-  var agentsContainer = new PIXI.ParticleContainer(200000, {
+  var agentsContainer = new PIXI.ParticleContainer(100000, {
     scale: true,
     position: true,
     rotation: true,

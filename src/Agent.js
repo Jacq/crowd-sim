@@ -1,19 +1,14 @@
 /* global window,module, exports : true, define */
 var Entity = require('./Entity');
+var Vec2 = require('./Vec2');
 
 var Agent = function(group, x, y, size) {
   Entity.call(this);
 
   this.id = Agent.id++;
   this.group = group;
-  this.pos = {
-    x: x,
-    y: y
-  };
-  this.vel = {
-    x: 0,
-    y: 0
-  };
+  this.pos = Vec2.fromValues(x,y);
+  this.vel = Vec2.create();
   this.size = size;
   this.mobility = 1.0;
   this.behaviour = null; // individual dataset by group
