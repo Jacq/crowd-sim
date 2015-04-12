@@ -107,7 +107,7 @@ Demo.init = function() {
   var stage = new PIXI.Container();
   // create agents container
   var worldContainer = new PIXI.Container();
-  var agentsContainer = new PIXI.ParticleContainer(200000, {
+  var agentsContainer = new PIXI.ParticleContainer(100000, {
     scale: true,
     position: true,
     rotation: true,
@@ -132,7 +132,7 @@ Demo.init = function() {
   var door = 50;
   var cx = w / 3, cy =  h / 3;
   var groupOpts = {overlap: false, size: 10, waypoints: [[100, 100], [200, 210], [310, 300], [410, 410]]};
-  group = new CrowdSim.Group(Demo._world,10000, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
+  group = new CrowdSim.Group(Demo._world,100, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
   var room = [[cx + size / 2 - door, cy + size], [cx, cy + size], [cx, cy], [cx + size, cy], [cx + size, cy + size], [cx + size / 2 + door, cy + size]];
   wall = new CrowdSim.Wall(room);
   Demo._world.addGroup(group);

@@ -56,8 +56,8 @@ Agent.prototype.update = function() {
   var e = this.entitiyModel;
   // direction line
   var scale = 10;
-  this.circle.x = e.pos.x;
-  this.circle.y = e.pos.y;
+  this.circle.x = e.pos[0];
+  this.circle.y = e.pos[1];
 
   if (Agent.show.body) {
     this.display.beginFill(Colors.Agent);
@@ -65,8 +65,8 @@ Agent.prototype.update = function() {
     this.display.lineStyle(1, Colors.Agent);
   }
   if (Agent.show.direction) {
-    this.display.moveTo(e.pos.x, e.pos.y);
-    this.display.lineTo(e.pos.x + e.vel.x * scale, e.pos.y + e.vel.y * scale);
+    this.display.moveTo(e.pos[0], e.pos[1]);
+    this.display.lineTo(e.pos[0] + e.vel[0] * scale, e.pos[1] + e.vel[1] * scale);
     this.display.endFill();
   }
   //console.log(e);
@@ -82,8 +82,8 @@ var AgentSprite = function(agent, container, texture) {
   //this.display.alpha = 0.5;
   this.display.height = agent.size;
   this.display.width = agent.size;
-  this.display.position.x = agent.pos.x;
-  this.display.position.y = agent.pos.y;
+  this.display.x = agent.pos[0];
+  this.display.y = agent.pos[1];
   this.update();
 };
 
@@ -94,8 +94,8 @@ AgentSprite.prototype.update = function() {
   Entity.prototype.update.call(this);
 
   var e = this.entitiyModel;
-  this.display.position.set(e.pos.x, e.pos.y);
-  this.display.rotation = Math.atan2(e.vel.y, e.vel.x) - Math.PI / 2;
+  this.display.position.set(e.pos[0], e.pos[1]);
+  this.display.rotation = Math.atan2(e.vel[1], e.vel[0]) - Math.PI / 2;
 };
 AgentSprite.show = {body: true, direction: true, all: true};
 
