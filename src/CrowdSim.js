@@ -5,6 +5,7 @@ var CrowdSim = {
   Group: require('./Group'),
   World: require('./World'),
   Wall: require('./Wall'),
+  Path: require('./Path'),
   Engine: require('./Engine'),
   Render: require('./Render')
 };

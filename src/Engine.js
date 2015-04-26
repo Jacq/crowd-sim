@@ -1,3 +1,4 @@
+'use strict';
 
 var Engine = function(world, options) {
   this.running = false;
@@ -7,7 +8,7 @@ var Engine = function(world, options) {
   this.world.save();
 
   var defaultOptions = {
-    timestep: 10 / 60
+    timeStepSize: 0.1
   };
   this.options = Lazy(options).defaults(defaultOptions).toObject();
 };
@@ -38,14 +39,14 @@ Engine.prototype.step = function() {
 Engine.prototype.step = function() {
   var world = this.world;
   var options = this.options;
-  var timestep = options.timestep;
+  var timeStepSize = options.timeStepSize;
   var entities = this.world.entities;
   Lazy(entities.agents).each(function(agent) {
     if (agent.selected) {
       world.agentSelected = agent;
       return;
     }
-    agent.step(timestep);
+    agent.step(timeStepSize);
     if (options.onStep) {
       options.onStep(world);
     }
@@ -55,7 +56,7 @@ Engine.prototype.step = function() {
     var that = this;
     setTimeout(function() {
       that.step();
-    }, timestep);
+    }, options.timeStepRun * 1000);
   }
 };
 

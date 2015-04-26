@@ -1,3 +1,7 @@
+'use strict';
+
+/* global window,CrowdSim, define */
+
 var Demo = {};
 Demo.options = {
   buttons: {},
@@ -7,15 +11,15 @@ Demo.options = {
 
 Demo.modes = {
   select: {
-    id: select,
+    id: 'select',
     label: 'Select'
   },
   groupAdd: {
-    id: groupAdd,
+    id: 'groupAdd',
     label: 'Add Group'
   },
   wallAdd: {
-    id: wallAdd,
+    id: 'wallAdd',
     label: 'Add Wall'
   },
 };
@@ -105,9 +109,11 @@ Demo.init = function() {
 
   // create root container
   var stage = new PIXI.Container();
+  stage.scale.x = 10;
+  stage.scale.y = 10;
   // create agents container
   var worldContainer = new PIXI.Container();
-  var agentsContainer = new PIXI.ParticleContainer(100000, {
+  var agentsContainer = new PIXI.ParticleContainer(1000, {
     scale: true,
     position: true,
     rotation: true,
@@ -129,19 +135,24 @@ Demo.init = function() {
   Demo._worldContainer = worldContainer;
   Demo._debugContainer = debugContainer;
   Demo._engine = new CrowdSim.Engine(Demo._world, {
+    timeStepSize: 0.1, // time per step
+    timeStepRun: 0.01, // time between step runnings
     onStep: null
   });
-  var size = 300;
-  var door = 50;
-  var cx = 500, cy =  400;
-  var groupOpts = {overlap: false, size: 10,
-      waypoints: [[100, 100], [200, 210], [310, 300], [410, 410], [410, 750], [550, 800], [650, 700], [650, 600]]
-    };
-  group = new CrowdSim.Group(Demo._world,100, [[cx, cy], [cx + size / 2, cy + size / 2]], groupOpts);
-  var room = [[cx + size / 2 - door, cy + size], [cx, cy + size], [cx, cy], [cx + size, cy], [cx + size, cy + size], [cx + size / 2 + door, cy + size]];
-  wall = new CrowdSim.Wall(room);
+  var size = 20;
+  var door = size / 8;
+  var cx = 40, cy = 40;
+  var gx = 41, gy = 41;
+  var path = new CrowdSim.Path([[10, 10], [20, 21], [31, 30], [41, 41], [41, 75], [55, 80], [65, 70], [65, 60]]);
+  var group = new CrowdSim.Group(2 , Demo._world, [[gx, gy], [gx + size / 2, gy + size / 2]]);
+  group.assignPath(path);
+  var room1 = [[cx + size / 2 - door, cy + size], [cx, cy + size], [cx, cy], [cx + size, cy], [cx + size, cy + size], [cx + size / 2 + door, cy + size]];
+  var room2 = [[cx + size / 2 - door, cy + size], [cx, cy + size]];
+  //var wall = new CrowdSim.Wall(room);
+  var wall = new CrowdSim.Wall(room1);
   Demo._world.addGroup(group);
   Demo._world.addWall(wall);
+  Demo._world.addPath(path);
 
   function fullscreen() {
     var el = document.getElementById('canvas');
@@ -222,7 +233,7 @@ Demo._events = function(stage, canvas) {
         if (event.ctrlKey) {
           render.Group.show.area = !render.Group.show.area;
         }else if (event.shiftKey) {
-          render.Group.show.waypoints = !render.Group.show.waypoints;
+          render.Group.show.joints = !render.Group.show.joints;
         }else {
           render.Group.show.all = !render.Group.show.all;
         }
@@ -235,6 +246,14 @@ Demo._events = function(stage, canvas) {
         }else {
           render.Wall.show.all = !render.Wall.show.all;
         }
+        break;
+      case 107: // w
+        Demo._stage.scale.x *= 1.1;
+        Demo._stage.scale.y *= 1.1;
+        break;
+      case 109: // w
+        Demo._stage.scale.x *= 0.9;
+        Demo._stage.scale.y *= 0.9;
         break;
     }
   }
@@ -262,13 +281,16 @@ Demo._initRender = function() {
   Demo._agentsContainer.removeChildren();
   var entities = Demo._world.entities;
   Lazy(entities.agents).each(function(a) {
-    new CrowdSim.Render.Agent(a, Demo._agentsContainer, agentTexture,Demo._debugContainer);
+    new CrowdSim.Render.Agent(a, Demo._agentsContainer, agentTexture, Demo._debugContainer);
   });
   Lazy(entities.walls).each(function(a) {
     new CrowdSim.Render.Wall(a, Demo._worldContainer);
   });
   Lazy(entities.groups).each(function(a) {
     new CrowdSim.Render.Group(a, Demo._worldContainer);
+  });
+  Lazy(entities.paths).each(function(a) {
+    new CrowdSim.Render.Path(a, Demo._worldContainer);
   });
 
   Demo._updateDisplay();
@@ -287,16 +309,20 @@ Demo._render = function() {
   var entities = Demo._world.entities;
   var agents = entities.agents;
   for (var i in agents) {
-    agents[i].extra.view.update();
+    agents[i].extra.view.render();
   }
   /*
   Lazy(entities.walls).each(function(a) {
-      a.extra.view.update();
+      a.extra.view.render();
   });
 
   Lazy(entities.groups).each(function(a) {
-      a.extra.view.update();
-  });*/
+      a.extra.view.render();
+  });
+  Lazy(entities.paths).each(function(a) {
+      a.extra.view.render();
+  });
+  */
 
   // render the stage
   Demo._renderer.render(Demo._stage);

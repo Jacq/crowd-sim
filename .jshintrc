@@ -1,6 +1,14 @@
 {
-    "browser": true,    
+    "browser": true,
     "devel": true,
+    "node": true,
+    "-W064":false,
+    "globals": {
+      "PIXI" : false,
+      "Stats" : false,
+      "Lazy" : false,
+      "module" : false
+    },
     "predef"        : [         // Extra globals.
         "require"]
 }

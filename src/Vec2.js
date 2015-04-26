@@ -552,3 +552,59 @@ vec2.str = function (a) {
 };
 
 module.exports = vec2;
+
+/**
+ * Adds three vec2's
+ *
+ * @param {vec2} out the receiving vector
+ * @param {vec2} a the first operand
+ * @param {vec2} b the second operand
+ * @param {vec2} c the third operand
+ * @returns {vec2} out
+ */
+vec2.add3 = function(out, a, b, c) {
+    out[0] = a[0] + b[0] + c[0];
+    out[1] = a[1] + b[1] + c[1];
+    return out;
+};
+
+/**
+ * Calculates the shortest projection between a point and a line defined by two vec2's
+ *
+ * @param {vec2} p the point
+ * @param {vec2} a the first operand
+ * @param {vec2} b the second operand
+ * @returns {Number} projection between p and the line defined a and b
+ */
+vec2.projectionToSegment = function(out, p, a, b) {
+  var l2 = vec2.squaredDistance(a, b);
+  if (l2 === 0) return vec2.subtract(out, p, a); // point to line of one point
+  // tangencial projection
+  var t = ((p[0] - a[0]) * (b[0] - a[0]) + (p[1] - a[1]) * (b[1] - a[1])) / l2;
+  if (t < 0) return vec2.subtract(out, p, a); // beyond a
+  if (t > 1) return vec2.subtract(out, p, b); // beyond b
+  // projection within a-b
+  vec2.lerp(out,a,b,t);
+  return vec2.subtract(out, p, out);
+};
+
+/**
+ * Normalize a vec2
+ *
+ * @param {vec2} out the receiving vector
+ * @param {vec2} a vector to normalize
+ * @param {Number} scale the amount to scale a by after normalize
+ * @returns {vec2} out
+ */
+vec2.normalizeAndScale = function(out, a, b) {
+    var x = a[0],
+        y = a[1];
+    var len = x*x + y*y;
+    if (len > 0) {
+        //TODO: evaluate use of glm_invsqrt here?
+        len = b / Math.sqrt(len);
+        out[0] = a[0] * len;
+        out[1] = a[1] * len;
+    }
+    return out;
+};
