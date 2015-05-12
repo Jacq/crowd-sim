@@ -3,24 +3,29 @@
 var Entity = require('./Entity');
 var Vec2 = require('./Vec2');
 
-var Agent = function(group, x, y, size) {
+var Agent = function(group, x, y, size, options) {
   Entity.call(this);
-
+  this.options = Lazy(options).defaults({
+    debug: false
+  }).toObject();
   this.id = Agent.id++;
   this.group = group;
-  this.pos = Vec2.fromValues(x,y);
+  this.pos = Vec2.fromValues(x, y);
   this.vel = Vec2.create();
   this.size = size;
   this.mobility = 1.0;
-  this.behaviour = null; // individual dataset by group
-  this.maxAccel = 0.5; // pixels/seg^2
-  this.maxVel = 1; // pixels/seg  1pix~10m
+  this.behavior = null; // function set by group
+  this.maxAccel = 0.5; // m/s^2
+  this.maxVel = 1; // m/seg
   this.mass = 80e3;
+  if (this.options.debug) {
+    this.debug = {};
+  }
 };
 
 Agent.prototype.followPath = function(index) {
   if (this.group.path) {
-    this.target = this.group.path[index || 0];
+    this.target = this.group.path.wps[index || 0];
     this.pathNextIdx = 1;
   } else {
     this.target = null;
@@ -29,16 +34,19 @@ Agent.prototype.followPath = function(index) {
 };
 
 Agent.prototype.step = function(stepSize) {
-  var accel = this.group.behavior(this);
+  var path = this.group.path;
+  var accel = this.group.behavior.getAccel(this, this.target);
   this.move(accel, stepSize);
+  // update target to next if arrive at current
   if (this.target) {
-    var distToTarget = Vec2.distance(this.pos, this.target);
-    if (this.target < this.path.size) {
-      if (this.path.length < this.pathNextIdex) {
+    var distToTarget = Vec2.distance(this.pos, this.target.pos);
+    if (distToTarget < this.target.radius) {
+      if (this.pathNextIdx < path.wps.length) {
         // follow to next waypoint
-        this.target = this.path[this.pathNextIdx++];
+        this.target = path.wps[this.pathNextIdx++];
       } else {
         // arrived at last!
+        this.pathNextIdx = null;
         this.target = null;
       }
     }

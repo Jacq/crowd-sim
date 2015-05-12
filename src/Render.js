@@ -1,12 +1,18 @@
 'use strict';
 
+var Vec2 = require('./Vec2');
+
 var Colors = {
   Agent: 0xFF0000,
   Wall: 0x00FF00,
   Group: 0xe1eca0,
   Joint: 0xFFFFFF,
   Path: 0xe00c7b,
-  Waypoint: 0x7a7a7a
+  Waypoint: 0x7a7a7a,
+  Forces: {desired: 0xfffff,
+          agents: 0xFF0000,
+          walls: 0xc49220
+          }
 };
 
 var Font = {
@@ -83,6 +89,15 @@ Agent.prototype.render = function() {
       var scale = 10;
       this.graphics.moveTo(e.pos[0], e.pos[1]);
       this.graphics.lineTo(e.pos[0] + e.vel[0], e.pos[1] + e.vel[1]);
+    }
+    if (e.debug && e.debug.forces) {
+      var force = Vec2.create();
+      for (var f in e.debug.forces) {
+        this.graphics.lineStyle(0.1, Colors.Forces[f]);
+        this.graphics.moveTo(e.pos[0], e.pos[1]);
+        Vec2.normalize(force,e.debug.forces[f]);
+        this.graphics.lineTo(e.pos[0] + force[0], e.pos[1] + force[1]);
+      }
     }
   }
 
@@ -174,7 +189,8 @@ var Path = function(path, container) {
   if (wps && wps.length > 0) {
     this.joints = [];
     for (var i in wps) {
-      var circle = new PIXI.Circle(wps[i][0], wps[i][1], path.width);
+      var wp = wps[i];
+      var circle = new PIXI.Circle(wp.pos[0], wp.pos[1], wp.radius);
       this.joints.push(circle);
     }
   }
@@ -194,11 +210,11 @@ Path.prototype.render = function(options) {
     for (var lj = 1; lj < this.joints.length; lj++) {
       this.display.lineTo(this.joints[lj].x, this.joints[lj].y);
     }
-    this.display.beginFill(Colors.Joint);
+    //this.display.beginFill(Colors.Joint);
     for (var j in this.joints) {
       this.display.drawShape(this.joints[j]);
     }
-    this.display.endFill();
+    //this.display.endFill();
 
   }
 };

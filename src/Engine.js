@@ -42,16 +42,21 @@ Engine.prototype.step = function() {
   var timeStepSize = options.timeStepSize;
   var entities = this.world.entities;
   Lazy(entities.agents).each(function(agent) {
+    agent.step(timeStepSize);
     if (agent.selected) {
       world.agentSelected = agent;
       return;
     }
-    agent.step(timeStepSize);
-    if (options.onStep) {
-      options.onStep(world);
-    }
   });
+  Lazy(entities.groups).each(function(group) {
+    group.step(timeStepSize);
+  });
+
   this.iterations++;
+  if (options.onStep) {
+    options.onStep(world);
+  }
+
   if (this.running) {
     var that = this;
     setTimeout(function() {

@@ -4,24 +4,29 @@
 var Entity = require('./Entity');
 var Vec2 = require('./Vec2');
 
-var Agent = function(group, x, y, size) {
+var Agent = function(group, x, y, size, options) {
   Entity.call(this);
-
+  this.options = Lazy(options).defaults({
+    debug: false
+  }).toObject();
   this.id = Agent.id++;
   this.group = group;
-  this.pos = Vec2.fromValues(x,y);
+  this.pos = Vec2.fromValues(x, y);
   this.vel = Vec2.create();
   this.size = size;
   this.mobility = 1.0;
-  this.behaviour = null; // individual dataset by group
-  this.maxAccel = 0.5; // pixels/seg^2
-  this.maxVel = 1; // pixels/seg  1pix~10m
+  this.behavior = null; // function set by group
+  this.maxAccel = 0.5; // m/s^2
+  this.maxVel = 1; // m/seg
   this.mass = 80e3;
+  if (this.options.debug) {
+    this.debug = {};
+  }
 };
 
 Agent.prototype.followPath = function(index) {
   if (this.group.path) {
-    this.target = this.group.path[index || 0];
+    this.target = this.group.path.wps[index || 0];
     this.pathNextIdx = 1;
   } else {
     this.target = null;
@@ -30,16 +35,19 @@ Agent.prototype.followPath = function(index) {
 };
 
 Agent.prototype.step = function(stepSize) {
-  var accel = this.group.behavior(this);
+  var path = this.group.path;
+  var accel = this.group.behavior.getAccel(this, this.target);
   this.move(accel, stepSize);
+  // update target to next if arrive at current
   if (this.target) {
-    var distToTarget = Vec2.distance(this.pos, this.target);
-    if (this.target < this.path.size) {
-      if (this.path.length < this.pathNextIdex) {
+    var distToTarget = Vec2.distance(this.pos, this.target.pos);
+    if (distToTarget < this.target.radius) {
+      if (this.pathNextIdx < path.wps.length) {
         // follow to next waypoint
-        this.target = this.path[this.pathNextIdx++];
+        this.target = path.wps[this.pathNextIdx++];
       } else {
         // arrived at last!
+        this.pathNextIdx = null;
         this.target = null;
       }
     }
@@ -78,7 +86,147 @@ Agent.id = 0;
 
 module.exports = Agent;
 
-},{"./Entity":4,"./Vec2":8}],2:[function(require,module,exports){
+},{"./Entity":5,"./Vec2":9}],2:[function(require,module,exports){
+'use strict';
+
+var Vec2 = require('./Vec2');
+
+/**
+ * Helbing-Farkas,Vicsek Simulating dynamical features of escape panic
+ *
+ * @param  {World} world [description]
+ * @param  {Object} options [description]
+ * {Vec2}       [description]
+ */
+var Panic = function(world, options) {
+  this.options = Lazy(options).defaults({
+    A: 2e3, // N
+    B: 0.08, // m
+    kn: 1.2e5, // kg s-2
+    Kv: 2.4e5, //kg m-1 s-1
+    relaxationTime: 0.3
+  }).toObject();
+  this.world = world;
+};
+
+// path point, point, other agent {point , radius}
+Panic.prototype.getAccel = function(agent, target) {
+  var desiredForce = Vec2.create();
+  var agentsForce = Vec2.create();
+  var wallsForce = Vec2.create();
+  var accel = Vec2.create();
+  var distanceToTarget;
+
+  // check agent desired force
+  Vec2.add(accel, agentsForce, wallsForce);
+  if (target) { // agent is going somewhere?
+    distanceToTarget = Vec2.distance(agent.pos, target.pos);
+    if (distanceToTarget > target.radius) {
+      Vec2.subtract(desiredForce, target.pos, agent.pos);
+      if (Vec2.length(desiredForce) > agent.maxAccel) {
+        Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxAccel * agent.mass);
+      }
+    }
+  }
+
+  // check other agents interaction
+  var neighbours = this.world.getNeighbours(agent);
+  if (neighbours.length) {
+    for (var n in neighbours) {
+      var neighbour = neighbours[n];
+      if (neighbour !== agent) {
+        var neighbourToAgentForce = this.calculateAgentForce(agent, neighbour);
+        Vec2.add(agentsForce, agentsForce, neighbourToAgentForce);
+      }
+    }
+  }
+
+  // check walls interaction
+  var walls = this.world.getNearWalls(agent);
+  if (walls.length > 0) {
+    for (var w in walls) { // check all walls
+      var wall = walls[w];
+      for (var s = 0; s < wall.path.length - 1; s++) { // check each segment of wall
+        var projection = wall.getProjection(agent.pos, s);
+        var wallsToAgentForce = this.calculateWallForce(agent, projection, wall.width);
+        Vec2.add(wallsForce, wallsForce, wallsToAgentForce);
+      }
+    }
+  }
+
+  // fix to stay in place if no target is selected or already at target
+  if (!target || distanceToTarget < target.radius) {
+    Vec2.negate(desiredForce, agent.vel);
+    Vec2.scale(desiredForce, desiredForce, this.options.relaxationTime);
+    if (Vec2.length(desiredForce) > agent.maxAccel) {
+      Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxAccel);
+    }
+  }
+
+  Vec2.add3(accel, desiredForce, agentsForce, wallsForce);
+  // return desiredForce + agentsForce + wallsForce;
+  if (agent.debug) {
+    agent.debug.forces = {
+      desired: desiredForce,
+      agents: agentsForce,
+      walls: wallsForce
+    };
+  }
+  //console.log(Vec2.str(desiredForce) + '|' + Vec2.str(agentsForce) + '|' + Vec2.str(wallsForce));
+  return accel;
+};
+
+Panic.prototype.calculateAgentForce = function(i, j) {
+  var interactionForce = Vec2.create();
+  var rij = i.size + j.size;
+  var dij = Vec2.distance(i.pos, j.pos);
+  // ij direction
+  var nijV2 = Vec2.create();
+  Vec2.subtract(nijV2, i.pos, j.pos);
+  Vec2.scale(nijV2, nijV2, 1 / dij);
+  // ij tangencial direction
+  var tijV2 = Vec2.fromValues(-nijV2[1], nijV2[0]);
+
+  var rdij = rij - dij;
+  Vec2.scale(interactionForce, nijV2, this.options.A * Math.exp(rdij / this.options.B));
+
+  if (rdij > 0) { // agents touch each other
+    // ij tangencial velocity
+    Vec2.scaleAndAdd(interactionForce, interactionForce, nijV2, this.options.kn * rdij); // body force
+    // sliding friction
+    var vjiV2 = Vec2.create();
+    Vec2.subtract(vjiV2, j.vel, i.vel);
+    var deltaVji = Vec2.dot(vjiV2, tijV2);
+    Vec2.scaleAndAdd(interactionForce, interactionForce, tijV2, this.options.Kv * rdij * deltaVji);
+  }
+  return interactionForce;
+};
+
+Panic.prototype.calculateWallForce = function(i, projection, width) {
+  var interactionForce = Vec2.create();
+  var rij = i.size + width;
+  // ij direction
+  var nijV2 = projection;
+  var dij = Vec2.length(projection);
+  Vec2.scale(nijV2, nijV2, 1 / dij);
+  // ij tangencial direction
+  var tijV2 = Vec2.fromValues(-nijV2[1], nijV2[0]);
+
+  var rdij = rij - dij;
+  Vec2.scale(interactionForce, nijV2, this.options.A * Math.exp(rdij / this.options.B));
+  if (rdij > 0) { // agents touch each other
+    // ij tangencial velocity
+    var vjiV2 = Vec2.create();
+    var dotViT = Vec2.dot(i.vel, tijV2);
+    Vec2.scaleAndAdd(interactionForce, interactionForce, nijV2, this.options.kn * rdij); // body force
+    Vec2.scaleAndAdd(interactionForce, interactionForce, tijV2, -this.options.Kv * rdij * dotViT);
+  }
+  return interactionForce;
+};
+
+module.exports.Panic = Panic;
+
+},{"./Vec2":9}],3:[function(require,module,exports){
 /* global window,module, exports : true, define */
 
 var CrowdSim = {
@@ -98,7 +246,7 @@ if (typeof window === 'object' && typeof window.document === 'object') {
   window.CrowdSim = CrowdSim;
 }
 
-},{"./Agent":1,"./Engine":3,"./Group":5,"./Path":6,"./Render":7,"./Wall":9,"./World":10}],3:[function(require,module,exports){
+},{"./Agent":1,"./Engine":4,"./Group":6,"./Path":7,"./Render":8,"./Wall":10,"./World":11}],4:[function(require,module,exports){
 'use strict';
 
 var Engine = function(world, options) {
@@ -143,16 +291,21 @@ Engine.prototype.step = function() {
   var timeStepSize = options.timeStepSize;
   var entities = this.world.entities;
   Lazy(entities.agents).each(function(agent) {
+    agent.step(timeStepSize);
     if (agent.selected) {
       world.agentSelected = agent;
       return;
     }
-    agent.step(timeStepSize);
-    if (options.onStep) {
-      options.onStep(world);
-    }
   });
+  Lazy(entities.groups).each(function(group) {
+    group.step(timeStepSize);
+  });
+
   this.iterations++;
+  if (options.onStep) {
+    options.onStep(world);
+  }
+
   if (this.running) {
     var that = this;
     setTimeout(function() {
@@ -175,7 +328,7 @@ Engine.prototype.reset = function() {
 
 module.exports = Engine;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 
 var Entity = function() {
   this.extra = {};
@@ -183,17 +336,18 @@ var Entity = function() {
 
 module.exports = Entity;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var Agent = require('./Agent');
+var Behavior = require('./Behavior');
 var Entity = require('./Entity');
 var Vec2 = require('./Vec2');
 
 var Group = function(agentsNumber, world, initArea, options) {
   Entity.call(this);
   this._initArea = initArea;
-  options = Lazy(options).defaults({
+  this.options = Lazy(options).defaults({
     pos: function(area) {
       var x = area[0][0] + Math.random() * (area[1][0] - area[0][0]);
       var y = area[0][1] + Math.random() * (area[1][1] - area[0][1]);
@@ -202,34 +356,51 @@ var Group = function(agentsNumber, world, initArea, options) {
     size: function() {
       return 0.5;
     },
-    behavior: this.behaviorRandom,
+    behavior: new Behavior.Panic(world),
+    debug: false,
+    birth: {prob: 0, // births per step
+             rate: 0} // birth probability per step
   }).toObject();
   this.id = Group.id++;
 
-  this.behavior = options.behavior;
+  this.behavior = this.options.behavior;
   this.world = world;
-  this.step = 1.0;
-  var that = this;
   this.agents = [];
-  for (var i = 0; i < agentsNumber; i++) {
-    var pos = options.pos(initArea);
-    var size = isNaN(options.size) ? options.size() : options.size;
-    var agent = new Agent(that, pos[0], pos[1], size);
-    this.agents.push(agent);
-  }
 
-  if (options) {
-    if (options.path) {
-      this.assignPath(options.path);
-    }
-  }
+  var newAgents = this.generateAgents(agentsNumber);
+  this.agents = this.agents.concat(newAgents);
 
+  if (this.options.path) {
+    this.assignPath(options.path);
+  }
 };
 
 Group.prototype.assignPath = function(path) {
+  this.path = path;
   for (var i  in this.agents) {
     this.agents[i].followPath();
   }
+};
+
+Group.prototype.generateAgents = function(agentsNumber, initArea) {
+  if (!initArea) {
+    initArea = this._initArea;
+  }
+  var newAgents = [];
+  for (var i = 0; i < agentsNumber; i++) {
+    var pos = this.options.pos(this._initArea);
+    var size = isNaN(this.options.size) ? this.options.size() : this.options.size;
+    var agent = new Agent(this, pos[0], pos[1], size, {debug: this.options.debug});
+    agent.followPath();
+    newAgents.push(agent);
+  }
+  return newAgents;
+};
+
+Group.prototype.addAgents = function(agentsNumber, initArea) {
+  var newAgents = this.generateAgents(agentsNumber);
+
+  this.world.addAgents(newAgents);
 };
 
 Group.prototype.addAgent = function(x, y) {
@@ -259,150 +430,46 @@ Group.prototype.addAgent = function(agent) {
   this.agents.concat(agent);
 };
 
-/**
- * Helbing-Farkas,Vicsek Simulating dynamical features of escape panic
- *
- * @param  {Agent} agent [description]
- * {Vec2}       [description]
- */
-Group.prototype.behaviorRandom = function(agent) {
-  var desiredForce = Vec2.create();
-  var agentsForce = Vec2.create();
-  var wallsForce = Vec2.create();
-  var accel = Vec2.create();
-
-  // check other agents interaction
-  var neighbours = this.world.getNeighbours(agent);
-  if (neighbours.length) {
-    for (var n in neighbours) {
-      var neighbour = neighbours[n];
-      if (neighbour !== agent) {
-        var neighbourToAgentForce = this.calculateAgentForce(agent, neighbour);
-        Vec2.add(agentsForce, agentsForce, neighbourToAgentForce);
-      }
+Group.prototype.step = function() {
+  var birth = this.options.birth;
+  if (birth && birth.rate > 0 && birth.prob > 0) {
+    var prob = Math.random();
+    if (prob < birth.prob) {
+      this.addAgents(birth.rate);
     }
   }
-
-  // check walls interaction
-  var walls = this.world.getNearWalls(agent);
-  if (walls.length > 0) {
-    for (var w in walls) { // check all walls
-      var wall = walls[w];
-      for (var s = 0; s < wall.path.length - 1; s++) { // check each segment of wall
-        var projection = wall.getProjection(agent.pos, s);
-        var wallsToAgentForce = this.calculateWallForce(agent, projection, wall.width);
-        Vec2.add(wallsForce, wallsForce, wallsToAgentForce);
-      }
-    }
-  }
-
-  // check agent desired force
-  Vec2.add(accel, agentsForce, wallsForce);
-  if (agent.target) { // agent is going somewhere?
-    var pos = agent.pos;
-    var target = agent.target; // path point, point, other agent {point , radius}
-    var distanceToTarget = Vec2.distance(agent.pos, target.point);
-    if (distanceToTarget > target.radius) {
-      desiredForce = Vec2.create();
-      Vec2.subtract(desiredForce, target.point, agent.pos);
-      Vec2.normalize(desiredForce, desiredForce);
-    }
-  } else {
-    // fix to stay in place if no target is selected
-    Vec2.negate(desiredForce, agent.vel);
-    if (Vec2.length(desiredForce) > agent.maxVel) {
-      Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxVel);
-    }
-  }
-
-  Vec2.add(accel, accel, desiredForce);
-  // return desiredForce + agentsForce + wallsForce;
-  if (agent.debug) {
-    agent.debug.desiredForce = desiredForce;
-    agent.debug.agentsForce = agentsForce;
-    agent.debug.wallsForce = wallsForce;
-  }
-  //console.log(Vec2.str(desiredForce) + '|' + Vec2.str(agentsForce) + '|' + Vec2.str(wallsForce));
-  return accel;
-};
-var A = 2e3, // N
-  B = 0.08, // m
-  kn = 1.2e5, // kg s-2
-  Kv = 2.4e5; //kg m-1 s-1
-
-Group.prototype.calculateAgentForce = function(i, j) {
-  var interactionForce = Vec2.create();
-  var rij = i.size + j.size;
-  var dij = Vec2.distance(i.pos, j.pos);
-  // ij direction
-  var nijV2 = Vec2.create();
-  Vec2.subtract(nijV2, i.pos, j.pos);
-  Vec2.scale(nijV2, nijV2, 1 / dij);
-  // ij tangencial direction
-  var tijV2 = Vec2.fromValues(-nijV2[1], nijV2[0]);
-
-  var rdij = rij - dij;
-  Vec2.scale(interactionForce, nijV2, A * Math.exp(rdij * B));
-
-  if (rdij > 0) { // agents touch each other
-    // ij tangencial velocity
-    Vec2.scaleAndAdd(interactionForce,interactionForce, nijV2, kn * rdij); // body force
-    // sliding friction
-    var vjiV2 = Vec2.create();
-    Vec2.subtract(vjiV2, j.vel, i.vel);
-    var deltaVji = Vec2.dot(vjiV2, tijV2);
-    Vec2.scaleAndAdd(interactionForce,interactionForce, tijV2, Kv * rdij * deltaVji);
-  }
-  return interactionForce;
-};
-
-Group.prototype.calculateWallForce = function(i, projection, width) {
-  var interactionForce = Vec2.create();
-  var rij = i.size + width;
-  // ij direction
-  var nijV2 = projection;
-  var dij = Vec2.length(projection);
-  Vec2.scale(nijV2, nijV2, 1 / dij);
-  // ij tangencial direction
-  var tijV2 = Vec2.fromValues(-nijV2[1], nijV2[0]);
-
-  var rdij = rij - dij;
-  Vec2.scale(interactionForce, nijV2, A * Math.exp(rdij * B));
-  if (rdij > 0) { // agents touch each other
-    // ij tangencial velocity
-    var vjiV2 = Vec2.create();
-    var dotViT = Vec2.dot(i.vel, tijV2);
-    Vec2.scaleAndAdd(interactionForce,interactionForce, nijV2, kn * rdij); // body force
-    Vec2.scaleAndAdd(interactionForce,interactionForce, tijV2, -Kv * rdij * dotViT);
-  }
-  return interactionForce;
 };
 
 Group.id = 0;
 
 module.exports = Group;
 
-},{"./Agent":1,"./Entity":4,"./Vec2":8}],6:[function(require,module,exports){
+},{"./Agent":1,"./Behavior":2,"./Entity":5,"./Vec2":9}],7:[function(require,module,exports){
 'use strict';
 
 var Entity = require('./Entity');
 
-var Path = function(waypoints, width) {
+var Path = function(waypoints) {
   Entity.call(this);
   if (!waypoints || waypoints.length < 2) {
     throw 'Waypoints must have at least two points';
   }
   this.id = Path.id++;
   this.wps = waypoints;
-  this.width = width || 0.2;
+};
+
+Path.prototype.reverse = function() {
+  this.wps = Lazy(this.wps).reverse().toArray();
 };
 
 Path.id = 0;
 
 module.exports = Path;
 
-},{"./Entity":4}],7:[function(require,module,exports){
+},{"./Entity":5}],8:[function(require,module,exports){
 'use strict';
+
+var Vec2 = require('./Vec2');
 
 var Colors = {
   Agent: 0xFF0000,
@@ -410,7 +477,11 @@ var Colors = {
   Group: 0xe1eca0,
   Joint: 0xFFFFFF,
   Path: 0xe00c7b,
-  Waypoint: 0x7a7a7a
+  Waypoint: 0x7a7a7a,
+  Forces: {desired: 0xfffff,
+          agents: 0xFF0000,
+          walls: 0xc49220
+          }
 };
 
 var Font = {
@@ -487,6 +558,15 @@ Agent.prototype.render = function() {
       var scale = 10;
       this.graphics.moveTo(e.pos[0], e.pos[1]);
       this.graphics.lineTo(e.pos[0] + e.vel[0], e.pos[1] + e.vel[1]);
+    }
+    if (e.debug && e.debug.forces) {
+      var force = Vec2.create();
+      for (var f in e.debug.forces) {
+        this.graphics.lineStyle(0.1, Colors.Forces[f]);
+        this.graphics.moveTo(e.pos[0], e.pos[1]);
+        Vec2.normalize(force,e.debug.forces[f]);
+        this.graphics.lineTo(e.pos[0] + force[0], e.pos[1] + force[1]);
+      }
     }
   }
 
@@ -578,7 +658,8 @@ var Path = function(path, container) {
   if (wps && wps.length > 0) {
     this.joints = [];
     for (var i in wps) {
-      var circle = new PIXI.Circle(wps[i][0], wps[i][1], path.width);
+      var wp = wps[i];
+      var circle = new PIXI.Circle(wp.pos[0], wp.pos[1], wp.radius);
       this.joints.push(circle);
     }
   }
@@ -598,11 +679,11 @@ Path.prototype.render = function(options) {
     for (var lj = 1; lj < this.joints.length; lj++) {
       this.display.lineTo(this.joints[lj].x, this.joints[lj].y);
     }
-    this.display.beginFill(Colors.Joint);
+    //this.display.beginFill(Colors.Joint);
     for (var j in this.joints) {
       this.display.drawShape(this.joints[j]);
     }
-    this.display.endFill();
+    //this.display.endFill();
 
   }
 };
@@ -614,7 +695,7 @@ module.exports.Agent = Agent;
 module.exports.Wall = Wall;
 module.exports.Group = Group;
 
-},{}],8:[function(require,module,exports){
+},{"./Vec2":9}],9:[function(require,module,exports){
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1226,7 +1307,7 @@ vec2.normalizeAndScale = function(out, a, b) {
     return out;
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 var Entity = require('./Entity');
 var Vec2 = require('./Vec2');
@@ -1250,13 +1331,14 @@ Wall.prototype.getProjection = function(point, segment) {
 
 module.exports = Wall;
 
-},{"./Entity":4,"./Vec2":8}],10:[function(require,module,exports){
+},{"./Entity":5,"./Vec2":9}],11:[function(require,module,exports){
 'use strict';
-/* global window,module, exports : true, define */
+/* global CrowdSim */
 
 var World = function(x1, y1, x2, y2) {
+  var that = this;
   this.entities = {
-    groups: [new CrowdSim.Group(this,0)],
+    groups: [new CrowdSim.Group(0, that)],
     agents: [],
     walls: [],
     paths: []
@@ -1269,12 +1351,17 @@ var World = function(x1, y1, x2, y2) {
 };
 
 World.prototype.getDefaultGroup = function() {
-  return this.entities.groups.first();
+  return this.entities.groups[0];
 };
 
 World.prototype.addGroup = function(group) {
   this.entities.groups = this.entities.groups.concat(group);
-  this.entities.agents = this.entities.agents.concat(group.agents);
+  group.onNewAgents = this.onNewAgents;
+  this.addAgents(group.agents);
+};
+
+World.prototype.addAgents = function(agents) {
+  this.entities.agents = this.entities.agents.concat(agents);
 };
 
 World.prototype.addWall = function(wall) {
@@ -1302,7 +1389,7 @@ World.prototype.getNearWalls = function(agent) {
 
 module.exports = World;
 
-},{}]},{},[2])
+},{}]},{},[3])
 
 
 //# sourceMappingURL=CrowdSim.js.map
