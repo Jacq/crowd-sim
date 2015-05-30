@@ -5,31 +5,29 @@ var Behavior = require('./Behavior');
 var Entity = require('./Entity');
 var Vec2 = require('./Vec2');
 
-var Group = function(agentsNumber, world, initArea, options) {
+var Group = function(agentsNumber, world, startContext, endContext, options) {
   Entity.call(this);
-  this._initArea = initArea;
+  this._startContext = startContext;
+  this._endContext = endContext;
   this.options = Lazy(options).defaults({
-    pos: function(area) {
-      var x = area[0][0] + Math.random() * (area[1][0] - area[0][0]);
-      var y = area[0][1] + Math.random() * (area[1][1] - area[0][1]);
-      return Vec2.fromValues(x, y);
-    },
+    pos: startContext.getRandomPoint.bind(startContext),
     size: function() {
       return 0.5;
     },
     behavior: new Behavior.Panic(world),
     debug: false,
-    birth: {prob: 0, // births per step
-             rate: 0} // birth probability per step
+    start: {prob: 0, // Adds agents per step in startContext
+            rate: 0, // Adds agents probability per step in startContext
+            max: 100},
+    end: {prob: 0, // Removes agents per step in endContext
+          rate: 0} // Removes agents probability per step in endContext
   }).toObject();
   this.id = Group.id++;
 
   this.behavior = this.options.behavior;
   this.world = world;
   this.agents = [];
-
-  var newAgents = this.generateAgents(agentsNumber);
-  this.agents = this.agents.concat(newAgents);
+  this.agentsNumber = agentsNumber;
 
   if (this.options.path) {
     this.assignPath(options.path);
@@ -43,13 +41,13 @@ Group.prototype.assignPath = function(path) {
   }
 };
 
-Group.prototype.generateAgents = function(agentsNumber, initArea) {
-  if (!initArea) {
-    initArea = this._initArea;
+Group.prototype.generateAgents = function(agentsNumber, startContext) {
+  if (!startContext) {
+    startContext = this._startContext;
   }
   var newAgents = [];
   for (var i = 0; i < agentsNumber; i++) {
-    var pos = this.options.pos(this._initArea);
+    var pos = isNaN(this.options.pos) ? this.options.pos() : this.options.pos;
     var size = isNaN(this.options.size) ? this.options.size() : this.options.size;
     var agent = new Agent(this, pos[0], pos[1], size, {debug: this.options.debug});
     agent.followPath();
@@ -58,10 +56,18 @@ Group.prototype.generateAgents = function(agentsNumber, initArea) {
   return newAgents;
 };
 
-Group.prototype.addAgents = function(agentsNumber, initArea) {
+Group.prototype.addAgents = function(agentsNumber) {
   var newAgents = this.generateAgents(agentsNumber);
-
+  this.agents = this.agents.concat(newAgents);
   this.world.addAgents(newAgents);
+};
+
+Group.prototype.removeAgents = function(agents) {
+  for (var i in agents) {
+    var j = this.agents.indexOf(agents[i]);
+    this.agents.splice(j,1);
+  }
+  this.world.removeAgents(agents);
 };
 
 Group.prototype.addAgent = function(x, y) {
@@ -70,11 +76,11 @@ Group.prototype.addAgent = function(x, y) {
   this.agents.push(agent);
 };
 
-Group.prototype.getInitArea = function() {
-  return this._initArea;
+Group.prototype.getstartContext = function() {
+  return this._startContext;
 };
 
-Group.prototype.getArea = function() {
+Group.prototype.getContext = function() {
   return [
     Vec2.fromValues(
       Lazy(this.agents).map(function(e) { return e.pos[0] - e.size; }).min(),
@@ -92,11 +98,29 @@ Group.prototype.addAgent = function(agent) {
 };
 
 Group.prototype.step = function() {
-  var birth = this.options.birth;
-  if (birth && birth.rate > 0 && birth.prob > 0) {
-    var prob = Math.random();
-    if (prob < birth.prob) {
-      this.addAgents(birth.rate);
+  if (this.agents.length === 0) {
+    this.addAgents(this.agentsNumber);
+  }
+
+  var start = this.options.start;
+  if (start && start.rate > 0 && start.prob > 0 && this.agents.length < start.max) {
+    var probBirth = Math.random();
+    if (probBirth < start.prob) {
+      var rate = start.rate ;
+      if (start.rate + this.agents.length > start.max) {
+        rate = start.max;
+      }
+      this.addAgents(rate);
+    }
+  }
+  if (this._endContext) {
+    var end = this.options.end;
+    var agentsIn = this.world.agentsInContext(this._endContext,this.agents);
+    if (agentsIn.length > 0 && end && end.rate > 0 && end.prob > 0) {
+      var probDie = Math.random();
+      if (probDie < end.prob) {
+        this.removeAgents(agentsIn);
+      }
     }
   }
 };

@@ -129,32 +129,20 @@
     function keydown(event) {
       var render = CrowdSim.Render;
       switch (event.keyCode) { // ctrlKey shiftKey
+        case 32: // a
+          CrowdSimApp.run();
+          break;
         case 65: // a
-          if (event.ctrlKey) {
-            render.Agent.show.body = !render.Agent.show.body;
-          }else if (event.shiftKey) {
-            render.Agent.show.direction = !render.Agent.show.direction;
-          }else {
-            render.Agent.show.all = !render.Agent.show.all;
-          }
+          render.Agent.detail.cycleDetail();
           break;
         case 71: // g
-          if (event.ctrlKey) {
-            render.Group.show.area = !render.Group.show.area;
-          }else if (event.shiftKey) {
-            render.Group.show.joints = !render.Group.show.joints;
-          }else {
-            render.Group.show.all = !render.Group.show.all;
-          }
+          render.Group.detail.cycleDetail();
+          break;
+        case 80: // w
+          render.Path.detail.cycleDetail();
           break;
         case 87: // w
-          if (event.ctrlKey) {
-            render.Wall.show.path = !render.Wall.show.path;
-          }else if (event.shiftKey) {
-            render.Wall.show.corners = !render.Wall.show.corners;
-          }else {
-            render.Wall.show.all = !render.Wall.show.all;
-          }
+          render.Wall.detail.cycleDetail();
           break;
         case 107: // w
           CrowdSimApp.zoom(1.1);
@@ -242,7 +230,6 @@
   };
 
   Editor.init();
-  Editor.onClick.start();
   return Editor;
 })();
 
