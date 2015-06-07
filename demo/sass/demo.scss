@@ -1,5 +1,7 @@
 
 
+$btn-size : 14px;
+
 html, body {
   height: 100%;
 }
@@ -7,12 +9,11 @@ canvas {
   display: block;
 }
 
-button {
+button,.btn {
   text-align: center;
-  $size : 14px;
-  font-size:$size;
-  width: $size+5px;
-  height: $size+5px;
+  font-size:$btn-size;
+  width: $btn-size+5px;
+  height: $btn-size+5px;
   margin: 2px;
   border: 1px solid black;
   padding: 0;
@@ -57,4 +58,9 @@ button {
 }
 .console ul li {
   display: inline;
+}
+
+
+.btn-2x {
+  width : 2*$btn-size;
 }

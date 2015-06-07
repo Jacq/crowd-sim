@@ -1,3 +1,7 @@
+/**
+ * Ref: https://github.com/johnpapa/gulp-patterns
+ */
+
 /*
  * Dependencias
  */
@@ -22,11 +26,11 @@ gulp.task('help', $.taskListing);
 gulp.task('default', ['help']);
 
 /**
- * @description Remove all files from the build, temp, and reports folders
+ * @description Remove all files from the lib, dist, and reports folders
  * @param  {Function} done - callback when complete
  */
 gulp.task('clean', function(done) {
-  var delconfig = [config.dist, config.report];
+  var delconfig = [].concat(config.js.lib, config.js.dist, config.report);
   log('Cleaning: ' + $.util.colors.blue(delconfig));
   del(delconfig, done);
 });
@@ -36,9 +40,7 @@ gulp.task('clean', function(done) {
  * @param  {Function} done - callback when complete
  */
 gulp.task('clean-styles', function(done) {
-  var files = [].concat(
-      config.demo + 'css/**/*.css'
-  );
+  var files = [].concat(config.demo + 'css/**/*.css');
   clean(files, done);
 });
 
@@ -47,9 +49,7 @@ gulp.task('clean-styles', function(done) {
  * @param  {Function} done - callback when complete
  */
 gulp.task('clean-code', function(done) {
-  var files = [].concat(
-      config.dist + 'js/**/*.js'
-  );
+  var files = [].concat([config.js.dist, config.js.lib]);
   clean(files, done);
 });
 
@@ -61,40 +61,71 @@ gulp.task('vet', function() {
   var vetsource = [config.js.src, config.js.demo];
   log('Analyzing source with JSHint and JSCS: ' + $.util.colors.blue(vetsource));
   return gulp
-      .src(vetsource)
-      //.pipe($.plumber())
-      .pipe($.if(args.verbose, $.print()))
-      .pipe($.jshint())
-      .pipe($.jshint.reporter('jshint-stylish', {verbose: true}))
-      .pipe($.jshint.reporter('fail'))
-      .pipe($.jscs());
+    .src(vetsource)
+    //.pipe($.plumber())
+    .pipe($.if(args.verbose, $.print()))
+    .pipe($.jshint())
+    .pipe($.jshint.reporter('jshint-stylish', {verbose: true}))
+    .pipe($.jshint.reporter('fail'))
+    .pipe($.jscs());
 });
 
-gulp.task('styles' , function() {
+/**
+ * @description Sass to css demo compiling
+ * @return {Stream}
+ */
+gulp.task('styles', function() {
   log('Compiling SASS ==> CSS');
   return gulp.src(config.sass)
     .pipe($.sass())
-    //.on('error', errorLogger) // more verbose and dupe output. requires emit.
+    .on('error', errorLogger) // more verbose and dupe output. requires emit.
     .pipe($.autoprefixer({browsers: ['last 2 version', '> 5%']}))
     .pipe(gulp.dest(config.css));
 });
 
+/**
+ * @description Triggers sass compiling, used mainly in dev
+ */
 gulp.task('sass-watcher', function() {
   gulp.watch([config.sass], ['styles']);
 });
 
-gulp.task('inject', ['styles'], function() {
+/**
+ * @description Integrates main bower dependencies into the demo js lib folder
+ * @return {Stream}
+ */
+gulp.task('bower', function() {
+  var jsFilter = $.filter(['*.js', '*.map']);
+  var cssFilter = $.filter(['*.css']);
+  var fontsFilter = $.filter(['*.eot', '*.svg', '*.ttf', '*.woff', '*.woff2']);
+  return gulp.src(bowerFiles())
+    .pipe(jsFilter)
+    .pipe(gulp.dest(config.lib))
+    .pipe(jsFilter.restore())
+    .pipe(cssFilter)
+    .pipe(gulp.dest(config.css))
+    .pipe(cssFilter.restore())
+    .pipe(fontsFilter)
+    .pipe(gulp.dest(config.fonts))
+    .pipe(fontsFilter.restore());
+});
+
+/**
+ * @description Injects css styles and js,js/lib files into main index, used to add new dependecies and releasing
+ * @return {Stream}
+ */
+gulp.task('inject', ['styles','bower','bundle-lib'], function() {
   log('Wiring the bower dependencies, js and css into the html');
 
-  return gulp
-      .src(config.index)
-      //.pipe($.inject(gulp.src(config.lib, {read: false})))
-      .pipe($.inject(gulp.src(bowerFiles(), {read: false}), {relative: true, name: 'bower'}))
-      .pipe($.inject(gulp.src(config.js.demo, {read: false}), {relative: true, name: 'demo'}))
-      .pipe($.inject(gulp.src(config.js.dist, {read: false}), {relative: true, name: 'lib'}))
-      .pipe($.inject(gulp.src(config.css + 'demo.css', {read: false}),{relative: true}))
-      //.pipe($.inject(gulp.src(config.js.demo, {read: false}), {name: 'demo'}))
-      .pipe(gulp.dest(config.demo));
+  return gulp.src(config.index)
+    //.pipe($.inject(gulp.src(config.lib, {read: false})))
+    .pipe($.inject(gulp.src(['!' + config.lib + config.main, config.js.lib], {read: false}), {relative: true, name: 'bower'}))
+    .pipe($.inject(gulp.src(config.lib + config.main, {read: false}), {relative: true, name: 'lib'}))
+    .pipe($.inject(gulp.src(config.js.demo, {read: false}), {relative: true, name: 'demo'}))
+    .pipe($.inject(gulp.src(['!' + config.css + '/demo.css', config.css + '**/*.css'], {read: false}), {relative: true, name: 'bower'}))
+    .pipe($.inject(gulp.src(config.css + 'demo.css', {read: false}), {relative: true, name: 'demo'}))
+    //.pipe($.inject(gulp.src(config.js.demo, {read: false}), {name: 'demo'}))
+    .pipe(gulp.dest(config.demo));
 });
 
 gulp.task('test', function(done) {
@@ -106,89 +137,130 @@ gulp.task('test', function(done) {
   server.start(options, done);
 });
 
-gulp.task('build', function() {
-  log('Building bundle from ' + config.srcMain + ' into ' + config.dist + config.main);
-  doBrowserify(config.main, browserify(config.srcMain))
-    .pipe(gulp.dest(config.dist));
+/**
+ * @description Build task to build everything into the demo lib and dist folders, use for releasing
+ */
+gulp.task('build', ['clean', 'inject'], function() {
+  log('Clean bundle src ' + config.srcMain + ' into ' + config.dist + config.main + ' and ' + config.lib + config.main);
+  // same as dev but without triggering watchify, TODO minification of jss/css
 });
 
-// http://noxoc.de/2014/06/25/reload-gulpfile-js-on-change/
+/**
+ * @description Bundle src code into the demo folder, for use during dev
+ */
+gulp.task('bundle-lib', function(done) {
+  log('Building bundle' + config.srcMain + ' into ' + config.dist + config.main + ' and ' + config.lib + config.main);
+  return doBrowserify(config.main, browserify(config.browserify.opts))
+    .pipe(gulp.dest(config.dist))
+    .pipe(gulp.dest(config.lib));
+});
+
+/**
+ * @description Main dev tast to trigger browserify builds on js file changes an sass compile on css changes
+ */
+gulp.task('dev', ['clean', 'inject'], function() {
+  var port = 8080;
+  gulp.watch([config.sass], ['styles'])
+    .on('change', changeEvent);
+
+  log('Starting BrowserSync on port ' + port);
+  var options = {
+    //proxy: 'localhost:' + port,
+    server: {
+      baseDir: './',
+      index: config.index,
+      routes: {
+        '/fonts': config.fonts,
+        '/src': config.src,
+        '/css': config.css,
+        '/img': config.img,
+        '/js': config.demo + 'js/',
+      }
+    },
+    port: 3000,
+    files: [
+      config.demo + '**/*.*',
+      '!' + config.sass
+    ],
+    ghostMode: { // these are the defaults t,f,t,t
+      clicks: true,
+      location: false,
+      forms: true,
+      scroll: true
+    },
+    open: args.noopen ? false : true,
+    injectChanges: true,
+    logFileChanges: true,
+    logLevel: 'debug',
+    logPrefix: 'crowd-sim',
+    notify: true,
+    reloadDelay: 1000
+  };
+  browserSync(options);
+  setupWatchify(config.main, config.browserify.opts);
+});
+
+/**
+ * @description Setups watchify to rebuild bundles on js file changes
+ *
+ * @param  {String} main    name of the bundle file to create
+ * @param  {Object} options Browserify options
+ */
+function setupWatchify(main, options) {
+  var opts = assign({}, watchify.args, options);
+  var w = watchify(browserify(opts));
+  w.on('update', function() {
+    doBrowserify(main, w)
+    .pipe(gulp.dest(config.lib));
+    browserSync.notify('reloading ' + main + ' now ...');
+    //browserSync.reload();
+  });
+  w.on('log', $.util.log);
+  w.bundle().on('data', function() {});
+}
+
+/**
+ * @description Bundles given src stream into a pipe
+ *
+ * @param  {String} filename name of the bundle file to create
+ * @param  {Stream} b        bundle stream that contains the src to bunble
+ * @return {Stream}          bundle stream result, use in other thats to create multiple copies with gulp.dest
+ */
+function doBrowserify(filename, b) {
+  return b.bundle()
+    .on('error', $.util.log.bind($.util, 'Browserify Error'))
+    //.pipe($.plumber())
+    .pipe(source(filename))
+    .pipe(buffer())
+    .pipe($.sourcemaps.init({
+      loadMaps: true
+    })) // loads map from browserify file
+    .pipe($.sourcemaps.write('./')); // writes .map file;
+}
+
+/**
+ * @description Task to restart gulp dev on gulpfile.js, needs testing. Ref: http://noxoc.de/2014/06/25/reload-gulpfile-js-on-change/
+ */
 gulp.task('dev-gulp', function() {
   var process;
+
   function restart() {
     log('Restarting gulp');
-    if (process) {
-      process.kill();
-    }
+    if (process) { process.kill(); }
     process = spawn('gulp', ['dev'], {stdio: 'inherit'});
   }
   gulp.watch(__filename, restart);
   restart();
 });
 
-gulp.task('dev', ['clean', 'inject', 'build'], function() {
-  var port = 8080;
-  gulp.watch([config.sass], ['styles'])
-    .on('change', changeEvent);
-
-  log('Starting BrowserSync on port ' + port);
-
-  var options = {
-      //proxy: 'localhost:' + port,
-      server: {
-        baseDir: './',
-        index: config.index,
-        routes: {
-          '/css': config.css,
-          '/img': config.img,
-          '/js': config.demo + 'js/',
-        }
-      },
-      port: 3000,
-      files: [
-          config.demo + '**/*.*',
-          config.src + '**/*.*',
-          '!' + config.sass
-        ],
-      ghostMode: { // these are the defaults t,f,t,t
-        clicks: true,
-        location: false,
-        forms: true,
-        scroll: true
-      },
-      injectChanges: true,
-      logFileChanges: true,
-      logLevel: 'debug',
-      logPrefix: 'crowd-sim',
-      notify: true,
-      reloadDelay: 1000
-    } ;
-  browserSync(options);
-  var w = setupWatchify(config.main, config.watchify.opts);
-  doBrowserify(config.main, w);
-});
-
-function setupWatchify(main, options) {
-  var opts = assign({}, watchify.args, options);
-  var w = watchify(browserify(opts));
-  w.on('update', function() {
-    doBrowserify(main, w);
-    browserSync.notify('reloading ' + main + ' now ...');
-    browserSync.reload();
-  });
-  w.on('log', $.util.log);
-  return w;
-}
-
-function doBrowserify(mainFile, b) {
-  return b.bundle()
-  .on('error', $.util.log.bind($.util, 'Browserify Error'))
-  //.pipe($.plumber())
-  .pipe(source(mainFile))
-  .pipe(buffer())
-  .pipe($.sourcemaps.init({loadMaps: true})) // loads map from browserify file
-  .pipe($.sourcemaps.write('./' ,{sourceRoot: '.'})) // writes .map file
-  .pipe(gulp.dest(config.dist));
+/**
+ * Log an error message and emit the end of a task
+ */
+function errorLogger(error) {
+  log('*** Start of Error ***');
+  log(error);
+  log('*** End of Error ***');
+  this.emit('end');
 }
 
 /**
@@ -207,7 +279,7 @@ function changeEvent(event) {
  */
 function clean(path, done) {
   log('Cleaning: ' + $.util.colors.blue(path));
-  del(path, done);
+  del(path,done);
 }
 
 /**

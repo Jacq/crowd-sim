@@ -1,5 +1,7 @@
 'use strict';
 
+//var $ = jQuery =
+
 var Engine = function(world, options) {
   this.running = false;
   this.iterations = 0;
@@ -26,17 +28,18 @@ Engine.prototype.run = function() {
     return;
   }
   this.running = true;
-  this.step();
+  this._step();
+  return this.running;
 };
 
 Engine.prototype.step = function() {
   if (this.running) {
     return;
   }
-  this.step();
+  this._step();
 };
 
-Engine.prototype.step = function() {
+Engine.prototype._step = function() {
   var world = this.world;
   var options = this.options;
   var timeStepSize = options.timeStepSize;
@@ -60,7 +63,7 @@ Engine.prototype.step = function() {
   if (this.running) {
     var that = this;
     setTimeout(function() {
-      that.step();
+      that._step();
     }, options.timeStepRun * 1000);
   }
 };
@@ -70,6 +73,7 @@ Engine.prototype.stop = function() {
     return;
   }
   this.running = false;
+  return this.running;
 };
 Engine.prototype.reset = function() {
   this.iterations = 0;

@@ -6,8 +6,11 @@
   <title>Demo</title>
   <!-- build:css css/vendor.css -->
   <!-- bower:css -->
-  <link rel="stylesheet" href="../bower_components/normalize.css/normalize.css">
-  <link rel="stylesheet" href="../bower_components/components-font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="css/font-awesome.css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <!-- endinject -->
+  <!-- demo:css -->
+  <link rel="stylesheet" href="css/demo.css">
   <!-- endinject -->
   <!-- endbuild -->
 
@@ -45,10 +48,8 @@
     Run
     <ul>
       <li>
-        <button id="start"><i class="fa fa-play" title="Start"></i></button>
-      </li>
-      <li>
-        <button id="stop"><i class="fa fa-stop" title="Stop"></i></button>
+        <button id="run" class="btn-2x"><i class="fa fa-play" title="Run"></i></button>
+        <button id="stop" class="btn-2x hide"><i class="fa fa-stop" title="Stop"></i></button>
       </li>
       <li>
         <button id="step"><i class="fa fa-step-forward" title="Step"></i></button>
@@ -104,18 +105,17 @@
   <footer>
 
   </footer>
-  <!-- build:js js/Vendor.js -->
-  <!-- bower:js -->
-  <script src="../bower_components/pixi.js/bin/pixi.js"></script>
-  <script src="../bower_components/lazy.js/lazy.js"></script>
-  <script src="../bower_components/gl-matrix/dist/gl-matrix-min.js"></script>
-  <script src="../bower_components/stats.js/build/stats.min.js"></script>
-  <!-- endinject -->
-  <!-- endbuild -->
 
   <!-- build:js js/CrowdSim.js-->
+  <!-- bower:js -->
+  <script src="js/lib/jquery.min.js"></script>
+  <script src="js/lib/jquery.mousewheel.min.js"></script>
+  <script src="js/lib/lazy.min.js"></script>
+  <script src="js/lib/pixi.min.js"></script>
+  <script src="js/lib/stats.min.js"></script>
+  <!-- endinject -->
   <!-- lib:js -->
-  <script src="../dist/CrowdSim.js"></script>
+  <script src="js/lib/CrowdSim.js"></script>
   <!-- endinject -->
   <!-- demo:js -->
   <script src="js/CrowdSimApp.js"></script>

@@ -16,16 +16,19 @@ module.exports = function() {
   srcMain: srcMain,
   sass: demo + 'sass/**/*.scss',
   css: demo + 'css/',
+  fonts: demo + 'fonts/',
   img: demo + 'img/',
   index: demo + 'index.html',
+  lib: demo + 'js/lib/',
   js: {
     src: src + '**/*.js',
     demo: demo + 'js/*.js',
-    dist: dist + '**/*.js'
+    lib: demo + 'js/lib/*.js',
+    dist: dist + 'js/**/*.js'
   },
   bower: bowerrc,
   report: './report/',
-  watchify: {
+  browserify: {
     opts: {
       entries: [srcMain],
       debug: true

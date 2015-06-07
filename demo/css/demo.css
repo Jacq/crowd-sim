@@ -4,7 +4,7 @@ html, body {
 canvas {
   display: block; }
 
-button {
+button, .btn {
   text-align: center;
   font-size: 14px;
   width: 19px;
@@ -12,7 +12,7 @@ button {
   margin: 2px;
   border: 1px solid black;
   padding: 0; }
-  button:active {
+  button:active, .btn:active {
     background-color: gray; }
 
 .info_panel {
@@ -49,3 +49,6 @@ button {
 
 .console ul li {
   display: inline; }
+
+.btn-2x {
+  width: 28px; }

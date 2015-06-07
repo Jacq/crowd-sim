@@ -199,7 +199,6 @@ var CrowdSimApp = (function() {
     var baseTextures = PIXI.Texture.fromImage('img/flt.png');
     App._agentTexture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(26, 16, 51, 36));
 
-    App.running = false;
     App._worldContainer.removeChildren();
     App._agentsContainer.removeChildren();
     // init debug container
@@ -212,18 +211,28 @@ var CrowdSimApp = (function() {
     // to draw everything
     //App._renderOnce();
     requestAnimationFrame(App._render);
-    App.running = true;
+  };
+
+  App.toggleRun = function() {
+    if (App.isRunning()) {
+      return App.stop();
+    } else {
+      return App.run();
+    }
+  };
+
+  App.isRunning = function() {
+    return App._engine.running;
   };
 
   App.run = function() {
-    App._engine.run();
-    //requestAnimationFrame(App._render);
-    App.running = true;
+    var isRunning = App._engine.run();
+    return isRunning;
   };
 
   App.stop = function() {
-    App._engine.stop();
-    App.running = false;
+    var isRunning = App._engine.stop();
+    return isRunning;
   };
 
   App.step = function() {
@@ -281,10 +290,7 @@ var CrowdSimApp = (function() {
 
     // render the stage
     App._renderer.render(App._stage);
-    if (App.running || App.refreshOnce) {
-      App.refreshOnce = false;
-      requestAnimationFrame(App._render);
-    }
+    requestAnimationFrame(App._render);
 
     // callback postrender
     if (App.onPostRender) {

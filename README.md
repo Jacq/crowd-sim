@@ -13,7 +13,7 @@ crowd-sim
 
 ## Tools  ##
 - Pixi.js : 2D render
-- Grunt : Js task manager running and compiling.
+- Gulp : Js task manager running and compiling.
 - Karma : e2e testing
 - Bower : dependency manager
 - Heroku : Online deploying
