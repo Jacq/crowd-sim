@@ -12,9 +12,10 @@ Context.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Context.container, this.graphics);
 };
 
-Context.prototype.createGraphics = function() {
+Context.prototype.createGraphics = function(context) {
   this.graphics = Entity.prototype.createGraphics.call(this,Context.container);
   this.rect = new PIXI.Rectangle(0, 0, 0, 0);
+  this.rect.entityModel = context;
 };
 
 Context.prototype.render = function(options) {
@@ -26,7 +27,7 @@ Context.prototype.render = function(options) {
   var context = this.entityModel;
   // init render
   if (!this.graphics && Context.detail.level) {
-    this.createGraphics();
+    this.createGraphics(context);
   } else {
     this.graphics.clear();
   }
@@ -36,7 +37,7 @@ Context.prototype.render = function(options) {
     this.rect.y = context.y;
     this.rect.width = context.width;
     this.rect.height = context.height;
-    this.graphics.beginFill(context.hover ? Colors.Hover : Colors.Context, context.hover ? 0.9 : 0.2);
+    this.graphics.beginFill(this.graphics.hover ? Colors.Hover : Colors.Context, this.graphics.hover ? 0.9 : 0.2);
     this.graphics.drawShape(this.rect);
     this.graphics.endFill();
   }

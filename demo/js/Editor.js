@@ -115,53 +115,67 @@
     $document
       .mousedown(function(event) {
         Editor.mousedownData = {
-          x: event.x,
-          y: event.y
+          x: event.clientX,
+          y: event.clientY
         };
-      }, false)
+      })
       .mouseup(function(event) {
         if (Editor.mousedownData) {
           //CrowdSimApp.pan(x, y);
           Editor.mousedownData = null;
         }
-      }, false).mousemove(function(event) {
+      })
+      .mousemove(function(event) {
         var md = Editor.mousedownData;
         if (Editor.mousedownData) {
-          var dx = event.x - md.x;
-          var dy = event.y - md.y;
-          md.x = event.x;
-          md.y = event.y;
+          var dx = event.clientX - md.x;
+          var dy = event.clientY - md.y;
+          md.x = event.clientX;
+          md.y = event.clientY;
           CrowdSimApp.pan(dx, dy);
           return;
         }
         Editor.statusSet({
-          mouse: '(' + event.x + ',' + event.y + ')'
+          mouse: '(' + CrowdSimApp.scaleToWorld(event.clientX) + ',' + CrowdSimApp.scaleToWorld(event.clientY) + ')'
         });
-      }, false).mousewheel(function(event) {
+      })
+      .mousewheel(function(event) {
         CrowdSimApp.zoom(1 + event.deltaY * 0.1, event.clientX, event.clientY);
-      }, false);
+      });
 
     // window and canvas events
     $window.keydown(keydown);
     $canvas.keydown(keydown);
+    $window.keydown(keyup);
+    $canvas.keydown(keyup);
+    function keyup(event) {
+      switch (event.keyCode) {
+        case 17: // ctrl
+          CrowdSimApp.snapToGrid(false);
+          break;
+      }
+    }
 
     function keydown(event) {
       var render = CrowdSim.Render;
       switch (event.keyCode) { // ctrlKey shiftKey
+        case 17: // ctrl
+          CrowdSimApp.snapToGrid(true);
+          break;
         case 32: // space
           Editor.onClick.toggleRun();
           break;
         case 65: // a
-          render.Agent.detail.cycleDetail();
+          CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Agent);
           break;
         case 71: // g
-          render.Group.detail.cycleDetail();
+          CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Group);
           break;
         case 80: // p
-          render.Path.detail.cycleDetail();
+          CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Path);
           break;
         case 87: // w
-          render.Wall.detail.cycleDetail();
+          CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Wall);
           break;
         case 107: // +
           CrowdSimApp.zoom(1.1);

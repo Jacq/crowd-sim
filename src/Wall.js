@@ -7,7 +7,8 @@ var Wall = function(path, options) {
   if (!path || path.length < 2) {
     throw 'Walls must have at least two points';
   }
-  this.width = this.options ? options.width || 0.2 : 0.2;
+  this.id = Wall.id++;
+  this.width = options ? options.width || 0.2 : 0.2;
   this.path = path; // n joints, n-1 sections
 };
 
@@ -18,5 +19,6 @@ Wall.prototype.getProjection = function(point, segment) {
   var projection = Vec2.create();
   return Vec2.projectionToSegment(projection, point, this.path[segment], this.path[segment + 1]);
 };
+Wall.id = 0;
 
 module.exports = Wall;

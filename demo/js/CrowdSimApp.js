@@ -6,6 +6,13 @@ var CrowdSimApp = (function() {
     // callbacks
     onPreRender: null,
     onPostRender: null,
+    EntityTypes: {
+      Agent: CrowdSim.Render.Agent,
+      Group: CrowdSim.Render.Group,
+      Context: CrowdSim.Render.Context,
+      Path: CrowdSim.Render.Path,
+      Wall: CrowdSim.Render.Wall
+    }
   };
 
   var defaultOptions = {
@@ -101,12 +108,12 @@ var CrowdSimApp = (function() {
 
   App.addPath = function(path) {
     App._world.addPath(path);
-    new CrowdSim.Render.Path(path);
+    new CrowdSim.Render.Path(path, App._pathTexture);
   };
 
   App.addWall = function(wall) {
     App._world.addWall(wall);
-    new CrowdSim.Render.Wall(wall);
+    new CrowdSim.Render.Wall(wall, App._wallTexture);
   };
 
   App.load = function(w, h) {
@@ -125,16 +132,16 @@ var CrowdSimApp = (function() {
     var cx = 55, cy = 45;
     var gx = 60, gy = 46;
     var radius = 4;
-    /*var path = new CrowdSim.Path([{pos: [10, 10], radius: radius}, {pos: [20, 21], radius: radius}, {pos: [31, 30], radius: radius},
+    var path = new CrowdSim.Path([{pos: [10, 10], radius: radius}, {pos: [20, 21], radius: radius}, {pos: [31, 30], radius: radius},
                                 {pos: [41, 41], radius: radius}, {pos: [41, 75], radius: radius}, {pos: [55, 80], radius: radius},
                                 {pos: [65, 70], radius: radius}, {pos: [65, 60], radius: radius}]);
-                                path.reverse();
-                                */
+    path.reverse();
 
-    var path = new CrowdSim.Path([{pos: [65, 60], radius: radius / 2}, {pos: [65, 70], radius: radius / 2}, {pos: [55, 80], radius: 2 * radius}]);
+    //var path = new CrowdSim.Path([{pos: [65, 60], radius: radius / 2}, {pos: [65, 70], radius: radius / 2}, {pos: [55, 80], radius: 2 * radius}]);
 
     var initContext = new CrowdSim.Context(gx, gy, sizeC, sizeC);
-    var endContext = new CrowdSim.Context(55  , 80 - sizeC , sizeC, sizeC);
+    //var endContext = new CrowdSim.Context(55  , 80 - sizeC , sizeC, sizeC);
+    var endContext = new CrowdSim.Context(10 - sizeC / 2  , 10 - sizeC / 2 , sizeC, sizeC);
     var group = new CrowdSim.Group(10 , App._world, initContext, endContext, {debug: App.debug, start: {prob: 0.1, rate: 1, max: 1000},
                                                                                                  end: {prob: 0.1, rate: 1}});
     group.assignPath(path);
@@ -151,12 +158,8 @@ var CrowdSimApp = (function() {
   };
 
   App.zoom = function(value, x, y) {
-    if (!x || !y) {
-      x = App._stage.width / 2;
-      y = App._stage.width / 2;
-    }
-    App._stage.x += (1 - value) * x;
-    App._stage.y += (1 - value) * y;
+    App._stage.x =  App._stage.x  - x * (value - 1);
+    App._stage.y =  App._stage.y  - y * (value - 1);
     App._stage.scale.x *= value;
     App._stage.scale.y *= value;
   };
@@ -190,14 +193,16 @@ var CrowdSimApp = (function() {
 
   };
 
-  /*App.scaleToWorld = function(x) {
+  App.scaleToWorld = function(x) {
     return x / App.scale;
-  };*/
+  };
 
   App._initRender = function() {
 
     var baseTextures = PIXI.Texture.fromImage('img/flt.png');
     App._agentTexture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(26, 16, 51, 36));
+    App._wallTexture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(274, 14, 32, 32));
+    App._pathTexture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(326, 14, 32, 32));
 
     App._worldContainer.removeChildren();
     App._agentsContainer.removeChildren();
@@ -266,6 +271,14 @@ var CrowdSimApp = (function() {
       paths: entities.paths.length,
       agent: App._world.agentSelected ? App._world.agentSelected.id : ''
     };
+  };
+
+  App.snapToGrid = function(enabled) {
+    CrowdSim.Render.Entity.snapToGrid = enabled;
+  };
+
+  App.cycleDetail = function(entityType) {
+    entityType.detail.cycleDetail();
   };
 
   App._renderOnce = function() {
