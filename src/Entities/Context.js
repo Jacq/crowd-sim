@@ -1,15 +1,16 @@
 
 var Entity = require('./Entity');
-var Vec2 = require('./Vec2');
+var Vec2 = require('../Common/Vec2');
 
-var Context = function(x, y, width, height) {
-  Entity.call(this);
+var Context = function(x, y, world, options) {
+  Entity.call(this, x, y);
+  this.id = 'C' + Context.id++;
   this.mobility = 1;
   this.hazardLevel = 0;
-  this.x = x;
-  this.y = y;
-  this.width = width;
-  this.height = height;
+  this.width = options ? options.width : 10;
+  this.height = options ? options.height : 10;
+  this.x = x - this.width / 2;
+  this.y = y - this.height / 2;
 };
 
 Context.prototype.getRandomPoint = function() {

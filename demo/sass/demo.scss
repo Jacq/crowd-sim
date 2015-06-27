@@ -1,66 +1,105 @@
-
-
-$btn-size : 14px;
-
-html, body {
-  height: 100%;
+$btn-size: 25px;
+html,
+body {
+    height: 100%;
 }
+
 canvas {
-  display: block;
+    display: block;
 }
 
-button,.btn {
-  text-align: center;
-  font-size:$btn-size;
-  width: $btn-size+5px;
-  height: $btn-size+5px;
-  margin: 2px;
-  border: 1px solid black;
-  padding: 0;
-  &:active {
-    background-color: gray;
-  }
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
+
+$colors: ( context:#e1eca0, group: #fafafa,path: #e00777, wall: #00FF00);
+
+@each $color, $value in $colors {
+    .bgcolor-#{$color} {
+        background-color: $value;
+    }
+    .color-#{$color} {
+        color: $value;
+    }
+ }
+
+button,
+.btn {
+    text-align: center;
+    font-size: $btn-size;
+    width: $btn-size+5px;
+    height: $btn-size+5px;
+    margin: 2px;
+    border: 1px solid black;
+    padding: 0;
+    &:active,&.active {
+        background-color: gray;
+    }
+
+}
+
 
 .info_panel {
-  background-color: lightgray;
-  padding: 0;
-  margin: 0;
-  opacity: 0.6;
+    background-color: lightgray;
+    padding: 0;
+    margin: 0;
+    opacity: 0.6;
 }
+
 .info_panel ul {
-  list-style-type: none;
+    list-style-type: none;
 }
 
 .control {
-  position: absolute;
-  top: 20%;
-  left: 0;
-  width: 100px;
-  opacity: 0.8;
+    position: absolute;
+    top: 20%;
+    left: 0;
+    width: 100px;
+    opacity: 0.8;
 }
+
 .console {
-  position: absolute;
-  bottom: 0;
-  opacity: 0.8;
-  right: 0;
-  width: 100%;
+    position: absolute;
+    bottom: 0;
+    opacity: 0.8;
+    right: 0;
+    width: 100%;
 }
+
 .console_show {
-  height: 20%;
+    height: 20%;
 }
+
 .console_hide {
-  height: 30px;
+    height: 30px;
 }
 
 .hide {
-  display:none;
-}
-.console ul li {
-  display: inline;
+    display: none;
 }
 
+.console ul li {
+    display: inline;
+}
 
 .btn-2x {
-  width : 2*$btn-size;
+    width: 2*$btn-size;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.label {
+    padding: 2px;
+    background-color: aqua;
+}
+
+ul.list-inline {
+    display: inline;
+    li {
+        display: inline;
+    }
 }

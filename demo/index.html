@@ -23,17 +23,23 @@
 
 <body>
   <div id='control' class='control info_panel'>
-    <ul>
+    <div class="text-center edit-modes">
+    <div class="label">ADD</div>
+    <ul class="list-inline">
       <li>
-        <button id="select"><i class="fa fa-mouse-pointer"></i>
+        <button id="addContext" class="bgcolor-context" title="Add Contexts">C</button>
       </li>
       <li>
-        <button id="groupAdd"><i class="fa fa-users"></i>
+        <button id="addGroup" class="bgcolor-group" title="Add Groups">G</button>
       </li>
       <li>
-        <button id="wallAdd"><i class="fa fa-plus-circle"></i>
+        <button id="addPath" class="bgcolor-path" title="Add Path">P</button>
+      </li>
+      <li>
+        <button id="addWall" class="bgcolor-wall" title="Add Wall">W</button>
       </li>
     </ul>
+        </div>
     File
     <ul>
       <li>
@@ -45,8 +51,9 @@
         <button id="import">Import</button>
       </li>
     </ul>
-    Run
-    <ul>
+    <div class="text-center engine-status">
+    <div class="label">SIMULATOR</div>
+    <ul class="list-inline">
       <li>
         <button id="run" class="btn-2x"><i class="fa fa-play" title="Run"></i></button>
         <button id="stop" class="btn-2x hide"><i class="fa fa-stop" title="Stop"></i></button>
@@ -64,6 +71,7 @@
                 <button class="pure-button" onclick="Demo.Reset()">Reset</button>
             </li>-->
     </ul>
+    </div>
   </div>
   <div id='menu'>
 

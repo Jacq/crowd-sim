@@ -1,20 +1,30 @@
 'use strict';
 
-var Agent = require('./Agent');
-var Behavior = require('./Behavior');
 var Entity = require('./Entity');
-var Vec2 = require('./Vec2');
+var Agent = require('./Agent');
+var Context = require('./Context');
 
-var Group = function(agentsNumber, world, startContext, endContext, options) {
-  Entity.call(this);
-  this._startContext = startContext;
-  this._endContext = endContext;
+var Panic = require('../Behavior/Panic');
+var Vec2 = require('../Common/Vec2');
+
+var Group = function(x, y, world, options) {
+  Entity.call(this, x, y, world);
+  var startContext = null;
+  if (!options || !options.startContext) {
+    // need to create additional context for group start
+    startContext = new Context(x, y);
+    this.world.addContext(startContext);
+  } else {
+    startContext = options.startContext;
+  }
   this.options = Lazy(options).defaults({
     pos: startContext.getRandomPoint.bind(startContext),
-    size: function() {
-      return 0.5;
-    },
-    behavior: new Behavior.Panic(world),
+    size: 0.5,
+    path: null,
+    agentsNumber: 10,
+    startContext: startContext,
+    endContext: null,
+    behavior: new Panic(this.world),
     debug: false,
     start: {prob: 0, // Adds agents per step in startContext
             rate: 0, // Adds agents probability per step in startContext
@@ -22,12 +32,12 @@ var Group = function(agentsNumber, world, startContext, endContext, options) {
     end: {prob: 0, // Removes agents per step in endContext
           rate: 0} // Removes agents probability per step in endContext
   }).toObject();
-  this.id = Group.id++;
+
+  this.id = 'G' + Group.id++;
 
   this.behavior = this.options.behavior;
-  this.world = world;
   this.agents = [];
-  this.agentsNumber = agentsNumber;
+  this.agentsNumber = this.options.agentsNumber;
 
   if (this.options.path) {
     this.assignPath(options.path);
@@ -43,7 +53,7 @@ Group.prototype.assignPath = function(path) {
 
 Group.prototype.generateAgents = function(agentsNumber, startContext) {
   if (!startContext) {
-    startContext = this._startContext;
+    startContext = this.options.startContext;
   }
   var newAgents = [];
   for (var i = 0; i < agentsNumber; i++) {
@@ -65,7 +75,7 @@ Group.prototype.addAgents = function(agentsNumber) {
 Group.prototype.removeAgents = function(agents) {
   for (var i in agents) {
     var j = this.agents.indexOf(agents[i]);
-    this.agents.splice(j,1);
+    this.agents.splice(j, 1);
   }
   this.world.removeAgents(agents);
 };
@@ -77,7 +87,7 @@ Group.prototype.addAgent = function(x, y) {
 };
 
 Group.prototype.getstartContext = function() {
-  return this._startContext;
+  return this.options.startContext;
 };
 
 Group.prototype.getContext = function() {
@@ -113,9 +123,9 @@ Group.prototype.step = function() {
       this.addAgents(rate);
     }
   }
-  if (this._endContext) {
+  if (this.options.endContext) {
     var end = this.options.end;
-    var agentsIn = this.world.agentsInContext(this._endContext,this.agents);
+    var agentsIn = this.world.agentsInContext(this.options.endContext, this.agents);
     if (agentsIn.length > 0 && end && end.rate > 0 && end.prob > 0) {
       var probDie = Math.random();
       if (probDie < end.prob) {

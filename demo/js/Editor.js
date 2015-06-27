@@ -1,82 +1,90 @@
-/* global window,CrowdSim, define */
+/* global window, CrowdSimApp, define */
 (function($) {
   'use strict';
 
   var Editor = {};
-  Editor.options = {
-    buttons: {},
-    statuses: {}
+  // helper buttons
+  Editor.buttons = {};
+  Editor.statuses = {};
+
+  // simulation status running/stop...
+  Editor.engineStatus = null;
+  Editor.engineStatuses = {
+    run: {
+      id: 'run',
+      label: 'Running',
+      action: CrowdSimApp.toggleRun
+    },
+    stop: {
+      id: 'stop',
+      label: 'Stopped',
+      action: CrowdSimApp.toggleRun
+    },
+    step: {
+      id: 'step',
+      label: 'Step',
+      action: function() {
+        CrowdSimApp.step();
+        return CrowdSimApp.isRunning();
+      }
+    }
   };
 
+  // edition modes
+  Editor.currentMode = null;
   Editor.modes = {
     select: {
       id: 'select',
       label: 'Select'
     },
-    groupAdd: {
-      id: 'groupAdd',
-      label: 'Add Group'
+    addContext: {
+      id: 'addContext',
+      label: 'Add Context',
+      entity: CrowdSimApp.EntityTypes.Context
     },
-    wallAdd: {
-      id: 'wallAdd',
-      label: 'Add Wall'
+    addGroup: {
+      id: 'addGroup',
+      label: 'Add Group',
+      entity: CrowdSimApp.EntityTypes.Group
     },
-  };
-
-  Editor.onClick = {
-    select: function(e) {
-      Editor.changeMode('select');
+    addPath: {
+      id: 'addPath',
+      label: 'Add Path',
+      entity: CrowdSimApp.EntityTypes.Path
     },
-    groupAdd: function(e) {
-      Editor.changeMode('groupAdd');
-    },
-    wallAdd: function(e) {
-      Editor.changeMode('wallAdd');
-    },
-    toggleRun: function(e) {
-      var isRunning = CrowdSimApp.toggleRun();
-      $(Editor.options.buttons.run).toggleClass('hide', isRunning);
-      $(Editor.options.buttons.stop).toggleClass('hide', !isRunning);
-    },
-    run: function(e) {
-      Editor.onClick.toggleRun();
-    },
-    stop: function(e) {
-      Editor.onClick.toggleRun();
-    },
-    step: function(e) {
-      CrowdSimApp.step();
-    },
-    reset: function(e) {
-      CrowdSimApp.reset();
+    addWall: {
+      id: 'addWall',
+      label: 'Add Wall',
+      entity: CrowdSimApp.EntityTypes.Wall
     }
   };
 
-  Editor.statusSet = function(values) {
-    for (var i in values) {
-      if (!Editor.options.statuses[i]) {
-        console.log('Status display not defined: ' + i);
-      } else {
-        Editor.options.statuses[i].innerHTML = values[i];
-      }
+  Editor.modeToggle = function(mode) {
+    $('.edit-modes button').removeClass('active');
+    if (Editor.currentMode === mode) {
+      Editor.currentMode = Editor.modes.select;
+      $(Editor._canvas).css('cursor', 'default');
+    } else {
+      // disabled all modes except current
+      Editor.currentMode = mode;
+      $('.edit-modes button#' + mode.id).addClass('active');
+      $(Editor._canvas).css('cursor', 'crosshair');
     }
+    Editor._statusBarSet({'edit-mode': Editor.currentMode.label});
   };
 
-  Editor.changeMode = function(newMode) {
-    Editor.mode = Editor.modes[newMode];
-    Editor.statusSet({
-      'edit-mode': Editor.mode.label
-    });
+  Editor.engineChange = function(newStatus) {
+    // toggle running/stop modes
+    Editor.engineStatus = newStatus;
+    var isRunning = newStatus.action(newStatus);
+    $(Editor.buttons.run).toggleClass('hide', isRunning);
+    $(Editor.buttons.stop).toggleClass('hide', !isRunning);
   };
 
   Editor.init = function(canvasId) {
     // init stats
     var stats = new Stats();
-    $(stats.domElement).css({
-      'position': 'absolute',
-      'left': 0,
-      'top': 0
-    });
+    $(stats.domElement).css({'position': 'absolute', 'right': 0, 'top': 0});
     $(document.body).append(stats.domElement);
     CrowdSimApp.onPreRender = function() {
       stats.begin();
@@ -86,110 +94,186 @@
     };
 
     // init buttons
-    $('button').each(function() {
-      Editor.options.buttons[this.id] = this;
-      $(this).click(Editor.onClick[this.id]);
+    $('.edit-modes button').click(function(event) {
+      var mode = Editor.modes[event.currentTarget.id];
+      Editor.modeToggle(mode);
+      event.stopPropagation();
+      return false;
+    });
+
+    Editor.buttons.run = $('.engine-status button#run').first();
+    Editor.buttons.stop = $('.engine-status button#stop').first();
+    $('.engine-status button').click(function(event) {
+      var status = Editor.engineStatuses[event.currentTarget.id];
+      Editor.engineChange(status);
+      event.stopPropagation();
+      return false;
     });
 
     // init status bar
     $('#statuses span').each(function() {
-      Editor.options.statuses[this.id] = this;
+      Editor.statuses[this.id] = this;
     });
 
-    var canvas = document.getElementById(canvasId);
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // init canvas
+    Editor._canvas = document.getElementById(canvasId);
+    Editor._canvas.width = window.innerWidth;
+    Editor._canvas.height = window.innerHeight;
 
-    Editor._events(canvas);
+    Editor._events(Editor._canvas);
     // init main crowd simulator app
-    CrowdSimApp.init(canvas);
+    CrowdSimApp.init(Editor._canvas);
     Editor._updateDisplay();
   };
 
   Editor._events = function(canvas) {
     var $canvas = $(canvas),
-      $document = $(document),
-      $window = $(window);
+        $document = $(document),
+        $window = $(window);
 
     // document events
-    $document
-      .mousedown(function(event) {
-        Editor.mousedownData = {
-          x: event.clientX,
-          y: event.clientY
-        };
-      })
-      .mouseup(function(event) {
-        if (Editor.mousedownData) {
-          //CrowdSimApp.pan(x, y);
-          Editor.mousedownData = null;
-        }
-      })
-      .mousemove(function(event) {
-        var md = Editor.mousedownData;
-        if (Editor.mousedownData) {
-          var dx = event.clientX - md.x;
-          var dy = event.clientY - md.y;
-          md.x = event.clientX;
-          md.y = event.clientY;
-          CrowdSimApp.pan(dx, dy);
-          return;
-        }
-        Editor.statusSet({
-          mouse: '(' + CrowdSimApp.scaleToWorld(event.clientX) + ',' + CrowdSimApp.scaleToWorld(event.clientY) + ')'
-        });
-      })
-      .mousewheel(function(event) {
-        CrowdSimApp.zoom(1 + event.deltaY * 0.1, event.clientX, event.clientY);
-      });
+    $canvas.mousedown(mousedown)
+            .mouseup(mouseup)
+            .mousemove(mousemove)
+            .mousewheel(mousewheel);
 
     // window and canvas events
     $window.keydown(keydown);
     $canvas.keydown(keydown);
-    $window.keydown(keyup);
-    $canvas.keydown(keyup);
-    function keyup(event) {
-      switch (event.keyCode) {
-        case 17: // ctrl
-          CrowdSimApp.snapToGrid(false);
-          break;
+    $window.keyup(keyup);
+    $canvas.keyup(keyup);
+
+    var entityCreated;
+    var panningEvent;
+    function mousedown(event) {
+      var pos = CrowdSimApp.screenToWorld(event.clientX, event.clientY);
+      CrowdSimApp.mousedown(event);
+      switch (event.button){
+        case 0: // left button
+          // add entities mode
+          if (Editor.currentMode && Editor.currentMode.entity) {
+            if (entityCreated) { // continue creating current entity
+
+            } else { // starts creating action
+              entityCreated = CrowdSimApp.startCreateEntity(Editor.currentMode.entity, pos);
+            }
+          }
+        break;
+        case 1: // middle button for panning
+          panningEvent = event;
+          $canvas.css('cursor', 'pointer');
+        break;
+        case 2: // left button
+          return false;
       }
     }
 
+    function mousemove(event) {
+      CrowdSimApp.mousemove(event);
+      if (panningEvent) {
+        CrowdSimApp.pan(event.clientX - panningEvent.clientX, event.clientY - panningEvent.clientY);
+        panningEvent = event;
+        return;
+      }
+      if (entityCreated) {
+
+      }
+      var pos = CrowdSimApp.screenToWorld(event.clientX, event.clientY);
+      Editor._statusBarSet({mouse: '(' + pos.x.toFixed(2) + ',' + pos.y.toFixed(2) + ')'});
+    }
+
+    function mouseup(event) {
+      var pos = {x: event.clientX, y: event.clientY};
+      CrowdSimApp.mouseup(event);
+      switch (event.button){
+        case 0: // left button
+        break;
+        case 1:// middle button for panning
+          if (event.button === 1) {
+            $canvas.css('cursor', 'default');
+            panningEvent = null;
+          }
+        break;
+        case 2:// right button
+          if (entityCreated) { // ends creating action
+            entityCreated = CrowdSimApp.endCreateEntity();
+          }
+          return false;
+      }
+    }
+
+    function mousewheel(event) {
+      if (event.deltaY > 0) {
+        $canvas.css('cursor', 'zoom-in');
+      } else {
+        $canvas.css('cursor', 'zoom-out');
+      }
+      CrowdSimApp.zoom(event.deltaY, event.clientX, event.clientY);
+      $canvas.delay(250).queue(function(next) {
+        $(this).css('cursor', 'default');
+        next();
+      });
+    }
+
     function keydown(event) {
+      console.log(event);
       var render = CrowdSim.Render;
       switch (event.keyCode) { // ctrlKey shiftKey
-        case 17: // ctrl
-          CrowdSimApp.snapToGrid(true);
-          break;
-        case 32: // space
-          Editor.onClick.toggleRun();
-          break;
-        case 65: // a
-          CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Agent);
-          break;
-        case 71: // g
-          CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Group);
-          break;
-        case 80: // p
-          CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Path);
-          break;
-        case 87: // w
-          CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Wall);
-          break;
-        case 107: // +
-          CrowdSimApp.zoom(1.1);
-          break;
-        case 109: // -
-          CrowdSimApp.zoom(0.9);
-          break;
+      case 17: // ctrl
+        CrowdSimApp.snapToGrid(false);
+      break;
+      case 27: // escape
+        // cancels mode creation
+        CrowdSimApp.endCreateEntity();
+        entityCreated = null;
+      break;
+      case 32: // space
+        Editor.engineChange(Editor.engineStatuses.run);
+      break;
+      case 65: // a
+        CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Agent);
+      break;
+      case 71: // g
+        CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Group);
+      break;
+      case 80: // p
+        CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Path);
+      break;
+      case 87: // w
+        CrowdSimApp.cycleDetail(CrowdSimApp.EntityTypes.Wall);
+      break;
+      case 107: // +
+        CrowdSimApp.zoom(1.1);
+      break;
+      case 109: // -
+        CrowdSimApp.zoom(0.9);
+      break;
+      }
+    }
+
+    function keyup(event) {
+      switch (event.keyCode) {
+      case 17: // ctrl
+        CrowdSimApp.snapToGrid(true);
+      break;
+      }
+    }
+  };
+
+  // Set text in the status bar
+  Editor._statusBarSet = function(values) {
+    for (var i in values) {
+      if (!Editor.statuses[i]) {
+        console.log('Status display not defined: ' + i);
+      } else {
+        Editor.statuses[i].innerHTML = values[i];
       }
     }
   };
 
   Editor._updateDisplay = function() {
     var setOpts = CrowdSimApp.getStats();
-    Editor.statusSet(setOpts);
+    Editor._statusBarSet(setOpts);
   };
 
   Editor.init('canvas');

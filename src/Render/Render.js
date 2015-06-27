@@ -1,7 +1,7 @@
 'use strict';
 
 var Render = {
-  Entity: require('./Base').Entity,
+  Entity: require('./Entity'),
   Agent: require('./Agent'),
   Context: require('./Context'),
   Path: require('./Path'),

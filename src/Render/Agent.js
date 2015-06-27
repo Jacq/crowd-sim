@@ -1,8 +1,9 @@
 'use strict';
 
-var Vec2 = require('../Vec2');
+var Vec2 = require('../Common/Vec2');
 var Base = require('./Base');
-var Entity = Base.Entity;
+var Entity = require('./Entity');
+var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 var Agent = function(agent, texture) {
@@ -45,7 +46,7 @@ Agent.prototype.render = function() {
 
   if (Agent.detail.level > 1) {
     if (!this.graphics) {
-      this.graphics = Entity.prototype.createGraphics.call(this);
+      this.graphics = Entity.prototype.createGraphics.call(this,Agent.debugContainer);
       this.circle = new PIXI.Circle(e.pos[0],e.pos[1], e.size / 2);
       //this.graphics.addChild(this.circle);
     }
@@ -54,12 +55,13 @@ Agent.prototype.render = function() {
 
   if (Agent.detail.level > 1) {
     if (this.circle) {
+      this.circle.x = e.pos[0];
+      this.circle.y = e.pos[1];
       this.graphics.lineStyle(0.1, Colors.Agent);
       this.graphics.drawShape(this.circle);
     }
   }
   if (Agent.detail.level > 2) {
-    var scale = 10;
     this.graphics.moveTo(e.pos[0], e.pos[1]);
     this.graphics.lineTo(e.pos[0] + e.vel[0], e.pos[1] + e.vel[1]);
   }
@@ -75,6 +77,6 @@ Agent.prototype.render = function() {
 };
 
 Agent.debugContainer = null; // special container use to render all agents, e.g particleContainer
-Agent.detail = new Base.DetailManagement(4);
+Agent.detail = new Detail(4);
 
 module.exports = Agent;

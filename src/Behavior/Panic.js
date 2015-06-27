@@ -1,6 +1,7 @@
 'use strict';
 
-var Vec2 = require('./Vec2');
+var Vec2 = require('../Common/Vec2');
+var Behavior = require('./Behavior');
 
 /**
  * Helbing-Farkas,Vicsek Simulating dynamical features of escape panic
@@ -10,6 +11,7 @@ var Vec2 = require('./Vec2');
  * {Vec2}       [description]
  */
 var Panic = function(world, options) {
+  Behavior.call(this,world);
   this.options = Lazy(options).defaults({
     A: 2e3, // N
     B: 0.08, // m
@@ -17,11 +19,11 @@ var Panic = function(world, options) {
     Kv: 2.4e5, //kg m-1 s-1
     relaxationTime: 0.3
   }).toObject();
-  this.world = world;
 };
 
 // path point, point, other agent {point , radius}
 Panic.prototype.getAccel = function(agent, target) {
+  Behavior.prototype.getAccel.call(this,agent, target);
   var desiredForce = Vec2.create();
   var agentsForce = Vec2.create();
   var wallsForce = Vec2.create();
@@ -135,4 +137,4 @@ Panic.prototype.calculateWallForce = function(i, projection, width) {
   return interactionForce;
 };
 
-module.exports.Panic = Panic;
+module.exports = Panic;

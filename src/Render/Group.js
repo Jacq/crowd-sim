@@ -1,7 +1,8 @@
 'use strict';
 
 var Base = require('./Base');
-var Entity = Base.Entity;
+var Entity = require('./Entity');
+var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 var Group = function(group, container) {
@@ -22,7 +23,7 @@ Group.prototype.render = function(options) {
     this.graphics.clear();
     return;
   }
-  Entity.prototype.render.call(this);
+  Entity.prototype.render.call(this,this.graphics);
   var group = this.entityModel;
   if (!group.agents || group.agents.length === 0) {
     return;
@@ -38,6 +39,6 @@ Group.prototype.render = function(options) {
     //
   }
 };
-Group.detail = new Base.DetailManagement(2);
+Group.detail = new Detail(2);
 
 module.exports = Group;

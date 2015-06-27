@@ -1,15 +1,17 @@
 
 var Entity = require('./Entity');
-var Vec2 = require('./Vec2');
+var Vec2 = require('../Common/Vec2');
 
-var Wall = function(path, options) {
-  Entity.call(this);
-  if (!path || path.length < 2) {
-    throw 'Walls must have at least two points';
-  }
+var Wall = function(x, y, world, options) {
+  Entity.call(this, x, y, world);
   this.id = Wall.id++;
   this.width = options ? options.width || 0.2 : 0.2;
-  this.path = path; // n joints, n-1 sections
+  // n joints, n-1 sections
+  if (options && options.path) {
+    this.path = options.path;
+  } else {
+    this.path = [[x, y]];
+  }
 };
 
 Wall.prototype.getProjection = function(point, segment) {
@@ -19,6 +21,11 @@ Wall.prototype.getProjection = function(point, segment) {
   var projection = Vec2.create();
   return Vec2.projectionToSegment(projection, point, this.path[segment], this.path[segment + 1]);
 };
+
+Wall.prototype.addPath = function(point) {
+  this.path.push(point);
+};
+
 Wall.id = 0;
 
 module.exports = Wall;

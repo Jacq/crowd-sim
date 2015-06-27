@@ -2,7 +2,8 @@
 
 var Base = require('./Base');
 var Joint = require('./Joint');
-var Entity = Base.Entity;
+var Entity = require('./Entity');
+var Detail = require('./Detail');
 var Colors = Base.Colors;
 var Fonts = Base.Fonts;
 
@@ -21,7 +22,7 @@ Wall.prototype.createGraphics = function(wall, texture) {
   this.joints = [];
   for (var j in wall.path) {
     var c = wall.path[j];
-    var joint = new Joint({pos: c, radius: 4 * wall.width}, this.texture);
+    var joint = new Joint({pos: c, radius: 2 * wall.width}, this.texture);
     joint.createGraphics(this.graphics);
     this.joints.push(joint);
   }
@@ -32,7 +33,7 @@ Wall.prototype.render = function(options) {
     this.graphics.clear();
     return;
   }
-  Entity.prototype.render.call(this);
+  Entity.prototype.render.call(this,this.graphics);
   var wall = this.entityModel;
   var path = wall.path;
 
@@ -47,10 +48,13 @@ Wall.prototype.render = function(options) {
   if (Wall.detail.level > 0) {
     //this.display.beginFill(Colors.Wall, 0.1);
     this.graphics.lineStyle(wall.width, this.graphics.hover ? Colors.Hover : Colors.Wall);
-    this.graphics.moveTo(path[0][0], path[0][1]);
-    for (var i = 1; i < path.length ; i++) {
-      this.graphics.lineTo(path[i][0], path[i][1]);
+    //this.graphics.moveTo(path[0][0], path[0][1]);
+    var points = [];
+    for (var i = 0; i < path.length ; i++) {
+      //this.graphics.lineTo(path[i][0], path[i][1]);
+      points.push(path[i][0],path[i][1]);
     }
+    this.graphics.drawPolygon(points);
     //this.display.endFill();
   }
   if (Wall.detail.level > 1) {
@@ -64,6 +68,15 @@ Wall.prototype.render = function(options) {
     this.graphics.endFill();*/
   }
 };
-Wall.detail = new Base.DetailManagement(2);
+
+Wall.prototype.addPath = function(point) {
+  var wall = this.entityModel;
+  wall.addPath(point);
+  var joint = new Joint({pos: point, radius: 2 * wall.width}, this.texture);
+  joint.createGraphics(this.graphics);
+  this.joints.push(joint);
+};
+
+Wall.detail = new Detail(2);
 
 module.exports = Wall;

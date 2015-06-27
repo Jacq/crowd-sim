@@ -1,7 +1,7 @@
 'use strict';
 
 var Entity = require('./Entity');
-var Vec2 = require('./Vec2');
+var Vec2 = require('../Common/Vec2');
 
 var Agent = function(group, x, y, size, options) {
   Entity.call(this);
