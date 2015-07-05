@@ -51,7 +51,7 @@ Engine.prototype._step = function() {
       return;
     }
   });
-  Lazy(entities.groups).each(function(group) {
+  Lazy(this.world.getGroups()).each(function(group) {
     group.step(timeStepSize);
   });
 

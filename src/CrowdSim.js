@@ -1,11 +1,12 @@
 /* global window,module, exports : true, define */
 
 var CrowdSim = {
+  Entity: require('./Entities/Entity'),
   Agent: require('./Entities/Agent'),
   Context: require('./Entities/Context'),
-  Group: require('./Entities/Group'),
   Wall: require('./Entities/Wall'),
   Path: require('./Entities/Path'),
+  Group: require('./Behavior/Group'),
   World: require('./World'),
   Engine: require('./Engine'),
   Render: require('./Render/Render')

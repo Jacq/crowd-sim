@@ -45,22 +45,33 @@ button,
   padding: 0; }
   button:active,
   button.active,
-  .btn:active, .btn.active {
-    background-color: gray; }
+  .btn:active,
+  .btn.active {
+    background-color: yellow;
+    color: red; }
 
-.info_panel {
-  background-color: lightgray;
-  padding: 0;
-  margin: 0;
-  opacity: 0.6; }
+.info-panel {
+  left: 0; }
 
-.info_panel ul {
+.info-panel ul {
   list-style-type: none; }
 
+.entity-panel {
+  right: 0;
+  text-align: left; }
+  .entity-panel .properties {
+    padding: 5px; }
+
+.select-modes {
+  text-align: left; }
+
 .control {
+  padding: 0;
+  margin: 0;
+  opacity: 0.6;
+  background-color: lightgray;
   position: absolute;
   top: 20%;
-  left: 0;
   width: 100px;
   opacity: 0.8; }
 
@@ -71,10 +82,10 @@ button,
   right: 0;
   width: 100%; }
 
-.console_show {
+.console-show {
   height: 20%; }
 
-.console_hide {
+.console-hide {
   height: 30px; }
 
 .hide {
@@ -89,6 +100,12 @@ button,
 .text-center {
   text-align: center; }
 
+.text-left {
+  text-align: left; }
+
+.text-right {
+  text-align: right; }
+
 .label {
   padding: 2px;
   background-color: aqua; }
@@ -97,3 +114,7 @@ ul.list-inline {
   display: inline; }
   ul.list-inline li {
     display: inline; }
+
+.entity {
+  display: inline;
+  width: 100%; }

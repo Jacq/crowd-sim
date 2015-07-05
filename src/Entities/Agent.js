@@ -4,13 +4,12 @@ var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
 
 var Agent = function(group, x, y, size, options) {
-  Entity.call(this);
+  Entity.call(this, x, y);
   this.options = Lazy(options).defaults({
     debug: false
   }).toObject();
   this.id = Agent.id++;
   this.group = group;
-  this.pos = Vec2.fromValues(x, y);
   this.vel = Vec2.create();
   this.size = size;
   this.mobility = 1.0;
@@ -36,6 +35,10 @@ Agent.prototype.followPath = function(index) {
 Agent.prototype.step = function(stepSize) {
   var path = this.group.path;
   var accel = this.group.behavior.getAccel(this, this.target);
+
+  if (!accel && accel !== 0) {
+    throw 'Agent pos invalid';
+  }
   this.move(accel, stepSize);
   // update target to next if arrive at current
   if (this.target) {
@@ -82,5 +85,6 @@ Agent.prototype.move = function(accel, stepSize) {
 };
 
 Agent.id = 0;
+Agent.type = 'agent';
 
 module.exports = Agent;

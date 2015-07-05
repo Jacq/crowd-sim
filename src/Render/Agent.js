@@ -7,6 +7,9 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 var Agent = function(agent, texture) {
+  if (!agent) {
+    throw 'Agent object must be defined';
+  }
   //var display = new PIXI.Sprite(options.texture);
 
   Entity.call(this, agent);

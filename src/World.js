@@ -3,12 +3,12 @@
 
 var World = function(x, y, width, height) {
   var that = this;
+  this.groups = [];
   this.entities = {
-    groups: [],
     agents: [],
-    walls: [],
+    contexts: [],
     paths: [],
-    contexts: []
+    walls: [],
   };
   this.wrap = true;
   this.x = x;
@@ -19,7 +19,11 @@ var World = function(x, y, width, height) {
 };
 
 World.prototype.getDefaultGroup = function() {
-  return this.entities.groups[0];
+  return this.groups[0];
+};
+
+World.prototype.getGroups = function() {
+  return this.groups;
 };
 
 World.prototype.addContext = function(context) {
@@ -44,7 +48,7 @@ World.prototype.removeAgents = function(agents) {
 };
 
 World.prototype.addGroup = function(group) {
-  this.entities.groups = this.entities.groups.concat(group);
+  this.groups = this.groups.concat(group);
 };
 
 World.prototype.addPath = function(path) {

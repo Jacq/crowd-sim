@@ -1,28 +1,23 @@
 'use strict';
 
-var Entity = require('./Entity');
-var Agent = require('./Agent');
-var Context = require('./Context');
-
-var Panic = require('../Behavior/Panic');
+var Agent = require('../Entities/Agent');
+var Context = require('../Entities/Context');
 var Vec2 = require('../Common/Vec2');
+var Panic = require('./Panic');
 
-var Group = function(x, y, world, options) {
-  Entity.call(this, x, y, world);
+var Group = function(world, options) {
+  this.world = world;
   var startContext = null;
-  if (!options || !options.startContext) {
-    // need to create additional context for group start
-    startContext = new Context(x, y);
-    this.world.addContext(startContext);
-  } else {
-    startContext = options.startContext;
+  if (options && options.startContext) {
+    startContext = options.startContext.getRandomPoint.bind(options.startContext);
   }
+
   this.options = Lazy(options).defaults({
-    pos: startContext.getRandomPoint.bind(startContext),
+    pos: startContext,
     size: 0.5,
     path: null,
     agentsNumber: 10,
-    startContext: startContext,
+    startContext: null,
     endContext: null,
     behavior: new Panic(this.world),
     debug: false,

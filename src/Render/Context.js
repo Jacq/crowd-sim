@@ -6,6 +6,9 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 var Context = function(context, container) {
+  if (!context) {
+    throw 'Context object must be defined';
+  }
   Entity.call(this, context);
 };
 

@@ -1,105 +1,110 @@
 $btn-size: 25px;
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
-
 canvas {
-    display: block;
+  display: block;
 }
-
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
-
 $colors: ( context:#e1eca0, group: #fafafa,path: #e00777, wall: #00FF00);
-
-@each $color, $value in $colors {
-    .bgcolor-#{$color} {
-        background-color: $value;
-    }
-    .color-#{$color} {
-        color: $value;
-    }
- }
-
+@each $color,
+$value in $colors {
+  .bgcolor-#{$color} {
+    background-color: $value;
+  }
+  .color-#{$color} {
+    color: $value;
+  }
+}
 button,
 .btn {
-    text-align: center;
-    font-size: $btn-size;
-    width: $btn-size+5px;
-    height: $btn-size+5px;
-    margin: 2px;
-    border: 1px solid black;
-    padding: 0;
-    &:active,&.active {
-        background-color: gray;
-    }
-
+  text-align: center;
+  font-size: $btn-size;
+  width: $btn-size+5px;
+  height: $btn-size+5px;
+  margin: 2px;
+  border: 1px solid black;
+  padding: 0;
+  &:active,
+  &.active {
+    background-color: yellow;
+    color: red;
+  }
 }
-
-
-.info_panel {
-    background-color: lightgray;
-    padding: 0;
-    margin: 0;
-    opacity: 0.6;
+.info-panel {
+  left: 0;
 }
-
-.info_panel ul {
-    list-style-type: none;
+.info-panel ul {
+  list-style-type: none;
+}
+.entity-panel {
+  right: 0;
+  text-align: left;
+  .properties {
+    padding: 5px;
+  }
+}
+.select-modes{
+  text-align: left;
 }
 
 .control {
-    position: absolute;
-    top: 20%;
-    left: 0;
-    width: 100px;
-    opacity: 0.8;
+  padding: 0;
+  margin: 0;
+  opacity: 0.6;
+  background-color: lightgray;
+  position: absolute;
+  top: 20%;
+  width: 100px;
+  opacity: 0.8;
 }
-
 .console {
-    position: absolute;
-    bottom: 0;
-    opacity: 0.8;
-    right: 0;
-    width: 100%;
+  position: absolute;
+  bottom: 0;
+  opacity: 0.8;
+  right: 0;
+  width: 100%;
 }
-
-.console_show {
-    height: 20%;
+.console-show {
+  height: 20%;
 }
-
-.console_hide {
-    height: 30px;
+.console-hide {
+  height: 30px;
 }
-
 .hide {
-    display: none;
+  display: none;
 }
-
 .console ul li {
-    display: inline;
+  display: inline;
 }
-
 .btn-2x {
-    width: 2*$btn-size;
+  width: 2*$btn-size;
 }
-
 .text-center {
-    text-align: center;
+  text-align: center;
 }
-
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align:right;
+}
 .label {
-    padding: 2px;
-    background-color: aqua;
+  padding: 2px;
+  background-color: aqua;
 }
-
 ul.list-inline {
+  display: inline;
+  li {
     display: inline;
-    li {
-        display: inline;
-    }
+  }
+}
+.entity {
+  display:inline;
+  width:100%;
 }

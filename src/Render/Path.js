@@ -7,6 +7,9 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 var Path = function(path, texture) {
+  if (!path) {
+    throw 'Path object must be defined';
+  }
   Entity.call(this, path);
   this.texture = texture;
 };
@@ -56,13 +59,15 @@ Path.prototype.render = function(options) {
       //this.graphics.moveTo(this.joints[0].pos[0], this.joints[0].pos[1]);
       for (var i = 0; i < this.joints.length; i++) {
         //this.graphics.lineTo(this.joints[lj].pos[0], this.joints[lj].pos[1]);
-        var joint = this.joints[i].joint;
+        var joint = this.joints[i].entityModel;
         points.push(joint.pos[0],joint.pos[1]);
+        this.joints[i].sprite.x = this.joints[i].entityModel.pos[0];
+        this.joints[i].sprite.y = this.joints[i].entityModel.pos[1];
         //this.graphics.drawCircle(joint.pos[0],joint.pos[1],joint.radius);
       }
       this.graphics.drawPolygon(points);
-      this.label.x = this.joints[0].joint.pos[0] - this.label.width / 2;
-      this.label.y = this.joints[0].joint.pos[1] - this.label.height / 2;
+      this.label.x = this.joints[0].entityModel.pos[0] - this.label.width / 2;
+      this.label.y = this.joints[0].entityModel.pos[1] - this.label.height / 2;
     }
     //this.display.beginFill(Colors.Joint);
     if (Path.detail.level > 1) {
@@ -75,12 +80,13 @@ Path.prototype.render = function(options) {
   }
 };
 
-Path.prototype.addWaypoint = function(wp) {
+Path.prototype.addWaypoint = function(x, y) {
   var path = this.entityModel;
-  path.addWaypoint(wp);
+  var wp = path.addWaypoint(x, y);
   var joint = new Joint(wp, this.texture);
   joint.createGraphics(this.graphics);
   this.joints.push(joint);
+  return joint;
 };
 
 Path.detail = new Detail(2);

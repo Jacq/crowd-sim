@@ -12,13 +12,7 @@ var Behavior = require('./Behavior');
  */
 var Panic = function(world, options) {
   Behavior.call(this,world);
-  this.options = Lazy(options).defaults({
-    A: 2e3, // N
-    B: 0.08, // m
-    kn: 1.2e5, // kg s-2
-    Kv: 2.4e5, //kg m-1 s-1
-    relaxationTime: 0.3
-  }).toObject();
+  this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
 // path point, point, other agent {point , radius}
@@ -137,4 +131,11 @@ Panic.prototype.calculateWallForce = function(i, projection, width) {
   return interactionForce;
 };
 
+Panic.defaults = {
+  A: 2e3, // N
+  B: 0.08, // m
+  kn: 1.2e5, // kg s-2
+  Kv: 2.4e5, //kg m-1 s-1
+  relaxationTime: 0.3
+};
 module.exports = Panic;

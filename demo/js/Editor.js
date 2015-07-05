@@ -6,6 +6,7 @@
   // helper buttons
   Editor.buttons = {};
   Editor.statuses = {};
+  Editor.entityInfo = $('.entity-panel');
 
   // simulation status running/stop...
   Editor.engineStatus = null;
@@ -61,8 +62,9 @@
 
   Editor.modeToggle = function(mode) {
     $('.edit-modes button').removeClass('active');
-    if (Editor.currentMode === mode) {
+    if (!mode || mode === Editor.modes.select) {
       Editor.currentMode = Editor.modes.select;
+      $('.edit-modes button#' + Editor.currentMode.id).addClass('active');
       $(Editor._canvas).css('cursor', 'default');
     } else {
       // disabled all modes except current
@@ -91,6 +93,9 @@
     };
     CrowdSimApp.onPreRender = function() {
       stats.end();
+    };
+    CrowdSimApp.onEntitySelected = function(entity) {
+      Editor._entityInfoSet(entity);
     };
 
     // init buttons
@@ -126,22 +131,32 @@
     Editor._updateDisplay();
   };
 
+  Editor._entityInfoSet = function(renderEntity) {
+    var entity = renderEntity.entityModel;
+    $('.entity-type',Editor.entityInfo).html(entity.constructor.type);
+    $('.entity-id',Editor.entityInfo).html(entity.id);
+    $('.entity-x',Editor.entityInfo).val(entity.pos[0].toFixed(2)).change(function(e) {
+      entity.pos[0] = $(this).val();
+    });
+    $('.entity-y',Editor.entityInfo).val(entity.pos[1].toFixed(2)).change(function(e) {
+      entity.pos[1] = $(this).val();
+    });
+  };
+
   Editor._events = function(canvas) {
     var $canvas = $(canvas),
         $document = $(document),
         $window = $(window);
 
     // document events
-    $canvas.mousedown(mousedown)
+    $window.mousedown(mousedown)
             .mouseup(mouseup)
             .mousemove(mousemove)
             .mousewheel(mousewheel);
 
     // window and canvas events
     $window.keydown(keydown);
-    $canvas.keydown(keydown);
     $window.keyup(keyup);
-    $canvas.keyup(keyup);
 
     var entityCreated;
     var panningEvent;
@@ -154,7 +169,7 @@
           if (Editor.currentMode && Editor.currentMode.entity) {
             if (entityCreated) { // continue creating current entity
 
-            } else { // starts creating action
+            } else { // starts creating
               entityCreated = CrowdSimApp.startCreateEntity(Editor.currentMode.entity, pos);
             }
           }
@@ -220,11 +235,12 @@
       var render = CrowdSim.Render;
       switch (event.keyCode) { // ctrlKey shiftKey
       case 17: // ctrl
-        CrowdSimApp.snapToGrid(false);
+        CrowdSimApp.snapToGrid = false;
       break;
       case 27: // escape
         // cancels mode creation
         CrowdSimApp.endCreateEntity();
+        Editor.modeToggle();
         entityCreated = null;
       break;
       case 32: // space
@@ -254,7 +270,7 @@
     function keyup(event) {
       switch (event.keyCode) {
       case 17: // ctrl
-        CrowdSimApp.snapToGrid(true);
+        CrowdSimApp.snapToGrid = true;
       break;
       }
     }
@@ -266,7 +282,7 @@
       if (!Editor.statuses[i]) {
         console.log('Status display not defined: ' + i);
       } else {
-        Editor.statuses[i].innerHTML = values[i];
+        $(Editor.statuses[i]).html(values[i]);
       }
     }
   };

@@ -5,8 +5,7 @@ var Render = {
   Agent: require('./Agent'),
   Context: require('./Context'),
   Path: require('./Path'),
-  Wall: require('./Wall'),
-  Group: require('./Group')
+  Wall: require('./Wall')
 };
 
 module.exports = Render;

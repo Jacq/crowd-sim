@@ -3,7 +3,7 @@ var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
 
 var Context = function(x, y, world, options) {
-  Entity.call(this, x, y);
+  Entity.call(this, x, y, world);
   this.id = 'C' + Context.id++;
   this.mobility = 1;
   this.hazardLevel = 0;
@@ -25,5 +25,6 @@ Context.prototype.in = function(pos) {
 };
 
 Context.id = 0;
+Context.type = 'context';
 
 module.exports = Context;

@@ -8,6 +8,9 @@ var Colors = Base.Colors;
 var Fonts = Base.Fonts;
 
 var Wall = function(wall, texture) {
+  if (!wall) {
+    throw 'Wall object must be defined';
+  }
   Entity.call(this, wall, Wall.container);
   this.texture = texture;
 };
@@ -22,7 +25,7 @@ Wall.prototype.createGraphics = function(wall, texture) {
   this.joints = [];
   for (var j in wall.path) {
     var c = wall.path[j];
-    var joint = new Joint({pos: c, radius: 2 * wall.width}, this.texture);
+    var joint = new Joint(c, this.texture);
     joint.createGraphics(this.graphics);
     this.joints.push(joint);
   }
@@ -52,7 +55,9 @@ Wall.prototype.render = function(options) {
     var points = [];
     for (var i = 0; i < path.length ; i++) {
       //this.graphics.lineTo(path[i][0], path[i][1]);
-      points.push(path[i][0],path[i][1]);
+      points.push(path[i].pos[0],path[i].pos[1]);
+      this.joints[i].sprite.x = path[i].pos[0];
+      this.joints[i].sprite.y = path[i].pos[1];
     }
     this.graphics.drawPolygon(points);
     //this.display.endFill();
@@ -69,10 +74,10 @@ Wall.prototype.render = function(options) {
   }
 };
 
-Wall.prototype.addPath = function(point) {
+Wall.prototype.addPath = function(x, y) {
   var wall = this.entityModel;
-  wall.addPath(point);
-  var joint = new Joint({pos: point, radius: 2 * wall.width}, this.texture);
+  var j = wall.addPath(x, y);
+  var joint = new Joint(j , this.texture);
   joint.createGraphics(this.graphics);
   this.joints.push(joint);
 };

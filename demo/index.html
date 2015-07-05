@@ -22,35 +22,50 @@
 </head>
 
 <body>
-  <div id='control' class='control info_panel'>
+  <div id='control' class='control info-panel'>
     <div class="text-center edit-modes">
-    <div class="label">ADD</div>
-    <ul class="list-inline">
-      <li>
-        <button id="addContext" class="bgcolor-context" title="Add Contexts">C</button>
-      </li>
-      <li>
-        <button id="addGroup" class="bgcolor-group" title="Add Groups">G</button>
-      </li>
-      <li>
-        <button id="addPath" class="bgcolor-path" title="Add Path">P</button>
-      </li>
-      <li>
-        <button id="addWall" class="bgcolor-wall" title="Add Wall">W</button>
-      </li>
-    </ul>
-        </div>
-    File
-    <ul>
-      <li>
-        <button id="select"><i class="fa fa-mouse-pointer"></i>
-      </li>
-      <button id="export">Export</button>
-      </li>
-      <li>
-        <button id="import">Import</button>
-      </li>
-    </ul>
+      <div class="label">EDIT</div>
+      <ul class="list-inline">
+        <li>
+          <button id="select"><i class="fa fa-mouse-pointer"></i>
+        </li>
+        <li>
+          <button id="delete"><i class="fa fa-remove"></i>
+        </li>
+        <li>
+          <button id="addContext" class="bgcolor-context" title="Add Contexts">C</button>
+        </li>
+        <li>
+          <button id="addPath" class="bgcolor-path" title="Add Path">P</button>
+        </li>
+        <li>
+          <button id="addWall" class="bgcolor-wall" title="Add Wall">W</button>
+        </li>
+        <li>
+          <button id="addWall" class="bgcolor-wall" title="Add Wall">W</button>
+        </li>
+      </ul>
+    </div>
+    <div class="text-center select-modes">
+      <div class="label">WORLD</div>
+      <ul class="list-inline">
+        <li>
+            <button id="addGroup" class="bgcolor-group btn-4x" title="Add Groups">G</button>
+        </li>
+        <li>
+          <button id="export"><i class="fa fa-export"></i>
+        </li>
+        <li>
+          <button id="import"><i class="fa fa-import"></i>
+        </li>
+        <li>
+
+        </li>
+        <li>
+
+        </li>
+      </ul>
+    </div>
     <div class="text-center engine-status">
     <div class="label">SIMULATOR</div>
     <ul class="list-inline">
@@ -73,10 +88,21 @@
     </ul>
     </div>
   </div>
+  <div id='entity' class='control entity-panel'>
+    <div class="text-center select-modes">
+      <div class="label">ENTITY</div>
+      <div class="text-left properties">
+      <div>Type:<div class="entity entity-type"></div></div>
+      <div>ID:<div class="entity entity-id"></div></div>
+      <div>X:<input type='text' class="entity entity-x"></div>
+      <div>Y:<input type='text' class="entity entity-y"></div>
+    </div>
+  </div>
+  </div>
   <div id='menu'>
 
   </div>
-  <div id='statuses' class='console info_panel'>
+  <div id='statuses' class='console info-panel'>
     <ul>
       <li>Mode:
         <span id='edit-mode'>None</span>
