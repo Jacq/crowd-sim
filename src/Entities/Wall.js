@@ -6,17 +6,25 @@ var Joint = require('./Joint');
 var Wall = function(x, y, world, options) {
   Entity.call(this, x, y, world);
   this.id = Wall.id++;
-  this.width = options ? options.width || 0.2 : 0.2;
+  this.options = Lazy(options).defaults(Wall.defaults).toObject();
   // n joints, n-1 sections
   if (options && options.path) {
     this.path = [];
     for (var i in options.path) {
       var p = options.path[i];
-      this.path.push(new Joint(p[0], p[1], world, {radius: this.width * 2}));
+      this.path.push(new Joint(p[0], p[1], world, {radius: this.getCornerWidth()}));
     }
   } else {
-    this.path = [new Joint(x, y, world, {radius: this.width * 2})];
+    this.path = [new Joint(x, y, world, {radius: this.getCornerWidth()})];
   }
+};
+
+Wall.prototype.getCornerWidth = function() {
+  return this.options.width * 2;
+};
+
+Wall.prototype.getWidth = function() {
+  return this.options.width;
 };
 
 Wall.prototype.getProjection = function(point, segment) {
@@ -28,11 +36,15 @@ Wall.prototype.getProjection = function(point, segment) {
 };
 
 Wall.prototype.addPath = function(x, y) {
-  var joint = new Joint(x, y, this.world, {radius: this.width});
+  Entity.prototype.updatePos.call(this,x,y);
+  var joint = new Joint(x, y, this.world, {radius: this.getCornerWidth()});
   this.path.push(joint);
   return joint;
 };
 
+Wall.defaults = {
+  width: 0.2
+};
 Wall.id = 0;
 Wall.type = 'wall';
 

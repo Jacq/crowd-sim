@@ -15,7 +15,10 @@ var World = function(x, y, width, height) {
   this.y = y;
   this.width = width;
   this.height = height;
-  this.onNewAgents = null;
+  this.onCreateAgents = null;
+  this.onDestroyAgents = null;
+  this.onCreateEntity = null;
+  this.onDestroyEntity = null;
 };
 
 World.prototype.getDefaultGroup = function() {
@@ -24,10 +27,6 @@ World.prototype.getDefaultGroup = function() {
 
 World.prototype.getGroups = function() {
   return this.groups;
-};
-
-World.prototype.addContext = function(context) {
-  this.entities.contexts = this.entities.contexts.concat(context);
 };
 
 World.prototype.addAgents = function(agents) {
@@ -47,16 +46,36 @@ World.prototype.removeAgents = function(agents) {
   }
 };
 
+World.prototype._onCreate = function(entity) {
+  if (this.onCreateEntity) {
+    this.onCreateEntity(entity);
+  }
+};
+
+World.prototype._onDestroy = function(entity) {
+  if (this.onDestroyEntity) {
+    this.onDestroyEntity(entity);
+  }
+};
+
+World.prototype.addContext = function(context) {
+  this.entities.contexts = this.entities.contexts.concat(context);
+  this._onCreate(context);
+};
+
 World.prototype.addGroup = function(group) {
   this.groups = this.groups.concat(group);
+  this._onCreate(group);
 };
 
 World.prototype.addPath = function(path) {
   this.entities.paths = this.entities.paths.concat(path);
+  this._onCreate(path);
 };
 
 World.prototype.addWall = function(wall) {
   this.entities.walls = this.entities.walls.concat(wall);
+  this._onCreate(wall);
 };
 
 World.prototype.save = function() {

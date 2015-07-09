@@ -97,6 +97,12 @@
     CrowdSimApp.onEntitySelected = function(entity) {
       Editor._entityInfoSet(entity);
     };
+    CrowdSimApp.onCreateEntity = function(entity) {
+      console.log(entity);
+    };
+    CrowdSimApp.onDestroyEntity = function(entity) {
+      console.log(entity);
+    };
 
     // init buttons
     $('.edit-modes button').click(function(event) {
@@ -135,11 +141,24 @@
     var entity = renderEntity.entityModel;
     $('.entity-type',Editor.entityInfo).html(entity.constructor.type);
     $('.entity-id',Editor.entityInfo).html(entity.id);
-    $('.entity-x',Editor.entityInfo).val(entity.pos[0].toFixed(2)).change(function(e) {
-      entity.pos[0] = $(this).val();
-    });
-    $('.entity-y',Editor.entityInfo).val(entity.pos[1].toFixed(2)).change(function(e) {
-      entity.pos[1] = $(this).val();
+
+    function numberHelper(control, pos, i) {
+      $(control).val(pos[i].toFixed(2)).off('change').change(function(e) {
+        if (!isNaN(Number($(this).val()))) {
+          pos[i] = Number($(this).val());
+        }
+      });
+    }
+    numberHelper($('.entity-x',Editor.entityInfo),entity.pos,0);
+    numberHelper($('.entity-y',Editor.entityInfo),entity.pos,1);
+    var control = $('.entity-props',Editor.entityInfo);
+    control.empty();
+    $.each(entity.options, function(p, v) {
+      var newControl = $('<div>' + p + ': </div>');
+      var newInput = $('<input type="text" class="entity entity-' + p + '">').appendTo(newControl);
+      newInput.val(v);
+      control.append(newControl);
+      numberHelper(newInput,entity.options,p);
     });
   };
 

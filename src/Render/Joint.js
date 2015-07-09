@@ -22,15 +22,19 @@ Joint.prototype.destroy = function(graphics) {
 Joint.prototype.createGraphics = function(graphics) {
   this.sprite = new PIXI.Sprite(this.texture);
   Entity.setInteractive(this.sprite);
-  this.sprite.x = this.entityModel.pos[0];
-  this.sprite.y = this.entityModel.pos[1];
   this.sprite.anchor.x = 0.5;
   this.sprite.anchor.y = 0.5;
-  this.sprite.width = 2 * this.entityModel.radius;
-  this.sprite.height = 2 * this.entityModel.radius;
   this.sprite.entity = this;
   this.sprite.alpha = 0.5;
   graphics.addChild(this.sprite);
+  this.render();
+};
+
+Joint.prototype.render = function() {
+  this.sprite.x = this.entityModel.pos[0];
+  this.sprite.y = this.entityModel.pos[1];
+  this.sprite.width = 2 * this.entityModel.getRadius();
+  this.sprite.height = 2 * this.entityModel.getRadius();
 };
 
 Joint.prototype.getAnchor = function(init) {
@@ -44,7 +48,7 @@ Joint.prototype.dragTo = function(pos, anchor) {
   Vec2.subtract(posV2,posV2,this.entityModel.pos);
   var newRadius = Vec2.length(posV2);
   // calculate new size or position if dragging border or body
-  if (this.scalable && newRadius >  this.entityModel.radius * 0.80) {
+  if (this.scalable && newRadius >  this.entityModel.getRadius() * 0.80) {
     this.entityModel.radius  = newRadius;
     this.sprite.width = 2 * newRadius;
     this.sprite.height = 2 * newRadius;

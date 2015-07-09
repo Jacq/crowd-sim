@@ -6,8 +6,19 @@ var CrowdSimApp = (function() {
     // callbacks
     onPreRender: null,
     onPostRender: null,
+    onCreateEntity: null,
+    onDestroyEntity: null,
     snapToGrid: false,
     entitySelected: null
+  };
+
+  // wire entities <=> render entities association
+  App.EntityTypes = {
+    Agent: CrowdSim.Render.Agent,
+    Group: {constructor: CrowdSim.Group},
+    Context: {constructor: CrowdSim.Context, renderConstruct: CrowdSim.Render.Context},
+    Path: {constructor: CrowdSim.Path, renderConstruct: CrowdSim.Render.Path},
+    Wall: {constructor: CrowdSim.Wall, renderConstruct: CrowdSim.Render.Wall},
   };
 
   var defaultOptions = {
@@ -67,29 +78,13 @@ var CrowdSimApp = (function() {
       }
     }
     //var loader = new PIXI.AssetLoader(App.assets);
-    App._initRender(App._world);
+    App._initRender();
     App.load(w, h);
-  };
-
-  App.startCreateEntity = function(entityType, pos) {
-    var entity = new entityType.constructor(pos.x,pos.y, App._world);
-    App._newRenderEntity = entityType.add(entity);
-    return App._newRenderEntity;
-  };
-
-  App.endCreateEntity = function() {
-    App._newRenderEntity = null;
-    return null;
-  };
-
-  App.addContext = function(context) {
-    App._world.addContext(context);
-    return new CrowdSim.Render.Context(context);
   };
 
   App.onCreateAgents = function(agents) {
     Lazy(agents).each(function(a) {
-      new CrowdSim.Render.Agent(a, App._agentTexture);
+      new CrowdSim.Render.Agent(a);
     });
   };
 
@@ -99,24 +94,52 @@ var CrowdSimApp = (function() {
     });
   };
 
+  App.startCreateEntity = function(entityType, pos) {
+    var entity = new entityType.constructor(pos.x, pos.y, App._world);
+    App._newRenderEntity = App.addEntity(entityType, entity);
+    return App._newRenderEntity;
+  };
+
+  App.endCreateEntity = function() {
+    App._graphicsCreateEntity.clear();
+    App._newRenderEntity = null;
+    return null;
+  };
+
+  App.addEntity = function(entityType, entity) {
+    entityType.add(entity);
+    if (entityType.renderConstruct) {
+      return new entityType.renderConstruct(entity);
+    }
+  };
+
+  App.addContext = function(context) {
+    return App.addEntity(App.EntityTypes.Context, context);
+  };
+
   App.addGroup = function(group) {
-    App._world.addGroup(group);
+    return App.addEntity(App.EntityTypes.Group, group);
   };
 
   App.addPath = function(path) {
-    App._world.addPath(path);
-    return new CrowdSim.Render.Path(path, App._pathTexture);
+    return App.addEntity(App.EntityTypes.Path, path);
   };
 
   App.addWall = function(wall) {
-    App._world.addWall(wall);
-    return new CrowdSim.Render.Wall(wall, App._wallTexture);
+    return App.addEntity(App.EntityTypes.Wall, wall);
   };
 
   App.load = function(w, h) {
     var world = App._world = new CrowdSim.World(0, 0, w, h);
+    // wire world events and functions
     App._world.onCreateAgents = App.onCreateAgents;
     App._world.onDestroyAgents = App.onDestroyAgents;
+    App._world.onCreateEntity = App.onCreateEntity;
+    App._world.onDestroyEntity = App.onDestroyEntity;
+    App.EntityTypes.Group.add = App._world.addGroup.bind(App._world);
+    App.EntityTypes.Context.add = App._world.addContext.bind(App._world);
+    App.EntityTypes.Path.add = App._world.addPath.bind(App._world);
+    App.EntityTypes.Wall.add = App._world.addWall.bind(App._world);
 
     App._engine = new CrowdSim.Engine(App._world, {
       timeStepSize: 0.1, // time per step
@@ -129,15 +152,15 @@ var CrowdSimApp = (function() {
     var cx = 55, cy = 45;
     var gx = 65, gy = 50;
     var radius = 4;
-    var opts = {waypoints: [[10, 10],[20, 21],[31, 30],[41, 41],[41, 75],[55, 80],[65, 70],[65, 60]]};
-    var path = new CrowdSim.Path(10,10,world,opts);
+    var opts = {waypoints: [[10, 10], [20, 21], [31, 30], [41, 41], [41, 75], [55, 80], [65, 70], [65, 60]]};
+    var path = new CrowdSim.Path(10, 10, world, opts);
     path.reverse();
 
     //var path = new CrowdSim.Path([{pos: [65, 60], radius: radius / 2}, {pos: [65, 70], radius: radius / 2}, {pos: [55, 80], radius: 2 * radius}]);
 
     var startContext = new CrowdSim.Context(gx, gy, world, {width: sizeC, height: sizeC});
     //var endContext = new CrowdSim.Context(55  , 80 - sizeC , sizeC, sizeC);
-    var endContext = new CrowdSim.Context(10, 10,world, {width: sizeC, height: sizeC});
+    var endContext = new CrowdSim.Context(10, 10, world, {width: sizeC, height: sizeC});
     opts = {debug: App.debug,
                 agentsNumber: 10,
                 start: {prob: 0.1, rate: 1, max: 1000},
@@ -189,12 +212,17 @@ var CrowdSimApp = (function() {
       return false;
     }
 
-    if (App._newRenderEntity) {
-      var pos = App.screenToWorld(event.clientX,event.clientY);
-      if (App._newRenderEntity instanceof CrowdSim.Render.Wall) { // add joint
-        App._newRenderEntity.addPath(pos.x,pos.y);
-      } else if (App._newRenderEntity instanceof CrowdSim.Render.Path) { // add waypoint
-        App._newRenderEntity.addWaypoint(pos.x,pos.y); // use default radius
+    switch (event.button) {
+    case 0: // left button
+      if (App._newRenderEntity) { // creatin entities
+        var pos = App.screenToWorld(event.clientX, event.clientY);
+        if (App._newRenderEntity instanceof CrowdSim.Render.Wall) { // add joint
+          App._newRenderEntity.addPath(pos.x, pos.y);
+        } else if (App._newRenderEntity instanceof CrowdSim.Render.Path) { // add waypoint
+          App._newRenderEntity.addWaypoint(pos.x, pos.y); // use default radius
+        } else if (App._newRenderEntity instanceof CrowdSim.Render.Context) { // add waypoint
+          App._newRenderEntity.setArea(pos.x, pos.y);
+        }
       }
     }
   };
@@ -213,9 +241,17 @@ var CrowdSimApp = (function() {
         if (App.entitySelected) {
           App.onEntitySelected(App.entitySelected.entity);
         }
-        this.entity.dragTo(newPosition,this.mousedownAnchor);
+        this.entity.dragTo(newPosition, this.mousedownAnchor);
       }
-
+    } else { // stage move
+      if (App._newRenderEntity && event.data) {
+        var origin = App._newRenderEntity.entityModel.pos;
+        var pos = event.data.getLocalPosition(this.parent);//App.screenToWorld(event.clientX, event.clientY);
+        App._graphicsCreateEntity.clear();
+        App._graphicsCreateEntity.lineStyle(0.2, 0xFFFFFF);
+        App._graphicsCreateEntity.moveTo(origin[0], origin[1]);
+        App._graphicsCreateEntity.lineTo(pos.x, pos.y);
+      }
     }
   };
 
@@ -314,9 +350,9 @@ var CrowdSimApp = (function() {
   App._initRender = function() {
 
     var baseTextures = PIXI.Texture.fromImage('img/flt.png');
-    App._agentTexture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(26, 16, 51, 36));
-    App._wallTexture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(274, 14, 32, 32));
-    App._pathTexture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(326, 14, 32, 32));
+    CrowdSim.Render.Agent.texture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(26, 16, 51, 36));
+    CrowdSim.Render.Wall.texture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(274, 14, 32, 32));
+    CrowdSim.Render.Path.texture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(326, 14, 32, 32));
 
     App._worldContainer.removeChildren();
     App._agentsContainer.removeChildren();
@@ -351,6 +387,11 @@ var CrowdSimApp = (function() {
     graphicsAux.moveTo(-1, 9);
     graphicsAux.lineTo(0, 10);
     graphicsAux.lineTo(1, 9);
+
+    // for temporary graphics
+    App._graphicsCreateEntity = new PIXI.Graphics();
+
+    App._worldContainer.addChild(App._graphicsCreateEntity);
     App._worldContainer.addChild(graphicsAux);
 
     requestAnimationFrame(App._render);
@@ -380,23 +421,10 @@ var CrowdSimApp = (function() {
     App._renderer.render(App._stage);
     requestAnimationFrame(App._render);
 
-    // render selected entity indication
-    if (App._newRenderEntity) {
-
-    }
-
     // callback postrender
     if (App.onPostRender) {
       App.onPostRender();
     }
-  };
-
-  App.EntityTypes = {
-    Agent: CrowdSim.Render.Agent,
-    Group: {constructor: CrowdSim.Group, add: App.addGroup},
-    Context: {constructor: CrowdSim.Context, add: App.addContext},
-    Path: {constructor: CrowdSim.Path, add: App.addPath},
-    Wall: {constructor: CrowdSim.Wall, add: App.addWall},
   };
 
   return App;

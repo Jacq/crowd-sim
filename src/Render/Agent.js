@@ -6,20 +6,21 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
-var Agent = function(agent, texture) {
+var Agent = function(agent) {
   if (!agent) {
     throw 'Agent object must be defined';
   }
   //var display = new PIXI.Sprite(options.texture);
 
   Entity.call(this, agent);
-  this.sprite = new PIXI.Sprite(texture);
+  this.sprite = new PIXI.Sprite(Agent.texture);
   Entity.prototype.createGraphics.call(this,Agent.container, this.sprite);
   this.sprite.visible = Agent.detail.level > 0;
   this.sprite.anchor.set(0.5);
   //this.display.alpha = 0.5;
-  this.sprite.height = agent.size;
-  this.sprite.width = agent.size;
+  var size = agent.size;
+  this.sprite.height = size;
+  this.sprite.width = size;
   this.sprite.position.x = agent.pos[0];
   this.sprite.position.y = agent.pos[1];
 };
@@ -68,17 +69,23 @@ Agent.prototype.render = function() {
     this.graphics.moveTo(e.pos[0], e.pos[1]);
     this.graphics.lineTo(e.pos[0] + e.vel[0], e.pos[1] + e.vel[1]);
   }
-  if (Agent.detail.level > 3 && e.debug && e.debug.forces) {
-    var force = Vec2.create();
-    for (var f in e.debug.forces) {
-      this.graphics.lineStyle(0.1, Colors.Forces[f]);
-      this.graphics.moveTo(e.pos[0], e.pos[1]);
-      Vec2.normalize(force, e.debug.forces[f]);
-      this.graphics.lineTo(e.pos[0] + force[0], e.pos[1] + force[1]);
+  if (e.debug) {
+    if (Agent.detail.level > 3 && e.debug.forces) {
+      var force = Vec2.create();
+      for (var f in e.debug.forces) {
+        this.graphics.lineStyle(0.1, Colors.Forces[f]);
+        this.graphics.moveTo(e.pos[0], e.pos[1]);
+        Vec2.normalize(force, e.debug.forces[f]);
+        this.graphics.lineTo(e.pos[0] + force[0], e.pos[1] + force[1]);
+      }
+    }
+    if (isNaN(e.pos[0]) || isNaN(e.pos[1])) {
+      throw 'Agent position undefined';
     }
   }
 };
 
+Agent.texture = null; // agents texture
 Agent.debugContainer = null; // special container use to render all agents, e.g particleContainer
 Agent.detail = new Detail(4);
 

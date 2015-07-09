@@ -54,7 +54,7 @@ Group.prototype.generateAgents = function(agentsNumber, startContext) {
   for (var i = 0; i < agentsNumber; i++) {
     var pos = isNaN(this.options.pos) ? this.options.pos() : this.options.pos;
     var size = isNaN(this.options.size) ? this.options.size() : this.options.size;
-    var agent = new Agent(this, pos[0], pos[1], size, {debug: this.options.debug});
+    var agent = new Agent(pos[0], pos[1], this,{size: size, debug: this.options.debug});
     agent.followPath();
     newAgents.push(agent);
   }
@@ -77,7 +77,7 @@ Group.prototype.removeAgents = function(agents) {
 
 Group.prototype.addAgent = function(x, y) {
   var size = isNaN(this.options.size) ? this.options.size() : this.options.size;
-  var agent = new Agent(this, x, y, size);
+  var agent = new Agent(x, y, this, {size: size});
   this.agents.push(agent);
 };
 

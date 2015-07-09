@@ -5,7 +5,7 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
-var Context = function(context, container) {
+var Context = function(context) {
   if (!context) {
     throw 'Context object must be defined';
   }
@@ -37,8 +37,8 @@ Context.prototype.mousedown = function(init) {
 
 Context.prototype.dragTo = function(pos, anchor) {
   var context = this.entityModel;
-  context.x = pos.x - context.width / 2;
-  context.y = pos.y - context.height / 2;
+  context.pos[0] = pos.x - context.getWidth() / 2;
+  context.pos[1] = pos.y - context.getHeight() / 2;
 };
 
 Context.prototype.mouseup = function(init) {
@@ -60,16 +60,22 @@ Context.prototype.render = function(options) {
   }
 
   if (Context.detail.level > 0) {
-    this.rect.x = context.x;
-    this.rect.y = context.y;
-    this.rect.width = context.width;
-    this.rect.height = context.height;
-    this.label.x = context.x + context.width / 2 - this.label.width / 2;
-    this.label.y = context.y + context.height / 2 - this.label.height / 2;
-    this.graphics.beginFill(this.graphics.hover ? Colors.Hover : Colors.Context, this.graphics.hover ? 0.9 : 0.2);
+    var w = context.getWidth();
+    var h = context.getHeight();
+    this.rect.x = context.pos[0];
+    this.rect.y = context.pos[1];
+    this.rect.width = w;
+    this.rect.height = h;
+    this.label.x = context.pos[0] + w / 2 - this.label.width / 2;
+    this.label.y = context.pos[1] + h / 2 - this.label.height / 2;
+    this.graphics.beginFill(this.graphics.hover ? Colors.Hover : Colors.Context, this.graphics.hover ? 0.9 : 0.3);
     this.graphics.drawShape(this.rect);
     this.graphics.endFill();
   }
+};
+
+Context.prototype.setArea = function(x, y) {
+  this.entityModel.setArea(x, y);
 };
 
 Context.detail = new Detail(2);

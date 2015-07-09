@@ -11,13 +11,13 @@ var Behavior = require('./Behavior');
  * {Vec2}       [description]
  */
 var Panic = function(world, options) {
-  Behavior.call(this,world);
+  Behavior.call(this, world);
   this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
 // path point, point, other agent {point , radius}
 Panic.prototype.getAccel = function(agent, target) {
-  Behavior.prototype.getAccel.call(this,agent, target);
+  Behavior.prototype.getAccel.call(this, agent, target);
   var desiredForce = Vec2.create();
   var agentsForce = Vec2.create();
   var wallsForce = Vec2.create();
@@ -28,7 +28,7 @@ Panic.prototype.getAccel = function(agent, target) {
   Vec2.add(accel, agentsForce, wallsForce);
   if (target) { // agent is going somewhere?
     distanceToTarget = Vec2.distance(agent.pos, target.pos);
-    if (distanceToTarget > target.radius) {
+    if (distanceToTarget > target.getRadius()) {
       Vec2.subtract(desiredForce, target.pos, agent.pos);
       if (Vec2.length(desiredForce) > agent.maxAccel) {
         Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxAccel * agent.mass);
@@ -55,7 +55,7 @@ Panic.prototype.getAccel = function(agent, target) {
       var wall = walls[w];
       for (var s = 0; s < wall.path.length - 1; s++) { // check each segment of wall
         var projection = wall.getProjection(agent.pos, s);
-        var wallsToAgentForce = this.calculateWallForce(agent, projection, wall.width);
+        var wallsToAgentForce = this.calculateWallForce(agent, projection, wall.getWidth());
         Vec2.add(wallsForce, wallsForce, wallsToAgentForce);
       }
     }
@@ -73,6 +73,10 @@ Panic.prototype.getAccel = function(agent, target) {
   Vec2.add3(accel, desiredForce, agentsForce, wallsForce);
   // return desiredForce + agentsForce + wallsForce;
   if (agent.debug) {
+    if (isNaN(desiredForce[0]) || isNaN(agentsForce[0]) || isNaN(wallsForce[0]) ||
+        isNaN(desiredForce[1]) || isNaN(agentsForce[1]) || isNaN(wallsForce[1])) {
+      throw 'One of the forces is a NaN!';
+    }
     agent.debug.forces = {
       desired: desiredForce,
       agents: agentsForce,

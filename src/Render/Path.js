@@ -6,12 +6,11 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
-var Path = function(path, texture) {
+var Path = function(path) {
   if (!path) {
     throw 'Path object must be defined';
   }
   Entity.call(this, path);
-  this.texture = texture;
 };
 
 Path.prototype.destroy = function() {
@@ -19,7 +18,7 @@ Path.prototype.destroy = function() {
   this.destroyGraphics(Path.container);
 };
 
-Path.prototype.createGraphics = function(path, texture) {
+Path.prototype.createGraphics = function(path) {
   this.graphics = Entity.prototype.createGraphics.call(this,Path.container);
   this.label = new PIXI.Text(path.id, Base.Fonts.default);
   this.label.resolution = Base.Fonts.resolution;
@@ -31,7 +30,7 @@ Path.prototype.createGraphics = function(path, texture) {
     this.joints = [];
     for (var i in wps) {
       var wp = wps[i];
-      var joint = new Joint(wp, this.texture);
+      var joint = new Joint(wp, Path.texture);
       joint.createGraphics(this.graphics);
       this.joints.push(joint);
     }
@@ -55,14 +54,13 @@ Path.prototype.render = function(options) {
   if (this.joints && this.joints.length > 0) {
     var points  = [];
     if (Path.detail.level > 0) {
-      this.graphics.lineStyle(path.width, Colors.Path, 0.6);
+      this.graphics.lineStyle(path.getWidth(), Colors.Path, 0.6);
       //this.graphics.moveTo(this.joints[0].pos[0], this.joints[0].pos[1]);
       for (var i = 0; i < this.joints.length; i++) {
         //this.graphics.lineTo(this.joints[lj].pos[0], this.joints[lj].pos[1]);
         var joint = this.joints[i].entityModel;
         points.push(joint.pos[0],joint.pos[1]);
-        this.joints[i].sprite.x = this.joints[i].entityModel.pos[0];
-        this.joints[i].sprite.y = this.joints[i].entityModel.pos[1];
+        this.joints[i].render();
         //this.graphics.drawCircle(joint.pos[0],joint.pos[1],joint.radius);
       }
       this.graphics.drawPolygon(points);
@@ -83,12 +81,13 @@ Path.prototype.render = function(options) {
 Path.prototype.addWaypoint = function(x, y) {
   var path = this.entityModel;
   var wp = path.addWaypoint(x, y);
-  var joint = new Joint(wp, this.texture);
+  var joint = new Joint(wp, Path.texture);
   joint.createGraphics(this.graphics);
   this.joints.push(joint);
   return joint;
 };
 
+Path.texture = null; // paths joint texture
 Path.detail = new Detail(2);
 
 module.exports = Path;

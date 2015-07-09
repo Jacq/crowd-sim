@@ -42,7 +42,7 @@
           <button id="addWall" class="bgcolor-wall" title="Add Wall">W</button>
         </li>
         <li>
-          <button id="addWall" class="bgcolor-wall" title="Add Wall">W</button>
+          <button id="addGroup" class="bgcolor-group" title="Add Groups">G</button>
         </li>
       </ul>
     </div>
@@ -50,13 +50,10 @@
       <div class="label">WORLD</div>
       <ul class="list-inline">
         <li>
-            <button id="addGroup" class="bgcolor-group btn-4x" title="Add Groups">G</button>
+          <button id="export" title="Save"><i class="fa fa-download"></i>
         </li>
         <li>
-          <button id="export"><i class="fa fa-export"></i>
-        </li>
-        <li>
-          <button id="import"><i class="fa fa-import"></i>
+          <button id="import" title="Load"><i class="fa fa-upload"></i>
         </li>
         <li>
 
@@ -67,37 +64,49 @@
       </ul>
     </div>
     <div class="text-center engine-status">
-    <div class="label">SIMULATOR</div>
-    <ul class="list-inline">
-      <li>
-        <button id="run" class="btn-2x"><i class="fa fa-play" title="Run"></i></button>
-        <button id="stop" class="btn-2x hide"><i class="fa fa-stop" title="Stop"></i></button>
-      </li>
-      <li>
-        <button id="step"><i class="fa fa-step-forward" title="Step"></i></button>
-      </li>
-      <li>
-        <hr>
-      </li>
-      <li>
-        <button id="reset">Reset</button>
-      </li>
-      <!--  <li>
-                <button class="pure-button" onclick="Demo.Reset()">Reset</button>
-            </li>-->
-    </ul>
+      <div class="label">SIMULATOR</div>
+      <ul class="list-inline">
+        <li>
+          <button id="run" class="btn-2x"><i class="fa fa-play" title="Run"></i></button>
+          <button id="stop" class="btn-2x hide"><i class="fa fa-stop" title="Stop"></i></button>
+        </li>
+        <li>
+          <button id="step"><i class="fa fa-step-forward" title="Step"></i></button>
+        </li>
+        <li>
+          <hr>
+        </li>
+        <li>
+          <button id="reset">Reset</button>
+        </li>
+      </ul>
+    </div>
+    <div class="text-center entity-list">
+      <div class="label">ENTITIES</div>
+      <ul>
+      </ul>
     </div>
   </div>
   <div id='entity' class='control entity-panel'>
     <div class="text-center select-modes">
       <div class="label">ENTITY</div>
       <div class="text-left properties">
-      <div>Type:<div class="entity entity-type"></div></div>
-      <div>ID:<div class="entity entity-id"></div></div>
-      <div>X:<input type='text' class="entity entity-x"></div>
-      <div>Y:<input type='text' class="entity entity-y"></div>
+        <div>Type:
+          <div class="entity entity-type"></div>
+        </div>
+        <div>ID:
+          <div class="entity entity-id"></div>
+        </div>
+        <div>X:
+          <input type='text' class="entity entity-x">
+        </div>
+        <div>Y:
+          <input type='text' class="entity entity-y">
+        </div>
+        <div class="label">PROPS</div>
+        <div class="entity entity-props"></div>
+      </div>
     </div>
-  </div>
   </div>
   <div id='menu'>
 
@@ -106,33 +115,33 @@
     <ul>
       <li>Mode:
         <span id='edit-mode'>None</span>
-      <li>Running?:
-        <span id='running'></span>
-      </li>
-      <li>Iterations:
-        <span id='iterations'></span>
-      </li>
-      <li>Agents:
-        <span id='agents'></span>
-      </li>
-      <li>Contexts:
-        <span id='contexts'></span>
-      </li>
-      <li>Groups:
-        <span id='groups'></span>
-      </li>
-      <li>Walls:
-        <span id='walls'></span>
-      </li>
-      <li>Paths:
-        <span id='paths'></span>
-      </li>
-      <li>Mouse:
-        <span id='mouse'></span>
-      </li>
-      <li>Agent:
-        <span id='agent'></span>
-      </li>
+        <li>Running?:
+          <span id='running'></span>
+        </li>
+        <li>Iterations:
+          <span id='iterations'></span>
+        </li>
+        <li>Agents:
+          <span id='agents'></span>
+        </li>
+        <li>Contexts:
+          <span id='contexts'></span>
+        </li>
+        <li>Groups:
+          <span id='groups'></span>
+        </li>
+        <li>Walls:
+          <span id='walls'></span>
+        </li>
+        <li>Paths:
+          <span id='paths'></span>
+        </li>
+        <li>Mouse:
+          <span id='mouse'></span>
+        </li>
+        <li>Agent:
+          <span id='agent'></span>
+        </li>
     </ul>
   </div>
   <div id='canvas'></div>

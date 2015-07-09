@@ -7,12 +7,11 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 var Fonts = Base.Fonts;
 
-var Wall = function(wall, texture) {
+var Wall = function(wall) {
   if (!wall) {
     throw 'Wall object must be defined';
   }
   Entity.call(this, wall, Wall.container);
-  this.texture = texture;
 };
 
 Wall.prototype.destroy = function() {
@@ -20,12 +19,12 @@ Wall.prototype.destroy = function() {
   this.destroyGraphics(Wall.container);
 };
 
-Wall.prototype.createGraphics = function(wall, texture) {
+Wall.prototype.createGraphics = function(wall) {
   this.graphics = Entity.prototype.createGraphics.call(this,Wall.container);
   this.joints = [];
   for (var j in wall.path) {
     var c = wall.path[j];
-    var joint = new Joint(c, this.texture);
+    var joint = new Joint(c, Wall.texture);
     joint.createGraphics(this.graphics);
     this.joints.push(joint);
   }
@@ -50,14 +49,13 @@ Wall.prototype.render = function(options) {
 
   if (Wall.detail.level > 0) {
     //this.display.beginFill(Colors.Wall, 0.1);
-    this.graphics.lineStyle(wall.width, this.graphics.hover ? Colors.Hover : Colors.Wall);
+    this.graphics.lineStyle(wall.getWidth(), this.graphics.hover ? Colors.Hover : Colors.Wall);
     //this.graphics.moveTo(path[0][0], path[0][1]);
     var points = [];
     for (var i = 0; i < path.length ; i++) {
       //this.graphics.lineTo(path[i][0], path[i][1]);
       points.push(path[i].pos[0],path[i].pos[1]);
-      this.joints[i].sprite.x = path[i].pos[0];
-      this.joints[i].sprite.y = path[i].pos[1];
+      this.joints[i].render();
     }
     this.graphics.drawPolygon(points);
     //this.display.endFill();
@@ -77,11 +75,12 @@ Wall.prototype.render = function(options) {
 Wall.prototype.addPath = function(x, y) {
   var wall = this.entityModel;
   var j = wall.addPath(x, y);
-  var joint = new Joint(j , this.texture);
+  var joint = new Joint(j , Wall.texture);
   joint.createGraphics(this.graphics);
   this.joints.push(joint);
 };
 
+Wall.texture = null; // wall joints texture
 Wall.detail = new Detail(2);
 
 module.exports = Wall;

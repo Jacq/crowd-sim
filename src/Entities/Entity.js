@@ -6,4 +6,9 @@ var Entity = function(x, y, world) {
   this.world = world;
 };
 
+Entity.prototype.updatePos = function(x, y) {
+  this.pos[0] = x;
+  this.pos[1] = y;
+};
+
 module.exports = Entity;
