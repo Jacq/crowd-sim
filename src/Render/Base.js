@@ -1,11 +1,12 @@
 'use strict';
 
 var Colors = {
-  Hover: 0x646729,
-  Context: 0xe1eca0,
+  Hover: 0xebff00,
+  Context: 0x646729,
   Agent: 0xFF0000,
+  Group: 0xFFFFFF,
   Wall: 0x00FF00,
-  Joint: 0xFFFFFF,
+  Joint: 0xAAAAAA,
   Path: 0xe00777,
   Waypoint: 0x7a7a7a,
   Forces: {desired: 0xfffff,

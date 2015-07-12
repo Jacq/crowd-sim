@@ -11,10 +11,10 @@ ul {
   padding: 0; }
 
 .bgcolor-context {
-  background-color: #e1eca0; }
+  background-color: #646729; }
 
 .color-context {
-  color: #e1eca0; }
+  color: #646729; }
 
 .bgcolor-group {
   background-color: #fafafa; }
@@ -56,14 +56,18 @@ button,
 .info-panel ul {
   list-style-type: none; }
 
-.entity-panel {
+.control.entity-panel {
   right: 0;
-  text-align: left; }
-  .entity-panel .properties {
+  text-align: left;
+  width: 150px;
+  /*max-height: 50%;
+  overflow-y: scroll;*/ }
+  .control.entity-panel .properties {
     padding: 5px; }
 
 .select-modes {
-  text-align: left; }
+  text-align: left;
+  width: 100%; }
 
 .control {
   padding: 0;
@@ -80,7 +84,8 @@ button,
   bottom: 0;
   opacity: 0.8;
   right: 0;
-  width: 100%; }
+  width: 100%;
+  background-color: lightgray; }
 
 .console-show {
   height: 20%; }
@@ -97,6 +102,12 @@ button,
 .btn-2x {
   width: 50px; }
 
+.btn-3x {
+  width: 75px; }
+
+.btn-4x {
+  width: 100px; }
+
 .text-center {
   text-align: center; }
 
@@ -105,6 +116,12 @@ button,
 
 .text-right {
   text-align: right; }
+
+.pull-right {
+  float: right; }
+
+.pull-left {
+  float: left; }
 
 .label {
   padding: 2px;
@@ -118,3 +135,9 @@ ul.list-inline {
 .entity {
   display: inline;
   width: 100%; }
+
+.entity-list-container {
+  overflow-y: auto; }
+  .entity-list-container li {
+    border: 1px solid black;
+    cursor: pointer; }

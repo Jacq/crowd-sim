@@ -23,9 +23,11 @@ Agent.prototype.getRadius = function() {
   return this.radius;
 };
 
-Agent.prototype.followPath = function(index) {
-  if (this.group.path) {
-    this.target = this.group.path.wps[index || 0];
+Agent.prototype.followGroupPath = function(index) {
+  var path = this.group.getPath();
+  if (path) {
+    var wps = path.getWaypoints();
+    this.target = wps[index || 0];
     this.pathNextIdx = 1;
   } else {
     this.target = null;
@@ -34,7 +36,7 @@ Agent.prototype.followPath = function(index) {
 };
 
 Agent.prototype.step = function(stepSize) {
-  var path = this.group.path;
+  var wps = this.group.getPath().getWaypoints();
   var accel = this.group.behavior.getAccel(this, this.target);
 
   if (this.debug) {
@@ -48,9 +50,9 @@ Agent.prototype.step = function(stepSize) {
   if (this.target) {
     var distToTarget = Vec2.distance(this.pos, this.target.pos);
     if (distToTarget < this.target.getRadius()) {
-      if (this.pathNextIdx < path.wps.length) {
+      if (this.pathNextIdx < wps.length) {
         // follow to next waypoint
-        this.target = path.wps[this.pathNextIdx++];
+        this.target = wps[this.pathNextIdx++];
       } else {
         // arrived at last!
         this.pathNextIdx = null;

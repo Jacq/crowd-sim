@@ -23,7 +23,7 @@ Path.prototype.createGraphics = function(path) {
   this.label = new PIXI.Text(path.id, Base.Fonts.default);
   this.label.resolution = Base.Fonts.resolution;
   this.graphics.addChild(this.label);
-  var wps = path.wps;
+  var wps = path.getWaypoints();
   this.label.x = wps[0].pos[0] - this.label.width / 2;
   this.label.y = wps[0].pos[1] - this.label.height / 2;
   if (wps && wps.length > 0) {
@@ -54,7 +54,9 @@ Path.prototype.render = function(options) {
   if (this.joints && this.joints.length > 0) {
     var points  = [];
     if (Path.detail.level > 0) {
-      this.graphics.lineStyle(path.getWidth(), Colors.Path, 0.6);
+      this.label.x = this.joints[0].entityModel.pos[0] - this.label.width / 2;
+      this.label.y = this.joints[0].entityModel.pos[1] - this.label.height / 2;
+      this.graphics.lineStyle(path.getWidth(), this.hover ? Colors.Hover : Colors.Path, 0.6);
       //this.graphics.moveTo(this.joints[0].pos[0], this.joints[0].pos[1]);
       for (var i = 0; i < this.joints.length; i++) {
         //this.graphics.lineTo(this.joints[lj].pos[0], this.joints[lj].pos[1]);
@@ -64,8 +66,6 @@ Path.prototype.render = function(options) {
         //this.graphics.drawCircle(joint.pos[0],joint.pos[1],joint.radius);
       }
       this.graphics.drawPolygon(points);
-      this.label.x = this.joints[0].entityModel.pos[0] - this.label.width / 2;
-      this.label.y = this.joints[0].entityModel.pos[1] - this.label.height / 2;
     }
     //this.display.beginFill(Colors.Joint);
     if (Path.detail.level > 1) {

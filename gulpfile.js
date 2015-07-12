@@ -80,7 +80,8 @@ gulp.task('styles', function() {
     .pipe($.sass())
     .on('error', errorLogger) // more verbose and dupe output. requires emit.
     .pipe($.autoprefixer({browsers: ['last 2 version', '> 5%']}))
-    .pipe(gulp.dest(config.css));
+    .pipe(gulp.dest(config.css))
+    .pipe(browserSync.stream());
 });
 
 /**
@@ -179,8 +180,10 @@ gulp.task('dev', ['clean', 'inject'], function() {
     },
     port: 3000,
     files: [
-      config.demo + '**/*.*',
-      '!' + config.sass
+      config.demo + '**/*.js',
+      config.demo + '**/*.html',
+      '!' + config.sass,
+      '!' + config.css
     ],
     ghostMode: { // these are the defaults t,f,t,t
       clicks: true,

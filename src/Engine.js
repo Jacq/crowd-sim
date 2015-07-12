@@ -43,8 +43,8 @@ Engine.prototype._step = function() {
   var world = this.world;
   var options = this.options;
   var timeStepSize = options.timeStepSize;
-  var entities = this.world.entities;
-  Lazy(entities.agents).each(function(agent) {
+  var agents = this.world.getAgents();
+  Lazy(agents).each(function(agent) {
     agent.step(timeStepSize);
     if (agent.selected) {
       world.agentSelected = agent;

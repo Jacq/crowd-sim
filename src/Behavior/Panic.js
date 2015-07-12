@@ -53,7 +53,7 @@ Panic.prototype.getAccel = function(agent, target) {
   if (walls.length > 0) {
     for (var w in walls) { // check all walls
       var wall = walls[w];
-      for (var s = 0; s < wall.path.length - 1; s++) { // check each segment of wall
+      for (var s = 0; s < wall.getCorners().length - 1; s++) { // check each segment of wall
         var projection = wall.getProjection(agent.pos, s);
         var wallsToAgentForce = this.calculateWallForce(agent, projection, wall.getWidth());
         Vec2.add(wallsForce, wallsForce, wallsToAgentForce);

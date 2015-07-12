@@ -15,15 +15,16 @@ var Wall = function(wall) {
 };
 
 Wall.prototype.destroy = function() {
-  Entity.prototype.destroyGraphics.call(this,Wall.container, this.graphics);
+  Entity.prototype.destroyGraphics.call(this, Wall.container, this.graphics);
   this.destroyGraphics(Wall.container);
 };
 
 Wall.prototype.createGraphics = function(wall) {
-  this.graphics = Entity.prototype.createGraphics.call(this,Wall.container);
+  this.graphics = Entity.prototype.createGraphics.call(this, Wall.container);
   this.joints = [];
-  for (var j in wall.path) {
-    var c = wall.path[j];
+  var corners = wall.getCorners();
+  for (var j in corners) {
+    var c = corners[j];
     var joint = new Joint(c, Wall.texture);
     joint.createGraphics(this.graphics);
     this.joints.push(joint);
@@ -35,9 +36,9 @@ Wall.prototype.render = function(options) {
     this.graphics.clear();
     return;
   }
-  Entity.prototype.render.call(this,this.graphics);
+  Entity.prototype.render.call(this, this.graphics);
   var wall = this.entityModel;
-  var path = wall.path;
+  var corners = wall.getCorners();
 
   // init render
   if (!this.graphics && Wall.detail.level > 0) {
@@ -49,19 +50,19 @@ Wall.prototype.render = function(options) {
 
   if (Wall.detail.level > 0) {
     //this.display.beginFill(Colors.Wall, 0.1);
-    this.graphics.lineStyle(wall.getWidth(), this.graphics.hover ? Colors.Hover : Colors.Wall);
-    //this.graphics.moveTo(path[0][0], path[0][1]);
+    this.graphics.lineStyle(wall.getWidth(), this.hover ? Colors.Hover : Colors.Wall);
+    //this.graphics.moveTo(corners[0][0], corners[0][1]);
     var points = [];
-    for (var i = 0; i < path.length ; i++) {
-      //this.graphics.lineTo(path[i][0], path[i][1]);
-      points.push(path[i].pos[0],path[i].pos[1]);
+    for (var i = 0; i < corners.length; i++) {
+      //this.graphics.lineTo(corners[i][0], corners[i][1]);
+      points.push(corners[i].pos[0], corners[i].pos[1]);
       this.joints[i].render();
     }
     this.graphics.drawPolygon(points);
     //this.display.endFill();
   }
   if (Wall.detail.level > 1) {
-    /*this.graphics.beginFill(this.graphics.hover ? Colors.Hover : Colors.Joint);
+    /*this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Joint);
     for (var j in this.joints) {
       if (this.joints[j].hover) {
 
@@ -72,10 +73,10 @@ Wall.prototype.render = function(options) {
   }
 };
 
-Wall.prototype.addPath = function(x, y) {
+Wall.prototype.addCorner = function(x, y) {
   var wall = this.entityModel;
-  var j = wall.addPath(x, y);
-  var joint = new Joint(j , Wall.texture);
+  var j = wall.addCorner(x, y);
+  var joint = new Joint(j, Wall.texture);
   joint.createGraphics(this.graphics);
   this.joints.push(joint);
 };

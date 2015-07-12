@@ -74,7 +74,7 @@ Group.prototype.generateAgents = function(agentsNumber, startContext) {
   for (var i = 0; i < agentsNumber; i++) {
     var pos = isNaN(this.options.pos) ? this.options.pos() : this.options.pos;
     var size = isNaN(this.options.size) ? this.options.size() : this.options.size;
-    var agent = new Agent(this, pos[0], pos[1], size, {debug: this.options.debug});
+    var agent = new Agent(pos[0], pos[1], this,{size: size, debug: this.options.debug});
     agent.followPath();
     newAgents.push(agent);
   }
@@ -97,7 +97,7 @@ Group.prototype.removeAgents = function(agents) {
 
 Group.prototype.addAgent = function(x, y) {
   var size = isNaN(this.options.size) ? this.options.size() : this.options.size;
-  var agent = new Agent(this, x, y, size);
+  var agent = new Agent(x, y, this, {size: size});
   this.agents.push(agent);
 };
 
@@ -168,13 +168,13 @@ var Behavior = require('./Behavior');
  * {Vec2}       [description]
  */
 var Panic = function(world, options) {
-  Behavior.call(this,world);
+  Behavior.call(this, world);
   this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
 // path point, point, other agent {point , radius}
 Panic.prototype.getAccel = function(agent, target) {
-  Behavior.prototype.getAccel.call(this,agent, target);
+  Behavior.prototype.getAccel.call(this, agent, target);
   var desiredForce = Vec2.create();
   var agentsForce = Vec2.create();
   var wallsForce = Vec2.create();
@@ -185,7 +185,7 @@ Panic.prototype.getAccel = function(agent, target) {
   Vec2.add(accel, agentsForce, wallsForce);
   if (target) { // agent is going somewhere?
     distanceToTarget = Vec2.distance(agent.pos, target.pos);
-    if (distanceToTarget > target.radius) {
+    if (distanceToTarget > target.getRadius()) {
       Vec2.subtract(desiredForce, target.pos, agent.pos);
       if (Vec2.length(desiredForce) > agent.maxAccel) {
         Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxAccel * agent.mass);
@@ -212,7 +212,7 @@ Panic.prototype.getAccel = function(agent, target) {
       var wall = walls[w];
       for (var s = 0; s < wall.path.length - 1; s++) { // check each segment of wall
         var projection = wall.getProjection(agent.pos, s);
-        var wallsToAgentForce = this.calculateWallForce(agent, projection, wall.width);
+        var wallsToAgentForce = this.calculateWallForce(agent, projection, wall.getWidth());
         Vec2.add(wallsForce, wallsForce, wallsToAgentForce);
       }
     }
@@ -230,6 +230,10 @@ Panic.prototype.getAccel = function(agent, target) {
   Vec2.add3(accel, desiredForce, agentsForce, wallsForce);
   // return desiredForce + agentsForce + wallsForce;
   if (agent.debug) {
+    if (isNaN(desiredForce[0]) || isNaN(agentsForce[0]) || isNaN(wallsForce[0]) ||
+        isNaN(desiredForce[1]) || isNaN(agentsForce[1]) || isNaN(wallsForce[1])) {
+      throw 'One of the forces is a NaN!';
+    }
     agent.debug.forces = {
       desired: desiredForce,
       agents: agentsForce,
@@ -1023,23 +1027,24 @@ module.exports = Engine;
 var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
 
-var Agent = function(group, x, y, size, options) {
+var Agent = function(x, y, group, options) {
+  var that = this;
   Entity.call(this, x, y);
-  this.options = Lazy(options).defaults({
-    debug: false
-  }).toObject();
   this.id = Agent.id++;
+
+  Lazy(options).defaults(Agent.defaults).each(function(v, k) {
+    that[k] = v;
+  });
   this.group = group;
   this.vel = Vec2.create();
-  this.size = size;
-  this.mobility = 1.0;
   this.behavior = null; // function set by group
-  this.maxAccel = 0.5; // m/s^2
-  this.maxVel = 1; // m/seg
-  this.mass = 80e3;
-  if (this.options.debug) {
+  if (this.debug) {
     this.debug = {};
   }
+};
+
+Agent.prototype.getRadius = function() {
+  return this.radius;
 };
 
 Agent.prototype.followPath = function(index) {
@@ -1056,14 +1061,17 @@ Agent.prototype.step = function(stepSize) {
   var path = this.group.path;
   var accel = this.group.behavior.getAccel(this, this.target);
 
-  if (!accel && accel !== 0) {
-    throw 'Agent pos invalid';
+  if (this.debug) {
+    if (accel && (isNaN(accel[0]) || isNaN(accel[1]))) {
+      throw 'Agent pos invalid';
+    }
   }
+
   this.move(accel, stepSize);
   // update target to next if arrive at current
   if (this.target) {
     var distToTarget = Vec2.distance(this.pos, this.target.pos);
-    if (distToTarget < this.target.radius) {
+    if (distToTarget < this.target.getRadius()) {
       if (this.pathNextIdx < path.wps.length) {
         // follow to next waypoint
         this.target = path.wps[this.pathNextIdx++];
@@ -1087,23 +1095,16 @@ Agent.prototype.move = function(accel, stepSize) {
   }
 
   Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize * this.mobility);
-
-  /*if (this.world.wrap) {
-    if (agent.pos[0] > this.world.MAX_X) {
-      agent.pos[0] = this.world.MIN_X + agent.pos[0] - world.MAX_X;
-    }
-    if (agent.pos[0] < this.world.MIN_X) {
-      agent.pos[0] = this.world.MAX_X - (this.world.MIN_X - entity.pos[0]);
-    }
-    if (agent.pos[1] > this.world.MAX_Y) {
-      agent.pos[1] = this.world.MIN_Y + entity.pos[1] - this.world.MAX_Y;
-    }
-    if (agent.pos[1] < this.world.MIN_Y) {
-      agent.pos[1] = this.world.MAX_Y - (this.world.MIN_Y - entity.pos[1]);
-    }
-  }*/
 };
 
+Agent.defaults = {
+  debug: false,
+  size: 0.5,
+  mass: 80e3,
+  mobility: 1.0,
+  maxAccel: 0.5, // m/s^2
+  maxVel: 1 // m/seg
+};
 Agent.id = 0;
 Agent.type = 'agent';
 
@@ -1117,25 +1118,39 @@ var Vec2 = require('../Common/Vec2');
 var Context = function(x, y, world, options) {
   Entity.call(this, x, y, world);
   this.id = 'C' + Context.id++;
-  this.mobility = 1;
-  this.hazardLevel = 0;
-  this.width = options ? options.width : 10;
-  this.height = options ? options.height : 10;
-  this.x = x - this.width / 2;
-  this.y = y - this.height / 2;
+  this.options = Lazy(options).defaults(Context.defaults).toObject();
+};
+
+Context.prototype.setArea = function(x, y) {
+  this.options.width = Math.abs(this.pos[0] - x);
+  this.options.height = Math.abs(this.pos[1] - y);
+};
+
+Context.prototype.getWidth = function() {
+  return this.options.width;
+};
+
+Context.prototype.getHeight = function() {
+  return this.options.height;
 };
 
 Context.prototype.getRandomPoint = function() {
-  var x = this.x + Math.random() * this.width;
-  var y = this.y + Math.random() * this.height;
+  var x = this.pos[0] + Math.random() * this.options.width;
+  var y = this.pos[1] + Math.random() * this.options.height;
   return Vec2.fromValues(x, y);
 };
 
 Context.prototype.in = function(pos) {
-  var isIn = (this.x < pos[0] && pos[0] < (this.x + this.width)) && (this.y < pos[1] && pos[1] < (this.y + this.height));
+  var isIn = (this.pos[0] < pos[0] && pos[0] < (this.pos[0] + this.options.width)) && (this.pos[1] < pos[1] && pos[1] < (this.pos[1] + this.options.height));
   return isIn;
 };
 
+Context.defaults = {
+  mobility: 1,
+  hazardLevel: 0,
+  width: 10,
+  height: 10
+};
 Context.id = 0;
 Context.type = 'context';
 
@@ -1150,6 +1165,11 @@ var Entity = function(x, y, world) {
   this.world = world;
 };
 
+Entity.prototype.updatePos = function(x, y) {
+  this.pos[0] = x;
+  this.pos[1] = y;
+};
+
 module.exports = Entity;
 
 },{"../Common/Vec2":4}],10:[function(require,module,exports){
@@ -1158,13 +1178,16 @@ var Entity = require('./Entity');
 var Joint = function(x, y, world, options) {
   Entity.call(this, x, y, world);
   this.id = Joint.id++;
-  if (options && options.radius) {
-    this.radius = options.radius;
-  } else {
-    this.radius = 4;
-  }
+  this.options = Lazy(options).defaults(Joint.defaults).toObject();
 };
 
+Joint.prototype.getRadius = function() {
+  return this.options.radius;
+};
+
+Joint.defaults = {
+  radius: 4
+};
 Joint.id = 0;
 Joint.type = 'joint';
 
@@ -1179,18 +1202,21 @@ var Joint = require('./Joint');
 var Path = function(x, y, world, options) {
   Entity.call(this, x, y, world);
   this.id = 'P' + Path.id++;
-  this.width = options ? options.width || 0.2 : 0.2;
-  var globalRadius = options ? options.radius || 4 : 4;
+  this.options = Lazy(options).defaults(Path.defaults).toObject();
   if (options && options.waypoints) {
     this.wps = [];
     for (var i in options.waypoints) {
       var wp = options.waypoints[i];
-      var radius = wp.length === 3 ? wp[2] : globalRadius; // global radius or given one for joint
+      var radius = wp.length === 3 ? wp[2] : this.options.radius; // global radius or given one for joint
       this.wps.push(new Joint(wp[0], wp[1], world, {radius: radius}));
     }
   }else {
-    this.wps = [new Joint(x, y, world, {radius: globalRadius})];
+    this.wps = [new Joint(x, y, world, {radius: this.options.radius})];
   }
+};
+
+Path.prototype.getWidth = function() {
+  return this.options.width;
 };
 
 Path.prototype.reverse = function() {
@@ -1198,6 +1224,7 @@ Path.prototype.reverse = function() {
 };
 
 Path.prototype.addWaypoint = function(x, y, radius) {
+  Entity.prototype.updatePos.call(this,x,y);
   if (!radius) {
     radius = this.wps[this.wps.length - 1].radius;
   }
@@ -1206,6 +1233,10 @@ Path.prototype.addWaypoint = function(x, y, radius) {
   return wp;
 };
 
+Path.defaults = {
+  width: 0.2,
+  radius: 4
+};
 Path.id = 0;
 Path.type = 'path';
 
@@ -1220,17 +1251,25 @@ var Joint = require('./Joint');
 var Wall = function(x, y, world, options) {
   Entity.call(this, x, y, world);
   this.id = Wall.id++;
-  this.width = options ? options.width || 0.2 : 0.2;
+  this.options = Lazy(options).defaults(Wall.defaults).toObject();
   // n joints, n-1 sections
   if (options && options.path) {
     this.path = [];
     for (var i in options.path) {
       var p = options.path[i];
-      this.path.push(new Joint(p[0], p[1], world, {radius: this.width * 2}));
+      this.path.push(new Joint(p[0], p[1], world, {radius: this.getCornerWidth()}));
     }
   } else {
-    this.path = [new Joint(x, y, world, {radius: this.width * 2})];
+    this.path = [new Joint(x, y, world, {radius: this.getCornerWidth()})];
   }
+};
+
+Wall.prototype.getCornerWidth = function() {
+  return this.options.width * 2;
+};
+
+Wall.prototype.getWidth = function() {
+  return this.options.width;
 };
 
 Wall.prototype.getProjection = function(point, segment) {
@@ -1242,11 +1281,15 @@ Wall.prototype.getProjection = function(point, segment) {
 };
 
 Wall.prototype.addPath = function(x, y) {
-  var joint = new Joint(x, y, this.world, {radius: this.width});
+  Entity.prototype.updatePos.call(this,x,y);
+  var joint = new Joint(x, y, this.world, {radius: this.getCornerWidth()});
   this.path.push(joint);
   return joint;
 };
 
+Wall.defaults = {
+  width: 0.2
+};
 Wall.id = 0;
 Wall.type = 'wall';
 
@@ -1261,20 +1304,21 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
-var Agent = function(agent, texture) {
+var Agent = function(agent) {
   if (!agent) {
     throw 'Agent object must be defined';
   }
   //var display = new PIXI.Sprite(options.texture);
 
   Entity.call(this, agent);
-  this.sprite = new PIXI.Sprite(texture);
+  this.sprite = new PIXI.Sprite(Agent.texture);
   Entity.prototype.createGraphics.call(this,Agent.container, this.sprite);
   this.sprite.visible = Agent.detail.level > 0;
   this.sprite.anchor.set(0.5);
   //this.display.alpha = 0.5;
-  this.sprite.height = agent.size;
-  this.sprite.width = agent.size;
+  var size = agent.size;
+  this.sprite.height = size;
+  this.sprite.width = size;
   this.sprite.position.x = agent.pos[0];
   this.sprite.position.y = agent.pos[1];
 };
@@ -1323,17 +1367,23 @@ Agent.prototype.render = function() {
     this.graphics.moveTo(e.pos[0], e.pos[1]);
     this.graphics.lineTo(e.pos[0] + e.vel[0], e.pos[1] + e.vel[1]);
   }
-  if (Agent.detail.level > 3 && e.debug && e.debug.forces) {
-    var force = Vec2.create();
-    for (var f in e.debug.forces) {
-      this.graphics.lineStyle(0.1, Colors.Forces[f]);
-      this.graphics.moveTo(e.pos[0], e.pos[1]);
-      Vec2.normalize(force, e.debug.forces[f]);
-      this.graphics.lineTo(e.pos[0] + force[0], e.pos[1] + force[1]);
+  if (e.debug) {
+    if (Agent.detail.level > 3 && e.debug.forces) {
+      var force = Vec2.create();
+      for (var f in e.debug.forces) {
+        this.graphics.lineStyle(0.1, Colors.Forces[f]);
+        this.graphics.moveTo(e.pos[0], e.pos[1]);
+        Vec2.normalize(force, e.debug.forces[f]);
+        this.graphics.lineTo(e.pos[0] + force[0], e.pos[1] + force[1]);
+      }
+    }
+    if (isNaN(e.pos[0]) || isNaN(e.pos[1])) {
+      throw 'Agent position undefined';
     }
   }
 };
 
+Agent.texture = null; // agents texture
 Agent.debugContainer = null; // special container use to render all agents, e.g particleContainer
 Agent.detail = new Detail(4);
 
@@ -1373,7 +1423,7 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
-var Context = function(context, container) {
+var Context = function(context) {
   if (!context) {
     throw 'Context object must be defined';
   }
@@ -1405,8 +1455,8 @@ Context.prototype.mousedown = function(init) {
 
 Context.prototype.dragTo = function(pos, anchor) {
   var context = this.entityModel;
-  context.x = pos.x - context.width / 2;
-  context.y = pos.y - context.height / 2;
+  context.pos[0] = pos.x - context.getWidth() / 2;
+  context.pos[1] = pos.y - context.getHeight() / 2;
 };
 
 Context.prototype.mouseup = function(init) {
@@ -1428,16 +1478,22 @@ Context.prototype.render = function(options) {
   }
 
   if (Context.detail.level > 0) {
-    this.rect.x = context.x;
-    this.rect.y = context.y;
-    this.rect.width = context.width;
-    this.rect.height = context.height;
-    this.label.x = context.x + context.width / 2 - this.label.width / 2;
-    this.label.y = context.y + context.height / 2 - this.label.height / 2;
-    this.graphics.beginFill(this.graphics.hover ? Colors.Hover : Colors.Context, this.graphics.hover ? 0.9 : 0.2);
+    var w = context.getWidth();
+    var h = context.getHeight();
+    this.rect.x = context.pos[0];
+    this.rect.y = context.pos[1];
+    this.rect.width = w;
+    this.rect.height = h;
+    this.label.x = context.pos[0] + w / 2 - this.label.width / 2;
+    this.label.y = context.pos[1] + h / 2 - this.label.height / 2;
+    this.graphics.beginFill(this.graphics.hover ? Colors.Hover : Colors.Context, this.graphics.hover ? 0.9 : 0.3);
     this.graphics.drawShape(this.rect);
     this.graphics.endFill();
   }
+};
+
+Context.prototype.setArea = function(x, y) {
+  this.entityModel.setArea(x, y);
 };
 
 Context.detail = new Detail(2);
@@ -1550,15 +1606,19 @@ Joint.prototype.destroy = function(graphics) {
 Joint.prototype.createGraphics = function(graphics) {
   this.sprite = new PIXI.Sprite(this.texture);
   Entity.setInteractive(this.sprite);
-  this.sprite.x = this.entityModel.pos[0];
-  this.sprite.y = this.entityModel.pos[1];
   this.sprite.anchor.x = 0.5;
   this.sprite.anchor.y = 0.5;
-  this.sprite.width = 2 * this.entityModel.radius;
-  this.sprite.height = 2 * this.entityModel.radius;
   this.sprite.entity = this;
   this.sprite.alpha = 0.5;
   graphics.addChild(this.sprite);
+  this.render();
+};
+
+Joint.prototype.render = function() {
+  this.sprite.x = this.entityModel.pos[0];
+  this.sprite.y = this.entityModel.pos[1];
+  this.sprite.width = 2 * this.entityModel.getRadius();
+  this.sprite.height = 2 * this.entityModel.getRadius();
 };
 
 Joint.prototype.getAnchor = function(init) {
@@ -1572,7 +1632,7 @@ Joint.prototype.dragTo = function(pos, anchor) {
   Vec2.subtract(posV2,posV2,this.entityModel.pos);
   var newRadius = Vec2.length(posV2);
   // calculate new size or position if dragging border or body
-  if (this.scalable && newRadius >  this.entityModel.radius * 0.80) {
+  if (this.scalable && newRadius >  this.entityModel.getRadius() * 0.80) {
     this.entityModel.radius  = newRadius;
     this.sprite.width = 2 * newRadius;
     this.sprite.height = 2 * newRadius;
@@ -1595,12 +1655,11 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
-var Path = function(path, texture) {
+var Path = function(path) {
   if (!path) {
     throw 'Path object must be defined';
   }
   Entity.call(this, path);
-  this.texture = texture;
 };
 
 Path.prototype.destroy = function() {
@@ -1608,7 +1667,7 @@ Path.prototype.destroy = function() {
   this.destroyGraphics(Path.container);
 };
 
-Path.prototype.createGraphics = function(path, texture) {
+Path.prototype.createGraphics = function(path) {
   this.graphics = Entity.prototype.createGraphics.call(this,Path.container);
   this.label = new PIXI.Text(path.id, Base.Fonts.default);
   this.label.resolution = Base.Fonts.resolution;
@@ -1620,7 +1679,7 @@ Path.prototype.createGraphics = function(path, texture) {
     this.joints = [];
     for (var i in wps) {
       var wp = wps[i];
-      var joint = new Joint(wp, this.texture);
+      var joint = new Joint(wp, Path.texture);
       joint.createGraphics(this.graphics);
       this.joints.push(joint);
     }
@@ -1644,14 +1703,13 @@ Path.prototype.render = function(options) {
   if (this.joints && this.joints.length > 0) {
     var points  = [];
     if (Path.detail.level > 0) {
-      this.graphics.lineStyle(path.width, Colors.Path, 0.6);
+      this.graphics.lineStyle(path.getWidth(), Colors.Path, 0.6);
       //this.graphics.moveTo(this.joints[0].pos[0], this.joints[0].pos[1]);
       for (var i = 0; i < this.joints.length; i++) {
         //this.graphics.lineTo(this.joints[lj].pos[0], this.joints[lj].pos[1]);
         var joint = this.joints[i].entityModel;
         points.push(joint.pos[0],joint.pos[1]);
-        this.joints[i].sprite.x = this.joints[i].entityModel.pos[0];
-        this.joints[i].sprite.y = this.joints[i].entityModel.pos[1];
+        this.joints[i].render();
         //this.graphics.drawCircle(joint.pos[0],joint.pos[1],joint.radius);
       }
       this.graphics.drawPolygon(points);
@@ -1672,12 +1730,13 @@ Path.prototype.render = function(options) {
 Path.prototype.addWaypoint = function(x, y) {
   var path = this.entityModel;
   var wp = path.addWaypoint(x, y);
-  var joint = new Joint(wp, this.texture);
+  var joint = new Joint(wp, Path.texture);
   joint.createGraphics(this.graphics);
   this.joints.push(joint);
   return joint;
 };
 
+Path.texture = null; // paths joint texture
 Path.detail = new Detail(2);
 
 module.exports = Path;
@@ -1705,12 +1764,11 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 var Fonts = Base.Fonts;
 
-var Wall = function(wall, texture) {
+var Wall = function(wall) {
   if (!wall) {
     throw 'Wall object must be defined';
   }
   Entity.call(this, wall, Wall.container);
-  this.texture = texture;
 };
 
 Wall.prototype.destroy = function() {
@@ -1718,12 +1776,12 @@ Wall.prototype.destroy = function() {
   this.destroyGraphics(Wall.container);
 };
 
-Wall.prototype.createGraphics = function(wall, texture) {
+Wall.prototype.createGraphics = function(wall) {
   this.graphics = Entity.prototype.createGraphics.call(this,Wall.container);
   this.joints = [];
   for (var j in wall.path) {
     var c = wall.path[j];
-    var joint = new Joint(c, this.texture);
+    var joint = new Joint(c, Wall.texture);
     joint.createGraphics(this.graphics);
     this.joints.push(joint);
   }
@@ -1748,14 +1806,13 @@ Wall.prototype.render = function(options) {
 
   if (Wall.detail.level > 0) {
     //this.display.beginFill(Colors.Wall, 0.1);
-    this.graphics.lineStyle(wall.width, this.graphics.hover ? Colors.Hover : Colors.Wall);
+    this.graphics.lineStyle(wall.getWidth(), this.graphics.hover ? Colors.Hover : Colors.Wall);
     //this.graphics.moveTo(path[0][0], path[0][1]);
     var points = [];
     for (var i = 0; i < path.length ; i++) {
       //this.graphics.lineTo(path[i][0], path[i][1]);
       points.push(path[i].pos[0],path[i].pos[1]);
-      this.joints[i].sprite.x = path[i].pos[0];
-      this.joints[i].sprite.y = path[i].pos[1];
+      this.joints[i].render();
     }
     this.graphics.drawPolygon(points);
     //this.display.endFill();
@@ -1775,11 +1832,12 @@ Wall.prototype.render = function(options) {
 Wall.prototype.addPath = function(x, y) {
   var wall = this.entityModel;
   var j = wall.addPath(x, y);
-  var joint = new Joint(j , this.texture);
+  var joint = new Joint(j , Wall.texture);
   joint.createGraphics(this.graphics);
   this.joints.push(joint);
 };
 
+Wall.texture = null; // wall joints texture
 Wall.detail = new Detail(2);
 
 module.exports = Wall;
@@ -1802,7 +1860,10 @@ var World = function(x, y, width, height) {
   this.y = y;
   this.width = width;
   this.height = height;
-  this.onNewAgents = null;
+  this.onCreateAgents = null;
+  this.onDestroyAgents = null;
+  this.onCreateEntity = null;
+  this.onDestroyEntity = null;
 };
 
 World.prototype.getDefaultGroup = function() {
@@ -1811,10 +1872,6 @@ World.prototype.getDefaultGroup = function() {
 
 World.prototype.getGroups = function() {
   return this.groups;
-};
-
-World.prototype.addContext = function(context) {
-  this.entities.contexts = this.entities.contexts.concat(context);
 };
 
 World.prototype.addAgents = function(agents) {
@@ -1834,16 +1891,36 @@ World.prototype.removeAgents = function(agents) {
   }
 };
 
+World.prototype._onCreate = function(entity) {
+  if (this.onCreateEntity) {
+    this.onCreateEntity(entity);
+  }
+};
+
+World.prototype._onDestroy = function(entity) {
+  if (this.onDestroyEntity) {
+    this.onDestroyEntity(entity);
+  }
+};
+
+World.prototype.addContext = function(context) {
+  this.entities.contexts = this.entities.contexts.concat(context);
+  this._onCreate(context);
+};
+
 World.prototype.addGroup = function(group) {
   this.groups = this.groups.concat(group);
+  this._onCreate(group);
 };
 
 World.prototype.addPath = function(path) {
   this.entities.paths = this.entities.paths.concat(path);
+  this._onCreate(path);
 };
 
 World.prototype.addWall = function(wall) {
   this.entities.walls = this.entities.walls.concat(wall);
+  this._onCreate(wall);
 };
 
 World.prototype.save = function() {

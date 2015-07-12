@@ -1,4 +1,4 @@
-$btn-size: 25px;
+$btn-base-size: 25px;
 html,
 body {
   height: 100%;
@@ -11,7 +11,7 @@ ul {
   margin: 0;
   padding: 0;
 }
-$colors: ( context:#e1eca0, group: #fafafa,path: #e00777, wall: #00FF00);
+$colors: ( context:#646729, group: #fafafa,path: #e00777, wall: #00FF00);
 @each $color,
 $value in $colors {
   .bgcolor-#{$color} {
@@ -24,9 +24,9 @@ $value in $colors {
 button,
 .btn {
   text-align: center;
-  font-size: $btn-size;
-  width: $btn-size+5px;
-  height: $btn-size+5px;
+  font-size: $btn-base-size;
+  width: $btn-base-size+5px;
+  height: $btn-base-size+5px;
   margin: 2px;
   border: 1px solid black;
   padding: 0;
@@ -42,15 +42,22 @@ button,
 .info-panel ul {
   list-style-type: none;
 }
-.entity-panel {
+.control.entity-panel {
   right: 0;
   text-align: left;
+  width: 150px;
+  /*max-height: 50%;
+  overflow-y: scroll;*/
   .properties {
     padding: 5px;
+    .entity-props {
+
+    }
   }
 }
 .select-modes{
   text-align: left;
+  width: 100%;
 }
 
 .control {
@@ -69,6 +76,7 @@ button,
   opacity: 0.8;
   right: 0;
   width: 100%;
+  background-color: lightgray;
 }
 .console-show {
   height: 20%;
@@ -82,9 +90,13 @@ button,
 .console ul li {
   display: inline;
 }
-.btn-2x {
-  width: 2*$btn-size;
+
+@each $size in (2,3,4) {
+  .btn-#{$size}x {
+    width: $size * $btn-base-size;
+  }
 }
+
 .text-center {
   text-align: center;
 }
@@ -93,6 +105,12 @@ button,
 }
 .text-right {
   text-align:right;
+}
+.pull-right {
+  float: right;
+}
+.pull-left {
+  float: left;
 }
 .label {
   padding: 2px;
@@ -107,4 +125,11 @@ ul.list-inline {
 .entity {
   display:inline;
   width:100%;
+}
+.entity-list-container {
+  li {
+    border: 1px solid black;
+    cursor: pointer;
+  }
+  overflow-y: auto;
 }

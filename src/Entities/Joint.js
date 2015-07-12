@@ -2,7 +2,7 @@ var Entity = require('./Entity');
 
 var Joint = function(x, y, world, options) {
   Entity.call(this, x, y, world);
-  this.id = Joint.id++;
+  this.id = 'J' + Joint.id++;
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
 };
 

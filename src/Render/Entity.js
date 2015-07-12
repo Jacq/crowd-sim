@@ -13,6 +13,7 @@ var Entity = function(entity) {
   this.entityModel.extra.view = this;
   this.selected = false;
 };
+
 Entity.prototype.createGraphics = function(container, graphics) {
   if (!graphics) {
     graphics = new PIXI.Graphics();

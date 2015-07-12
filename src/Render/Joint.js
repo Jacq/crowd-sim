@@ -20,13 +20,16 @@ Joint.prototype.destroy = function(graphics) {
 };
 
 Joint.prototype.createGraphics = function(graphics) {
+  var joint = this.entityModel;
   this.sprite = new PIXI.Sprite(this.texture);
-  Entity.setInteractive(this.sprite);
+  Entity.prototype.createGraphics.call(this, graphics, this.sprite);
+  this.label = new PIXI.Text(joint.id, Base.Fonts.default);
+  this.label.resolution = Base.Fonts.resolution;
+  graphics.addChild(this.label);
   this.sprite.anchor.x = 0.5;
   this.sprite.anchor.y = 0.5;
   this.sprite.entity = this;
   this.sprite.alpha = 0.5;
-  graphics.addChild(this.sprite);
   this.render();
 };
 
@@ -35,6 +38,9 @@ Joint.prototype.render = function() {
   this.sprite.y = this.entityModel.pos[1];
   this.sprite.width = 2 * this.entityModel.getRadius();
   this.sprite.height = 2 * this.entityModel.getRadius();
+  this.sprite.tint = this.hover ? Colors.Hover : Colors.Joint;
+  this.label.x = this.sprite.x;
+  this.label.y = this.sprite.y;
 };
 
 Joint.prototype.getAnchor = function(init) {

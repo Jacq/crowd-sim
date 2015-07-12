@@ -7,16 +7,35 @@ var Path = function(x, y, world, options) {
   Entity.call(this, x, y, world);
   this.id = 'P' + Path.id++;
   this.options = Lazy(options).defaults(Path.defaults).toObject();
-  if (options && options.waypoints) {
-    this.wps = [];
-    for (var i in options.waypoints) {
-      var wp = options.waypoints[i];
-      var radius = wp.length === 3 ? wp[2] : this.options.radius; // global radius or given one for joint
-      this.wps.push(new Joint(wp[0], wp[1], world, {radius: radius}));
-    }
-  }else {
-    this.wps = [new Joint(x, y, world, {radius: this.options.radius})];
+  this.entities.wps = [];
+  if (x && y) {
+    this.addWaypoint(x,y,this.options.radius);
   }
+};
+
+Path.prototype.addWaypoints = function(wps) {
+  for (var i in wps) {
+    var wp = wps[i];
+    var radius = null;
+    if (wp.length === 2) {
+      radius = wp[3];
+    }
+    this.addWaypoint(wp[0],wp[1],radius);
+  }
+};
+
+Path.prototype.addWaypoint = function(x, y, radius) {
+  Entity.prototype.updatePos.call(this,x,y);
+  if (!radius) {
+    radius = this.entities.wps.length === 0 ? this.options.radius : this.entities.wps[this.entities.wps.length - 1].radius;
+  }
+  var wp = new Joint(x, y, this.world, {radius: radius});
+  this.entities.wps.push(wp);
+  return wp;
+};
+
+Path.prototype.getWaypoints = function() {
+  return this.entities.wps;
 };
 
 Path.prototype.getWidth = function() {
@@ -24,17 +43,7 @@ Path.prototype.getWidth = function() {
 };
 
 Path.prototype.reverse = function() {
-  this.wps = Lazy(this.wps).reverse().toArray();
-};
-
-Path.prototype.addWaypoint = function(x, y, radius) {
-  Entity.prototype.updatePos.call(this,x,y);
-  if (!radius) {
-    radius = this.wps[this.wps.length - 1].radius;
-  }
-  var wp = new Joint(x, y, this.world, {radius: radius});
-  this.wps.push(wp);
-  return wp;
+  this.entities.wps = Lazy(this.entities.wps).reverse().toArray();
 };
 
 Path.defaults = {

@@ -19,30 +19,22 @@ Context.prototype.destroy = function() {
 Context.prototype.createGraphics = function(context) {
   this.graphics = Entity.prototype.createGraphics.call(this,Context.container);
   this.rect = new PIXI.Rectangle(0, 0, 0, 0);
+  this.rect.entityModel = context;
   this.label = new PIXI.Text(context.id, Base.Fonts.default);
   this.label.resolution = Base.Fonts.resolution;
   this.graphics.addChild(this.label);
-  this.rect.entityModel = context;
   this.graphics.entity = this;
 };
 
 Context.prototype.getAnchor = function(init) {
   var context = this.entityModel;
-  return {x: context.x, y: context.y};
-};
-
-Context.prototype.mousedown = function(init) {
-
+  return {x: context.pos[0], y: context.pos[1]};
 };
 
 Context.prototype.dragTo = function(pos, anchor) {
   var context = this.entityModel;
-  context.pos[0] = pos.x - context.getWidth() / 2;
-  context.pos[1] = pos.y - context.getHeight() / 2;
-};
-
-Context.prototype.mouseup = function(init) {
-
+  context.pos[0] = pos.x;
+  context.pos[1] = pos.y;
 };
 
 Context.prototype.render = function(options) {
@@ -62,13 +54,13 @@ Context.prototype.render = function(options) {
   if (Context.detail.level > 0) {
     var w = context.getWidth();
     var h = context.getHeight();
-    this.rect.x = context.pos[0];
-    this.rect.y = context.pos[1];
+    this.rect.x = context.pos[0] - w / 2;
+    this.rect.y = context.pos[1] - h / 2;
     this.rect.width = w;
     this.rect.height = h;
-    this.label.x = context.pos[0] + w / 2 - this.label.width / 2;
-    this.label.y = context.pos[1] + h / 2 - this.label.height / 2;
-    this.graphics.beginFill(this.graphics.hover ? Colors.Hover : Colors.Context, this.graphics.hover ? 0.9 : 0.3);
+    this.label.x = context.pos[0] - this.label.width / 2;
+    this.label.y = context.pos[1] - this.label.height / 2;
+    this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Context, this.hover ? 0.9 : 0.3);
     this.graphics.drawShape(this.rect);
     this.graphics.endFill();
   }

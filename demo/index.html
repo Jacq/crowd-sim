@@ -24,26 +24,32 @@
 <body>
   <div id='control' class='control info-panel'>
     <div class="text-center edit-modes">
-      <div class="label">EDIT</div>
+      <div class="label">CREATE</div>
       <ul class="list-inline">
         <li>
-          <button id="select"><i class="fa fa-mouse-pointer"></i>
+          <button id="addContext" class="bgcolor-context" title="Create Context">C</button>
         </li>
         <li>
-          <button id="delete"><i class="fa fa-remove"></i>
+          <button id="addPath" class="bgcolor-path" title="Create Path">P</button>
         </li>
         <li>
-          <button id="addContext" class="bgcolor-context" title="Add Contexts">C</button>
+          <button id="addWall" class="bgcolor-wall" title="Create Wall">W</button>
         </li>
         <li>
-          <button id="addPath" class="bgcolor-path" title="Add Path">P</button>
+          <button id="addGroup" class="bgcolor-group" title="Create Group">G</button>
         </li>
-        <li>
-          <button id="addWall" class="bgcolor-wall" title="Add Wall">W</button>
-        </li>
-        <li>
-          <button id="addGroup" class="bgcolor-group" title="Add Groups">G</button>
-        </li>
+      </ul>
+      <div class="label">EDIT</div>
+      <ul class="list-inline">
+      <li>
+        <button id="select" title="Select" class="btn-3x"><i class="fa fa-mouse-pointer"></i>
+      </li>
+      <li>
+        <button id="add" title="Add to Entity"><i class="fa fa-plus"></i>
+      </li>
+      <li>
+        <button id="remove" title="Remove from Entity"><i class="fa fa-remove"></i>
+      </li>
       </ul>
     </div>
     <div class="text-center select-modes">
@@ -82,30 +88,28 @@
       </ul>
     </div>
     <div class="text-center entity-list">
-      <div class="label">ENTITIES</div>
-      <ul>
+      <div class="label">COMPLEX ENTITIES</div>
+      <ul class="entity-list-container">
       </ul>
     </div>
   </div>
-  <div id='entity' class='control entity-panel'>
-    <div class="text-center select-modes">
-      <div class="label">ENTITY</div>
-      <div class="text-left properties">
-        <div>Type:
-          <div class="entity entity-type"></div>
-        </div>
-        <div>ID:
-          <div class="entity entity-id"></div>
-        </div>
-        <div>X:
-          <input type='text' class="entity entity-x">
-        </div>
-        <div>Y:
-          <input type='text' class="entity entity-y">
-        </div>
-        <div class="label">PROPS</div>
-        <div class="entity entity-props"></div>
+  <div id='entity' class='text-center control entity-panel'>
+    <div class="label text-center">ENTITY VIEW</div>
+    <div class="text-left properties">
+      <div>Type:
+        <div class="entity entity-type"></div>
       </div>
+      <div>ID:
+        <div class="entity entity-id"></div>
+      </div>
+      <div>X:
+        <input type='text' class="entity entity-x">
+      </div>
+      <div>Y:
+        <input type='text' class="entity entity-y">
+      </div>
+      <div class="label text-center">PROPS</div>
+      <div class="entity entity-props"></div>
     </div>
   </div>
   <div id='menu'>
@@ -136,11 +140,14 @@
         <li>Paths:
           <span id='paths'></span>
         </li>
-        <li>Mouse:
-          <span id='mouse'></span>
-        </li>
         <li>Agent:
           <span id='agent'></span>
+        </li>
+        <li>Message:
+          <span id='message'></span>
+        </li>
+        <li class="pull-right">Mouse:
+          <span id='mouse'></span>
         </li>
     </ul>
   </div>
