@@ -1,0 +1,70 @@
+'use strict';
+
+var Base = require('./Base');
+var Entity = require('./Entity');
+var Detail = require('./Detail');
+var Colors = Base.Colors;
+
+var Group = function(group) {
+  if (!group) {
+    throw 'Group object must be defined';
+  }
+  Entity.call(this, group);
+};
+
+Group.prototype.createGraphics = function(group) {
+  this.graphics = Entity.prototype.createGraphics.call(this,Group.container);
+  this.label = new PIXI.Text(group.id, Base.Fonts.default);
+  this.label.resolution = Base.Fonts.resolution;
+  this.rect = new PIXI.Rectangle(0, 0, this.label.width, this.label.height);
+  this.rect.entityModel = group;
+  this.graphics.addChild(this.label);
+  this.graphics.entity = this;
+};
+
+Group.prototype.render = function(options) {
+  if (!Group.detail.level) {
+    this.graphics.clear();
+    return;
+  }
+  Entity.prototype.render.call(this,this.graphics);
+  var group = this.entityModel;
+  // init render
+  if (!this.graphics && Group.detail.level) {
+    this.createGraphics(group);
+  } else {
+    this.graphics.clear();
+  }
+
+  if (Group.detail.level > 0) {
+    this.rect.x = this.label.x = group.pos[0] - this.label.width / 2;
+    this.rect.y = this.label.y = group.pos[1] - this.label.height / 2 ;
+    this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Group, this.hover ? 0.9 : 0.3);
+    this.graphics.drawShape(this.rect);
+    this.graphics.endFill();
+    var entities = group.entities;
+    for (var i in entities) {
+      if (entities[i]) {
+        var subEntity = entities[i];
+        this.graphics.lineStyle(0.2, Colors.Group, 0.4);
+        this.graphics.moveTo(group.pos[0],group.pos[1]);
+        this.graphics.lineTo(subEntity.pos[0],subEntity.pos[1]);
+      }
+    }
+  }
+};
+
+Group.prototype.getAnchor = function(init) {
+  var group = this.entityModel;
+  return {x: group.pos[0], y: group.pos[1]};
+};
+
+Group.prototype.dragTo = function(pos, anchor) {
+  var group = this.entityModel;
+  group.pos[0] = pos.x;
+  group.pos[1] = pos.y;
+};
+
+Group.detail = new Detail(2);
+
+module.exports = Group;
