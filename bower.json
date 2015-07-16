@@ -29,7 +29,8 @@
     "components-font-awesome": "~4.4.0",
     "stats.js": "*",
     "jquery": "~2.1.4",
-    "jquery-mousewheel": "~3.1.13"
+    "jquery-mousewheel": "~3.1.13",
+    "jquery-awesome-cursor": "~0.1.2"
   },
   "overrides": {
     "jquery": {

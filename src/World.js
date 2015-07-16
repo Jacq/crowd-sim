@@ -6,8 +6,8 @@ var World = function(x, y, width, height) {
   this.agents = [];
 
   this.entities = {
-    groups: [],
     contexts: [],
+    groups: [],
     paths: [],
     walls: []
   };
@@ -63,23 +63,49 @@ World.prototype._onDestroy = function(entity) {
   }
 };
 
+World.prototype._getEntityList = function(entity) {
+  if (entity instanceof CrowdSim.Context) { // is context
+    return this.entities.contexts;
+  } else if (entity instanceof CrowdSim.Group) { // is group
+    return this.entities.groups;
+  } else if (entity instanceof CrowdSim.Path) { // is path
+    return this.entities.paths;
+  } else if (entity instanceof CrowdSim.Wall) { // is wall
+    return this.entities.walls;
+  } else {
+    throw 'Entity object is not context, group, wall or path';
+  }
+};
+
+World.prototype.removeEntity = function(entity) {
+  var entityList = this._getEntityList(entity);
+  var idx = entityList.indexOf(entity);
+  entityList.splice(idx,1);
+  this._onDestroy(entity);
+};
+
+World.prototype.addEntity = function(entity) {
+  var entityList = this._getEntityList(entity);
+  entityList.push(entity);
+};
+
 World.prototype.addContext = function(context) {
-  this.entities.contexts = this.entities.contexts.concat(context);
+  this.entities.contexts.push(context);
   this._onCreate(context);
 };
 
 World.prototype.addGroup = function(group) {
-  this.entities.groups = this.entities.groups.concat(group);
+  this.entities.groups.push(group);
   this._onCreate(group);
 };
 
 World.prototype.addPath = function(path) {
-  this.entities.paths = this.entities.paths.concat(path);
+  this.entities.paths.push(path);
   this._onCreate(path);
 };
 
 World.prototype.addWall = function(wall) {
-  this.entities.walls = this.entities.walls.concat(wall);
+  this.entities.walls.push(wall);
   this._onCreate(wall);
 };
 

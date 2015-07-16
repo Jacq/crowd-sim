@@ -2,10 +2,45 @@
 var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
 
-var Context = function(x, y, world, options) {
-  Entity.call(this, x, y, world);
+var Context = function(x, y, parent, options) {
+  Entity.call(this, x, y, parent);
   this.id = 'C' + Context.id++;
   this.options = Lazy(options).defaults(Context.defaults).toObject();
+  this.entities.groups = [];
+};
+
+Context.prototype.destroy = function() {
+  Lazy(this.entities.groups).each(function(g) {
+    g.unAssignContext(context);
+  });
+  this.parent.removeEntity(this);
+  Entity.prototype.destroy.call(this);
+};
+
+Context.prototype.assignToGroup = function(entity) {
+  var idx = this.entities.groups.indexOf(entity);
+  if (idx > -1) {
+    throw 'Entity already associated';
+  } else {
+    this.entities.groups.push(entity);
+  }
+};
+
+Context.prototype.unassignFromGroup = function(group) {
+  var idx = this.entities.groups.indexOf(group);
+  if (idx > -1) {
+    this.entities.groups.splice(idx, 1);
+  } else {
+    throw 'Entity not associated';
+  }
+};
+
+Context.prototype.getAssignedGroups = function() {
+  return this.entities.groups;
+};
+
+Context.prototype.unassignAll = function(entity) {
+  this.entities.length = 0;
 };
 
 Context.prototype.setArea = function(x, y) {

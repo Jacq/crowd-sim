@@ -10,8 +10,46 @@ ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  &.list-inline {
+    display: inline;
+    li {
+      display: inline;
+    }
+  }
 }
-$colors: ( context:#646729, group: #fafafa,path: #e00777, wall: #00FF00);
+
+.hide {
+  display: none;
+}
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align:right;
+}
+.pull-right {
+  float: right;
+}
+.pull-left {
+  float: left;
+}
+.label {
+  margin-top:3px;
+  padding: 2px;
+  background-color: aqua;
+  border-top: 2px solid gray;
+}
+.sublabel{
+  margin-top:1px;
+  border-top: 2px dotted gray;
+  border-bottom: 2px dotted gray;
+  background-color: lightblue;
+  padding:2px;
+}
+$colors: ( context:#8f9433, group: #fafafa,path: #e00777, wall: #00FF00);
 @each $color,
 $value in $colors {
   .bgcolor-#{$color} {
@@ -42,10 +80,14 @@ button,
 .info-panel ul {
   list-style-type: none;
 }
+
 .control.entity-panel {
   right: 0;
   text-align: left;
   width: 150px;
+  input {
+    width: 80%;
+  }
   /*max-height: 50%;
   overflow-y: scroll;*/
   .properties {
@@ -66,7 +108,7 @@ button,
   opacity: 0.6;
   background-color: lightgray;
   position: absolute;
-  top: 20%;
+  top: 10%;
   width: 100px;
   opacity: 0.8;
 }
@@ -84,9 +126,6 @@ button,
 .console-hide {
   height: 30px;
 }
-.hide {
-  display: none;
-}
 .console ul li {
   display: inline;
 }
@@ -96,31 +135,8 @@ button,
     width: $size * $btn-base-size;
   }
 }
-
-.text-center {
-  text-align: center;
-}
-.text-left {
-  text-align: left;
-}
-.text-right {
-  text-align:right;
-}
-.pull-right {
-  float: right;
-}
-.pull-left {
-  float: left;
-}
-.label {
-  padding: 2px;
-  background-color: aqua;
-}
-ul.list-inline {
-  display: inline;
-  li {
-    display: inline;
-  }
+.engine,, .properties {
+  padding: 5px;
 }
 .entity {
   display:inline;
@@ -128,8 +144,30 @@ ul.list-inline {
 }
 .entity-list-container {
   li {
-    border: 1px solid black;
+    width: 80%;
+    margin-bottom: 2px;
+    float:right;
+    border: 2px solid black;
     cursor: pointer;
+    &:before {
+      content: 'L';
+      display:inline;
+      float:left;
+      margin-left: -15%;
+    }
+
   }
+  .title {
+    display: inline-block;
+    width:98%;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight:bold;
+    background-color: black;
+    border: 1px solid white;
+    color:white;
+    position:relative;
+  }
+  height:100%;
   overflow-y: auto;
 }

@@ -6,6 +6,7 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 var Fonts = Base.Fonts;
+var WallModel = require('../Entities/Wall');
 
 var Wall = function(wall) {
   if (!wall) {
@@ -14,9 +15,22 @@ var Wall = function(wall) {
   Entity.call(this, wall, Wall.container);
 };
 
+Wall.CreateFromModel = function(wall) {
+  return new Wall(wall);
+};
+
+Wall.CreateFromPoint = function(x, y, parent, options) {
+  var wall = new WallModel(x, y, parent, options);
+  return new Wall(wall);
+};
+
 Wall.prototype.destroy = function() {
+  for (var i in this.joints) {
+    this.joints[i].destroy(this.graphics);
+  }
   Entity.prototype.destroyGraphics.call(this, Wall.container, this.graphics);
   this.destroyGraphics(Wall.container);
+  Entity.prototype.destroy.call(this);
 };
 
 Wall.prototype.createGraphics = function(wall) {

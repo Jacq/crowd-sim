@@ -16,10 +16,12 @@ var Joint = function(joint, texture, scalable) {
 };
 
 Joint.prototype.destroy = function(graphics) {
-  graphics.addChild(this.sprite);
+  Entity.prototype.destroyGraphics.call(this, this.graphics , this.sprite);
+  Entity.prototype.destroy.call(this);
 };
 
 Joint.prototype.createGraphics = function(graphics) {
+  this.graphics = graphics;
   var joint = this.entityModel;
   this.sprite = new PIXI.Sprite(this.texture);
   Entity.prototype.createGraphics.call(this, graphics, this.sprite);

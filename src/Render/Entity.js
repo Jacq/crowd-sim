@@ -10,8 +10,13 @@ var Entity = function(entity) {
     throw 'Entity undefined';
   }
   this.entityModel = entity;
-  this.entityModel.extra.view = this;
+  this.entityModel.view = this;
   this.selected = false;
+};
+
+Entity.prototype.destroy = function() {
+  this.entityModel.view = null;
+  this.entityModel = null;
 };
 
 Entity.prototype.createGraphics = function(container, graphics) {
@@ -27,6 +32,7 @@ Entity.prototype.createGraphics = function(container, graphics) {
 
 Entity.prototype.destroyGraphics = function(container, graphics) {
   if (graphics) {
+    //graphics.clear();
     graphics.destroy();
     container.removeChild(graphics);
   }
@@ -34,7 +40,7 @@ Entity.prototype.destroyGraphics = function(container, graphics) {
 
 Entity.setInteractive = function(displayObject) {
   displayObject.interactive = true;
-  displayObject.buttonMode = true;
+  //displayObject.buttonMode = true;
   displayObject.mouseover = Entity.mouseover;
   displayObject.mouseout = Entity.mouseout;
   displayObject.mousedown = Entity.mousedown;
@@ -44,10 +50,6 @@ Entity.setInteractive = function(displayObject) {
 
 Entity.prototype.render = function(graphics) {
   //this.display.clear();
-};
-
-Entity.prototype.destroy = function(container, graphics) {
-  this.destroyGraphics(container, graphics);
 };
 
 Entity.mousedown = null;

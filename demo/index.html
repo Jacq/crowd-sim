@@ -6,11 +6,8 @@
   <title>Demo</title>
   <!-- build:css css/vendor.css -->
   <!-- bower:css -->
-  <link rel="stylesheet" href="css/font-awesome.css">
   <link rel="stylesheet" href="css/normalize.css">
-  <!-- endinject -->
-  <!-- demo:css -->
-  <link rel="stylesheet" href="css/demo.css">
+  <link rel="stylesheet" href="css/font-awesome.css">
   <!-- endinject -->
   <!-- endbuild -->
 
@@ -24,7 +21,7 @@
 <body>
   <div id='control' class='control info-panel'>
     <div class="text-center edit-modes">
-      <div class="label">CREATE</div>
+      <div class="label"><i class="fa fa-plus-circle"></i> CREATE</div>
       <ul class="list-inline">
         <li>
           <button id="addContext" class="bgcolor-context" title="Create Context">C</button>
@@ -39,7 +36,7 @@
           <button id="addGroup" class="bgcolor-group" title="Create Group">G</button>
         </li>
       </ul>
-      <div class="label">EDIT</div>
+      <div class="label"><i class="fa fa-edit"></i> EDIT</div>
       <ul class="list-inline">
       <li>
         <button id="select" title="Select" class="btn-3x"><i class="fa fa-mouse-pointer"></i>
@@ -52,8 +49,25 @@
       </li>
       </ul>
     </div>
-    <div class="text-center select-modes">
-      <div class="label">WORLD</div>
+
+    <div class="text-center engine-status">
+      <div class="label"><i class="fa fa-play-circle"></i> ENGINE</div>
+      <ul class="list-inline">
+        <li>
+          <button id="run" class="btn-3x"><i class="fa fa-play" title="Run"></i></button>
+          <button id="stop" class="btn-3x hide"><i class="fa fa-stop" title="Stop"></i></button>
+        </li>
+        <li>
+          <button id="reset"><i class="fa fa-fast-backward" title="Reset"></i></button>
+        </li>
+        <li>
+          <button id="step"><i class="fa fa-step-forward" title="Step"></i></button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="text-center world-status">
+      <div class="label"><i class="fa fa-globe"></i> WORLD</div>
       <ul class="list-inline">
         <li>
           <button id="export" title="Save"><i class="fa fa-download"></i>
@@ -61,40 +75,32 @@
         <li>
           <button id="import" title="Load"><i class="fa fa-upload"></i>
         </li>
-        <li>
-
-        </li>
-        <li>
-
-        </li>
       </ul>
     </div>
-    <div class="text-center engine-status">
-      <div class="label">SIMULATOR</div>
-      <ul class="list-inline">
-        <li>
-          <button id="run" class="btn-2x"><i class="fa fa-play" title="Run"></i></button>
-          <button id="stop" class="btn-2x hide"><i class="fa fa-stop" title="Stop"></i></button>
-        </li>
-        <li>
-          <button id="step"><i class="fa fa-step-forward" title="Step"></i></button>
-        </li>
-        <li>
-          <hr>
-        </li>
-        <li>
-          <button id="reset">Reset</button>
-        </li>
-      </ul>
-    </div>
+
     <div class="text-center entity-list">
-      <div class="label">COMPLEX ENTITIES</div>
+      <div class="label"><i class="fa fa-list-ol"></i> ENTITIES</div>
       <ul class="entity-list-container">
+        <div class="title">Contexts</div>
+        <ul class="entity-context"></ul>
+
+        <div class="title">Groups</div>
+        <ul class="entity-group"></ul>
+
+        <div class="title">Paths</div>
+        <ul class="entity-path"></ul>
+
+        <div class="title">Walls</div>
+        <ul class="entity-wall"></ul>
+
       </ul>
     </div>
   </div>
-  <div id='entity' class='text-center control entity-panel'>
-    <div class="label text-center">ENTITY VIEW</div>
+  <div id='entity-panel' class='text-center control entity-panel'>
+    <div class="label text-center"><i class="fa fa-cog"></i> ENGINE SETTINGS</div>
+    <div class="text-left engine"></div>
+    <br>
+    <div class="label text-center"><i class="fa fa-eye"></i> ENTITY VIEW</div>
     <div class="text-left properties">
       <div>Type:
         <div class="entity entity-type"></div>
@@ -108,13 +114,11 @@
       <div>Y:
         <input type='text' class="entity entity-y">
       </div>
-      <div class="label text-center">PROPS</div>
+      <div class="sublabel text-center"><i class="fa fa-cogs"></i> PROPS</div>
       <div class="entity entity-props"></div>
     </div>
   </div>
-  <div id='menu'>
 
-  </div>
   <div id='statuses' class='console info-panel'>
     <ul>
       <li>Mode:
@@ -158,11 +162,12 @@
 
   <!-- build:js js/CrowdSim.js-->
   <!-- bower:js -->
+  <script src="js/lib/pixi.min.js"></script>
+  <script src="js/lib/lazy.min.js"></script>
+  <script src="js/lib/stats.min.js"></script>
   <script src="js/lib/jquery.min.js"></script>
   <script src="js/lib/jquery.mousewheel.min.js"></script>
-  <script src="js/lib/lazy.min.js"></script>
-  <script src="js/lib/pixi.min.js"></script>
-  <script src="js/lib/stats.min.js"></script>
+  <script src="js/lib/jquery.awesome-cursor.js"></script>
   <!-- endinject -->
   <!-- lib:js -->
   <script src="js/lib/CrowdSim.js"></script>

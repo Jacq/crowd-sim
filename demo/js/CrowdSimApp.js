@@ -4,21 +4,25 @@ var CrowdSimApp = (function() {
 
   var App = {
     // callbacks
-    onPreRender: null,
-    onPostRender: null,
-    onCreateEntity: null,
-    onDestroyEntity: null,
-    snapToGrid: false,
-    entitySelected: null
+    onPreRender: null, // before each render cycle
+    onPostRender: null, // after each render cycle
+    onCreateEntity: null, // on creation of complex entites
+    onDestroyEntity: null, // on removing of complex entites
+    onEntitySelected: null,
+    onEntityUnSelected: null,
+    onLoad: null, // when new world is loaded
+    onSave: null, // when the current world is saved
+    snapToGrid: false, // snaps the mouse position to a grid of integers
+    entitySelected: null // holds the current selected entity
   };
 
   // wire entities <=> render entities association
   App.EntityTypes = {
     Agent: CrowdSim.Render.Agent,
-    Group: {constructor: CrowdSim.Group, renderConstruct: CrowdSim.Render.Group},
-    Context: {constructor: CrowdSim.Context, renderConstruct: CrowdSim.Render.Context},
-    Path: {constructor: CrowdSim.Path, renderConstruct: CrowdSim.Render.Path},
-    Wall: {constructor: CrowdSim.Wall, renderConstruct: CrowdSim.Render.Wall},
+    Group: CrowdSim.Render.Group,
+    Context: CrowdSim.Render.Context,
+    Path: CrowdSim.Render.Path,
+    Wall: CrowdSim.Render.Wall,
   };
 
   var defaultOptions = {
@@ -40,8 +44,8 @@ var CrowdSimApp = (function() {
       App.MaxAgents = options.MaxAgents;
     }
 
-    var w = window.innerWidth;
-    var h = window.innerHeight;
+    var w = options.width || window.innerWidth;
+    var h = options.height || window.innerHeight;
 
     // create a renderer instance.
     App._renderer = PIXI.autoDetectRenderer(w, h);
@@ -79,57 +83,11 @@ var CrowdSimApp = (function() {
     }
     //var loader = new PIXI.AssetLoader(App.assets);
     App._initRender();
-    App.load(w, h);
   };
 
-  App.onCreateAgents = function(agents) {
-    Lazy(agents).each(function(a) {
-      new CrowdSim.Render.Agent(a);
-    });
-  };
-
-  App.onDestroyAgents = function(agents) {
-    Lazy(agents).each(function(a) {
-      a.extra.view.destroy();
-    });
-  };
-
-  App.startCreateEntity = function(entityType, pos) {
-    var entity = new entityType.constructor(pos.x, pos.y, App._world);
-    App._newRenderEntity = App.addEntity(entityType, entity);
-    return App._newRenderEntity;
-  };
-
-  App.endCreateEntity = function() {
-    App._graphicsCreateEntity.clear();
-    App._newRenderEntity = null;
-    return null;
-  };
-
-  App.addEntity = function(entityType, entity) {
-    entityType.add(entity);
-    if (entityType.renderConstruct) {
-      return new entityType.renderConstruct(entity);
-    }
-  };
-
-  App.addContext = function(context) {
-    return App.addEntity(App.EntityTypes.Context, context);
-  };
-
-  App.addGroup = function(group) {
-    return App.addEntity(App.EntityTypes.Group, group);
-  };
-
-  App.addPath = function(path) {
-    return App.addEntity(App.EntityTypes.Path, path);
-  };
-
-  App.addWall = function(wall) {
-    return App.addEntity(App.EntityTypes.Wall, wall);
-  };
-
-  App.load = function(w, h) {
+  App.load = function() {
+    var w = App._stage.width;
+    var h = App._stage.height;
     var world = App._world = new CrowdSim.World(0, 0, w, h);
     // wire world events and functions
     App._world.onCreateAgents = App.onCreateAgents;
@@ -143,8 +101,7 @@ var CrowdSimApp = (function() {
 
     App._engine = new CrowdSim.Engine(App._world, {
       timeStepSize: 0.1, // time per step
-      timeStepRun: 0.001, // time between step runnings
-      onStep: null
+      timeStepRun: 0.001 // time between step runnings
     });
     var sizeR = 20;
     var sizeC = 10;
@@ -186,6 +143,67 @@ var CrowdSimApp = (function() {
     App.addGroup(group);
     App.addWall(wall);
     App.addPath(path);
+    App.onLoad(world);
+  };
+
+  App.save = function() {
+    App.onSave(App._world);
+  };
+
+  App.onCreateAgents = function(agents) {
+    Lazy(agents).each(function(a) {
+      new CrowdSim.Render.Agent(a);
+    });
+  };
+
+  App.onDestroyAgents = function(agents) {
+    Lazy(agents).each(function(a) {
+      a.view.destroy();
+    });
+  };
+
+  App.startCreateEntity = function(entityType, pos) {
+    var entity = entityType.CreateFromPoint(pos.x, pos.y, App._world);
+    App._newRenderEntity = entity;
+    return App._newRenderEntity;
+  };
+
+  App.endCreateEntity = function() {
+    App._graphicsCreateEntity.clear();
+    App._newRenderEntity = null;
+    return null;
+  };
+
+  App.destroyEntity = function(entity) {
+    entity.destroy();
+    if (App.entitySelected === entity) {
+      App.selectEntity(null);
+    }
+    App.onDestroyEntity(entity);
+  };
+
+  App.addEntity = function(entityType, entity) {
+    return entityType.CreateFromModel(entity, App._world);
+  };
+
+  App.addContext = function(context) {
+    return App.addEntity(App.EntityTypes.Context, context);
+  };
+
+  App.addGroup = function(group) {
+    return App.addEntity(App.EntityTypes.Group, group);
+  };
+
+  App.addPath = function(path) {
+    return App.addEntity(App.EntityTypes.Path, path);
+  };
+
+  App.addWall = function(wall) {
+    return App.addEntity(App.EntityTypes.Wall, wall);
+  };
+
+  App.getEntineSettings = function() {
+    return App._engine.getSettings();
   };
 
   App.zoom = function(scale, x, y) {
@@ -204,19 +222,26 @@ var CrowdSimApp = (function() {
   };
 
   App.selectEntity = function(entity) {
-    // hack to hide in stage
     if (App.entitySelected) {
-      App.entitySelected.extra.view.hover = false;
+      // hack to hide in stage
+      App.entitySelected.hover = false;
+      if (App.onEntityUnSelected) {
+        App.onEntityUnSelected(App.entitySelected);
+      }
     }
     App.entitySelected = entity;
-    // hack to show in stage
-    entity.extra.view.hover = true;
-    App.onEntitySelected(App.entitySelected);
+    if (entity) {
+      // hack to show in stage
+      entity.hover = true;
+      if (App.onEntitySelected) {
+        App.onEntitySelected(App.entitySelected);
+      }
+    }
   };
 
   App.selectEntityById = function(id) {
     var entity = App._world.getEntityById(id);
-    App.selectEntity(entity);
+    App.selectEntity(entity.view);
   };
 
   /* Stagen a render entities mouse events */
@@ -233,7 +258,7 @@ var CrowdSimApp = (function() {
     var anchor = this.entity.getAnchor();
     this.mousedownAnchor = {x: anchor.x - point.x, y: anchor.y - point.y};
     event.stopPropagation();
-    App.selectEntity(this.entity.entityModel);
+    App.selectEntity(this.entity);
     return false;
   };
 
@@ -268,7 +293,7 @@ var CrowdSimApp = (function() {
           newPosition.y = Math.round(newPosition.y);
         }
         if (App.entitySelected) {
-          App.selectEntity(this.entity.entityModel);
+          App.selectEntity(this.entity);
         }
         this.entity.dragTo(newPosition, this.mousedownAnchor);
       }
@@ -356,7 +381,6 @@ var CrowdSimApp = (function() {
 
   App.reset = function() {
     App._engine.reset();
-    App._initRender();
   };
 
   App.getStats = function() {
@@ -409,17 +433,18 @@ var CrowdSimApp = (function() {
     var graphicsAux = new PIXI.Graphics();
     graphicsAux.lineStyle(0.2, 0xFFFFFF);
     // x
+    var length = 5;
     graphicsAux.moveTo(0, 0);
-    graphicsAux.lineTo(10, 0);
-    graphicsAux.moveTo(9, -1);
-    graphicsAux.lineTo(10, 0);
-    graphicsAux.lineTo(9, 1);
+    graphicsAux.lineTo(length, 0);
+    graphicsAux.moveTo(length - 1, -1);
+    graphicsAux.lineTo(length, 0);
+    graphicsAux.lineTo(length - 1, 1);
     // y
     graphicsAux.moveTo(0, 0);
-    graphicsAux.lineTo(0, 10);
-    graphicsAux.moveTo(-1, 9);
-    graphicsAux.lineTo(0, 10);
-    graphicsAux.lineTo(1, 9);
+    graphicsAux.lineTo(0, length);
+    graphicsAux.moveTo(-1, length - 1);
+    graphicsAux.lineTo(0, length);
+    graphicsAux.lineTo(1, length - 1);
 
     // for temporary graphics
     App._graphicsCreateEntity = new PIXI.Graphics();
@@ -446,12 +471,12 @@ var CrowdSimApp = (function() {
     // render/refresh entities
     var agents = App._world.getAgents();
     for (var i in agents) {
-      agents[i].extra.view.render();
+      agents[i].view.render();
     }
 
     for (var prop in entities) {
       Lazy(entities[prop]).each(function(a) {
-        a.extra.view.render();
+        if (a.view) { a.view.render(); }
       });
     }
 

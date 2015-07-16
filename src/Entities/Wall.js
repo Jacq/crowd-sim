@@ -3,14 +3,22 @@ var Vec2 = require('../Common/Vec2');
 var Entity = require('./Entity');
 var Joint = require('./Joint');
 
-var Wall = function(x, y, world, options) {
-  Entity.call(this, x, y, world);
+var Wall = function(x, y, parent, options) {
+  Entity.call(this, x, y, parent);
   this.id = 'W' + Wall.id++;
   this.options = Lazy(options).defaults(Wall.defaults).toObject();
   this.entities.corners = [];
   if (x && y) {
     this.addCorner(x, y);
   }
+};
+
+Wall.prototype.destroy = function() {
+  Lazy(this.entities.corners).each(function(j) {
+    j.destroy();
+  });
+  this.entities.corners.length = 0;
+  Entity.prototype.destroy.call(this);
 };
 
 Wall.prototype.addCorners = function(corner) {
@@ -23,9 +31,12 @@ Wall.prototype.addCorners = function(corner) {
 
 Wall.prototype.addCorner = function(x, y) {
   Entity.prototype.updatePos.call(this, x, y);
-  var joint = new Joint(x, y, this.world, {radius: this.getCornerWidth()});
-  this.entities.corners.push(joint);
+  var joint = new Joint(x, y, this, {radius: this.getCornerWidth()});
   return joint;
+};
+
+Wall.prototype.addEntity = function(joint) {
+  this.entities.corners.push(joint);
 };
 
 Wall.prototype.getCorners = function() {

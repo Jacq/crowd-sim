@@ -6,11 +6,11 @@ var Context = require('./Context');
 var Vec2 = require('../Common/Vec2');
 var Panic = require('../Behavior/Panic');
 
-var Group = function(x, y, world, options) {
-  Entity.call(this, x, y, world);
+var Group = function(x, y, parent, options) {
+  Entity.call(this, x, y, parent);
   this.id = 'G' + Group.id++;
   this.options = Lazy(options).defaults(Group.defaults).toObject();
-  this.behavior = new Panic(this.world);
+  this.behavior = new Panic(this.parent);
   this.agents = [];
   this.agentsCount = this.options.agentsCount;
   this.entities.path = null;
@@ -18,12 +18,45 @@ var Group = function(x, y, world, options) {
   this.entities.endContext = null;
 };
 
+Group.prototype.destroy = function() {
+  this.emptyAgents();
+  this.behavior = null;
+  if (this.entities.startContext) {
+    this.entities.startContext.unassignFromGroup(this);
+  }
+  if (this.entities.endContext) {
+    this.entities.endContext.unassignFromGroup(this);
+  }
+  Entity.prototype.destroy.call(this);
+};
+
+Group.prototype.getStartContext = function() {
+  return this.entities.startContext;
+};
+
 Group.prototype.assignStartContext = function(context) {
+  context.assignToGroup(this);
   this.entities.startContext = context;
 };
 
+Group.prototype.getEndContext = function() {
+  return this.entities.endContext;
+};
+
 Group.prototype.assignEndContext = function(context) {
+  context.assignToGroup(this);
   this.entities.endContext = context;
+};
+
+Group.prototype.unAssignContext = function(context) {
+  if (this.entities.startContext === context) {
+    this.entities.startContext = null;
+    context.unassign(this);
+  }
+  if (this.entities.endContext === context) {
+    this.entities.endContext = context;
+    context.unassign(this);
+  }
 };
 
 Group.prototype.assignBehavior = function(behavior) {
@@ -60,7 +93,12 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
 Group.prototype.addAgents = function(agentsCount) {
   var newAgents = this.generateAgents(agentsCount);
   this.agents = this.agents.concat(newAgents);
-  this.world.addAgents(newAgents);
+  this.parent.addAgents(newAgents);
+};
+
+Group.prototype.emptyAgents = function() {
+  this.parent.removeAgents(this.agents);
+  this.agents.length = 0;
 };
 
 Group.prototype.removeAgents = function(agents) {
@@ -68,15 +106,11 @@ Group.prototype.removeAgents = function(agents) {
     var j = this.agents.indexOf(agents[i]);
     this.agents.splice(j, 1);
   }
-  this.world.removeAgents(agents);
+  this.parent.removeAgents(agents);
 };
 
 Group.prototype.getPath = function() {
   return this.entities.path;
-};
-
-Group.prototype.getstartContext = function() {
-  return this.entities.startContext;
 };
 
 Group.prototype.getArea = function() {
@@ -113,7 +147,7 @@ Group.prototype.step = function() {
     }
   }
   if (this.entities.endContext) {
-    var agentsIn = this.world.agentsInContext(this.entities.endContext, this.agents);
+    var agentsIn = this.parent.agentsInContext(this.entities.endContext, this.agents);
     if (agentsIn.length > 0 && this.options.endRate > 0 && this.options.endProb > 0) {
       var probDie = Math.random();
       if (probDie < this.options.endProb) {
@@ -135,5 +169,6 @@ Group.defaults = {
   endRate: 0 // Removes agents probability per step in endContext
 };
 Group.id = 0;
+Group.type = 'group';
 
 module.exports = Group;

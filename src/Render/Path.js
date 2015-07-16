@@ -5,6 +5,7 @@ var Joint = require('./Joint');
 var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
+var PathModel = require('../Entities/Path');
 
 var Path = function(path) {
   if (!path) {
@@ -13,9 +14,22 @@ var Path = function(path) {
   Entity.call(this, path);
 };
 
+Path.CreateFromModel = function(path) {
+  return new Path(path);
+};
+
+Path.CreateFromPoint = function(x, y, parent, options) {
+  var path = new PathModel(x, y, parent, options);
+  return new Path(path);
+};
+
 Path.prototype.destroy = function() {
+  for (var i in this.joints) {
+    this.joints[i].destroy(this.graphics);
+  }
   Entity.prototype.destroyGraphics.call(this,Path.container, this.graphics);
   this.destroyGraphics(Path.container);
+  Entity.prototype.destroy.call(this);
 };
 
 Path.prototype.createGraphics = function(path) {

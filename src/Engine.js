@@ -9,10 +9,11 @@ var Engine = function(world, options) {
   this.world = world || {};
   this.world.save();
 
-  var defaultOptions = {
-    timeStepSize: 0.1
-  };
-  this.options = Lazy(options).defaults(defaultOptions).toObject();
+  this.settings = Lazy(options).defaults(Engine.defaults).toObject();
+};
+
+Engine.prototype.getSettings = function() {
+  return this.settings;
 };
 
 Engine.prototype.setWorld = function(world) {
@@ -41,8 +42,8 @@ Engine.prototype.step = function() {
 
 Engine.prototype._step = function() {
   var world = this.world;
-  var options = this.options;
-  var timeStepSize = options.timeStepSize;
+  var opts = this.settings;
+  var timeStepSize = opts.timeStepSize;
   var agents = this.world.getAgents();
   Lazy(agents).each(function(agent) {
     agent.step(timeStepSize);
@@ -55,16 +56,16 @@ Engine.prototype._step = function() {
     group.step(timeStepSize);
   });
 
-  this.iterations++;
-  if (options.onStep) {
-    options.onStep(world);
-  }
-
   if (this.running) {
     var that = this;
     setTimeout(function() {
       that._step();
-    }, options.timeStepRun * 1000);
+    }, opts.timeStepRun * 1000);
+  }
+
+  this.iterations++;
+  if (this.onStep) {
+    this.onStep(world);
   }
 };
 
@@ -75,10 +76,21 @@ Engine.prototype.stop = function() {
   this.running = false;
   return this.running;
 };
+
 Engine.prototype.reset = function() {
   this.iterations = 0;
   this.running = false;
-  this.world.restore();
+
+  var groups = this.world.getGroups();
+  Lazy(groups).each(function(g) {
+    g.emptyAgents();
+  });
+  //this.world.restore();
+};
+
+Engine.defaults = {
+  timeStepSize: 0.1,
+  timeStepRun: 0.001
 };
 
 module.exports = Engine;

@@ -3,6 +3,7 @@
 var Base = require('./Base');
 var Entity = require('./Entity');
 var Detail = require('./Detail');
+var ContextModel = require('../Entities/Context');
 var Colors = Base.Colors;
 
 var Context = function(context) {
@@ -12,8 +13,18 @@ var Context = function(context) {
   Entity.call(this, context);
 };
 
+Context.CreateFromModel = function(context) {
+  return new Context(context);
+};
+
+Context.CreateFromPoint = function(x, y, parent, options) {
+  var context = new ContextModel(x, y, parent, options);
+  return new Context(context);
+};
+
 Context.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Context.container, this.graphics);
+  Entity.prototype.destroy.call(this);
 };
 
 Context.prototype.createGraphics = function(context) {

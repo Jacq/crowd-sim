@@ -4,6 +4,7 @@ var Base = require('./Base');
 var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
+var GroupModel = require('../Entities/Group');
 
 var Group = function(group) {
   if (!group) {
@@ -12,12 +13,26 @@ var Group = function(group) {
   Entity.call(this, group);
 };
 
+Group.CreateFromModel = function(group) {
+  return new Group(group);
+};
+
+Group.CreateFromPoint = function(x, y, parent, options) {
+  var group = new GroupModel(x, y, parent, options);
+  return new Group(group);
+};
+
+Group.prototype.destroy = function() {
+  Entity.prototype.destroyGraphics.call(this,Group.container, this.graphics);
+  Entity.prototype.destroy.call(this);
+};
+
 Group.prototype.createGraphics = function(group) {
   this.graphics = Entity.prototype.createGraphics.call(this,Group.container);
   this.label = new PIXI.Text(group.id, Base.Fonts.default);
   this.label.resolution = Base.Fonts.resolution;
-  this.rect = new PIXI.Rectangle(0, 0, this.label.width, this.label.height);
-  this.rect.entityModel = group;
+  this.circle = new PIXI.Circle(0, 0, this.label.width, this.label.height);
+  this.circle.entityModel = group;
   this.graphics.addChild(this.label);
   this.graphics.entity = this;
 };
@@ -37,10 +52,12 @@ Group.prototype.render = function(options) {
   }
 
   if (Group.detail.level > 0) {
-    this.rect.x = this.label.x = group.pos[0] - this.label.width / 2;
-    this.rect.y = this.label.y = group.pos[1] - this.label.height / 2 ;
+    this.label.x = group.pos[0] - this.label.width / 2;
+    this.label.y = group.pos[1] - this.label.height / 2;
+    this.circle.x = group.pos[0];
+    this.circle.y = group.pos[1];
     this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Group, this.hover ? 0.9 : 0.3);
-    this.graphics.drawShape(this.rect);
+    this.graphics.drawShape(this.circle);
     this.graphics.endFill();
     var entities = group.entities;
     for (var i in entities) {

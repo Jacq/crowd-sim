@@ -36,7 +36,9 @@ Agent.prototype.followGroupPath = function(index) {
 };
 
 Agent.prototype.step = function(stepSize) {
-  var wps = this.group.getPath().getWaypoints();
+  var path = this.group.getPath();
+  var wps = path ? path.getWaypoints() : null;
+
   var accel = this.group.behavior.getAccel(this, this.target);
 
   if (this.debug) {
@@ -50,9 +52,9 @@ Agent.prototype.step = function(stepSize) {
   if (this.target) {
     var distToTarget = Vec2.distance(this.pos, this.target.pos);
     if (distToTarget < this.target.getRadius()) {
-      if (this.pathNextIdx < wps.length) {
+      if (this.pathNextIdx < path.length) {
         // follow to next waypoint
-        this.target = wps[this.pathNextIdx++];
+        this.target = path[this.pathNextIdx++];
       } else {
         // arrived at last!
         this.pathNextIdx = null;

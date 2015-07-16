@@ -98,8 +98,9 @@ gulp.task('sass-watcher', function() {
 gulp.task('bower', function() {
   var jsFilter = $.filter(['*.js', '*.map']);
   var cssFilter = $.filter(['*.css']);
-  var fontsFilter = $.filter(['*.eot', '*.svg', '*.ttf', '*.woff', '*.woff2']);
-  return gulp.src(bowerFiles())
+  var fontsFilter = $.filter(['*.eot', '*.svg', '*.ttf', '*.woff', '*.woff2', '*.otf']);
+  var sources = gulp.src(bowerFiles())
+    .pipe($.filter(['*','!*.scss'])) // font remove sass files
     .pipe(jsFilter)
     .pipe(gulp.dest(config.lib))
     .pipe(jsFilter.restore())
@@ -109,6 +110,8 @@ gulp.task('bower', function() {
     .pipe(fontsFilter)
     .pipe(gulp.dest(config.fonts))
     .pipe(fontsFilter.restore());
+  return gulp.src(config.index)
+      .pipe($.inject(sources, {relative: true, name: 'bower'})).pipe(gulp.dest(config.demo));
 });
 
 /**
@@ -120,10 +123,8 @@ gulp.task('inject', ['styles','bower','bundle-lib'], function() {
 
   return gulp.src(config.index)
     //.pipe($.inject(gulp.src(config.lib, {read: false})))
-    .pipe($.inject(gulp.src(['!' + config.lib + config.main, config.js.lib], {read: false}), {relative: true, name: 'bower'}))
     .pipe($.inject(gulp.src(config.lib + config.main, {read: false}), {relative: true, name: 'lib'}))
     .pipe($.inject(gulp.src(config.js.demo, {read: false}), {relative: true, name: 'demo'}))
-    .pipe($.inject(gulp.src(['!' + config.css + '/demo.css', config.css + '**/*.css'], {read: false}), {relative: true, name: 'bower'}))
     .pipe($.inject(gulp.src(config.css + 'demo.css', {read: false}), {relative: true, name: 'demo'}))
     //.pipe($.inject(gulp.src(config.js.demo, {read: false}), {name: 'demo'}))
     .pipe(gulp.dest(config.demo));
