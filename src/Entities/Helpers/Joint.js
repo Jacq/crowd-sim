@@ -6,6 +6,10 @@ var Joint = function(x, y, parent, options) {
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
 };
 
+Joint.prototype.destroy = function() {
+  this.parent.removeEntity(this);
+};
+
 Joint.prototype.getRadius = function() {
   return this.options.radius;
 };

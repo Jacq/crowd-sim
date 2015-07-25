@@ -16,6 +16,8 @@ var Joint = function(joint, texture, scalable) {
 };
 
 Joint.prototype.destroy = function(graphics) {
+  this.graphics.removeChild(this.label);
+  this.label.destroy();
   Entity.prototype.destroyGraphics.call(this, this.graphics , this.sprite);
   Entity.prototype.destroy.call(this);
 };

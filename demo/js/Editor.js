@@ -130,6 +130,19 @@
         var newControl = $('<div>' + k + ': ' + value + '</div>');
         control.append(newControl);
       });
+    },
+    toggleFullScreen: function() {
+      var doc = window.document;
+      var docEl = doc.documentElement;
+
+      var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+      var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+      if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+        requestFullScreen.call(docEl);
+      } else {
+        cancelFullScreen.call(doc);
+      }
     }
   };
 
@@ -168,7 +181,6 @@
       'top': 0
     });
     $(document.body).append(stats.domElement);
-
     // wire Crowdsim callbacks
     CrowdSimApp.onPreRender = function() {
       stats.begin();
@@ -189,7 +201,8 @@
       }
     };
     var entityList = $('.entity-list-container');
-    CrowdSimApp.onCreateEntity = function(entity) {
+    CrowdSimApp.onCreateEntity = function(renderEntity) {
+      var entity = renderEntity.entityModel;
       var type = entity.constructor.type;
       var listToAppend = $('ul.entity-' + type, entityList);
       var line = $('<li id="entitiy-id-' + entity.id + '" class="entity-' + type + ' bgcolor-' + type + '">' + entity.id + '</li>');
@@ -211,6 +224,7 @@
 
     // init toolbar buttons
     $('.edit-modes button').click(function(event) {
+
       var mode = Editor.modes[event.currentTarget.id];
       Editor.modeToggle(mode);
       if (Editor._entityCreated) {
@@ -275,6 +289,15 @@
     $document.keydown(keydown)
       .keyup(keyup);
 
+    // events for resizing canvas on resize or fullscreen
+    function onFullScreen(event) {
+        CrowdSimApp.resize();
+      }
+    $document.on('resize fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', onFullScreen);
+    $window.on('resize fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', onFullScreen);
+    $window.on('resize', onFullScreen);
+
+    // mouse events for panning, selecting...
     var panningEvent;
     function mousedown(event) {
       var pos = CrowdSimApp.screenToWorld(event.clientX, event.clientY);

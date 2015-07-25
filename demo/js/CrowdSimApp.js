@@ -31,6 +31,17 @@ var CrowdSimApp = (function() {
     MaxAgents: 1000, // to init particle container
   };
 
+  App.resize = function(width, height) {
+    // to wait for fullscreen state
+    setTimeout(function() {
+      var w = width || window.innerWidth;
+      var h = height || window.innerHeight;
+      console.log(w);
+      console.log(h);
+      App._renderer.resize(w, h);
+    }, 100);
+  };
+
   App.init = function(canvas, options) {
     options = options || defaultOptions;
     App.canvas = canvas;
@@ -49,7 +60,7 @@ var CrowdSimApp = (function() {
 
     // create a renderer instance.
     App._renderer = PIXI.autoDetectRenderer(w, h);
-
+    App._renderer.autoResize = true;
     // add the renderer view element to the DOM
     canvas.appendChild(App._renderer.view);
 
@@ -73,15 +84,6 @@ var CrowdSimApp = (function() {
       App._debugContainer = new PIXI.Container();
       App._stage.addChild(App._debugContainer);
     }
-
-    function fullscreen() {
-      if (App.canvas.webkitRequestFullScreen) {
-        App.canvas.webkitRequestFullScreen();
-      } else {
-        App.canvas.mozRequestFullScreen();
-      }
-    }
-    //var loader = new PIXI.AssetLoader(App.assets);
     App._initRender();
   };
 
@@ -183,7 +185,10 @@ var CrowdSimApp = (function() {
   };
 
   App.addEntity = function(entityType, entity) {
-    return entityType.CreateFromModel(entity, App._world);
+    var renderEntity = entityType.CreateFromModel(entity, App._world);
+    if (App.onCreateEntity) {
+      App.onCreateEntity(renderEntity);
+    }
   };
 
   App.addContext = function(context) {

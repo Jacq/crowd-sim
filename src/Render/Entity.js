@@ -16,6 +16,7 @@ var Entity = function(entity) {
 
 Entity.prototype.destroy = function() {
   this.entityModel.view = null;
+  this.entityModel.destroy();
   this.entityModel = null;
 };
 
@@ -40,7 +41,7 @@ Entity.prototype.destroyGraphics = function(container, graphics) {
 
 Entity.setInteractive = function(displayObject) {
   displayObject.interactive = true;
-  //displayObject.buttonMode = true;
+  displayObject.buttonMode = true;
   displayObject.mouseover = Entity.mouseover;
   displayObject.mouseout = Entity.mouseout;
   displayObject.mousedown = Entity.mousedown;

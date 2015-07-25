@@ -1,17 +1,16 @@
 'use strict';
 
-var Entity = require('./Entity');
-var Vec2 = require('../Common/Vec2');
+var Vec2 = require('./Common/Vec2');
 
 var Agent = function(x, y, group, options) {
   var that = this;
-  Entity.call(this, x, y);
   this.id = Agent.id++;
-
+  // merge options with agent
   Lazy(options).defaults(Agent.defaults).each(function(v, k) {
     that[k] = v;
   });
   this.group = group;
+  this.pos = Vec2.fromValues(x, y);
   this.vel = Vec2.create();
   this.behavior = null; // function set by group
   if (this.debug) {
@@ -52,9 +51,9 @@ Agent.prototype.step = function(stepSize) {
   if (this.target) {
     var distToTarget = Vec2.distance(this.pos, this.target.pos);
     if (distToTarget < this.target.getRadius()) {
-      if (this.pathNextIdx < path.length) {
+      if (this.pathNextIdx < wps.length) {
         // follow to next waypoint
-        this.target = path[this.pathNextIdx++];
+        this.target = wps[this.pathNextIdx++];
       } else {
         // arrived at last!
         this.pathNextIdx = null;

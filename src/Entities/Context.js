@@ -13,7 +13,6 @@ Context.prototype.destroy = function() {
   Lazy(this.entities.groups).each(function(g) {
     g.unAssignContext(context);
   });
-  this.parent.removeEntity(this);
   Entity.prototype.destroy.call(this);
 };
 

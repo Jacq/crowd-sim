@@ -21,6 +21,22 @@ Wall.prototype.destroy = function() {
   Entity.prototype.destroy.call(this);
 };
 
+Wall.prototype.addEntity = function(joint) {
+  this.entities.corners.push(joint);
+};
+
+Wall.prototype.removeEntity = function(joint) {
+  var idx = this.entities.corners.indexOf(joint);
+  if (idx !== -1) {
+    this.entities.corners.splice(idx, 1);
+    if (this.entities.corners.length === 0) {
+      this.destroy();
+    }
+  } else {
+    throw 'Joint not found in wall';
+  }
+};
+
 Wall.prototype.addCorners = function(corner) {
   // n joints, n-1 sections
   for (var i in corner) {
@@ -33,10 +49,6 @@ Wall.prototype.addCorner = function(x, y) {
   Entity.prototype.updatePos.call(this, x, y);
   var joint = new Joint(x, y, this, {radius: this.getCornerWidth()});
   return joint;
-};
-
-Wall.prototype.addEntity = function(joint) {
-  this.entities.corners.push(joint);
 };
 
 Wall.prototype.getCorners = function() {

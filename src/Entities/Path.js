@@ -13,6 +13,22 @@ var Path = function(x, y, parent, options) {
   }
 };
 
+Path.prototype.addEntity = function(joint) {
+  this.entities.wps.push(joint);
+};
+
+Path.prototype.removeEntity = function(joint) {
+  var idx = this.entities.wps.indexOf(joint);
+  if (idx !== -1) {
+    this.entities.wps.splice(idx, 1);
+    if (this.entities.wps.length === 0) {
+      this.destroy();
+    }
+  } else {
+    throw 'Corner not found in wall';
+  }
+};
+
 Path.prototype.destroy = function() {
   Lazy(this.entities.wps).each(function(j) {
     j.destroy();
@@ -39,10 +55,6 @@ Path.prototype.addWaypoint = function(x, y, radius) {
   }
   var wp = new Joint(x, y, this, {radius: radius});
   return wp;
-};
-
-Path.prototype.addEntity = function(joint) {
-  this.entities.wps.push(joint);
 };
 
 Path.prototype.destroyWaypoint = function(wp) {

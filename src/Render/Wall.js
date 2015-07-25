@@ -25,9 +25,6 @@ Wall.CreateFromPoint = function(x, y, parent, options) {
 };
 
 Wall.prototype.destroy = function() {
-  for (var i in this.joints) {
-    this.joints[i].destroy(this.graphics);
-  }
   Entity.prototype.destroyGraphics.call(this, Wall.container, this.graphics);
   this.destroyGraphics(Wall.container);
   Entity.prototype.destroy.call(this);
@@ -35,14 +32,22 @@ Wall.prototype.destroy = function() {
 
 Wall.prototype.createGraphics = function(wall) {
   this.graphics = Entity.prototype.createGraphics.call(this, Wall.container);
-  this.joints = [];
   var corners = wall.getCorners();
   for (var j in corners) {
-    var c = corners[j];
-    var joint = new Joint(c, Wall.texture);
-    joint.createGraphics(this.graphics);
-    this.joints.push(joint);
+    this.addWaypointFromModel(corners[j]);
   }
+};
+
+Wall.prototype.addWaypointFromModel = function(joint) {
+  var renderJoint = new Joint(joint, Wall.texture);
+  renderJoint.createGraphics(this.graphics);
+  return renderJoint;
+};
+
+Wall.prototype.addCorner = function(x, y) {
+  var wall = this.entityModel;
+  var j = wall.addCorner(x, y);
+  return this.addWaypointFromModel(j);
 };
 
 Wall.prototype.render = function(options) {
@@ -63,38 +68,17 @@ Wall.prototype.render = function(options) {
   }
 
   if (Wall.detail.level > 0) {
-    //this.display.beginFill(Colors.Wall, 0.1);
     this.graphics.lineStyle(wall.getWidth(), this.hover ? Colors.Hover : Colors.Wall);
-    //this.graphics.moveTo(corners[0][0], corners[0][1]);
     var points = [];
     for (var i = 0; i < corners.length; i++) {
-      //this.graphics.lineTo(corners[i][0], corners[i][1]);
       points.push(corners[i].pos[0], corners[i].pos[1]);
-      this.joints[i].render();
+      corners[i].view.render();
     }
     this.graphics.drawPolygon(points);
-    //this.display.endFill();
   }
   if (Wall.detail.level > 1) {
-    /*this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Joint);
-    for (var j in this.joints) {
-      if (this.joints[j].hover) {
-
-      }
-      this.graphics.drawShape(this.joints[j].circle);
-    }
-    this.graphics.endFill();*/
   }
 };
-
-Wall.prototype.addCorner = function(x, y) {
-  var wall = this.entityModel;
-  var j = wall.addCorner(x, y);
-  var joint = new Joint(j, Wall.texture);
-  joint.createGraphics(this.graphics);
-  this.joints.push(joint);
-};
-
 Wall.texture = null; // wall joints texture
 Wall.detail = new Detail(2);
 

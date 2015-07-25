@@ -1,8 +1,8 @@
 'use strict';
 
 var Entity = require('./Entity');
-var Agent = require('./Agent');
 var Context = require('./Context');
+var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
 var Panic = require('../Behavior/Panic');
 
@@ -127,7 +127,7 @@ Group.prototype.getArea = function() {
 };
 
 Group.prototype.addAgent = function(agent) {
-  this.agents.concat(agent);
+  this.agents.push(agent);
 };
 
 Group.prototype.step = function() {
