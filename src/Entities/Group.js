@@ -2,14 +2,15 @@
 
 var Entity = require('./Entity');
 var Context = require('./Context');
+var Path = require('./Path');
 var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
 var Panic = require('../Behavior/Panic');
 
 var Group = function(x, y, parent, options) {
-  Entity.call(this, x, y, parent);
-  this.id = 'G' + Group.id++;
   this.options = Lazy(options).defaults(Group.defaults).toObject();
+  Entity.call(this, x, y, parent, this.options);
+  this.id = 'G' + Group.id++;
   this.behavior = new Panic(this.parent);
   this.agents = [];
   this.agentsCount = this.options.agentsCount;
@@ -30,12 +31,21 @@ Group.prototype.destroy = function() {
   Entity.prototype.destroy.call(this);
 };
 
+Group.prototype.getRadius = function() {
+  return this.options.radius;
+};
+
 Group.prototype.getStartContext = function() {
   return this.entities.startContext;
 };
 
 Group.prototype.assignStartContext = function(context) {
-  context.assignToGroup(this);
+  if (this.entities.startContext) {
+    this.entities.startContext.unassignFromGroup(this);
+  }
+  if (context) {
+    context.assignToGroup(this);
+  }
   this.entities.startContext = context;
 };
 
@@ -44,30 +54,58 @@ Group.prototype.getEndContext = function() {
 };
 
 Group.prototype.assignEndContext = function(context) {
-  context.assignToGroup(this);
+  if (this.entities.endContext) {
+    this.entities.endContext.unassignFromGroup(this);
+  }
+  if (context) {
+    context.assignToGroup(this);
+  }
   this.entities.endContext = context;
 };
 
-Group.prototype.unAssignContext = function(context) {
-  if (this.entities.startContext === context) {
-    this.entities.startContext = null;
-    context.unassign(this);
+Group.prototype.assignPath = function(path, idx) {
+  if (this.entities.path) {
+    this.entities.path.unassignFromGroup(this);
   }
-  if (this.entities.endContext === context) {
-    this.entities.endContext = context;
-    context.unassign(this);
+  this.options.pathStart = idx || 0;
+  this.entities.path = path;
+  if (path) {
+    path.assignToGroup(this);
+    for (var i  in this.agents) {
+      this.agents[i].followPath(this.options.pathStart, this.options.startIdx);
+    }
   }
+};
+
+Group.prototype.isPathReverse = function() {
+  return this.options.pathReverse;
+};
+
+Group.prototype.getPathStartIdx = function() {
+  return this.options.pathStart;
+};
+
+Group.prototype.unAssign = function(entity) {
+  if (entity instanceof Context) {
+    if (this.entities.startContext === entity) {
+      this.entities.startContext = null;
+      entity.unassignFromGroup(this);
+    }
+    if (this.entities.endContext === entity) {
+      this.entities.endContext = null;
+      entity.unassignFromGroup(this);
+    }
+  } else if (entity instanceof Path) {
+    this.entities.path = null;
+    entity.unassignFromGroup(this);
+  } else {
+    throw 'Entity not assigned to group';
+  }
+
 };
 
 Group.prototype.assignBehavior = function(behavior) {
   this.behavior = behavior;
-};
-
-Group.prototype.assignPath = function(path) {
-  this.entities.path = path;
-  for (var i  in this.agents) {
-    this.agents[i].followGroupPath();
-  }
 };
 
 Group.prototype.generateAgents = function(agentsCount, startContext) {
@@ -76,15 +114,30 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   }
   var newAgents = [];
   var opts = this.options;
+  var pos = Vec2.create();
+  var radius = this.options.radius;
+  var initPos = this.pos;
+  function myInitPos(pos) {
+    Vec2.random(pos, radius);
+    Vec2.add(pos,pos, initPos);
+    return pos;
+  }
+  var getInitPos = this.entities.startContext ? this.entities.startContext.getRandomPoint : myInitPos;
   for (var i = 0; i < agentsCount; i++) {
-    var pos = this.entities.startContext ? this.entities.startContext.getRandomPoint() : this.pos;
+    pos = getInitPos(pos);
     var size = opts.agentsSizeMin;
     if (opts.agentsSizeMin !== opts.agentsSizeMax) {
       // random uniform distribution
       size = opts.agentsSizeMin + Math.random() * (opts.agentsSizeMax - opts.agentsSizeMin);
     }
-    var agent = new Agent(pos[0], pos[1], this, {size: size, debug: opts.debug});
-    agent.followGroupPath();
+    var agent = new Agent(pos[0], pos[1], this, {
+      size: size,
+      debug: opts.debug,
+      path: this.entities.path,
+      pathStart: this.options.pathStart
+    });
+    //agent.followPath(this.entities.path, this.options.startIdx);
+    //agent.assignBehavior(behavior);
     newAgents.push(agent);
   }
   return newAgents;
@@ -163,6 +216,9 @@ Group.defaults = {
   agentsCount: 10,
   agentsMax: 100,
   debug: false,
+  pathStart: 0,
+  pathReverse: false,
+  radius: 3, // used when no start context is associated
   startProb: 0, // Adds agents per step in startContext
   startRate: 0, // Adds agents probability per step in startContext
   endProb: 0, // Removes agents per step in endContext

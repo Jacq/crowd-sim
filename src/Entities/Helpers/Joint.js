@@ -1,9 +1,10 @@
-var Entity = require('./Entity');
+var Entity = require('../Entity');
 
 var Joint = function(x, y, parent, options) {
-  Entity.call(this, x, y, parent);
-  this.id = 'J' + Joint.id++;
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
+  Entity.call(this, x, y, parent, this.options);
+  delete this.options.previousJoint; // delete not neccesary
+  this.id = 'J' + Joint.id++;
 };
 
 Joint.prototype.destroy = function() {
@@ -15,7 +16,8 @@ Joint.prototype.getRadius = function() {
 };
 
 Joint.defaults = {
-  radius: 4
+  radius: 4,
+  previousJoint: null
 };
 Joint.id = 0;
 Joint.type = 'joint';

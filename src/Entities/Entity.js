@@ -1,19 +1,19 @@
 var Vec2 = require('../Common/Vec2');
 
-var Entity = function(x, y, parent) {
+var Entity = function(x, y, parent, options) {
   this.extra = {}; // for extra information, e.g. render object
   this.pos = Vec2.fromValues(x, y);
-  this.entities = {}; // stores diferent structures with children entities
+  this.entities = {}; // stores diferent structures with related entities
   this.view = null; // to store references to render objects
   if (parent) {
     this.parent = parent;
     // request add to parent the entity
-    this.parent.addEntity(this);
+    this.parent.addEntity(this, options);
   }
 };
 
 Entity.prototype.destroy = function() {
-  if (parent) {
+  if (this.parent) {
     // request to parent removal of entity
     this.parent.removeEntity(this);
   }

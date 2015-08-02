@@ -37,7 +37,7 @@ ul {
   float: left;
 }
 .label {
-  margin-top:3px;
+  margin-top:5px;
   padding: 2px;
   background-color: aqua;
   border-top: 2px solid gray;
@@ -48,6 +48,10 @@ ul {
   border-bottom: 2px dotted gray;
   background-color: lightblue;
   padding:2px;
+}
+.separator{
+  background-color: black;
+  height:10px;
 }
 $colors: ( context:#8f9433, group: #fafafa,path: #e00777, wall: #00FF00);
 @each $color,
@@ -74,6 +78,13 @@ button,
     color: red;
   }
 }
+
+
+
+.highlight {
+  background-color: yellow;
+}
+
 .info-panel {
   left: 0;
 }
@@ -87,6 +98,11 @@ button,
   width: 150px;
   input {
     width: 80%;
+  }
+  input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    position: absolute;
   }
   /*max-height: 50%;
   overflow-y: scroll;*/
@@ -135,7 +151,10 @@ button,
     width: $size * $btn-base-size;
   }
 }
-.engine,, .properties {
+.engine {
+  margin-bottom: 10px;
+}
+.engine, .properties {
   padding: 5px;
 }
 .entity {

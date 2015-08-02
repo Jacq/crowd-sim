@@ -53,6 +53,10 @@ Entity.prototype.render = function(graphics) {
   //this.display.clear();
 };
 
+Entity.prototype.getPos = function() {
+  return this.entityModel.pos;
+};
+
 Entity.mousedown = null;
 Entity.mousemove = null;
 Entity.mouseup = null;

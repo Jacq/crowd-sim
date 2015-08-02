@@ -29,11 +29,11 @@ Context.prototype.destroy = function() {
 
 Context.prototype.createGraphics = function(context) {
   this.graphics = Entity.prototype.createGraphics.call(this,Context.container);
-  this.rect = new PIXI.Rectangle(0, 0, 0, 0);
-  this.rect.entityModel = context;
   this.label = new PIXI.Text(context.id, Base.Fonts.default);
   this.label.resolution = Base.Fonts.resolution;
   this.graphics.addChild(this.label);
+  this.rect = new PIXI.Rectangle(0, 0, 0, 0);
+  this.rect.entityModel = context;
   this.graphics.entity = this;
 };
 
@@ -79,6 +79,14 @@ Context.prototype.render = function(options) {
 
 Context.prototype.setArea = function(x, y) {
   this.entityModel.setArea(x, y);
+};
+
+Context.prototype.getContext = function() {
+  return this.entityModel;
+};
+
+Context.prototype.getPos = function() {
+  return Entity.prototype.getPos.call(this);
 };
 
 Context.detail = new Detail(2);

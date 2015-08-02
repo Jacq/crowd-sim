@@ -1,45 +1,16 @@
 
 var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
+var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
 var Context = function(x, y, parent, options) {
-  Entity.call(this, x, y, parent);
-  this.id = 'C' + Context.id++;
   this.options = Lazy(options).defaults(Context.defaults).toObject();
-  this.entities.groups = [];
+  Entity.call(this, x, y, parent, this.options);
+  this.id = 'C' + Context.id++;
 };
 
 Context.prototype.destroy = function() {
-  Lazy(this.entities.groups).each(function(g) {
-    g.unAssignContext(context);
-  });
   Entity.prototype.destroy.call(this);
-};
-
-Context.prototype.assignToGroup = function(entity) {
-  var idx = this.entities.groups.indexOf(entity);
-  if (idx > -1) {
-    throw 'Entity already associated';
-  } else {
-    this.entities.groups.push(entity);
-  }
-};
-
-Context.prototype.unassignFromGroup = function(group) {
-  var idx = this.entities.groups.indexOf(group);
-  if (idx > -1) {
-    this.entities.groups.splice(idx, 1);
-  } else {
-    throw 'Entity not associated';
-  }
-};
-
-Context.prototype.getAssignedGroups = function() {
-  return this.entities.groups;
-};
-
-Context.prototype.unassignAll = function(entity) {
-  this.entities.length = 0;
 };
 
 Context.prototype.setArea = function(x, y) {
@@ -75,7 +46,7 @@ Context.defaults = {
   width: 10,
   height: 10
 };
-Context.id = 0;
 Context.type = 'context';
-
+Context = AssignableToGroup(Context);
+Context.id = 0;
 module.exports = Context;

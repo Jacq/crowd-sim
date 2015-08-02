@@ -31,9 +31,9 @@ Group.prototype.createGraphics = function(group) {
   this.graphics = Entity.prototype.createGraphics.call(this,Group.container);
   this.label = new PIXI.Text(group.id, Base.Fonts.default);
   this.label.resolution = Base.Fonts.resolution;
-  this.circle = new PIXI.Circle(0, 0, this.label.width, this.label.height);
-  this.circle.entityModel = group;
   this.graphics.addChild(this.label);
+  this.circle = new PIXI.Circle(group.pos[0], group.pos[1], group.getRadius());
+  this.circle.entityModel = group;
   this.graphics.entity = this;
 };
 
@@ -52,21 +52,31 @@ Group.prototype.render = function(options) {
   }
 
   if (Group.detail.level > 0) {
-    this.label.x = group.pos[0] - this.label.width / 2;
+    this.label.x = group.pos[0] - this.label.width / 3;
     this.label.y = group.pos[1] - this.label.height / 2;
     this.circle.x = group.pos[0];
     this.circle.y = group.pos[1];
+    this.circle.radius = group.getRadius();
     this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Group, this.hover ? 0.9 : 0.3);
     this.graphics.drawShape(this.circle);
     this.graphics.endFill();
+  }
+  if (Group.detail.level > 1) {
+    // draw helper lines to entities
     var entities = group.entities;
-    for (var i in entities) {
-      if (entities[i]) {
-        var subEntity = entities[i];
-        this.graphics.lineStyle(0.2, Colors.Group, 0.4);
-        this.graphics.moveTo(group.pos[0],group.pos[1]);
-        this.graphics.lineTo(subEntity.pos[0],subEntity.pos[1]);
-      }
+    this.graphics.lineStyle(0.2, Colors.Group, 0.3);
+    if (entities.path) {
+      this.graphics.moveTo(group.pos[0],group.pos[1]);
+      var start = entities.path.getJointByIdx(group.getPathStartIdx());
+      this.graphics.lineTo(start.pos[0],start.pos[1]);
+    }
+    if (entities.startContext) {
+      this.graphics.moveTo(group.pos[0],group.pos[1]);
+      this.graphics.lineTo(entities.startContext.pos[0],entities.startContext.pos[1]);
+    }
+    if (entities.endContext) {
+      this.graphics.moveTo(group.pos[0],group.pos[1]);
+      this.graphics.lineTo(entities.endContext.pos[0],entities.endContext.pos[1]);
     }
   }
 };
@@ -82,6 +92,14 @@ Group.prototype.dragTo = function(pos, anchor) {
   group.pos[1] = pos.y;
 };
 
-Group.detail = new Detail(2);
+Group.prototype.getPos = function() {
+  return Entity.prototype.getPos.call(this);
+};
+
+Group.prototype.getGroup = function() {
+  return this.entityModel;
+};
+
+Group.detail = new Detail(2,2);
 
 module.exports = Group;

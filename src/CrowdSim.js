@@ -7,6 +7,7 @@ var CrowdSim = {
   Wall: require('./Entities/Wall'),
   Path: require('./Entities/Path'),
   Group: require('./Entities/Group'),
+  Joint: require('./Entities/Helpers/Joint'),
   World: require('./World'),
   Engine: require('./Engine'),
   Render: require('./Render/Render')

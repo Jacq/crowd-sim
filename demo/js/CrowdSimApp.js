@@ -13,7 +13,6 @@ var CrowdSimApp = (function() {
     onLoad: null, // when new world is loaded
     onSave: null, // when the current world is saved
     snapToGrid: false, // snaps the mouse position to a grid of integers
-    entitySelected: null // holds the current selected entity
   };
 
   // wire entities <=> render entities association
@@ -91,7 +90,8 @@ var CrowdSimApp = (function() {
     var w = App._stage.width;
     var h = App._stage.height;
     var world = App._world = new CrowdSim.World(0, 0, w, h);
-    // wire world events and functions
+    // wire world events and adding entities functions
+    // TODO add this 4 callbacks to world options contructor
     App._world.onCreateAgents = App.onCreateAgents;
     App._world.onDestroyAgents = App.onDestroyAgents;
     App._world.onCreateEntity = App.onCreateEntity;
@@ -113,7 +113,7 @@ var CrowdSimApp = (function() {
     var radius = 4;
     var waypoints = [[10, 10], [20, 21], [31, 30], [41, 41], [41, 75], [55, 80], [65, 70], [65, 60]];
     var path = new CrowdSim.Path(null, null, world);
-    path.addWaypoints(waypoints);
+    path.addJoints(waypoints);
     path.reverse();
 
     //var path = new CrowdSim.Path([{pos: [65, 60], radius: radius / 2}, {pos: [65, 70], radius: radius / 2}, {pos: [55, 80], radius: 2 * radius}]);
@@ -130,7 +130,7 @@ var CrowdSimApp = (function() {
                 startRate: 1,
                 endProb: 0.1,
                 endRate: 1};
-    var group = new CrowdSim.Group(cx, cy, world, opts);
+    var group = new CrowdSim.Group(60, 30, world, opts);
     group.assignStartContext(startContext);
     group.assignEndContext(endContext);
     group.assignPath(path);
@@ -139,7 +139,7 @@ var CrowdSimApp = (function() {
     var room = [[cx + sizeR / 2 - door, cy + sizeR], [cx, cy + sizeR]];
     //var wall = new CrowdSim.Wall(room);
     var wall = new CrowdSim.Wall(null, null, world);
-    wall.addCorners(room1);
+    wall.addJoints(room1);
     App.addContext(startContext);
     App.addContext(endContext);
     App.addGroup(group);
@@ -164,13 +164,21 @@ var CrowdSimApp = (function() {
     });
   };
 
-  App.startCreateEntity = function(entityType, pos) {
+  App.createEntityStart = function(entityType, pos) {
     var entity = entityType.CreateFromPoint(pos.x, pos.y, App._world);
     App._newRenderEntity = entity;
+    if (App.onCreateEntity) {
+      App.onCreateEntity(App._newRenderEntity);
+    }
     return App._newRenderEntity;
   };
 
-  App.endCreateEntity = function() {
+  // returns current entity creation of null if finished
+  App.getCreatingEntity = function() {
+    return App._newRenderEntity;
+  };
+
+  App.createEntityEnd = function() {
     App._graphicsCreateEntity.clear();
     App._newRenderEntity = null;
     return null;
@@ -178,10 +186,22 @@ var CrowdSimApp = (function() {
 
   App.destroyEntity = function(entity) {
     entity.destroy();
-    if (App.entitySelected === entity) {
+    if (App._entitySelected === entity) {
       App.selectEntity(null);
     }
-    App.onDestroyEntity(entity);
+  };
+
+  App.editEntity = function(entity) {
+    if (!App._newRenderEntity) { // stops from editing one entity if not finished with Previous
+      App._editingEntity = App._entitySelected;
+      if (App._editingEntity instanceof CrowdSim.Render.Group) {
+        var group = App._editingEntity.getGroup();
+        // clear current associations
+        group.assignPath(null);
+        group.assignStartContext(null);
+        group.assignEndContext(null);
+      }
+    }
   };
 
   App.addEntity = function(entityType, entity) {
@@ -207,7 +227,7 @@ var CrowdSimApp = (function() {
     return App.addEntity(App.EntityTypes.Wall, wall);
   };
 
-  App.getEntineSettings = function() {
+  App.getEngineSettings = function() {
     return App._engine.getSettings();
   };
 
@@ -227,21 +247,25 @@ var CrowdSimApp = (function() {
   };
 
   App.selectEntity = function(entity) {
-    if (App.entitySelected) {
+    if (App._entitySelected) {
       // hack to hide in stage
-      App.entitySelected.hover = false;
+      App._entitySelected.hover = false;
       if (App.onEntityUnSelected) {
-        App.onEntityUnSelected(App.entitySelected);
+        App.onEntityUnSelected(App._entitySelected);
       }
     }
-    App.entitySelected = entity;
+    App._entitySelected = entity;
     if (entity) {
       // hack to show in stage
       entity.hover = true;
       if (App.onEntitySelected) {
-        App.onEntitySelected(App.entitySelected);
+        App.onEntitySelected(App._entitySelected);
       }
     }
+  };
+
+  App.getSelectedEntity = function() {
+    return App._entitySelected;
   };
 
   App.selectEntityById = function(id) {
@@ -267,19 +291,53 @@ var CrowdSimApp = (function() {
     return false;
   };
 
-  // stage mousedown
+  // stage mousedown creation of entities steps
   App.mousedown = function(event) {
     App._globalMousePressed = true;
     switch (event.button) {
     case 0: // left button
-      if (App._newRenderEntity) { // creating entities
+      if (App._editingEntity) { // change editing to create
+        App._newRenderEntity = App._editingEntity;
+        App._editingEntity = null;
+      } else if (App._newRenderEntity) { // creating/entities entities
         var pos = App.screenToWorld(event.clientX, event.clientY);
-        if (App._newRenderEntity instanceof CrowdSim.Render.Wall) { // add joint
-          App._newRenderEntity.addCorner(pos.x, pos.y);
-        } else if (App._newRenderEntity instanceof CrowdSim.Render.Path) { // add waypoint
-          App._newRenderEntity.addWaypoint(pos.x, pos.y); // use default radius
-        } else if (App._newRenderEntity instanceof CrowdSim.Render.Context) { // add waypoint
+        if (App._newRenderEntity instanceof CrowdSim.Render.Joint) { // add joint to joint
+          var existingJoint = App._newRenderEntity.getJoint();
+          existingJoint.parent.view.addJoint(pos.x, pos.y, {previousJoint: existingJoint});
+        } else if (App._newRenderEntity instanceof CrowdSim.Render.Wall) { // add joint to wall
+          App._newRenderEntity.addJoint(pos.x, pos.y);
+        } else if (App._newRenderEntity instanceof CrowdSim.Render.Path) { // add join to waypoint
+          App._newRenderEntity.addJoint(pos.x, pos.y); // use default radius
+        } else if (App._newRenderEntity instanceof CrowdSim.Render.Context) { // add context
           App._newRenderEntity.setArea(pos.x, pos.y);
+        } else if (App._newRenderEntity instanceof CrowdSim.Render.Group) { // add group
+          var group = App._newRenderEntity.getGroup();
+          var selected = App._entitySelected;
+          // for groups creation proccess is more complex a path, startcontext and endcontext could be assigned
+          if (selected instanceof CrowdSim.Render.Joint) {
+            var joint = selected.getJoint();
+            var newPath = joint.parent;
+            var currentPath = group.getPath();
+            if (!currentPath) {
+              var idxInPath = newPath.getJointIdx(joint);
+              group.assignPath(newPath, idxInPath);
+            }
+          } else if (selected instanceof CrowdSim.Render.Context) {
+            var context = selected.getContext();
+            var startContext = group.getStartContext();
+            var endContext = group.getEndContext();
+            if (!startContext) {
+              group.assignStartContext(context);
+            } else if (!endContext) {
+              group.assignEndContext(context);
+            }
+          } else {
+
+          }
+          // check if group is completed to end creation mode
+          if (group.getPath() && group.getStartContext() && group.getEndContext()) {
+            App.createEntityEnd();
+          }
         }
       }
     }
@@ -297,9 +355,6 @@ var CrowdSimApp = (function() {
           newPosition.x = Math.round(newPosition.x);
           newPosition.y = Math.round(newPosition.y);
         }
-        if (App.entitySelected) {
-          App.selectEntity(this.entity);
-        }
         this.entity.dragTo(newPosition, this.mousedownAnchor);
       }
     }
@@ -309,7 +364,7 @@ var CrowdSimApp = (function() {
   App.mousemove = function(event) {
     // this points to the graphics/sprite
     if (App._newRenderEntity) {
-      var origin = App._newRenderEntity.entityModel.pos;
+      var origin = App._newRenderEntity.getPos();
       //var pos = event.data.getLocalPosition(this.parent);
       var pos = App.screenToWorld(event.clientX, event.clientY);
       App._graphicsCreateEntity.clear();
@@ -407,7 +462,7 @@ var CrowdSimApp = (function() {
   };
 
   App._initRender = function() {
-
+    // TODO add render related functions, callbacks, inits to Render.js as a new objet that returns the renderer
     var baseTextures = PIXI.Texture.fromImage('img/flt.png');
     CrowdSim.Render.Agent.texture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(26, 16, 51, 36));
     CrowdSim.Render.Wall.texture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(274, 14, 32, 32));

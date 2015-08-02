@@ -78,9 +78,8 @@ Engine.prototype.stop = function() {
 };
 
 Engine.prototype.reset = function() {
+  this.stop();
   this.iterations = 0;
-  this.running = false;
-
   var groups = this.world.getGroups();
   Lazy(groups).each(function(g) {
     g.emptyAgents();

@@ -33,7 +33,7 @@ ul {
   float: left; }
 
 .label {
-  margin-top: 3px;
+  margin-top: 5px;
   padding: 2px;
   background-color: aqua;
   border-top: 2px solid gray; }
@@ -44,6 +44,10 @@ ul {
   border-bottom: 2px dotted gray;
   background-color: lightblue;
   padding: 2px; }
+
+.separator {
+  background-color: black;
+  height: 10px; }
 
 .bgcolor-context {
   background-color: #8f9433; }
@@ -85,6 +89,9 @@ button,
     background-color: yellow;
     color: red; }
 
+.highlight {
+  background-color: yellow; }
+
 .info-panel {
   left: 0; }
 
@@ -99,6 +106,10 @@ button,
   overflow-y: scroll;*/ }
   .control.entity-panel input {
     width: 80%; }
+  .control.entity-panel input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    position: absolute; }
   .control.entity-panel .properties {
     padding: 5px; }
 
@@ -141,6 +152,9 @@ button,
 
 .btn-4x {
   width: 100px; }
+
+.engine {
+  margin-bottom: 10px; }
 
 .engine, .properties {
   padding: 5px; }

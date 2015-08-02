@@ -6,13 +6,12 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
-var Joint = function(joint, texture, scalable) {
+var Joint = function(joint, texture) {
   if (!joint) {
     throw 'Joint object must be defined';
   }
   Entity.call(this, joint);
   this.texture = texture;
-  this.scalable = scalable;
 };
 
 Joint.prototype.destroy = function(graphics) {
@@ -25,11 +24,11 @@ Joint.prototype.destroy = function(graphics) {
 Joint.prototype.createGraphics = function(graphics) {
   this.graphics = graphics;
   var joint = this.entityModel;
-  this.sprite = new PIXI.Sprite(this.texture);
-  Entity.prototype.createGraphics.call(this, graphics, this.sprite);
   this.label = new PIXI.Text(joint.id, Base.Fonts.default);
   this.label.resolution = Base.Fonts.resolution;
   graphics.addChild(this.label);
+  this.sprite = new PIXI.Sprite(this.texture);
+  Entity.prototype.createGraphics.call(this, graphics, this.sprite);
   this.sprite.anchor.x = 0.5;
   this.sprite.anchor.y = 0.5;
   this.sprite.entity = this;
@@ -43,8 +42,8 @@ Joint.prototype.render = function() {
   this.sprite.width = 2 * this.entityModel.getRadius();
   this.sprite.height = 2 * this.entityModel.getRadius();
   this.sprite.tint = this.hover ? Colors.Hover : Colors.Joint;
-  this.label.x = this.sprite.x;
-  this.label.y = this.sprite.y;
+  this.label.x = this.sprite.x - this.label.width / 3;
+  this.label.y = this.sprite.y - this.label.height / 2;
 };
 
 Joint.prototype.getAnchor = function(init) {
@@ -58,7 +57,7 @@ Joint.prototype.dragTo = function(pos, anchor) {
   Vec2.subtract(posV2,posV2,this.entityModel.pos);
   var newRadius = Vec2.length(posV2);
   // calculate new size or position if dragging border or body
-  if (this.scalable && newRadius >  this.entityModel.getRadius() * 0.80) {
+  if (newRadius >  this.entityModel.getRadius() * 0.80) {
     this.entityModel.radius  = newRadius;
     this.sprite.width = 2 * newRadius;
     this.sprite.height = 2 * newRadius;
@@ -68,6 +67,14 @@ Joint.prototype.dragTo = function(pos, anchor) {
     this.sprite.x = pos.x;
     this.sprite.y = pos.y;
   }
+};
+
+Joint.prototype.getJoint = function() {
+  return this.entityModel;
+};
+
+Joint.prototype.getPos = function() {
+  return Entity.prototype.getPos.call(this);
 };
 
 module.exports = Joint;

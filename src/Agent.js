@@ -9,12 +9,14 @@ var Agent = function(x, y, group, options) {
   Lazy(options).defaults(Agent.defaults).each(function(v, k) {
     that[k] = v;
   });
-  this.group = group;
   this.pos = Vec2.fromValues(x, y);
   this.vel = Vec2.create();
-  this.behavior = null; // function set by group
+  this.group = group;
   if (this.debug) {
     this.debug = {};
+  }
+  if (this.path) {
+    this.followPath(this.path, this.pathStart);
   }
 };
 
@@ -22,12 +24,18 @@ Agent.prototype.getRadius = function() {
   return this.radius;
 };
 
-Agent.prototype.followGroupPath = function(index) {
-  var path = this.group.getPath();
+Agent.prototype.followPath = function(path, index) {
+  index = index || 0;
+  this.path = path;
   if (path) {
-    var wps = path.getWaypoints();
-    this.target = wps[index || 0];
-    this.pathNextIdx = 1;
+    this.joints = path.getJoints();
+    if (this.group.isPathReverse()) {
+      this.target = this.joints[index];
+      this.pathNextIdx = index - 1;
+    } else {
+      this.target = this.joints[index];
+      this.pathNextIdx = index + 1;
+    }
   } else {
     this.target = null;
     this.pathNextIdx = 0;
@@ -35,9 +43,6 @@ Agent.prototype.followGroupPath = function(index) {
 };
 
 Agent.prototype.step = function(stepSize) {
-  var path = this.group.getPath();
-  var wps = path ? path.getWaypoints() : null;
-
   var accel = this.group.behavior.getAccel(this, this.target);
 
   if (this.debug) {
@@ -51,13 +56,24 @@ Agent.prototype.step = function(stepSize) {
   if (this.target) {
     var distToTarget = Vec2.distance(this.pos, this.target.pos);
     if (distToTarget < this.target.getRadius()) {
-      if (this.pathNextIdx < wps.length) {
-        // follow to next waypoint
-        this.target = wps[this.pathNextIdx++];
+      if (this.group.isPathReverse()) {
+        if (this.pathNextIdx > 0) {
+          // follow to next waypoint
+          this.target = this.joints[this.pathNextIdx--];
+        } else {
+          // arrived at last!
+          this.pathNextIdx = null;
+          this.target = null;
+        }
       } else {
-        // arrived at last!
-        this.pathNextIdx = null;
-        this.target = null;
+        if (this.pathNextIdx < this.joints.length) {
+          // follow to next waypoint
+          this.target = this.joints[this.pathNextIdx++];
+        } else {
+          // arrived at last!
+          this.pathNextIdx = null;
+          this.target = null;
+        }
       }
     }
   }

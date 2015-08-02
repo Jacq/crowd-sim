@@ -52,54 +52,69 @@
       message: 'Click on entities to drag and browse their properties',
       cursor: 'default'
     },
-    add: {
-      id: 'add',
-      label: 'Add',
-      message: 'Click on entities to drag and browse their properties',
-      cursor: 'plus'
+    edit: {
+      id: 'edit',
+      label: 'Edit',
+      message: 'Click on entity to modify it',
+      cursor: 'pointer'
     },
     remove: {
       id: 'remove',
       label: 'Remove',
-      message: 'Click on entities to drag and browse their properties',
-      cursor: 'times'
+      message: 'Click on entities remove them',
+      cursor: 'pointer'
     },
     addContext: {
       id: 'addContext',
       label: 'Add Context',
       entity: CrowdSimApp.EntityTypes.Context,
       message: 'Click to add a Context',
-      cursor: 'square'
+      cursor: 'crosshair'
     },
     addGroup: {
       id: 'addGroup',
       label: 'Add Group',
       entity: CrowdSimApp.EntityTypes.Group,
       message: 'Click to add a Group',
-      cursor: 'users'
+      cursor: 'crosshair'
     },
     addPath: {
       id: 'addPath',
       label: 'Add Path',
       entity: CrowdSimApp.EntityTypes.Path,
       message: 'Click to add a Path',
-      cursor: 'map-marker'
+      cursor: 'crosshair'
     },
     addWall: {
       id: 'addWall',
       label: 'Add Wall',
       entity: CrowdSimApp.EntityTypes.Wall,
       message: 'Click to add a Wall',
-      cursor: 'pointer'
+      cursor: 'crosshair'
     }
   };
 
   Editor._helpers = {
     // handles setting and editing properties with a input control
+    createBooleanInput: function(control, prop, i) {
+      $(control).prop('checked',prop[i]).off('change').change(function(e) {
+        var that = $(this);
+        prop[i] = $(this).is(':checked');
+        that.addClass('highlight');
+        setTimeout(function() {
+          that.removeClass('highlight');
+        },500);
+      });
+    },
     createNumberInput: function(control, prop, i) {
       $(control).val(prop[i].toFixed ? prop[i].toFixed(3) : prop[i]).off('change').change(function(e) {
-        var value = Number($(this).val()); // try convert to number
-        prop[i] = value.toFixed ? value : $(this).val();
+        var that = $(this);
+        var value = Number(that.val()); // try convert to number
+        prop[i] = value.toFixed ? value : that.val();
+        that.addClass('highlight');
+        setTimeout(function() {
+          that.removeClass('highlight');
+        },500);
       });
     },
     // create inputs for editing properties in a object
@@ -110,25 +125,35 @@
           Editor._helpers.createInputsRecursive(newControl, entityProp[p]);
           control.append(newControl);
         } else {
-          var newInput = $('<input type="text" class="entity entity-' + p + '">');
+          var newInput = null;
+          if (typeof entityProp[p] === 'boolean') {
+            newInput = $('<input type="checkbox" class="entity entity-' + p + '">');
+            Editor._helpers.createBooleanInput(newInput, entityProp, p);
+          } else {
+            newInput = $('<input type="text" class="entity entity-' + p + '">');
+            Editor._helpers.createNumberInput(newInput, entityProp, p);
+          }
           newInput.val(v);
           newInput.appendTo(newControl);
           control.append(newControl);
-          Editor._helpers.createNumberInput(newInput, entityProp, p);
         }
       });
     },
     // create inputs for editing properties in a object
     createEntityLabel: function(control, entityProp) {
       $.each(entityProp, function(k, v) {
-        var value = v.id || '';
-        if (Array.isArray(v)) {
-          for (var i in v) {
-            value += v[i].id + ', ';
+        var value = null;
+        if (v) { // if assigned entity
+          value = v.id || '';
+          if (Array.isArray(v)) {
+            for (var i in v) {
+              value += v[i].id + ', ';
+            }
           }
         }
         var newControl = $('<div>' + k + ': ' + value + '</div>');
         control.append(newControl);
+
       });
     },
     toggleFullScreen: function() {
@@ -160,8 +185,7 @@
       'edit-mode': Editor.currentMode.label,
       'message': Editor.currentMode.message
     });
-
-    $(Editor._canvas).awesomeCursor(Editor.currentMode.cursor, {color: 'white'});
+    $(Editor._canvas).css('cursor',Editor.currentMode.cursor);
   };
 
   Editor.engineChange = function(newStatus) {
@@ -182,24 +206,28 @@
     });
     $(document.body).append(stats.domElement);
     // wire Crowdsim callbacks
+    // Stats rendering
     CrowdSimApp.onPreRender = function() {
       stats.begin();
     };
     CrowdSimApp.onPreRender = function() {
       stats.end();
     };
+    // Manages add/editing/remove of entities
     CrowdSimApp.onEntitySelected = function(entity) {
       switch (Editor.currentMode) {
         case Editor.modes.select:
           Editor._entityInfoSet(entity);
         break;
-        case Editor.modes.add:
+        case Editor.modes.edit:
+          CrowdSimApp.editEntity(entity);
         break;
         case Editor.modes.remove:
           CrowdSimApp.destroyEntity(entity);
         break;
       }
     };
+    // Append to Entities list html
     var entityList = $('.entity-list-container');
     CrowdSimApp.onCreateEntity = function(renderEntity) {
       var entity = renderEntity.entityModel;
@@ -215,8 +243,9 @@
       $('#entitiy-id-' + entity.id, entityList).off('click').remove();
       console.log(entity);
     };
+    // load / save of world
     CrowdSimApp.onLoad = function(world) {
-      Editor._helpers.createInputsRecursive(Editor.engineSettings, CrowdSimApp.getEntineSettings());
+      Editor._helpers.createInputsRecursive(Editor.engineSettings, CrowdSimApp.getEngineSettings());
     };
     CrowdSimApp.onSave = function(world) {
 
@@ -224,12 +253,11 @@
 
     // init toolbar buttons
     $('.edit-modes button').click(function(event) {
-
       var mode = Editor.modes[event.currentTarget.id];
       Editor.modeToggle(mode);
       if (Editor._entityCreated) {
         // stops creating current entity
-        Editor._entityCreated = CrowdSimApp.endCreateEntity();
+        Editor._entityCreated = CrowdSimApp.createEntityEnd();
       }
       event.stopPropagation();
       return false;
@@ -263,6 +291,7 @@
     Editor._updateDisplay();
   };
 
+  // updates entity panel with entity info and properties
   Editor._entityInfoSet = function(entityView) {
     var entity = entityView.entityModel;
     $('.entity-type', Editor.entityInfo).html(entity.constructor.type);
@@ -276,6 +305,7 @@
     util.createEntityLabel(control, entity.entities);
   };
 
+  // wires mouse and keyboard events to canvas/document/window
   Editor._events = function(canvas) {
     var $canvas = $(canvas),
       $document = $(document),
@@ -305,15 +335,29 @@
       switch (event.button) {
         case 0: // left button
           // add entities mode
-          if (Editor.currentMode && Editor.currentMode.entity) {
-            if (Editor._entityCreated) { // continue creating current entity
-
-            } else { // starts creating
-              Editor._entityCreated = CrowdSimApp.startCreateEntity(Editor.currentMode.entity, pos);
-              Editor._statusBarSet({
-                message: 'Entity creation mode starterd. Press ESC or right button to end'
-              });
-            }
+          switch (Editor.currentMode) {
+            case Editor.modes.select:
+            break;
+            case Editor.modes.edit:
+              Editor._entityCreated = CrowdSimApp.getSelectedEntity();
+            break;
+            case Editor.modes.remove:
+            break;
+            case Editor.modes.addContext:
+            case Editor.modes.addGroup:
+            case Editor.modes.addPath:
+            case Editor.modes.addWall:
+              if (Editor._entityCreated) { // continue creating current entity
+                Editor._entityCreated = CrowdSimApp.getCreatingEntity();
+                if (!Editor._entityCreated) {
+                  Editor._statusBarSet({message: 'Entity creation finished'});
+                }
+              } else { // starts creating
+                Editor._entityCreated = CrowdSimApp.createEntityStart(Editor.currentMode.entity, pos);
+                Editor._statusBarSet({message: 'Entity creation mode starterd. Press ESC or right button to end'});
+              }
+            break;
+            default:
           }
         break;
         case 1: // middle button for panning
@@ -325,6 +369,7 @@
       }
     }
 
+    // panning and dragging
     function mousemove(event) {
       CrowdSimApp.mousemove(event);
       if (panningEvent) {
@@ -339,11 +384,9 @@
       Editor._statusBarSet({
         mouse: '(' + pos.x.toFixed(2) + ',' + pos.y.toFixed(2) + ')'
       });
-      Editor._statusBarSet({
-        message: 'Entity creation mode finished'
-      });
     }
 
+    // end edition mode
     function mouseup(event) {
       var pos = {
         x: event.clientX,
@@ -361,12 +404,14 @@
         break;
         case 2: // right button
           if (Editor._entityCreated) { // ends creating action
-            Editor._entityCreated = CrowdSimApp.endCreateEntity();
+            Editor._entityCreated = CrowdSimApp.createEntityEnd();
+            Editor._statusBarSet({message: 'Entity creation mode finished'});
           }
           return false;
       }
     }
 
+    // zooming
     function mousewheel(event) {
       if (event.deltaY > 0) {
         $canvas.css('cursor', 'zoom-in');
@@ -380,6 +425,7 @@
       });
     }
 
+    // hotkeys
     function keydown(event) {
       var render = CrowdSim.Render;
       switch (event.keyCode) { // ctrlKey shiftKey
@@ -390,7 +436,8 @@
 
           if (Editor._entityCreated) {
             // ends creation of current entity
-            Editor._entityCreated = CrowdSimApp.endCreateEntity();
+            Editor._entityCreated = CrowdSimApp.createEntityEnd();
+            Editor._statusBarSet({message: 'Entity creation mode finished'});
           } else {
             // cancels mode creation
             Editor.modeToggle();
@@ -420,7 +467,7 @@
           CrowdSimApp.zoom(0.9);
         break;
         default:
-          console.log(event);
+          //console.log(event);
         break;
       }
     }
@@ -445,11 +492,13 @@
     }
   };
 
+  // updates lower status bar
   Editor._updateDisplay = function() {
     var setOpts = CrowdSimApp.getStats();
     Editor._statusBarSet(setOpts);
   };
 
+  // inits all!
   Editor.init('canvas');
   return Editor;
 })(jQuery);
