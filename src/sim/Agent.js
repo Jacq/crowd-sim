@@ -28,17 +28,22 @@ Agent.prototype.followPath = function(path, index) {
   index = index || 0;
   this.path = path;
   if (path) {
-    this.joints = path.getJoints();
-    if (this.group.isPathReverse()) {
-      this.target = this.joints[index];
-      this.pathNextIdx = index - 1;
-    } else {
-      this.target = this.joints[index];
-      this.pathNextIdx = index + 1;
-    }
+    this.pathStartIdx = index;
+    this._startPath();
   } else {
     this.target = null;
     this.pathNextIdx = 0;
+  }
+};
+
+Agent.prototype._startPath = function() {
+  this.joints = this.path.getJoints();
+  if (this.group.isPathReverse()) {
+    this.target = this.joints[this.pathStartIdx];
+    this.pathNextIdx = this.pathStartIdx - 1;
+  } else {
+    this.target = this.joints[this.pathStartIdx];
+    this.pathNextIdx = this.pathStartIdx + 1;
   }
 };
 
@@ -53,26 +58,32 @@ Agent.prototype.step = function(stepSize) {
 
   this.move(accel, stepSize);
   // update target to next if arrive at current
+  var last = false;
   if (this.target) {
-    var distToTarget = Vec2.distance(this.pos, this.target.pos);
-    if (distToTarget < this.target.getRadius()) {
+    if (this.pathNextIdx && this.target.in(this.pos)) {
       if (this.group.isPathReverse()) {
-        if (this.pathNextIdx > 0) {
+        if (this.pathNextIdx >= 0) {
           // follow to next waypoint
           this.target = this.joints[this.pathNextIdx--];
         } else {
-          // arrived at last!
-          this.pathNextIdx = null;
-          this.target = null;
+          last = true;
         }
       } else {
         if (this.pathNextIdx < this.joints.length) {
           // follow to next waypoint
           this.target = this.joints[this.pathNextIdx++];
         } else {
-          // arrived at last!
-          this.pathNextIdx = null;
-          this.target = null;
+          last = true;
+        }
+      }
+      if (last) { // last point check if is a circular path or end in endContext
+        if (this.group.isPathCircular()) {
+          this._startPath();
+        } else { // do one last trip for symetry to endContext if exists for symetry
+          var endContext = this.group.getEndContext();
+          if (endContext) {
+            this.target = endContext;
+          }
         }
       }
     }

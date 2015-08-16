@@ -1,9 +1,9 @@
 'use strict';
 
+var ContextModel = require('CrowdSim').Context;
 var Base = require('./Base');
 var Entity = require('./Entity');
 var Detail = require('./Detail');
-var ContextModel = require('../Entities/Context');
 var Colors = Base.Colors;
 
 var Context = function(context) {

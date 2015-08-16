@@ -27,10 +27,10 @@ ul {
   text-align: right; }
 
 .pull-right {
-  float: right; }
+  float: right !important; }
 
 .pull-left {
-  float: left; }
+  float: left !important; }
 
 .label {
   margin-top: 5px;
@@ -128,12 +128,18 @@ button,
   opacity: 0.8; }
 
 .console {
+  padding: 0;
+  margin: 0;
   position: absolute;
   bottom: 0;
   opacity: 0.8;
   right: 0;
   width: 100%;
   background-color: lightgray; }
+  .console ul li {
+    float: left;
+    border: 1px solid black;
+    padding: 5px; }
 
 .console-show {
   height: 20%; }
@@ -187,3 +193,26 @@ button,
     border: 1px solid white;
     color: white;
     position: relative; }
+
+.dialog {
+  border: 5px solid gray;
+  position: absolute;
+  height: 85%;
+  width: 60%;
+  left: 20%;
+  background-color: white;
+  opacity: 0.7;
+  padding: 20px;
+  top: 5%;
+  font-family: monospace;
+  font-size: 1.2em;
+  font-weight: bold;
+  white-space: pre;
+  overflow-y: auto; }
+  .dialog .close {
+    position: absolute;
+    right: 35px; }
+
+notebook {
+  height: 100%;
+  width: 100%; }

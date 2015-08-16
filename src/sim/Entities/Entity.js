@@ -4,6 +4,7 @@ var Entity = function(x, y, parent, options) {
   this.extra = {}; // for extra information, e.g. render object
   this.pos = Vec2.fromValues(x, y);
   this.entities = {}; // stores diferent structures with related entities
+  this.children = {}; // stores children entities
   this.view = null; // to store references to render objects
   if (parent) {
     this.parent = parent;

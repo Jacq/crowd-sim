@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 var Vec2 = require('./Common/Vec2');
@@ -10,12 +10,14 @@ var Agent = function(x, y, group, options) {
   Lazy(options).defaults(Agent.defaults).each(function(v, k) {
     that[k] = v;
   });
-  this.group = group;
   this.pos = Vec2.fromValues(x, y);
   this.vel = Vec2.create();
-  this.behavior = null; // function set by group
+  this.group = group;
   if (this.debug) {
     this.debug = {};
+  }
+  if (this.path) {
+    this.followPath(this.path, this.pathStart);
   }
 };
 
@@ -23,12 +25,18 @@ Agent.prototype.getRadius = function() {
   return this.radius;
 };
 
-Agent.prototype.followGroupPath = function(index) {
-  var path = this.group.getPath();
+Agent.prototype.followPath = function(path, index) {
+  index = index || 0;
+  this.path = path;
   if (path) {
-    var jts = path.getJoints();
-    this.target = jts[index || 0];
-    this.pathNextIdx = 1;
+    this.joints = path.getJoints();
+    if (this.group.isPathReverse()) {
+      this.target = this.joints[index];
+      this.pathNextIdx = index - 1;
+    } else {
+      this.target = this.joints[index];
+      this.pathNextIdx = index + 1;
+    }
   } else {
     this.target = null;
     this.pathNextIdx = 0;
@@ -36,9 +44,6 @@ Agent.prototype.followGroupPath = function(index) {
 };
 
 Agent.prototype.step = function(stepSize) {
-  var path = this.group.getPath();
-  var jts = path ? path.getJoints() : null;
-
   var accel = this.group.behavior.getAccel(this, this.target);
 
   if (this.debug) {
@@ -52,13 +57,24 @@ Agent.prototype.step = function(stepSize) {
   if (this.target) {
     var distToTarget = Vec2.distance(this.pos, this.target.pos);
     if (distToTarget < this.target.getRadius()) {
-      if (this.pathNextIdx < jts.length) {
-        // follow to next waypoint
-        this.target = jts[this.pathNextIdx++];
+      if (this.group.isPathReverse()) {
+        if (this.pathNextIdx > 0) {
+          // follow to next waypoint
+          this.target = this.joints[this.pathNextIdx--];
+        } else {
+          // arrived at last!
+          this.pathNextIdx = null;
+          this.target = null;
+        }
       } else {
-        // arrived at last!
-        this.pathNextIdx = null;
-        this.target = null;
+        if (this.pathNextIdx < this.joints.length) {
+          // follow to next waypoint
+          this.target = this.joints[this.pathNextIdx++];
+        } else {
+          // arrived at last!
+          this.pathNextIdx = null;
+          this.target = null;
+        }
       }
     }
   }
@@ -869,28 +885,6 @@ vec2.normalizeAndScale = function(out, a, b) {
 };
 
 },{}],5:[function(require,module,exports){
-/* global window,module, exports : true, define */
-
-var CrowdSim = {
-  Agent: require('./Agent'),
-  Entity: require('./Entities/Entity'),
-  Context: require('./Entities/Context'),
-  Wall: require('./Entities/Wall'),
-  Path: require('./Entities/Path'),
-  Group: require('./Entities/Group'),
-  World: require('./World'),
-  Engine: require('./Engine'),
-  Render: require('./Render/Render')
-};
-
-module.exports = CrowdSim;
-
-// browser
-if (typeof window === 'object' && typeof window.document === 'object') {
-  window.CrowdSim = CrowdSim;
-}
-
-},{"./Agent":1,"./Engine":6,"./Entities/Context":7,"./Entities/Entity":8,"./Entities/Group":9,"./Entities/Path":12,"./Entities/Wall":13,"./Render/Render":23,"./World":25}],6:[function(require,module,exports){
 'use strict';
 
 //var $ = jQuery =
@@ -900,8 +894,6 @@ var Engine = function(world, options) {
   this.iterations = 0;
   //this.agentsSave = JSON.parse(JSON.stringify(world.agents));
   this.world = world || {};
-  this.world.save();
-
   this.settings = Lazy(options).defaults(Engine.defaults).toObject();
 };
 
@@ -951,6 +943,7 @@ Engine.prototype._step = function() {
 
   if (this.running) {
     var that = this;
+    // using setTimeout instead of setInterval allows dinamycally changing timeStep while running
     setTimeout(function() {
       that._step();
     }, opts.timeStepRun * 1000);
@@ -971,9 +964,8 @@ Engine.prototype.stop = function() {
 };
 
 Engine.prototype.reset = function() {
+  this.stop();
   this.iterations = 0;
-  this.running = false;
-
   var groups = this.world.getGroups();
   Lazy(groups).each(function(g) {
     g.emptyAgents();
@@ -988,54 +980,30 @@ Engine.defaults = {
 
 module.exports = Engine;
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 
 var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
+var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
 var Context = function(x, y, parent, options) {
-  Entity.call(this, x, y, parent);
-  this.id = 'C' + Context.id++;
   this.options = Lazy(options).defaults(Context.defaults).toObject();
-  this.entities.groups = [];
+  Entity.call(this, x, y, parent, this.options);
+  this.id = 'C' + Context.id++;
 };
 
 Context.prototype.destroy = function() {
-  for (var g in this.entities.groups) {
-    this.entities.groups[g].unAssignContext(this);
-  }
   Entity.prototype.destroy.call(this);
-};
-
-Context.prototype.assignToGroup = function(entity) {
-  var idx = this.entities.groups.indexOf(entity);
-  if (idx > -1) {
-    throw 'Entity already associated';
-  } else {
-    this.entities.groups.push(entity);
-  }
-};
-
-Context.prototype.unassignFromGroup = function(group) {
-  var idx = this.entities.groups.indexOf(group);
-  if (idx > -1) {
-    this.entities.groups.splice(idx, 1);
-  } else {
-    throw 'Entity not associated';
-  }
-};
-
-Context.prototype.getAssignedGroups = function() {
-  return this.entities.groups;
-};
-
-Context.prototype.unassignAll = function(entity) {
-  this.entities.length = 0;
 };
 
 Context.prototype.setArea = function(x, y) {
   this.options.width = Math.abs(this.pos[0] - x) * 2;
   this.options.height = Math.abs(this.pos[1] - y) * 2;
+};
+
+Context.prototype.incrSize = function(ds) {
+  this.options.width += ds;
+  this.options.height += ds;
 };
 
 Context.prototype.getWidth = function() {
@@ -1066,28 +1034,28 @@ Context.defaults = {
   width: 10,
   height: 10
 };
-Context.id = 0;
 Context.type = 'context';
-
+Context = AssignableToGroup(Context);
+Context.id = 0;
 module.exports = Context;
 
-},{"../Common/Vec2":4,"./Entity":8}],8:[function(require,module,exports){
+},{"../Common/Vec2":4,"./Entity":7,"./Helpers/Traits":11}],7:[function(require,module,exports){
 var Vec2 = require('../Common/Vec2');
 
-var Entity = function(x, y, parent) {
+var Entity = function(x, y, parent, options) {
   this.extra = {}; // for extra information, e.g. render object
   this.pos = Vec2.fromValues(x, y);
-  this.entities = {}; // stores diferent structures with children entities
+  this.entities = {}; // stores diferent structures with related entities
   this.view = null; // to store references to render objects
   if (parent) {
     this.parent = parent;
     // request add to parent the entity
-    this.parent.addEntity(this);
+    this.parent.addEntity(this, options);
   }
 };
 
 Entity.prototype.destroy = function() {
-  if (parent) {
+  if (this.parent) {
     // request to parent removal of entity
     this.parent.removeEntity(this);
   }
@@ -1106,19 +1074,20 @@ Entity.prototype.removeEntity = function(joint) {};
 
 module.exports = Entity;
 
-},{"../Common/Vec2":4}],9:[function(require,module,exports){
+},{"../Common/Vec2":4}],8:[function(require,module,exports){
 'use strict';
 
 var Entity = require('./Entity');
 var Context = require('./Context');
+var Path = require('./Path');
 var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
 var Panic = require('../Behavior/Panic');
 
 var Group = function(x, y, parent, options) {
-  Entity.call(this, x, y, parent);
-  this.id = 'G' + Group.id++;
   this.options = Lazy(options).defaults(Group.defaults).toObject();
+  Entity.call(this, x, y, parent, this.options);
+  this.id = 'G' + Group.id++;
   this.behavior = new Panic(this.parent);
   this.agents = [];
   this.agentsCount = this.options.agentsCount;
@@ -1139,12 +1108,21 @@ Group.prototype.destroy = function() {
   Entity.prototype.destroy.call(this);
 };
 
+Group.prototype.getRadius = function() {
+  return this.options.radius;
+};
+
 Group.prototype.getStartContext = function() {
   return this.entities.startContext;
 };
 
 Group.prototype.assignStartContext = function(context) {
-  context.assignToGroup(this);
+  if (this.entities.startContext) {
+    this.entities.startContext.unassignFromGroup(this);
+  }
+  if (context) {
+    context.assignToGroup(this);
+  }
   this.entities.startContext = context;
 };
 
@@ -1153,30 +1131,58 @@ Group.prototype.getEndContext = function() {
 };
 
 Group.prototype.assignEndContext = function(context) {
-  context.assignToGroup(this);
+  if (this.entities.endContext) {
+    this.entities.endContext.unassignFromGroup(this);
+  }
+  if (context) {
+    context.assignToGroup(this);
+  }
   this.entities.endContext = context;
 };
 
-Group.prototype.unAssignContext = function(context) {
-  if (this.entities.startContext === context) {
-    this.entities.startContext = null;
-    context.unassignFromGroup(this);
+Group.prototype.assignPath = function(path, idx) {
+  if (this.entities.path) {
+    this.entities.path.unassignFromGroup(this);
   }
-  if (this.entities.endContext === context) {
-    this.entities.endContext = null;
-    context.unassignFromGroup(this);
+  this.options.pathStart = idx || 0;
+  this.entities.path = path;
+  if (path) {
+    path.assignToGroup(this);
+    for (var i  in this.agents) {
+      this.agents[i].followPath(this.options.pathStart, this.options.startIdx);
+    }
   }
+};
+
+Group.prototype.isPathReverse = function() {
+  return this.options.pathReverse;
+};
+
+Group.prototype.getPathStartIdx = function() {
+  return this.options.pathStart;
+};
+
+Group.prototype.unAssign = function(entity) {
+  if (entity instanceof Context) {
+    if (this.entities.startContext === entity) {
+      this.entities.startContext = null;
+      entity.unassignFromGroup(this);
+    }
+    if (this.entities.endContext === entity) {
+      this.entities.endContext = null;
+      entity.unassignFromGroup(this);
+    }
+  } else if (entity instanceof Path) {
+    this.entities.path = null;
+    entity.unassignFromGroup(this);
+  } else {
+    throw 'Entity not assigned to group';
+  }
+
 };
 
 Group.prototype.assignBehavior = function(behavior) {
   this.behavior = behavior;
-};
-
-Group.prototype.assignPath = function(path) {
-  this.entities.path = path;
-  for (var i  in this.agents) {
-    this.agents[i].followGroupPath();
-  }
 };
 
 Group.prototype.generateAgents = function(agentsCount, startContext) {
@@ -1185,15 +1191,33 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   }
   var newAgents = [];
   var opts = this.options;
+  var pos = Vec2.create();
+  var radius = this.options.radius;
+  var initPos = this.pos;
+  function myInitPos(pos) {
+    Vec2.random(pos, radius);
+    Vec2.add(pos,pos, initPos);
+    return pos;
+  }
+  function myContextPos() {
+    return startContext.getRandomPoint();
+  }
+  var getInitPos = startContext ? myContextPos : myInitPos;
   for (var i = 0; i < agentsCount; i++) {
-    var pos = this.entities.startContext ? this.entities.startContext.getRandomPoint() : this.pos;
+    pos = getInitPos(pos);
     var size = opts.agentsSizeMin;
     if (opts.agentsSizeMin !== opts.agentsSizeMax) {
       // random uniform distribution
       size = opts.agentsSizeMin + Math.random() * (opts.agentsSizeMax - opts.agentsSizeMin);
     }
-    var agent = new Agent(pos[0], pos[1], this, {size: size, debug: opts.debug});
-    agent.followGroupPath();
+    var agent = new Agent(pos[0], pos[1], this, {
+      size: size,
+      debug: opts.debug,
+      path: this.entities.path,
+      pathStart: this.options.pathStart
+    });
+    //agent.followPath(this.entities.path, this.options.startIdx);
+    //agent.assignBehavior(behavior);
     newAgents.push(agent);
   }
   return newAgents;
@@ -1272,6 +1296,9 @@ Group.defaults = {
   agentsCount: 10,
   agentsMax: 100,
   debug: false,
+  pathStart: 0,
+  pathReverse: false,
+  radius: 3, // used when no start context is associated
   startProb: 0, // Adds agents per step in startContext
   startRate: 0, // Adds agents probability per step in startContext
   endProb: 0, // Removes agents per step in endContext
@@ -1282,13 +1309,14 @@ Group.type = 'group';
 
 module.exports = Group;
 
-},{"../Agent":1,"../Behavior/Panic":3,"../Common/Vec2":4,"./Context":7,"./Entity":8}],10:[function(require,module,exports){
+},{"../Agent":1,"../Behavior/Panic":3,"../Common/Vec2":4,"./Context":6,"./Entity":7,"./Path":12}],9:[function(require,module,exports){
 var Entity = require('../Entity');
 
 var Joint = function(x, y, parent, options) {
-  Entity.call(this, x, y, parent);
-  this.id = 'J' + Joint.id++;
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
+  Entity.call(this, x, y, parent, this.options);
+  delete this.options.previousJoint; // delete not neccesary
+  this.id = 'J' + Joint.id++;
 };
 
 Joint.prototype.destroy = function() {
@@ -1299,15 +1327,29 @@ Joint.prototype.getRadius = function() {
   return this.options.radius;
 };
 
+Joint.prototype.setRadius = function(radius) {
+  if (this.options.scalable) {
+    this.options.radius = radius;
+  }
+};
+
+Joint.prototype.incrRadius = function(dr) {
+  if (this.options.scalable) {
+    this.options.radius += dr;
+  }
+};
+
 Joint.defaults = {
-  radius: 4
+  radius: 4,
+  previousJoint: null,
+  scalable: true
 };
 Joint.id = 0;
 Joint.type = 'joint';
 
 module.exports = Joint;
 
-},{"../Entity":8}],11:[function(require,module,exports){
+},{"../Entity":7}],10:[function(require,module,exports){
 'use strict';
 
 var Vec2 = require('../../Common/Vec2');
@@ -1316,28 +1358,42 @@ var Joint = require('./Joint');
 
 var LinePrototype = function(id, type, defaults) {
   var Line = function(x, y, parent, options) {
-    Entity.call(this, x, y, parent);
-    this.id = id + Line.id++;
     this.options = Lazy(options).defaults(defaults).toObject();
+    Entity.call(this, x, y, parent, this.options);
+    this.id = id + Line.id++;
     this.entities.joints = [];
     if (x && y) {
-      this.addJoint(x,y,this.options.radius);
+      this.addJoint(x,y,this.options);
     }
   };
 
-  Line.prototype.addEntity = function(joint) {
-    this.entities.joints.push(joint);
+  Line.prototype.addEntity = function(joint, options) {
+    // add a joint to the end or a given position by options.idx
+    if (!options || options.previousJoint === null) {
+      this.entities.joints.push(joint);
+    } else {
+      var idx = this.entities.joints.indexOf(options.previousJoint);
+      if (idx === -1) { throw 'Previous joint not found'; }
+      this.entities.joints.splice(idx, 0, joint);
+    }
   };
 
   Line.prototype.removeEntity = function(joint) {
     var idx = this.entities.joints.indexOf(joint);
     if (idx !== -1) {
       this.entities.joints.splice(idx, 1);
+      // destroy line if not contains joints
       if (this.entities.joints.length === 0) {
         this.destroy();
       }
+      if (idx === 0) { // relocate reference to next joint idx +1,
+        //but we removed idx alreade so next is idx
+        var nextJoint = this.entities.joints[idx];
+        this.pos[0] = nextJoint.pos[0];
+        this.pos[1] = nextJoint.pos[1];
+      }
     } else {
-      throw 'Joint not found in wall';
+      throw 'Joint not found in ' + Line.type;
     }
   };
 
@@ -1353,35 +1409,32 @@ var LinePrototype = function(id, type, defaults) {
     // n joints, n-1 sections
     for (var i in joints) {
       var joint = joints[i];
-      var radius = null;
+      var radius = this.options.radius;
+      var options = Lazy(options).defaults(defaults).toObject();
       if (joint.length === 2) {
-        radius = joint[3];
+        options.radius = joint[3];
       }
-      this.addJoint(joint[0],joint[1],radius);
+      this.addJoint(joint[0],joint[1],options);
     }
   };
 
-  Line.prototype.addJoint = function(x, y, radius) {
+  Line.prototype.addJoint = function(x, y, options) {
     Entity.prototype.updatePos.call(this,x,y);
-    if (!radius) {
-      radius = this.entities.joints.length === 0 ? this.options.radius : this.entities.joints[this.entities.joints.length - 1].getRadius();
-    }
-    var joint = new Joint(x, y, this, {radius: radius});
+    options = Lazy(options).defaults(defaults).toObject();
+    var joint = new Joint(x, y, this, options);
     return joint;
-  };
-
-  Line.prototype.destroyJoint = function(joint) {
-    var idx = this.entities.joints.indexOf(joint);
-    if (idx > -1) {
-      joint.destroy();
-      this.entities.joints.splice(idx,1);
-    } else {
-      throw 'Joint not joint in Line';
-    }
   };
 
   Line.prototype.getJoints = function() {
     return this.entities.joints;
+  };
+
+  Line.prototype.getJointIdx = function(joint) {
+    return this.entities.joints.indexOf(joint);
+  };
+
+  Line.prototype.getJointByIdx = function(idx) {
+    return this.entities.joints[idx];
   };
 
   Line.prototype.getWidth = function() {
@@ -1401,16 +1454,69 @@ var LinePrototype = function(id, type, defaults) {
   };
 
   Line.id = 0;
-  Line.type = 'line';
+  Line.type = type;
   return Line;
 };
 
 module.exports = LinePrototype;
 
-},{"../../Common/Vec2":4,"../Entity":8,"./Joint":10}],12:[function(require,module,exports){
+},{"../../Common/Vec2":4,"../Entity":7,"./Joint":9}],11:[function(require,module,exports){
+
+
+var AssignableToGroup = function(EntityPrototype) {
+
+  var oldConstruct = EntityPrototype.prototype;
+  var oldDestroy = EntityPrototype.prototype.destroy;
+
+  EntityPrototype = function(x, y, parent, options) {
+    oldConstruct.constructor.call(this,x, y, parent, options);
+    this.entities.groups = [];
+  };
+  EntityPrototype.prototype = oldConstruct;
+
+  EntityPrototype.prototype.destroy = function() {
+    // additionally unAssignFromGroup
+    for (var g in this.entities.groups) {
+      this.entities.groups[g].unAssign(this);
+    }
+    this.entities.groups.length = 0;
+    this.entities.groups = null;
+    // call original destroy
+    return oldDestroy.call(this);
+  };
+
+  EntityPrototype.prototype.assignToGroup = function(entity) {
+    var idx = this.entities.groups.indexOf(entity);
+    if (idx > -1) {
+      throw 'Entity already associated';
+    } else {
+      this.entities.groups.push(entity);
+    }
+  };
+
+  EntityPrototype.prototype.unassignFromGroup = function(group) {
+    var idx = this.entities.groups.indexOf(group);
+    if (idx > -1) {
+      this.entities.groups.splice(idx, 1);
+    } else {
+      throw 'Entity not associated';
+    }
+  };
+
+  EntityPrototype.prototype.getAssignedGroups = function() {
+    return this.entities.groups;
+  };
+
+  return EntityPrototype;
+};
+
+module.exports.AssignableToGroup = AssignableToGroup;
+
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var LinePrototype = require('./Helpers/LinePrototype');
+var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
 var Path = LinePrototype('P','path',{
   width: 0.2,
@@ -1422,639 +1528,35 @@ Path.defaults = {
   radius: 4
 };
 Path.id = 0;
-Path.type = 'path';
-
+Path = AssignableToGroup(Path);
 module.exports = Path;
 
-},{"./Helpers/LinePrototype":11}],13:[function(require,module,exports){
+},{"./Helpers/LinePrototype":10,"./Helpers/Traits":11}],13:[function(require,module,exports){
 
 
 var LinePrototype = require('./Helpers/LinePrototype');
 
 var Wall = LinePrototype('W','wall',{
   width: 0.2,
-  radius: 1
+  radius: 1,
+  scalable: false
 });
 Wall.id = 0;
-Wall.type = 'wall';
 
 module.exports = Wall;
 
-},{"./Helpers/LinePrototype":11}],14:[function(require,module,exports){
+},{"./Helpers/LinePrototype":10}],14:[function(require,module,exports){
 'use strict';
 
-var Vec2 = require('../Common/Vec2');
-var Base = require('./Base');
-var Entity = require('./Entity');
-var Detail = require('./Detail');
-var Colors = Base.Colors;
-
-var Agent = function(agent) {
-  if (!agent) {
-    throw 'Agent object must be defined';
-  }
-  //var display = new PIXI.Sprite(options.texture);
-
-  Entity.call(this, agent);
-  this.sprite = new PIXI.Sprite(Agent.texture);
-  Entity.prototype.createGraphics.call(this,Agent.container, this.sprite);
-  this.sprite.visible = Agent.detail.level > 0;
-  this.sprite.anchor.set(0.5);
-  //this.display.alpha = 0.5;
-  var size = agent.size;
-  this.sprite.height = size;
-  this.sprite.width = size;
-  this.sprite.position.x = agent.pos[0];
-  this.sprite.position.y = agent.pos[1];
-};
-
-Agent.prototype.destroy = function() {
-  Entity.prototype.destroyGraphics.call(this,Agent.container, this.sprite);
-  Entity.prototype.destroyGraphics.call(this,Agent.container, this.graphics);
-};
-
-Agent.prototype.render = function() {
-  if (!Agent.detail.level) {
-    this.sprite.visible = false;
-    this.sprite.alpha = 0;
-    if (this.graphics) {
-      this.graphics.clear();
-    }
-    return;
-  } else {
-    this.sprite.alpha = 1;
-    this.sprite.visible = true;
-  }
-  Entity.prototype.render.call(this);
-
-  var e = this.entityModel;
-  this.sprite.position.set(e.pos[0], e.pos[1]);
-  this.sprite.rotation = Math.atan2(e.vel[1], e.vel[0]) - Math.PI / 2;
-
-  if (Agent.detail.level > 1) {
-    if (!this.graphics) {
-      this.graphics = Entity.prototype.createGraphics.call(this,Agent.debugContainer);
-      this.circle = new PIXI.Circle(e.pos[0],e.pos[1], e.size / 2);
-      //this.graphics.addChild(this.circle);
-    }
-    this.graphics.clear();
-  }
-
-  if (Agent.detail.level > 1) {
-    if (this.circle) {
-      this.circle.x = e.pos[0];
-      this.circle.y = e.pos[1];
-      this.graphics.lineStyle(0.1, Colors.Agent);
-      this.graphics.drawShape(this.circle);
-    }
-  }
-  if (Agent.detail.level > 2) {
-    this.graphics.moveTo(e.pos[0], e.pos[1]);
-    this.graphics.lineTo(e.pos[0] + e.vel[0], e.pos[1] + e.vel[1]);
-  }
-  if (e.debug) {
-    if (Agent.detail.level > 3 && e.debug.forces) {
-      var force = Vec2.create();
-      for (var f in e.debug.forces) {
-        this.graphics.lineStyle(0.1, Colors.Forces[f]);
-        this.graphics.moveTo(e.pos[0], e.pos[1]);
-        Vec2.normalize(force, e.debug.forces[f]);
-        this.graphics.lineTo(e.pos[0] + force[0], e.pos[1] + force[1]);
-      }
-    }
-    if (isNaN(e.pos[0]) || isNaN(e.pos[1])) {
-      throw 'Agent position undefined';
-    }
-  }
-};
-
-Agent.texture = null; // agents texture
-Agent.debugContainer = null; // special container use to render all agents, e.g particleContainer
-Agent.detail = new Detail(4);
-
-module.exports = Agent;
-
-},{"../Common/Vec2":4,"./Base":15,"./Detail":17,"./Entity":18}],15:[function(require,module,exports){
-'use strict';
-
-var Colors = {
-  Hover: 0xebff00,
-  Context: 0x646729,
-  Agent: 0xFF0000,
-  Group: 0xFFFFFF,
-  Wall: 0x00FF00,
-  Joint: 0xAAAAAA,
-  Path: 0xe00777,
-  Waypoint: 0x7a7a7a,
-  Forces: {desired: 0xfffff,
-          agents: 0xFF0000,
-          walls: 0xc49220
-          }
-};
-
-var Fonts = {
-  default: {font: '2px Mono monospace', fill: 0xFFFFFF,
-  align: 'center'},
-  resolution: 12
-};
-
-module.exports.Colors = Colors;
-module.exports.Fonts = Fonts;
-
-},{}],16:[function(require,module,exports){
-'use strict';
-
-var Base = require('./Base');
-var Entity = require('./Entity');
-var Detail = require('./Detail');
-var ContextModel = require('../Entities/Context');
-var Colors = Base.Colors;
-
-var Context = function(context) {
-  if (!context) {
-    throw 'Context object must be defined';
-  }
-  Entity.call(this, context);
-};
-
-Context.CreateFromModel = function(context) {
-  return new Context(context);
-};
-
-Context.CreateFromPoint = function(x, y, parent, options) {
-  var context = new ContextModel(x, y, parent, options);
-  return new Context(context);
-};
-
-Context.prototype.destroy = function() {
-  Entity.prototype.destroyGraphics.call(this,Context.container, this.graphics);
-  Entity.prototype.destroy.call(this);
-};
-
-Context.prototype.createGraphics = function(context) {
-  this.graphics = Entity.prototype.createGraphics.call(this,Context.container);
-  this.rect = new PIXI.Rectangle(0, 0, 0, 0);
-  this.rect.entityModel = context;
-  this.label = new PIXI.Text(context.id, Base.Fonts.default);
-  this.label.resolution = Base.Fonts.resolution;
-  this.graphics.addChild(this.label);
-  this.graphics.entity = this;
-};
-
-Context.prototype.getAnchor = function(init) {
-  var context = this.entityModel;
-  return {x: context.pos[0], y: context.pos[1]};
-};
-
-Context.prototype.dragTo = function(pos, anchor) {
-  var context = this.entityModel;
-  context.pos[0] = pos.x;
-  context.pos[1] = pos.y;
-};
-
-Context.prototype.render = function(options) {
-  if (!Context.detail.level) {
-    this.graphics.clear();
-    return;
-  }
-  Entity.prototype.render.call(this,this.graphics);
-  var context = this.entityModel;
-  // init render
-  if (!this.graphics && Context.detail.level) {
-    this.createGraphics(context);
-  } else {
-    this.graphics.clear();
-  }
-
-  if (Context.detail.level > 0) {
-    var w = context.getWidth();
-    var h = context.getHeight();
-    this.rect.x = context.pos[0] - w / 2;
-    this.rect.y = context.pos[1] - h / 2;
-    this.rect.width = w;
-    this.rect.height = h;
-    this.label.x = context.pos[0] - this.label.width / 2;
-    this.label.y = context.pos[1] - this.label.height / 2;
-    this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Context, this.hover ? 0.9 : 0.3);
-    this.graphics.drawShape(this.rect);
-    this.graphics.endFill();
-  }
-};
-
-Context.prototype.setArea = function(x, y) {
-  this.entityModel.setArea(x, y);
-};
-
-Context.detail = new Detail(2);
-
-module.exports = Context;
-
-},{"../Entities/Context":7,"./Base":15,"./Detail":17,"./Entity":18}],17:[function(require,module,exports){
-'use strict';
-
-var Detail = function(maxDetail, detail) {
-  this.maxDetail = maxDetail;
-  this.level = detail || 1;
-};
-
-Detail.prototype.cycleDetail = function(detail) {
-  if (detail) {
-    this.level = detail;
-  } else {
-    this.level ++;
-    if (this.level > this.maxDetail) {
-      this.level = 0;
-    }
-  }
-};
-
-module.exports = Detail;
-
-},{}],18:[function(require,module,exports){
-'use strict';
-
-var Base = require('./Base');
-
-/*
-* Base render prototype
-*/
-var Entity = function(entity) {
-  if (!entity) {
-    throw 'Entity undefined';
-  }
-  this.entityModel = entity;
-  this.entityModel.view = this;
-  this.selected = false;
-};
-
-Entity.prototype.destroy = function() {
-  this.entityModel.view = null;
-  this.entityModel.destroy();
-  this.entityModel = null;
-};
-
-Entity.prototype.createGraphics = function(container, graphics) {
-  if (!graphics) {
-    graphics = new PIXI.Graphics();
-  }
-  Entity.setInteractive(graphics);
-  graphics._entityView = this;
-  // add it the container so we see it on our screens.
-  container.addChild(graphics);
-  return graphics;
-};
-
-Entity.prototype.destroyGraphics = function(container, graphics) {
-  if (graphics) {
-    //graphics.clear();
-    graphics.destroy();
-    container.removeChild(graphics);
-  }
-};
-
-Entity.setInteractive = function(displayObject) {
-  displayObject.interactive = true;
-  displayObject.buttonMode = true;
-  displayObject.mouseover = Entity.mouseover;
-  displayObject.mouseout = Entity.mouseout;
-  displayObject.mousedown = Entity.mousedown;
-  displayObject.mouseup = Entity.mouseup;
-  displayObject.mousemove = Entity.mousemove;
-};
-
-Entity.prototype.render = function(graphics) {
-  //this.display.clear();
-};
-
-Entity.mousedown = null;
-Entity.mousemove = null;
-Entity.mouseup = null;
-Entity.mouseover = null;
-Entity.mouseout = null;
-
-module.exports = Entity;
-
-},{"./Base":15}],19:[function(require,module,exports){
-'use strict';
-
-var Base = require('./Base');
-var Entity = require('./Entity');
-var Detail = require('./Detail');
-var Colors = Base.Colors;
-var GroupModel = require('../Entities/Group');
-
-var Group = function(group) {
-  if (!group) {
-    throw 'Group object must be defined';
-  }
-  Entity.call(this, group);
-};
-
-Group.CreateFromModel = function(group) {
-  return new Group(group);
-};
-
-Group.CreateFromPoint = function(x, y, parent, options) {
-  var group = new GroupModel(x, y, parent, options);
-  return new Group(group);
-};
-
-Group.prototype.destroy = function() {
-  Entity.prototype.destroyGraphics.call(this,Group.container, this.graphics);
-  Entity.prototype.destroy.call(this);
-};
-
-Group.prototype.createGraphics = function(group) {
-  this.graphics = Entity.prototype.createGraphics.call(this,Group.container);
-  this.label = new PIXI.Text(group.id, Base.Fonts.default);
-  this.label.resolution = Base.Fonts.resolution;
-  this.circle = new PIXI.Circle(0, 0, this.label.width, this.label.height);
-  this.circle.entityModel = group;
-  this.graphics.addChild(this.label);
-  this.graphics.entity = this;
-};
-
-Group.prototype.render = function(options) {
-  if (!Group.detail.level) {
-    this.graphics.clear();
-    return;
-  }
-  Entity.prototype.render.call(this,this.graphics);
-  var group = this.entityModel;
-  // init render
-  if (!this.graphics && Group.detail.level) {
-    this.createGraphics(group);
-  } else {
-    this.graphics.clear();
-  }
-
-  if (Group.detail.level > 0) {
-    this.label.x = group.pos[0] - this.label.width / 2;
-    this.label.y = group.pos[1] - this.label.height / 2;
-    this.circle.x = group.pos[0];
-    this.circle.y = group.pos[1];
-    this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Group, this.hover ? 0.9 : 0.3);
-    this.graphics.drawShape(this.circle);
-    this.graphics.endFill();
-    var entities = group.entities;
-    for (var i in entities) {
-      if (entities[i]) {
-        var subEntity = entities[i];
-        this.graphics.lineStyle(0.2, Colors.Group, 0.4);
-        this.graphics.moveTo(group.pos[0],group.pos[1]);
-        this.graphics.lineTo(subEntity.pos[0],subEntity.pos[1]);
-      }
-    }
-  }
-};
-
-Group.prototype.getAnchor = function(init) {
-  var group = this.entityModel;
-  return {x: group.pos[0], y: group.pos[1]};
-};
-
-Group.prototype.dragTo = function(pos, anchor) {
-  var group = this.entityModel;
-  group.pos[0] = pos.x;
-  group.pos[1] = pos.y;
-};
-
-Group.detail = new Detail(2);
-
-module.exports = Group;
-
-},{"../Entities/Group":9,"./Base":15,"./Detail":17,"./Entity":18}],20:[function(require,module,exports){
-'use strict';
-
-var Vec2 = require('../Common/Vec2');
-var Base = require('./Base');
-var Entity = require('./Entity');
-var Detail = require('./Detail');
-var Colors = Base.Colors;
-
-var Joint = function(joint, texture) {
-  if (!joint) {
-    throw 'Joint object must be defined';
-  }
-  Entity.call(this, joint);
-  this.texture = texture;
-};
-
-Joint.prototype.destroy = function(graphics) {
-  this.graphics.removeChild(this.label);
-  this.label.destroy();
-  Entity.prototype.destroyGraphics.call(this, this.graphics , this.sprite);
-  Entity.prototype.destroy.call(this);
-};
-
-Joint.prototype.createGraphics = function(graphics) {
-  this.graphics = graphics;
-  var joint = this.entityModel;
-  this.sprite = new PIXI.Sprite(this.texture);
-  Entity.prototype.createGraphics.call(this, graphics, this.sprite);
-  this.label = new PIXI.Text(joint.id, Base.Fonts.default);
-  this.label.resolution = Base.Fonts.resolution;
-  graphics.addChild(this.label);
-  this.sprite.anchor.x = 0.5;
-  this.sprite.anchor.y = 0.5;
-  this.sprite.entity = this;
-  this.sprite.alpha = 0.5;
-  this.render();
-};
-
-Joint.prototype.render = function() {
-  this.sprite.x = this.entityModel.pos[0];
-  this.sprite.y = this.entityModel.pos[1];
-  this.sprite.width = 2 * this.entityModel.getRadius();
-  this.sprite.height = 2 * this.entityModel.getRadius();
-  this.sprite.tint = this.hover ? Colors.Hover : Colors.Joint;
-  this.label.x = this.sprite.x;
-  this.label.y = this.sprite.y;
-};
-
-Joint.prototype.getAnchor = function(init) {
-  return {x: this.entityModel.pos[0], y: this.entityModel.pos[1]};
-};
-
-Joint.prototype.dragTo = function(pos, anchor) {
-  var anchorV2 = Vec2.fromValues(anchor.x,anchor.y);
-  var radius = Vec2.length(anchorV2);
-  var posV2 = Vec2.fromValues(pos.x,pos.y);
-  Vec2.subtract(posV2,posV2,this.entityModel.pos);
-  var newRadius = Vec2.length(posV2);
-  // calculate new size or position if dragging border or body
-  if (this.scalable && newRadius >  this.entityModel.getRadius() * 0.80) {
-    this.entityModel.radius  = newRadius;
-    this.sprite.width = 2 * newRadius;
-    this.sprite.height = 2 * newRadius;
-  } else {
-    this.entityModel.pos[0] = pos.x;
-    this.entityModel.pos[1] = pos.y;
-    this.sprite.x = pos.x;
-    this.sprite.y = pos.y;
-  }
-};
-
-module.exports = Joint;
-
-},{"../Common/Vec2":4,"./Base":15,"./Detail":17,"./Entity":18}],21:[function(require,module,exports){
-'use strict';
-
-var Base = require('./Base');
-var Joint = require('./Joint');
-var Entity = require('./Entity');
-var Detail = require('./Detail');
-var Colors = Base.Colors;
-
-var LinePrototype = function(color) {
-
-  var Line = function(line) {
-    if (!line) {
-      throw 'Line object must be defined';
-    }
-    Entity.call(this, line);
-  };
-
-  Line.prototype.destroy = function() {
-    this.graphics.removeChild(this.label);
-    this.label.destroy();
-    Entity.prototype.destroyGraphics.call(this, Line.container, this.graphics);
-    Entity.prototype.destroy.call(this);
-  };
-
-  Line.prototype.createGraphics = function(line) {
-    this.graphics = Entity.prototype.createGraphics.call(this, Line.container);
-    this.label = new PIXI.Text(line.id, Base.Fonts.default);
-    this.label.resolution = Base.Fonts.resolution;
-    this.graphics.addChild(this.label);
-    var jts = line.getJoints();
-    this.label.x = jts[0].pos[0] - this.label.width / 2;
-    this.label.y = jts[0].pos[1] - this.label.height / 2;
-    if (jts && jts.length > 0) {
-      for (var i in jts) {
-        this.addJointFromModel(jts[i]);
-      }
-    }
-  };
-
-  Line.prototype.addJointFromModel = function(joint) {
-    var renderJoint = new Joint(joint, Line.texture);
-    renderJoint.createGraphics(this.graphics);
-    return renderJoint;
-  };
-
-  Line.prototype.addJoint = function(x, y) {
-    var line = this.entityModel;
-    var jt = line.addJoint(x, y);
-    return this.addJointFromModel(jt);
-  };
-
-  Line.prototype.render = function(options) {
-    if (!Line.detail.level) {
-      this.graphics.clear();
-      return;
-    }
-    Entity.prototype.render.call(this, this.graphics);
-    var line = this.entityModel;
-    var jts = line.getJoints();
-    // init render
-    if (!this.graphics && Line.detail.level > 0) {
-      this.createGraphics(line);
-    } else {
-      this.graphics.clear();
-    }
-
-    if (Line.detail.level > 0) {
-      var points  = [];
-      this.label.x = jts[0].pos[0] - this.label.width / 2;
-      this.label.y = jts[0].pos[1] - this.label.height / 2;
-      this.graphics.lineStyle(line.getWidth(), this.hover ? Colors.Hover : color, 0.6);
-      for (var i = 0; i < jts.length; i++) {
-        points.push(jts[i].pos[0], jts[i].pos[1]);
-        jts[i].view.render();
-      }
-      this.graphics.drawPolygon(points);
-    }
-    if (Line.detail.level > 1) {
-    }
-  };
-  return Line;
-};
-
-module.exports = LinePrototype;
-
-},{"./Base":15,"./Detail":17,"./Entity":18,"./Joint":20}],22:[function(require,module,exports){
-'use strict';
-
-var Base = require('./Base');
-var Entity = require('./Entity');
-var Detail = require('./Detail');
-var LinePrototype = require('./LinePrototype');
-var Colors = Base.Colors;
-var PathModel = require('../Entities/Path');
-
-var Path = LinePrototype(Colors.Path);
-
-Path.CreateFromModel = function(path) {
-  return new Path(path);
-};
-
-Path.CreateFromPoint = function(x, y, parent, options) {
-  var path = new PathModel(x, y, parent, options);
-  return new Path(path);
-};
-
-Path.texture = null; // paths joint texture
-Path.detail = new Detail(2);
-
-module.exports = Path;
-
-},{"../Entities/Path":12,"./Base":15,"./Detail":17,"./Entity":18,"./LinePrototype":21}],23:[function(require,module,exports){
-'use strict';
-
-var Render = {
-  Agent: require('./Agent'),
-  Entity: require('./Entity'),
-  Group: require('./Group'),
-  Context: require('./Context'),
-  Path: require('./Path'),
-  Wall: require('./Wall')
-};
-
-module.exports = Render;
-
-},{"./Agent":14,"./Context":16,"./Entity":18,"./Group":19,"./Path":22,"./Wall":24}],24:[function(require,module,exports){
-'use strict';
-
-var Base = require('./Base');
-var LinePrototype = require('./LinePrototype');
-var Detail = require('./Detail');
-var Colors = Base.Colors;
-var Fonts = Base.Fonts;
-var WallModel = require('../Entities/Wall');
-
-var Wall = LinePrototype(Colors.Wall);
-
-Wall.CreateFromModel = function(wall) {
-  return new Wall(wall);
-};
-
-Wall.CreateFromPoint = function(x, y, parent, options) {
-  var wall = new WallModel(x, y, parent, options);
-  return new Wall(wall);
-};
-
-Wall.texture = null; // wall joints texture
-Wall.detail = new Detail(2);
-
-module.exports = Wall;
-
-},{"../Entities/Wall":13,"./Base":15,"./Detail":17,"./LinePrototype":21}],25:[function(require,module,exports){
-'use strict';
-/* global CrowdSim */
-
-var World = function(x, y, width, height) {
+var Context = require('./Entities/Context');
+var Group = require('./Entities/Group');
+var Path = require('./Entities/Path');
+var Wall = require('./Entities/Wall');
+
+var World = function(x, y, parent, options) {
+  this.options = Lazy(options).defaults(World.defaults).toObject();
   var that = this;
+  this.parent = parent;
   this.agents = [];
 
   this.entities = {
@@ -2066,30 +1568,42 @@ var World = function(x, y, width, height) {
   this.wrap = true;
   this.x = x;
   this.y = y;
-  this.width = width;
-  this.height = height;
-  this.onCreateAgents = null;
-  this.onDestroyAgents = null;
-  this.onCreateEntity = null;
-  this.onDestroyEntity = null;
+  this.width = this.options.width;
+  this.height = this.options.height;
 };
 
 World.prototype.getDefaultGroup = function() {
   return this.entities.groups[0];
 };
 
-World.prototype.getGroups = function() {
-  return this.entities.groups;
-};
-
 World.prototype.getAgents = function() {
   return this.agents;
 };
 
+World.prototype.getEntities = function() {
+  return Lazy(this.entities).values().flatten();
+};
+
+World.prototype.getContexts = function() {
+  return this.entities.contexts;
+};
+
+World.prototype.getGroups = function() {
+  return this.entities.groups;
+};
+
+World.prototype.getPaths = function() {
+  return this.entities.paths;
+};
+
+World.prototype.getWalls = function() {
+  return this.entities.walls;
+};
+
 World.prototype.addAgents = function(agents) {
   this.agents = this.agents.concat(agents);
-  if (this.onCreateAgents) {
-    this.onCreateAgents(agents);
+  if (this.options.onCreateAgents) {
+    this.options.onCreateAgents(agents);
   }
 };
 
@@ -2098,31 +1612,31 @@ World.prototype.removeAgents = function(agents) {
     var j = this.agents.indexOf(agents[i]);
     this.agents.splice(j,1);
   }
-  if (this.onDestroyAgents) {
-    this.onDestroyAgents(agents);
+  if (this.options.onDestroyAgents) {
+    this.options.onDestroyAgents(agents);
   }
 };
 
 World.prototype._onCreate = function(entity) {
-  if (this.onCreateEntity) {
-    this.onCreateEntity(entity);
+  if (this.options.onCreateEntity) {
+    this.options.onCreateEntity(entity);
   }
 };
 
 World.prototype._onDestroy = function(entity) {
-  if (this.onDestroyEntity) {
-    this.onDestroyEntity(entity);
+  if (this.options.onDestroyEntity) {
+    this.options.onDestroyEntity(entity);
   }
 };
 
 World.prototype._getEntityList = function(entity) {
-  if (entity instanceof CrowdSim.Context) { // is context
+  if (entity instanceof Context) { // is context
     return this.entities.contexts;
-  } else if (entity instanceof CrowdSim.Group) { // is group
+  } else if (entity instanceof Group) { // is group
     return this.entities.groups;
-  } else if (entity instanceof CrowdSim.Path) { // is path
+  } else if (entity instanceof Path) { // is path
     return this.entities.paths;
-  } else if (entity instanceof CrowdSim.Wall) { // is wall
+  } else if (entity instanceof Wall) { // is wall
     return this.entities.walls;
   } else {
     throw 'Entity object is not context, group, wall or path';
@@ -2165,9 +1679,27 @@ World.prototype.getEntityById = function(id) {
   return Lazy(this.entities).values().flatten().findWhere({id: id});
 };
 
-World.prototype.save = function() {
-  this.agentsSave = JSON.stringify(this.agents);
+World.prototype._saveHelper = function(o) {
+  var cache = [];
+  var result = JSON.stringify(o, function(key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (cache.indexOf(value) !== -1) {
+        // Circular reference found, discard key
+        return;
+      }
+      // Store value in our collection
+      cache.push(value);
+    }
+    return value;
+  });
+  return result;
 };
+
+World.prototype.save = function() {
+  this.entitiesSave = this._saveHelper(this.entities);
+  console.log(this.agentsSave);
+};
+
 World.prototype.restore = function() {
   this.agents = JSON.parse(this.agentsSave);
 };
@@ -2199,7 +1731,30 @@ World.prototype.agentsInContext = function(context, agents) {
 
 module.exports = World;
 
-},{}]},{},[5])
+},{"./Entities/Context":6,"./Entities/Group":8,"./Entities/Path":12,"./Entities/Wall":13}],"CrowdSim":[function(require,module,exports){
+/* global window,module, exports : true, define */
+
+var CrowdSim = {
+  Agent: require('./Agent'),
+  Entity: require('./Entities/Entity'),
+  Context: require('./Entities/Context'),
+  Wall: require('./Entities/Wall'),
+  Path: require('./Entities/Path'),
+  Group: require('./Entities/Group'),
+  Joint: require('./Entities/Helpers/Joint'),
+  World: require('./World'),
+  Engine: require('./Engine'),
+  Vec2: require('./Common/Vec2')
+};
+
+module.exports = CrowdSim;
+
+// browser
+if (typeof window === 'object' && typeof window.document === 'object') {
+  window.CrowdSim = CrowdSim;
+}
+
+},{"./Agent":1,"./Common/Vec2":4,"./Engine":5,"./Entities/Context":6,"./Entities/Entity":7,"./Entities/Group":8,"./Entities/Helpers/Joint":9,"./Entities/Path":12,"./Entities/Wall":13,"./World":14}]},{},["CrowdSim"])
 
 
 //# sourceMappingURL=CrowdSim.js.map

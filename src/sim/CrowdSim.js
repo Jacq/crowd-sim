@@ -10,7 +10,7 @@ var CrowdSim = {
   Joint: require('./Entities/Helpers/Joint'),
   World: require('./World'),
   Engine: require('./Engine'),
-  Render: require('./Render/Render')
+  Vec2: require('./Common/Vec2')
 };
 
 module.exports = CrowdSim;

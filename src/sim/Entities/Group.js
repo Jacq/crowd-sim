@@ -7,10 +7,10 @@ var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
 var Panic = require('../Behavior/Panic');
 
-var Group = function(x, y, parent, options) {
+var Group = function(x, y, parent, options, fixedId) {
   this.options = Lazy(options).defaults(Group.defaults).toObject();
   Entity.call(this, x, y, parent, this.options);
-  this.id = 'G' + Group.id++;
+  this.id = fixedId || 'G' + Group.id++;
   this.behavior = new Panic(this.parent);
   this.agents = [];
   this.agentsCount = this.options.agentsCount;
@@ -72,13 +72,17 @@ Group.prototype.assignPath = function(path, idx) {
   if (path) {
     path.assignToGroup(this);
     for (var i  in this.agents) {
-      this.agents[i].followPath(this.options.pathStart, this.options.startIdx);
+      this.agents[i].followPath(path, this.options.pathStart);
     }
   }
 };
 
 Group.prototype.isPathReverse = function() {
   return this.options.pathReverse;
+};
+
+Group.prototype.isPathCircular = function() {
+  return this.options.pathCircular;
 };
 
 Group.prototype.getPathStartIdx = function() {
@@ -122,8 +126,12 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
     Vec2.add(pos,pos, initPos);
     return pos;
   }
-  var getInitPos = this.entities.startContext ? this.entities.startContext.getRandomPoint : myInitPos;
-  for (var i = 0; i < agentsCount; i++) {
+  function myContextPos() {
+    return startContext.getRandomPoint();
+  }
+  var getInitPos = startContext ? myContextPos : myInitPos;
+  var numberToGenerate = Math.min(agentsCount, this.options.agentsMax);
+  for (var i = 0; i < numberToGenerate; i++) {
     pos = getInitPos(pos);
     var size = opts.agentsSizeMin;
     if (opts.agentsSizeMin !== opts.agentsSizeMax) {
@@ -218,6 +226,7 @@ Group.defaults = {
   debug: false,
   pathStart: 0,
   pathReverse: false,
+  pathCircular: false,
   radius: 3, // used when no start context is associated
   startProb: 0, // Adds agents per step in startContext
   startRate: 0, // Adds agents probability per step in startContext

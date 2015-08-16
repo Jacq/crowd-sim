@@ -15,20 +15,20 @@ var Panic = function(world, options) {
   this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
-// path point, point, other agent {point , radius}
+// path point, point, other agent {point , with in. function}
 Panic.prototype.getAccel = function(agent, target) {
   Behavior.prototype.getAccel.call(this, agent, target);
   var desiredForce = Vec2.create();
   var agentsForce = Vec2.create();
   var wallsForce = Vec2.create();
   var accel = Vec2.create();
-  var distanceToTarget;
+  var arrived;
 
   // check agent desired force
   Vec2.add(accel, agentsForce, wallsForce);
   if (target) { // agent is going somewhere?
-    distanceToTarget = Vec2.distance(agent.pos, target.pos);
-    if (distanceToTarget > target.getRadius()) {
+    arrived = target.in(agent.pos);
+    if (!arrived) {
       Vec2.subtract(desiredForce, target.pos, agent.pos);
       if (Vec2.length(desiredForce) > agent.maxAccel) {
         Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxAccel * agent.mass);
@@ -62,7 +62,7 @@ Panic.prototype.getAccel = function(agent, target) {
   }
 
   // fix to stay in place if no target is selected or already at target
-  if (!target || distanceToTarget < target.radius) {
+  if (!target || arrived) {
     Vec2.negate(desiredForce, agent.vel);
     Vec2.scale(desiredForce, desiredForce, this.options.relaxationTime);
     if (Vec2.length(desiredForce) > agent.maxAccel) {

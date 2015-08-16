@@ -1,10 +1,10 @@
 'use strict';
 
+var GroupModel = require('CrowdSim').Group;
 var Base = require('./Base');
 var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
-var GroupModel = require('../Entities/Group');
 
 var Group = function(group) {
   if (!group) {

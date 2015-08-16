@@ -38,15 +38,15 @@
       </ul>
       <div class="label"><i class="fa fa-edit"></i> EDIT</div>
       <ul class="list-inline">
-      <li>
-        <button id="select" title="Select" class="btn-3x"><i class="fa fa-mouse-pointer"></i>
-      </li>
-      <li>
-        <button id="edit" title="Edit Entity"><i class="fa fa-edit"></i>
-      </li>
-      <li>
-        <button id="remove" title="Remove Entity"><i class="fa fa-remove"></i>
-      </li>
+        <li>
+          <button id="select" title="Select" class="btn-3x"><i class="fa fa-mouse-pointer"></i>
+        </li>
+        <li>
+          <button id="edit" title="Edit Entity"><i class="fa fa-edit"></i>
+        </li>
+        <li>
+          <button id="remove" title="Remove Entity"><i class="fa fa-remove"></i>
+        </li>
       </ul>
     </div>
 
@@ -70,10 +70,19 @@
       <div class="label"><i class="fa fa-globe"></i> WORLD</div>
       <ul class="list-inline">
         <li>
-          <button id="export" title="Save"><i class="fa fa-download"></i>
+          <button id="save" title="Save Current"><i class="fa fa-download"></i>
         </li>
         <li>
-          <button id="import" title="Load"><i class="fa fa-upload"></i>
+          <button id="load" title="Load Current"><i class="fa fa-upload"></i>
+        </li>
+        <li>
+          <button id="show" class="btn-3x" title="Show Current"><i class="fa fa-file"></i>
+        </li>
+        <hr>
+        <li>
+          <select id="worlds" class="btn-3x" title="Predefined Worlds">
+            <option></option>
+          </select>
         </li>
       </ul>
     </div>
@@ -123,38 +132,46 @@
     <ul>
       <li>Mode:
         <span id='edit-mode'>None</span>
-        <li>Running?:
-          <span id='running'></span>
-        </li>
-        <li>Iterations:
-          <span id='iterations'></span>
-        </li>
-        <li>Agents:
-          <span id='agents'></span>
-        </li>
-        <li>Contexts:
-          <span id='contexts'></span>
-        </li>
-        <li>Groups:
-          <span id='groups'></span>
-        </li>
-        <li>Walls:
-          <span id='walls'></span>
-        </li>
-        <li>Paths:
-          <span id='paths'></span>
-        </li>
-        <li>Agent:
-          <span id='agent'></span>
-        </li>
-        <li>Message:
-          <span id='message'></span>
-        </li>
-        <li class="pull-right">Mouse:
-          <span id='mouse'></span>
-        </li>
+      </li>
+      <li>Running?:
+        <span id='running'></span>
+      </li>
+      <li>Iterations:
+        <span id='iterations'></span>
+      </li>
+      <li>Agents:
+        <span id='agents'></span>
+      </li>
+      <li>Contexts:
+        <span id='contexts'></span>
+      </li>
+      <li>Groups:
+        <span id='groups'></span>
+      </li>
+      <li>Walls:
+        <span id='walls'></span>
+      </li>
+      <li>Paths:
+        <span id='paths'></span>
+      </li>
+      <li>Agent:
+        <span id='agent'></span>
+      </li>
+      <li>Message:
+        <span id='message'></span>
+      </li>
+      <li class="pull-right">Mouse:
+        <span id='mouse'></span>
+      </li>
     </ul>
   </div>
+
+  <div id='showRawData' class="dialog hide">
+    <button id='close' class='close btn-4x'><i class="fa fa-close"></i></button>
+    <div id='data' class="notebook">
+    </div>
+  </div>
+
   <div id='canvas'></div>
   <footer>
 
@@ -167,13 +184,12 @@
   <script src="js/lib/stats.min.js"></script>
   <script src="js/lib/jquery.min.js"></script>
   <script src="js/lib/jquery.mousewheel.min.js"></script>
-  <script src="js/lib/jquery.awesome-cursor.js"></script>
   <!-- endinject -->
   <!-- lib:js -->
   <script src="js/lib/CrowdSim.js"></script>
+  <script src="js/lib/CrowdSimApp.js"></script>
   <!-- endinject -->
   <!-- demo:js -->
-  <script src="js/CrowdSimApp.js"></script>
   <script src="js/Editor.js"></script>
   <!-- endinject -->
   <!-- endbuild -->

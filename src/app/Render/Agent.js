@@ -1,6 +1,6 @@
 'use strict';
 
-var Vec2 = require('../Common/Vec2');
+var Vec2 = require('CrowdSim').Vec2;
 var Base = require('./Base');
 var Entity = require('./Entity');
 var Detail = require('./Detail');

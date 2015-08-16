@@ -3,10 +3,10 @@ var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
 var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
-var Context = function(x, y, parent, options) {
+var Context = function(x, y, parent, options, fixedId) {
   this.options = Lazy(options).defaults(Context.defaults).toObject();
   Entity.call(this, x, y, parent, this.options);
-  this.id = 'C' + Context.id++;
+  this.id = fixedId || 'C' + Context.id++;
 };
 
 Context.prototype.destroy = function() {
@@ -16,6 +16,11 @@ Context.prototype.destroy = function() {
 Context.prototype.setArea = function(x, y) {
   this.options.width = Math.abs(this.pos[0] - x) * 2;
   this.options.height = Math.abs(this.pos[1] - y) * 2;
+};
+
+Context.prototype.incrSize = function(ds) {
+  this.options.width += ds;
+  this.options.height += ds;
 };
 
 Context.prototype.getWidth = function() {

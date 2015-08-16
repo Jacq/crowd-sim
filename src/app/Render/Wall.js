@@ -1,12 +1,12 @@
 'use strict';
 
+var WallModel = require('CrowdSim').Wall;
 var Base = require('./Base');
 var Entity = require('./Entity');
 var LinePrototype = require('./LinePrototype');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 var Fonts = Base.Fonts;
-var WallModel = require('../Entities/Wall');
 
 var Wall = LinePrototype(Colors.Wall);
 

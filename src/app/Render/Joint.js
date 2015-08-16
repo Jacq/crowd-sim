@@ -1,6 +1,6 @@
 'use strict';
 
-var Vec2 = require('../Common/Vec2');
+var Vec2 = require('CrowdSim').Vec2;
 var Base = require('./Base');
 var Entity = require('./Entity');
 var Detail = require('./Detail');
@@ -56,17 +56,11 @@ Joint.prototype.dragTo = function(pos, anchor) {
   var posV2 = Vec2.fromValues(pos.x,pos.y);
   Vec2.subtract(posV2,posV2,this.entityModel.pos);
   var newRadius = Vec2.length(posV2);
-  // calculate new size or position if dragging border or body
-  if (newRadius >  this.entityModel.getRadius() * 0.80) {
-    this.entityModel.radius  = newRadius;
-    this.sprite.width = 2 * newRadius;
-    this.sprite.height = 2 * newRadius;
-  } else {
-    this.entityModel.pos[0] = pos.x;
-    this.entityModel.pos[1] = pos.y;
-    this.sprite.x = pos.x;
-    this.sprite.y = pos.y;
-  }
+  // drag to new position
+  this.entityModel.pos[0] = pos.x;
+  this.entityModel.pos[1] = pos.y;
+  this.sprite.x = pos.x;
+  this.sprite.y = pos.y;
 };
 
 Joint.prototype.getJoint = function() {

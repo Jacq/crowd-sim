@@ -7,8 +7,6 @@ var Engine = function(world, options) {
   this.iterations = 0;
   //this.agentsSave = JSON.parse(JSON.stringify(world.agents));
   this.world = world || {};
-  this.world.save();
-
   this.settings = Lazy(options).defaults(Engine.defaults).toObject();
 };
 
@@ -58,6 +56,7 @@ Engine.prototype._step = function() {
 
   if (this.running) {
     var that = this;
+    // using setTimeout instead of setInterval allows dinamycally changing timeStep while running
     setTimeout(function() {
       that._step();
     }, opts.timeStepRun * 1000);

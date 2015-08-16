@@ -1,4 +1,5 @@
 var Entity = require('../Entity');
+var Vec2 = require('../../Common/Vec2');
 
 var Joint = function(x, y, parent, options) {
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
@@ -15,9 +16,27 @@ Joint.prototype.getRadius = function() {
   return this.options.radius;
 };
 
+Joint.prototype.in = function(pos) {
+  var dist = Vec2.distance(pos, this.pos);
+  return dist < this.options.radius;
+};
+
+Joint.prototype.setRadius = function(radius) {
+  if (this.options.scalable) {
+    this.options.radius = radius;
+  }
+};
+
+Joint.prototype.incrRadius = function(dr) {
+  if (this.options.scalable) {
+    this.options.radius += dr;
+  }
+};
+
 Joint.defaults = {
   radius: 4,
-  previousJoint: null
+  previousJoint: null,
+  scalable: true
 };
 Joint.id = 0;
 Joint.type = 'joint';

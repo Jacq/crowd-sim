@@ -12,7 +12,8 @@ var Colors = {
   Forces: {desired: 0xfffff,
           agents: 0xFF0000,
           walls: 0xc49220
-          }
+        },
+  Helpers: 0xFFFFFF
 };
 
 var Fonts = {

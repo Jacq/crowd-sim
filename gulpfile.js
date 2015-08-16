@@ -118,12 +118,13 @@ gulp.task('bower', function() {
  * @description Injects css styles and js,js/lib files into main index, used to add new dependecies and releasing
  * @return {Stream}
  */
-gulp.task('inject', ['styles','bower','bundle-lib'], function() {
+gulp.task('inject', ['styles','bower','bundle-sim','bundle-app'], function() {
   log('Wiring the bower dependencies, js and css into the html');
 
   return gulp.src(config.index)
     //.pipe($.inject(gulp.src(config.lib, {read: false})))
-    .pipe($.inject(gulp.src(config.lib + config.main, {read: false}), {relative: true, name: 'lib'}))
+    .pipe($.inject(gulp.src([config.lib + config.mainSim,
+                            config.lib + config.mainApp], {read: false}), {relative: true, name: 'lib'}))
     .pipe($.inject(gulp.src(config.js.demo, {read: false}), {relative: true, name: 'demo'}))
     .pipe($.inject(gulp.src(config.css + 'demo.css', {read: false}), {relative: true, name: 'demo'}))
     //.pipe($.inject(gulp.src(config.js.demo, {read: false}), {name: 'demo'}))
@@ -143,16 +144,30 @@ gulp.task('test', function(done) {
  * @description Build task to build everything into the demo lib and dist folders, use for releasing
  */
 gulp.task('build', ['clean', 'inject'], function() {
-  log('Clean bundle src ' + config.srcMain + ' into ' + config.dist + config.main + ' and ' + config.lib + config.main);
+  log('Generated bundle');
   // same as dev but without triggering watchify, TODO minification of jss/css
 });
 
 /**
- * @description Bundle src code into the demo folder, for use during dev
+ * @description Bundle app code into the demo folder, for use during dev
  */
-gulp.task('bundle-lib', function(done) {
-  log('Building bundle' + config.srcMain + ' into ' + config.dist + config.main + ' and ' + config.lib + config.main);
-  return doBrowserify(config.main, browserify(config.browserify.opts))
+gulp.task('bundle-app', function(done) {
+  log('Building bundle' + config.srcMainApp + ' into ' + config.dist + config.mainApp + ' and ' + config.lib + config.mainApp);
+  var b = browserify(config.browserifyApp.opts);
+  b.external(config.browserifyExpose);
+  return doBrowserify(config.mainApp, b)
+    .pipe(gulp.dest(config.dist))
+    .pipe(gulp.dest(config.lib));
+});
+
+/**
+ * @description Bundle sim src code into the demo folder, for use during dev
+ */
+gulp.task('bundle-sim', function(done) {
+  log('Building bundle' + config.srcMainSim + ' into ' + config.dist + config.mainSim + ' and ' + config.lib + config.mainSim);
+  var b = browserify(config.browserifySim.opts);
+  b.require(config.srcMainSim, {expose: config.browserifyExpose});
+  return doBrowserify(config.mainSim, b)
     .pipe(gulp.dest(config.dist))
     .pipe(gulp.dest(config.lib));
 });
@@ -201,25 +216,28 @@ gulp.task('dev', ['clean', 'inject'], function() {
     reloadDelay: 1000
   };
   browserSync(options);
-  setupWatchify(config.main, config.browserify.opts);
+  var wSim = watchify(browserify(assign({}, watchify.args, config.browserifySim.opts)));
+  wSim.require(config.srcMainSim, {expose: config.browserifyExpose});
+  setupWatchify(config.mainSim, wSim);
+
+  var wApp = watchify(browserify(assign({}, watchify.args, config.browserifyApp.opts)));
+  wApp.external(config.browserifyExpose);
+  setupWatchify(config.mainApp, wApp);
 });
 
 /**
  * @description Setups watchify to rebuild bundles on js file changes
  *
  * @param  {String} main    name of the bundle file to create
- * @param  {Object} options Browserify options
+ * @param  {Object} w       Watchify
  */
-function setupWatchify(main, options) {
-  var opts = assign({}, watchify.args, options);
-  var w = watchify(browserify(opts));
+function setupWatchify(main, w) {
   w.on('update', function() {
     doBrowserify(main, w)
     .pipe(gulp.dest(config.lib));
     browserSync.notify('reloading ' + main + ' now ...');
     //browserSync.reload();
-  });
-  w.on('log', $.util.log);
+  }).on('log', $.util.log);
   w.bundle().on('data', function() {});
 }
 

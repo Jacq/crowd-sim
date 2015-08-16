@@ -1,11 +1,11 @@
 'use strict';
 
+var PathModel = require('CrowdSim').Path;
 var Base = require('./Base');
 var Entity = require('./Entity');
 var Detail = require('./Detail');
 var LinePrototype = require('./LinePrototype');
 var Colors = Base.Colors;
-var PathModel = require('../Entities/Path');
 
 var Path = LinePrototype(Colors.Path);
 
