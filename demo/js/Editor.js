@@ -250,6 +250,9 @@ var CrowdSimEditor = (function($) {
             break;
           }
         },
+        onEntityUnSelected: function(entity) {
+          Editor._entityInfoSet(null);
+        },
         onCreateEntity: function(entity) { // Manages add/editing/remove of entities
           var type = entity.constructor.type;
           // Append to Entities list html

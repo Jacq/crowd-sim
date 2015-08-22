@@ -77,6 +77,8 @@ App.init = function(canvas, options) {
       timeStepRun: 0.001 // time between step runnings
     });
   var events = {
+    onPreRender: App.callbacks.onPreRender, // before each render cycle
+    onPostRender: App.callbacks.onPostRender,
     mouseover: App.entity.mouseover,
     mouseout: App.entity.mouseout,
     mousedown: App.entity.mousedown,
@@ -93,11 +95,9 @@ App.init = function(canvas, options) {
     onDestroyEntity: App.onDestroyEntity
   };
   var world = App._world = new CrowdSim.World(this, optionsWorld);
-  App._render();
 };
 
 App.save = function(save) {
-  // TODO
   var raw = App._world.save(save);
   App.callbacks.onSave(App._world);
   return raw;
@@ -111,13 +111,22 @@ App.listExamples = function() {
   return Lazy(Worlds).keys().toArray();
 };
 
-App.load = function(loader, loadDefault) {
+App.clear = function() {
+  CrowdSim.restartIds();
   // remove current entities
-  Lazy(App._world.getEntitiesIterator()).each(function(entity) {
+  var entities = App._world.getEntitiesIterator().toArray();
+  Lazy(entities).each(function(entity) {
     entity.view.destroy();
   });
+};
+
+App.load = function(loader, loadDefault) {
+  this.clear();
+  App.selectEntity(null);
+  App.createEntityEnd();
   App._world.load(loader,loadDefault);
   App._engine.setWorld(App._world);
+  App._renderer.setWorld(App._world);
   // loads all entities creating render objects
   Lazy(App._world.getEntitiesIterator()).each(function(entity) {
     App.addEntity(entity);
@@ -145,7 +154,6 @@ App.onCreateEntity = function(entity) {
 };
 
 App.onDestroyEntity = function(entity) {
-  entity.view.destroy();
   if (App.callbacks.onDestroyEntity) {
     App.callbacks.onDestroyEntity(entity);
   }
@@ -154,7 +162,6 @@ App.onDestroyEntity = function(entity) {
 App.createEntityStart = function(entityType, pos) {
   var entity = entityType.CreateFromPoint(pos.x, pos.y, App._world);
   App._newRenderEntity = entity;
-  this.onCreateEntity(App._newRenderEntity.entityModel);
   return App._newRenderEntity;
 };
 
@@ -192,7 +199,6 @@ App.editEntity = function(entity) {
 App.addEntity = function(entity) {
   var renderEntityProto = App.EntityCreationMapping[entity.constructor.type];
   var renderEntity = renderEntityProto.CreateFromModel(entity, App._world);
-  this.onCreateEntity([renderEntity.entityModel]);
 };
 
 App.getEngineSettings = function() {
@@ -420,21 +426,19 @@ App.isRunning = function() {
 };
 
 App.run = function() {
-  var isRunning = App._engine.run();
-  return isRunning;
+  return App._engine.run();
 };
 
 App.stop = function() {
-  var isRunning = App._engine.stop();
-  return isRunning;
+  return App._engine.stop();
 };
 
 App.step = function() {
-  App._engine.step();
+  return App._engine.step();
 };
 
 App.reset = function() {
-  App._engine.reset();
+  return App._engine.reset();
 };
 
 App.getStats = function() {
@@ -455,39 +459,6 @@ App.cycleDetail = function(entityType) {
   entityType.detail.cycleDetail();
 };
 
-App._render = function() {
-  // callback prerender
-  if (App.callbacks.onPreRender) {
-    App.callbacks.onPreRender();
-  }
-
-  if (App._world) {
-
-    var entities = App._world.entities;
-    // render/refresh entities
-    var agents = App._world.getAgents();
-    for (var i in agents) {
-      agents[i].view.render();
-    }
-    for (var prop in entities) {
-      Lazy(entities[prop]).each(function(a) {
-        if (a.view) { a.view.render(); }
-      });
-    }
-
-  }
-
-  // render the stage
-  App._renderer.render();
-
-  // callback postrender
-  if (App.callbacks.onPostRender) {
-    App.callbacks.onPostRender();
-  }
-
-  requestAnimationFrame(App._render);
-};
-
 module.exports = App;
 
 // browser
@@ -500,7 +471,6 @@ if (typeof window === 'object' && typeof window.document === 'object') {
 
 var Vec2 = require('CrowdSim').Vec2;
 var Base = require('./Base');
-var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
@@ -508,24 +478,27 @@ var Agent = function(agent) {
   if (!agent) {
     throw 'Agent object must be defined';
   }
-  //var display = new PIXI.Sprite(options.texture);
-
-  Entity.call(this, agent);
+  this.entityModel = agent;
+  this.entityModel.view = this;
   this.sprite = new PIXI.Sprite(Agent.texture);
-  Entity.prototype.createGraphics.call(this,Agent.container, this.sprite);
+  Agent.container.addChild(this.sprite);
   this.sprite.visible = Agent.detail.level > 0;
   this.sprite.anchor.set(0.5);
   //this.display.alpha = 0.5;
-  var size = agent.size;
-  this.sprite.height = size;
-  this.sprite.width = size;
+  this.sprite.tint = agent.getAspect();
+  this.sprite.height = agent.size;
+  this.sprite.width = agent.size;
   this.sprite.position.x = agent.pos[0];
   this.sprite.position.y = agent.pos[1];
 };
 
 Agent.prototype.destroy = function() {
-  Entity.prototype.destroyGraphics.call(this,Agent.container, this.sprite);
-  Entity.prototype.destroyGraphics.call(this,Agent.container, this.graphics);
+  this.sprite.destroy();
+  Agent.container.removeChild(this.sprite);
+  if (this.graphics) {
+    this.graphics.destroy();
+    Agent.debugContainer.removeChild(this.graphics);
+  }
 };
 
 Agent.prototype.render = function() {
@@ -540,7 +513,6 @@ Agent.prototype.render = function() {
     this.sprite.alpha = 1;
     this.sprite.visible = true;
   }
-  Entity.prototype.render.call(this);
 
   var e = this.entityModel;
   this.sprite.position.set(e.pos[0], e.pos[1]);
@@ -548,7 +520,8 @@ Agent.prototype.render = function() {
 
   if (Agent.detail.level > 1) {
     if (!this.graphics) {
-      this.graphics = Entity.prototype.createGraphics.call(this,Agent.debugContainer);
+      this.graphics = new PIXI.Graphics();
+      Agent.debugContainer.addChild(this.graphics);
       this.circle = new PIXI.Circle(e.pos[0],e.pos[1], e.size / 2);
       //this.graphics.addChild(this.circle);
     }
@@ -589,7 +562,7 @@ Agent.detail = new Detail(4);
 
 module.exports = Agent;
 
-},{"./Base":3,"./Detail":5,"./Entity":6,"CrowdSim":"CrowdSim"}],3:[function(require,module,exports){
+},{"./Base":3,"./Detail":5,"CrowdSim":"CrowdSim"}],3:[function(require,module,exports){
 'use strict';
 
 var Colors = {
@@ -864,7 +837,8 @@ Group.prototype.render = function(options) {
     this.circle.x = group.pos[0];
     this.circle.y = group.pos[1];
     this.circle.radius = group.getRadius();
-    this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Group, this.hover ? 0.9 : 0.3);
+    var color  = this.hover ? Colors.Hover : (group.options.agentsAspect || Colors.Group);
+    this.graphics.beginFill(color, this.hover ? 0.9 : 0.3);
     this.graphics.drawShape(this.circle);
     this.graphics.endFill();
   }
@@ -1163,6 +1137,8 @@ Render.prototype.init = function(textures, events) {
   // to draw everything
   //App._renderOnce();
 
+  this.onPreRender = events.onPreRender;
+  this.onPostRender = events.onPostRender;
   // wire Entity events
   Render.Entity.mouseover = events.mouseover;
   Render.Entity.mouseout = events.mouseout;
@@ -1192,6 +1168,40 @@ Render.prototype.init = function(textures, events) {
 
   this._worldContainer.addChild(this._graphicsHelper);
   this._worldContainer.addChild(graphicsAux);
+  this._render();
+};
+
+Render.prototype._render = function() {
+  var that = this;
+  (function() {
+  if (that.onPreRender) {
+    that.onPreRender();
+  }
+  if (that.world) {
+    var entities = that.world.entities;
+    // render/refresh entities
+    var agents = that.world.getAgents();
+    for (var i in agents) {
+      agents[i].view.render();
+    }
+    for (var prop in entities) {
+      Lazy(entities[prop]).each(function(a) {
+        if (a.view) { a.view.render(); }
+      });
+    }
+  }
+  // render the stage
+  that._renderer.render(that._stage);
+  requestAnimationFrame(that._render.bind(that));
+  if (that.onPostRender) {
+    that.onPostRender();
+  }
+})();
+
+};
+
+Render.prototype.setWorld = function(world) {
+  this.world = world;
 };
 
 Render.prototype.resize = function(w, h) {
@@ -1229,10 +1239,6 @@ Render.prototype.getWidth = function() {
 
 Render.prototype.getHeight = function() {
   return this._stage.height;
-};
-
-Render.prototype.render = function() {
-  this._renderer.render(this._stage);
 };
 
 Render.prototype.screenToWorld = function(x, y) {

@@ -69,7 +69,8 @@ App.init = function(canvas, options) {
     file: 'img/flt.png',
     agent: [26, 16, 51, 36],
     wall: [274, 14, 32, 32],
-    path: [326, 14, 32, 32]
+    path: [326, 14, 32, 32],
+    useParticleContainer: true
   };
   App._engine = new CrowdSim.Engine(App._world, {
       timeStepSize: 0.1, // time per step
@@ -257,6 +258,7 @@ App.entity.mousedown = function(event) {
   this.mousedownAnchor = {x: anchor.x - point.x, y: anchor.y - point.y};
   event.stopPropagation();
   App.selectEntity(this.entity);
+  App._entityHit = this.entity; // to deselect
   return false;
 };
 
@@ -316,6 +318,10 @@ App.mousedown = function(event) {
       App.entityClick(pos, App._newRenderEntity, App._entitySelected);
     }
   }
+  if (!App._entityHit) {
+    App.selectEntity(null);
+  }
+  App._entityHit = false;
 };
 
 App.entity.mousemove = function(event) {
