@@ -33,9 +33,10 @@ Engine.prototype.run = function() {
 
 Engine.prototype.step = function() {
   if (this.running) {
-    return;
+    this.stop();
   }
   this._step();
+  return this.running;
 };
 
 Engine.prototype._step = function() {
@@ -77,13 +78,13 @@ Engine.prototype.stop = function() {
 };
 
 Engine.prototype.reset = function() {
-  this.stop();
-  this.iterations = 0;
   var groups = this.world.getGroups();
   Lazy(groups).each(function(g) {
     g.emptyAgents();
   });
-  //this.world.restore();
+  this.stop();
+  this.iterations = 0;
+  return this.running;
 };
 
 Engine.defaults = {

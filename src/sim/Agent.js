@@ -20,6 +20,10 @@ var Agent = function(x, y, group, options) {
   }
 };
 
+Agent.prototype.getAspect = function() {
+  return this.aspect;
+};
+
 Agent.prototype.getRadius = function() {
   return this.radius;
 };
@@ -104,6 +108,7 @@ Agent.prototype.move = function(accel, stepSize) {
 };
 
 Agent.defaults = {
+  aspect: 0xFFFFFF, // used for coloring
   debug: false,
   size: 0.5,
   mass: 80e3,

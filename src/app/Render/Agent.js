@@ -2,7 +2,6 @@
 
 var Vec2 = require('CrowdSim').Vec2;
 var Base = require('./Base');
-var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
@@ -10,24 +9,27 @@ var Agent = function(agent) {
   if (!agent) {
     throw 'Agent object must be defined';
   }
-  //var display = new PIXI.Sprite(options.texture);
-
-  Entity.call(this, agent);
+  this.entityModel = agent;
+  this.entityModel.view = this;
   this.sprite = new PIXI.Sprite(Agent.texture);
-  Entity.prototype.createGraphics.call(this,Agent.container, this.sprite);
+  Agent.container.addChild(this.sprite);
   this.sprite.visible = Agent.detail.level > 0;
   this.sprite.anchor.set(0.5);
   //this.display.alpha = 0.5;
-  var size = agent.size;
-  this.sprite.height = size;
-  this.sprite.width = size;
+  this.sprite.tint = agent.getAspect();
+  this.sprite.height = agent.size;
+  this.sprite.width = agent.size;
   this.sprite.position.x = agent.pos[0];
   this.sprite.position.y = agent.pos[1];
 };
 
 Agent.prototype.destroy = function() {
-  Entity.prototype.destroyGraphics.call(this,Agent.container, this.sprite);
-  Entity.prototype.destroyGraphics.call(this,Agent.container, this.graphics);
+  this.sprite.destroy();
+  Agent.container.removeChild(this.sprite);
+  if (this.graphics) {
+    this.graphics.destroy();
+    Agent.debugContainer.removeChild(this.graphics);
+  }
 };
 
 Agent.prototype.render = function() {
@@ -42,7 +44,6 @@ Agent.prototype.render = function() {
     this.sprite.alpha = 1;
     this.sprite.visible = true;
   }
-  Entity.prototype.render.call(this);
 
   var e = this.entityModel;
   this.sprite.position.set(e.pos[0], e.pos[1]);
@@ -50,7 +51,8 @@ Agent.prototype.render = function() {
 
   if (Agent.detail.level > 1) {
     if (!this.graphics) {
-      this.graphics = Entity.prototype.createGraphics.call(this,Agent.debugContainer);
+      this.graphics = new PIXI.Graphics();
+      Agent.debugContainer.addChild(this.graphics);
       this.circle = new PIXI.Circle(e.pos[0],e.pos[1], e.size / 2);
       //this.graphics.addChild(this.circle);
     }

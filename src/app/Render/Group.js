@@ -57,7 +57,8 @@ Group.prototype.render = function(options) {
     this.circle.x = group.pos[0];
     this.circle.y = group.pos[1];
     this.circle.radius = group.getRadius();
-    this.graphics.beginFill(this.hover ? Colors.Hover : Colors.Group, this.hover ? 0.9 : 0.3);
+    var color  = this.hover ? Colors.Hover : (group.options.agentsAspect || Colors.Group);
+    this.graphics.beginFill(color, this.hover ? 0.9 : 0.3);
     this.graphics.drawShape(this.circle);
     this.graphics.endFill();
   }

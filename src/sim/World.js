@@ -100,6 +100,7 @@ World.prototype.removeEntity = function(entity) {
 World.prototype.addEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   entityList.push(entity);
+  this._onCreate(entity);
 };
 
 World.prototype.addContext = function(context) {
@@ -195,26 +196,24 @@ World.prototype.save = function(save) {
   }
 };
 
-World.prototype.clear = function() {
-  var entities = Lazy(this.entities).values().flatten().toArray(); // cannot delete with each directly
-  for (var i in entities) {
-    this.removeEntity(entities[i]);
-  }
-};
-
 World.prototype.load = function(loader, loadDefault) {
-  this.clear();
   if (!loader) {
-    if (loadDefault) {
+    // snapshoot load
+    if (loadDefault && this.entitiesSave) {
       loader = this.entitiesSave;
     } else {
       return;
     }
   }
-  try {
+
+  if (typeof(loader) === 'function') {
     // try function loader
     loader(this);
-  } catch (err) {
+  } else {
+    // loader of raw JSON strings
+    if (typeof(loader) === 'string') {
+      loader = JSON.parse(loader);
+    }
     var world = this;
     // check if its json data
     // entites are arred to world passing its reference
@@ -224,7 +223,7 @@ World.prototype.load = function(loader, loadDefault) {
       var pos = e.children.joints ? [null, null] : e.pos; // to avoid duplicate init
       var wall = new Wall(pos[0], pos[1], world, e.options, e.id);
       Lazy(joints).each(function(j) {
-        wall.addJoint(j.pos[0], j.pos[1], j.options);
+        wall.addJoint(j.pos[0], j.pos[1], j.options, j.id);
       });
     });
     Lazy(loader.paths).each(function(e) {
@@ -232,7 +231,7 @@ World.prototype.load = function(loader, loadDefault) {
       var pos = e.children.joints ? [null, null] : e.pos; // to avoid duplicates init
       var path = new Path(pos[0], pos[1], world, e.options, e.id);
       Lazy(joints).each(function(j) {
-        path.addJoint(j.pos[0], j.pos[1], j.options);
+        path.addJoint(j.pos[0], j.pos[1], j.options, j.id);
       });
     });
     Lazy(loader.contexts).each(function(e) {

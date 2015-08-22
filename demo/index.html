@@ -70,23 +70,26 @@
       <div class="label"><i class="fa fa-globe"></i> WORLD</div>
       <ul class="list-inline">
         <li>
-          <button id="save" title="Save Current"><i class="fa fa-download"></i>
+          <button id="save" title="Save Snapshot"><i class="fa fa-camera"></i>
         </li>
         <li>
-          <button id="load" title="Load Current"><i class="fa fa-upload"></i>
+          <button id="load" title="Revert to Snapshot" disabled><i class="fa fa-undo"></i>
         </li>
         <li>
-          <button id="show" class="btn-3x" title="Show Current"><i class="fa fa-file"></i>
+          <button id="export" class="btn" title="Show World"><i class="fa fa-download"></i>
+        </li>
+        <li>
+          <button id="import" class="btn" title="Load World"><i class="fa fa-upload"></i>
         </li>
         <hr>
         <li>
-          <select id="worlds" class="btn-3x" title="Predefined Worlds">
+          <div class="sublabel">Examples</div>
+          <select id="worlds" class="btn-4x" title="Predefined Worlds">
             <option></option>
           </select>
         </li>
       </ul>
     </div>
-
     <div class="text-center entity-list">
       <div class="label"><i class="fa fa-list-ol"></i> ENTITIES</div>
       <ul class="entity-list-container">
@@ -112,16 +115,16 @@
     <div class="label text-center"><i class="fa fa-eye"></i> ENTITY VIEW</div>
     <div class="text-left properties">
       <div>Type:
-        <div class="entity entity-type"></div>
+        <div class="entity entity-type" disabled></div>
       </div>
       <div>ID:
-        <div class="entity entity-id"></div>
+        <div class="entity entity-id" disabled></div>
       </div>
       <div>X:
-        <input type='text' class="entity entity-x">
+        <input type='text' class="entity entity-x" disabled>
       </div>
       <div>Y:
-        <input type='text' class="entity entity-y">
+        <input type='text' class="entity entity-y" disabled>
       </div>
       <div class="sublabel text-center"><i class="fa fa-cogs"></i> PROPS</div>
       <div class="entity entity-props"></div>
@@ -167,9 +170,10 @@
   </div>
 
   <div id='showRawData' class="dialog hide">
-    <button id='close' class='close btn-4x'><i class="fa fa-close"></i></button>
-    <div id='data' class="notebook">
-    </div>
+    <textarea id='data' class="notebook" disabled placeholder="Paste here a JSON valid world structure and press upper right load button">
+    </textarea>
+    <button id='close' class='close btn-4x' title='Close dialog'><i class="fa fa-close"></i></button>
+    <button id='upload' class='upload btn-4x' title='Load world'><i class="fa fa-upload"></i></button>
   </div>
 
   <div id='canvas'></div>

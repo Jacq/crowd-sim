@@ -31,6 +31,7 @@ App.defaultOptions = {
 
 // wire entities <=> render entities association
 App.EntityTypes = {
+  Agent: Render.Agent,
   Group: Render.Group,
   Context: Render.Context,
   Path: Render.Path,
@@ -83,39 +84,46 @@ App.init = function(canvas, options) {
     mousemove: App.entity.mousemove
   };
   App._renderer.init(textures, events);
-  App._render();
-};
-
-App.save = function() {
-  // TODO
-  App._world.save();
-  App.callbacks.onSave(App._world);
-};
-
-App.loadExample = function(name) {
-  App.load(Worlds[name]);
-};
-
-App.load = function(loader) {
-  var w = App._renderer.getWidth();
-  var h = App._renderer.getHeight();
-  var options = {
+  var optionsWorld = {
     width: w,
     height: h,
     onCreateAgents: App.onCreateAgents,
     onDestroyAgents: App.onDestroyAgents,
-    onCreateEntity: App.callbacks.onCreateEntity,
-    onDestroyEntity: App.callbacks.onDestroyEntity
+    onCreateEntity: App.onCreateEntity,
+    onDestroyEntity: App.onDestroyEntity
   };
+  var world = App._world = new CrowdSim.World(this, optionsWorld);
+  App._render();
+};
 
-  var world = App._world = loader(App.options);
-  App._engine.setWorld(world);
+App.save = function(save) {
+  // TODO
+  var raw = App._world.save(save);
+  App.callbacks.onSave(App._world);
+  return raw;
+};
+
+App.loadExample = function(name) {
+  App.load(Worlds[name],false);
+};
+
+App.listExamples = function() {
+  return Lazy(Worlds).keys().toArray();
+};
+
+App.load = function(loader, loadDefault) {
+  // remove current entities
+  Lazy(App._world.getEntitiesIterator()).each(function(entity) {
+    entity.view.destroy();
+  });
+  App._world.load(loader,loadDefault);
+  App._engine.setWorld(App._world);
   // loads all entities creating render objects
-  Lazy(world.getEntities()).each(function(entity) {
+  Lazy(App._world.getEntitiesIterator()).each(function(entity) {
     App.addEntity(entity);
   });
 
-  App.callbacks.onLoad(world);
+  App.callbacks.onLoad(App._world);
 };
 
 App.onCreateAgents = function(agents) {
@@ -130,12 +138,23 @@ App.onDestroyAgents = function(agents) {
   });
 };
 
+App.onCreateEntity = function(entity) {
+  if (App.callbacks.onCreateEntity) {
+    App.callbacks.onCreateEntity(entity);
+  }
+};
+
+App.onDestroyEntity = function(entity) {
+  entity.view.destroy();
+  if (App.callbacks.onDestroyEntity) {
+    App.callbacks.onDestroyEntity(entity);
+  }
+};
+
 App.createEntityStart = function(entityType, pos) {
   var entity = entityType.CreateFromPoint(pos.x, pos.y, App._world);
   App._newRenderEntity = entity;
-  if (App.callbacks.onCreateEntity) {
-    App.callbacks.onCreateEntity(App._newRenderEntity);
-  }
+  this.onCreateEntity(App._newRenderEntity.entityModel);
   return App._newRenderEntity;
 };
 
@@ -173,9 +192,7 @@ App.editEntity = function(entity) {
 App.addEntity = function(entity) {
   var renderEntityProto = App.EntityCreationMapping[entity.constructor.type];
   var renderEntity = renderEntityProto.CreateFromModel(entity, App._world);
-  if (App.callbacks.onCreateEntity) {
-    App.callbacks.onCreateEntity(renderEntity);
-  }
+  this.onCreateEntity([renderEntity.entityModel]);
 };
 
 App.getEngineSettings = function() {
@@ -368,8 +385,10 @@ App.entity.mouseout = function(event) {
     console.log(event);
   }
   // this points to the graphics/sprite
-  this.entity.hover = false;
-  this.entity.tint = 0x999999;
+  if (App._entitySelected !== this.entity) {
+    this.entity.hover = false;
+    this.entity.tint = 0x999999;
+  }
 };
 
 App.entity.mouseover = function(event) {
@@ -443,19 +462,19 @@ App._render = function() {
   }
 
   if (App._world) {
-    var entities = App._world.entities;
 
+    var entities = App._world.entities;
     // render/refresh entities
     var agents = App._world.getAgents();
     for (var i in agents) {
       agents[i].view.render();
     }
-
     for (var prop in entities) {
       Lazy(entities[prop]).each(function(a) {
         if (a.view) { a.view.render(); }
       });
     }
+
   }
 
   // render the stage
@@ -733,9 +752,11 @@ var Entity = function(entity) {
 };
 
 Entity.prototype.destroy = function() {
-  this.entityModel.view = null;
-  this.entityModel.destroy();
-  this.entityModel = null;
+  if (this.entityModel) {
+    this.entityModel.view = null;
+    this.entityModel.destroy();
+    this.entityModel = null;
+  }
 };
 
 Entity.prototype.createGraphics = function(container, graphics) {
@@ -1173,6 +1194,10 @@ Render.prototype.init = function(textures, events) {
   this._worldContainer.addChild(graphicsAux);
 };
 
+Render.prototype.resize = function(w, h) {
+  this._renderer.resize(w,h);
+};
+
 Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
   this._graphicsHelper.clear();
   if (x0) {
@@ -1271,47 +1296,358 @@ module.exports = Wall;
 var CrowdSim = require('CrowdSim');
 
 var Worlds = {
-  world1: function(options) {
-    var world = new CrowdSim.World(0, 0, this, options);
-    // wire world events and adding entities functions
-    var sizeR = 20;
-    var sizeC = 10;
-    var door = sizeR / 8;
-    var cx = 55, cy = 45;
-    var gx = 65, gy = 50;
-    var radius = 4;
-    var waypoints = [[10, 10], [20, 21], [31, 30], [41, 41], [41, 75], [55, 80], [65, 70], [65, 60]];
-    var path = new CrowdSim.Path(null, null, world);
-    path.addJoints(waypoints);
-    path.reverse();
+    world1: function(world, debug) {
+      // wire world events and adding entities functions
+      var sizeR = 20;
+      var sizeC = 10;
+      var door = sizeR / 8;
+      var cx = 55,
+        cy = 45;
+      var gx = 65,
+        gy = 50;
+      var radius = 4;
+      var waypoints = [
+        [10, 10],
+        [20, 21],
+        [31, 30],
+        [41, 41],
+        [41, 75],
+        [55, 80],
+        [65, 70],
+        [65, 60]
+      ];
+      var path = new CrowdSim.Path(null, null, world);
+      path.addJoints(waypoints);
+      path.reverse();
 
-    //var path = new CrowdSim.Path([{pos: [65, 60], radius: radius / 2}, {pos: [65, 70], radius: radius / 2}, {pos: [55, 80], radius: 2 * radius}]);
+      //var path = new CrowdSim.Path([{pos: [65, 60], radius: radius / 2}, {pos: [65, 70], radius: radius / 2}, {pos: [55, 80], radius: 2 * radius}]);
 
-    var startContext = new CrowdSim.Context(gx, gy, world, {width: sizeC, height: sizeC});
-    //var endContext = new CrowdSim.Context(55  , 80 - sizeC , sizeC, sizeC);
-    var endContext = new CrowdSim.Context(10, 10, world, {width: sizeC, height: sizeC});
-    var opts = {debug: options.debug,
-                agentsCount: 10,
-                agentsMax: 1000,
-                agentsSizeMin: 0.5,
-                agentsSizeMax: 0.6,
-                startProb: 0.1,
-                startRate: 1,
-                endProb: 0.1,
-                endRate: 1};
-    var group = new CrowdSim.Group(60, 30, world, opts);
-    group.assignStartContext(startContext);
-    group.assignEndContext(endContext);
-    group.assignPath(path);
-    var room1 = [[cx + sizeR / 2 - door, cy + sizeR], [cx, cy + sizeR], [cx, cy],
-              [cx + sizeR, cy], [cx + sizeR, cy + sizeR], [cx + sizeR / 2 + door, cy + sizeR]];
-    var room = [[cx + sizeR / 2 - door, cy + sizeR], [cx, cy + sizeR]];
-    //var wall = new CrowdSim.Wall(room);
-    var wall = new CrowdSim.Wall(null, null, world);
-    wall.addJoints(room1);
-    return world;
-  }
-};
+      var startContext = new CrowdSim.Context(gx, gy, world, {
+        width: sizeC,
+        height: sizeC
+      });
+      //var endContext = new CrowdSim.Context(55  , 80 - sizeC , sizeC, sizeC);
+      var endContext = new CrowdSim.Context(10, 10, world, {
+        width: sizeC,
+        height: sizeC
+      });
+      var opts = {
+        debug: debug,
+        agentsCount: 10,
+        agentsMax: 1000,
+        agentsSizeMin: 0.5,
+        agentsSizeMax: 0.6,
+        startProb: 0.1,
+        startRate: 1,
+        endProb: 0.1,
+        endRate: 1
+      };
+      var group = new CrowdSim.Group(60, 30, world, opts);
+      group.assignStartContext(startContext);
+      group.assignEndContext(endContext);
+      group.assignPath(path);
+      var room1 = [
+        [cx + sizeR / 2 - door, cy + sizeR],
+        [cx, cy + sizeR],
+        [cx, cy],
+        [cx + sizeR, cy],
+        [cx + sizeR, cy + sizeR],
+        [cx + sizeR / 2 + door, cy + sizeR]
+      ];
+      var room = [
+        [cx + sizeR / 2 - door, cy + sizeR],
+        [cx, cy + sizeR]
+      ];
+      //var wall = new CrowdSim.Wall(room);
+      var wall = new CrowdSim.Wall(null, null, world);
+      wall.addJoints(room1);
+    },
+    world2: {
+      'contexts': [{
+        'options': {
+          'width': 10,
+          'height': 10
+        },
+        'pos': {
+          '0': 65,
+          '1': 50
+        },
+        'entities': {},
+        'children': {},
+        'id': 'C0'
+      }, {
+        'options': {
+          'width': 10,
+          'height': 10
+        },
+        'pos': {
+          '0': 10,
+          '1': 10
+        },
+        'entities': {},
+        'children': {},
+        'id': 'C1'
+      }],
+      'groups': [{
+        'options': {
+          'debug': false,
+          'agentsCount': 10,
+          'agentsMax': 1000,
+          'agentsSizeMin': 0.5,
+          'agentsSizeMax': 0.6,
+          'startProb': 0.1,
+          'startRate': 1,
+          'endProb': 0.1,
+          'endRate': 1,
+          'pathStart': 0,
+          'pathReverse': false,
+          'pathCircular': false,
+          'radius': 3
+        },
+        'pos': {
+          '0': 60,
+          '1': 30
+        },
+        'entities': {
+          'path': 'P0',
+          'startContext': 'C0',
+          'endContext': 'C1'
+        },
+        'children': {},
+        'id': 'G0',
+        'behavior': {
+          'world': {
+            'options': {
+              'width': 64,
+              'height': 64
+            },
+            'entities': {}
+          },
+          'options': {
+            'A': 2000,
+            'B': 0.08,
+            'kn': 120000,
+            'Kv': 240000,
+            'relaxationTime': 0.3
+          }
+        },
+        'agentsCount': 10
+      }],
+      'paths': [{
+        'options': {
+          'width': 0.2,
+          'radius': 4
+        },
+        'pos': {
+          '0': 65,
+          '1': 60
+        },
+        'entities': {},
+        'children': {
+          'joints': [{
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
+            },
+            'pos': {
+              '0': 65,
+              '1': 60
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J7'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
+            },
+            'pos': {
+              '0': 65,
+              '1': 70
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J6'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
+            },
+            'pos': {
+              '0': 55,
+              '1': 80
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J5'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
+            },
+            'pos': {
+              '0': 41,
+              '1': 75
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J4'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
+            },
+            'pos': {
+              '0': 41,
+              '1': 41
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J3'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
+            },
+            'pos': {
+              '0': 31,
+              '1': 30
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J2'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
+            },
+            'pos': {
+              '0': 20,
+              '1': 21
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J1'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
+            },
+            'pos': {
+              '0': 10,
+              '1': 10
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J0'
+          }]
+        },
+        'id': 'P0'
+      }],
+      'walls': [{
+        'options': {
+          'width': 0.2,
+          'radius': 1,
+          'scalable': false
+        },
+        'pos': {
+          '0': 67.5,
+          '1': 65
+        },
+        'entities': {},
+        'children': {
+          'joints': [{
+            'options': {
+              'width': 0.2,
+              'radius': 1,
+              'scalable': false
+            },
+            'pos': {
+              '0': 62.5,
+              '1': 65
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J8'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 1,
+              'scalable': false
+            },
+            'pos': {
+              '0': 55,
+              '1': 65
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J9'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 1,
+              'scalable': false
+            },
+            'pos': {
+              '0': 55,
+              '1': 45
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J10'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 1,
+              'scalable': false
+            },
+            'pos': {
+              '0': 75,
+              '1': 45
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J11'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 1,
+              'scalable': false
+            },
+            'pos': {
+              '0': 75,
+              '1': 65
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J12'
+          }, {
+            'options': {
+              'width': 0.2,
+              'radius': 1,
+              'scalable': false
+            },
+            'pos': {
+              '0': 67.5,
+              '1': 65
+            },
+            'entities': {},
+            'children': {},
+            'id': 'J13'
+          }]
+        },
+        'id': 'W0'
+      }]
+    }
+  };
 
 module.exports = Worlds;
 

@@ -7,10 +7,10 @@ var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
 var Panic = require('../Behavior/Panic');
 
-var Group = function(x, y, parent, options, fixedId) {
+var Group = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Group.defaults).toObject();
+  this.id = id || 'G' + Group.id++;
   Entity.call(this, x, y, parent, this.options);
-  this.id = fixedId || 'G' + Group.id++;
   this.behavior = new Panic(this.parent);
   this.agents = [];
   this.agentsCount = this.options.agentsCount;
@@ -105,7 +105,6 @@ Group.prototype.unAssign = function(entity) {
   } else {
     throw 'Entity not assigned to group';
   }
-
 };
 
 Group.prototype.assignBehavior = function(behavior) {
@@ -116,6 +115,7 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   if (!startContext) {
     startContext = this.entities.startContext;
   }
+  // functions to set initial position
   var newAgents = [];
   var opts = this.options;
   var pos = Vec2.create();
@@ -131,6 +131,7 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   }
   var getInitPos = startContext ? myContextPos : myInitPos;
   var numberToGenerate = Math.min(agentsCount, this.options.agentsMax);
+  // agent generation
   for (var i = 0; i < numberToGenerate; i++) {
     pos = getInitPos(pos);
     var size = opts.agentsSizeMin;
@@ -142,6 +143,7 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
       size: size,
       debug: opts.debug,
       path: this.entities.path,
+      aspect: this.options.aspect || Math.round(Math.random() * 0xFFFFFF),
       pathStart: this.options.pathStart
     });
     //agent.followPath(this.entities.path, this.options.startIdx);
@@ -219,6 +221,7 @@ Group.prototype.step = function() {
 };
 
 Group.defaults = {
+  agentsAspect: 0, // used for colors
   agentsSizeMin: 0.5,
   agentsSizeMax: 0.5,
   agentsCount: 10,

@@ -231,8 +231,12 @@ var CrowdSimEditor = (function($) {
       width: window.innerWidth,
       height: window.innerHeight,
       callbacks: {
-        onPreRender: function() { stats.begin(); },
-        onPostRender: function() { stats.end(); },
+        onPreRender: function() {
+          stats.begin();
+        },
+        onPostRender: function() {
+          stats.end();
+        },
         onEntitySelected: function(entity) {
           switch (Editor.currentMode) {
             case Editor.modes.select:
@@ -246,8 +250,7 @@ var CrowdSimEditor = (function($) {
             break;
           }
         },
-        onCreateEntity: function(renderEntity) { // Manages add/editing/remove of entities
-          var entity = renderEntity.entityModel;
+        onCreateEntity: function(entity) { // Manages add/editing/remove of entities
           var type = entity.constructor.type;
           // Append to Entities list html
           var listToAppend = $('ul.entity-' + type, entityList);
@@ -261,7 +264,9 @@ var CrowdSimEditor = (function($) {
           $('#entitiy-id-' + entity.id, entityList).off('click').remove();
         },
         onLoad: function(world) {
-
+          CrowdSimApp.selectEntity(null);
+          Editor._entityInfoSet(null);
+          Editor.notebook.addClass('hide');
         },
         onSave: function(world) {
         }
@@ -274,23 +279,53 @@ var CrowdSimEditor = (function($) {
     Editor._updateDisplay();
 
     // save load scene
-    $('.world-status button#save').click(CrowdSimApp.save);
-    $('.world-status button#load').click(CrowdSimApp.load);
-    var notebook = $('#showRawData');
-    $('.world-status button#show').click(function() {
-      var show = notebook.hasClass('hide');
+    $('.world-status button#save').click(function() {
+      CrowdSimApp.save(true);
+      $('.world-status button#load').removeAttr('disabled');
+      Editor._statusBarSetOne('message','Snapshot saved');
+    });
+    $('.world-status button#load').click(function() {
+      CrowdSimApp.load(null, true);
+      Editor._statusBarSetOne('message','Snapshot recovered');
+    });
+
+    Editor.notebook = $('#showRawData');
+
+    $('button.close',Editor.notebook).click(function() {
+      Editor.notebook.addClass('hide');
+    });
+    $('button.import',Editor.notebook).click(function() {
+      var raw = $('#data').val();
+      CrowdSimApp.load(raw);
+    });
+
+    $('.world-status button#export').click(function() {
+      var show = Editor.notebook.hasClass('hide');
       if (show) {
         var raw = CrowdSimApp.save(false);
-        $('#data').html(raw);
+        $('button.upload',Editor.notebook).attr('disabled','disabled');
+        $('#data').val(raw).attr('disabled','disabled');
       }
-      notebook.toggleClass('hide');
+      Editor.notebook.toggleClass('hide');
+    });
+
+    // import from JSON
+    $('button.upload',Editor.notebook).click(function() {
+      var raw = $('#data').val();
+      CrowdSimApp.load(raw);
+    });
+
+    $('.world-status button#import').click(function() {
+      var show = Editor.notebook.hasClass('hide');
+      if (show) {
+        $('button.upload',Editor.notebook).removeAttr('disabled');
+        var raw = $('#data').val('').removeAttr('disabled');
+      }
+      Editor.notebook.toggleClass('hide');
     });
 
     // init world loader
     var selectWorlds = $('.world-status select#worlds');
-    $('button',notebook).click(function() {
-      notebook.addClass('hide');
-    });
     var worlds = CrowdSimApp.listExamples();
     for (var e in worlds) {
       var selected = e === 0 ? 'selected' : '';
@@ -299,8 +334,10 @@ var CrowdSimEditor = (function($) {
     }
     selectWorlds.change(function() {
       CrowdSimApp.loadExample($(this).find(':selected').val());
+      Editor._statusBarSetOne('message','Loaded world');
     });
-    //selectWorlds.trigger('change');
+    // default show first world
+    selectWorlds.val('world1').trigger('change');
   };
 
   Editor.modeToggle = function(mode) {
@@ -326,21 +363,41 @@ var CrowdSimEditor = (function($) {
     var isRunning = newStatus.action(newStatus);
     $(Editor.buttons.run).toggleClass('hide', isRunning);
     $(Editor.buttons.stop).toggleClass('hide', !isRunning);
+    return isRunning;
   };
 
   // updates entity panel with entity info and properties
   Editor._entityInfoSet = function(entityView) {
-    var entity = entityView.entityModel;
-    $('.entity-type', Editor.entityInfo).html(entity.constructor.type);
-    $('.entity-id', Editor.entityInfo).html(entity.id);
-    var util = Editor._helpers;
-    util.createNumberInput($('.entity-x', Editor.entityInfo), entity.pos, 0);
-    util.createNumberInput($('.entity-y', Editor.entityInfo), entity.pos, 1);
     var control = $('.entity-props', Editor.entityInfo);
+    var type = $('.entity-type', Editor.entityInfo);
+    var id = $('.entity-id', Editor.entityInfo);
+    var x = $('.entity-x', Editor.entityInfo);
+    var y = $('.entity-y', Editor.entityInfo);
     control.empty();
-    util.createInputsRecursive(control, entity.options);
-    util.createEntityLabel(control, entity.entities);
-    util.createEntityLabel(control, entity.children);
+    if (entityView) {
+      var entity = entityView.entityModel;
+      type.html(entity.constructor.type);
+      id.html(entity.id);
+      var util = Editor._helpers;
+      util.createNumberInput(x.removeAttr('disabled'), entity.pos, 0);
+      util.createNumberInput(y.removeAttr('disabled'), entity.pos, 1);
+      util.createInputsRecursive(control, entity.options);
+
+      if (entity.entities.length > 0) {
+        control.append('<hr>Entities:');
+        util.createEntityLabel(control, entity.entities);
+      }
+      if (entity.children.length > 0) {
+        control.append('<hr>Children:');
+        util.createEntityLabel(control, entity.children);
+      }
+
+    } else {
+      type.html('');
+      id.html('');
+      x.val('').attr('disabled');
+      y.val('').attr('disabled');
+    }
   };
 
   // wires mouse and keyboard events to canvas/document/window

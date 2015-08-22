@@ -21,6 +21,10 @@ var Agent = function(x, y, group, options) {
   }
 };
 
+Agent.prototype.getAspect = function() {
+  return this.aspect;
+};
+
 Agent.prototype.getRadius = function() {
   return this.radius;
 };
@@ -105,6 +109,7 @@ Agent.prototype.move = function(accel, stepSize) {
 };
 
 Agent.defaults = {
+  aspect: 0xFFFFFF, // used for coloring
   debug: false,
   size: 0.5,
   mass: 80e3,
@@ -931,9 +936,10 @@ Engine.prototype.run = function() {
 
 Engine.prototype.step = function() {
   if (this.running) {
-    return;
+    this.stop();
   }
   this._step();
+  return this.running;
 };
 
 Engine.prototype._step = function() {
@@ -975,13 +981,13 @@ Engine.prototype.stop = function() {
 };
 
 Engine.prototype.reset = function() {
-  this.stop();
-  this.iterations = 0;
   var groups = this.world.getGroups();
   Lazy(groups).each(function(g) {
     g.emptyAgents();
   });
-  //this.world.restore();
+  this.stop();
+  this.iterations = 0;
+  return this.running;
 };
 
 Engine.defaults = {
@@ -997,10 +1003,10 @@ var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
 var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
-var Context = function(x, y, parent, options, fixedId) {
+var Context = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Context.defaults).toObject();
+  this.id = id || 'C' + Context.id++;
   Entity.call(this, x, y, parent, this.options);
-  this.id = fixedId || 'C' + Context.id++;
 };
 
 Context.prototype.destroy = function() {
@@ -1096,10 +1102,10 @@ var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
 var Panic = require('../Behavior/Panic');
 
-var Group = function(x, y, parent, options, fixedId) {
+var Group = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Group.defaults).toObject();
+  this.id = id || 'G' + Group.id++;
   Entity.call(this, x, y, parent, this.options);
-  this.id = fixedId || 'G' + Group.id++;
   this.behavior = new Panic(this.parent);
   this.agents = [];
   this.agentsCount = this.options.agentsCount;
@@ -1194,7 +1200,6 @@ Group.prototype.unAssign = function(entity) {
   } else {
     throw 'Entity not assigned to group';
   }
-
 };
 
 Group.prototype.assignBehavior = function(behavior) {
@@ -1205,6 +1210,7 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   if (!startContext) {
     startContext = this.entities.startContext;
   }
+  // functions to set initial position
   var newAgents = [];
   var opts = this.options;
   var pos = Vec2.create();
@@ -1220,6 +1226,7 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   }
   var getInitPos = startContext ? myContextPos : myInitPos;
   var numberToGenerate = Math.min(agentsCount, this.options.agentsMax);
+  // agent generation
   for (var i = 0; i < numberToGenerate; i++) {
     pos = getInitPos(pos);
     var size = opts.agentsSizeMin;
@@ -1231,6 +1238,7 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
       size: size,
       debug: opts.debug,
       path: this.entities.path,
+      aspect: this.options.aspect || Math.round(Math.random() * 0xFFFFFF),
       pathStart: this.options.pathStart
     });
     //agent.followPath(this.entities.path, this.options.startIdx);
@@ -1308,6 +1316,7 @@ Group.prototype.step = function() {
 };
 
 Group.defaults = {
+  agentsAspect: 0, // used for colors
   agentsSizeMin: 0.5,
   agentsSizeMax: 0.5,
   agentsCount: 10,
@@ -1331,11 +1340,11 @@ module.exports = Group;
 var Entity = require('../Entity');
 var Vec2 = require('../../Common/Vec2');
 
-var Joint = function(x, y, parent, options) {
+var Joint = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
   Entity.call(this, x, y, parent, this.options);
   delete this.options.previousJoint; // delete not neccesary
-  this.id = 'J' + Joint.id++;
+  this.id = id || 'J' + Joint.id++;
 };
 
 Joint.prototype.destroy = function() {
@@ -1380,11 +1389,11 @@ var Vec2 = require('../../Common/Vec2');
 var Entity = require('../Entity');
 var Joint = require('./Joint');
 
-var LinePrototype = function(id, type, defaults, fixedId) {
-  var Line = function(x, y, parent, options) {
+var LinePrototype = function(idPrefix, type, defaults, id) {
+  var Line = function(x, y, parent, options, id) {
     this.options = Lazy(options).defaults(defaults).toObject();
+    this.id = id || idPrefix + Line.id++;
     Entity.call(this, x, y, parent, this.options);
-    this.id = fixedId || id + Line.id++;
     this.children.joints = [];
     if (x && y) {
       this.addJoint(x,y,this.options);
@@ -1442,10 +1451,10 @@ var LinePrototype = function(id, type, defaults, fixedId) {
     }
   };
 
-  Line.prototype.addJoint = function(x, y, options) {
+  Line.prototype.addJoint = function(x, y, options, id) {
     Entity.prototype.updatePos.call(this,x,y);
     options = Lazy(options).defaults(defaults).toObject();
-    var joint = new Joint(x, y, this, options);
+    var joint = new Joint(x, y, this, options, id);
     return joint;
   };
 
@@ -1492,8 +1501,8 @@ var AssignableToGroup = function(EntityPrototype) {
   var oldConstruct = EntityPrototype.prototype;
   var oldDestroy = EntityPrototype.prototype.destroy;
 
-  EntityPrototype = function(x, y, parent, options) {
-    oldConstruct.constructor.call(this,x, y, parent, options);
+  EntityPrototype = function(x, y, parent, options, id) {
+    oldConstruct.constructor.call(this,x, y, parent, options, id);
     this.entities.groups = [];
   };
   EntityPrototype.prototype = oldConstruct;
@@ -1672,6 +1681,7 @@ World.prototype.removeEntity = function(entity) {
 World.prototype.addEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   entityList.push(entity);
+  this._onCreate(entity);
 };
 
 World.prototype.addContext = function(context) {
@@ -1767,26 +1777,24 @@ World.prototype.save = function(save) {
   }
 };
 
-World.prototype.clear = function() {
-  var entities = Lazy(this.entities).values().flatten().toArray(); // cannot delete with each directly
-  for (var i in entities) {
-    this.removeEntity(entities[i]);
-  }
-};
-
 World.prototype.load = function(loader, loadDefault) {
-  this.clear();
   if (!loader) {
-    if (loadDefault) {
+    // snapshoot load
+    if (loadDefault && this.entitiesSave) {
       loader = this.entitiesSave;
     } else {
       return;
     }
   }
-  try {
+
+  if (typeof(loader) === 'function') {
     // try function loader
     loader(this);
-  } catch (err) {
+  } else {
+    // loader of raw JSON strings
+    if (typeof(loader) === 'string') {
+      loader = JSON.parse(loader);
+    }
     var world = this;
     // check if its json data
     // entites are arred to world passing its reference
@@ -1796,7 +1804,7 @@ World.prototype.load = function(loader, loadDefault) {
       var pos = e.children.joints ? [null, null] : e.pos; // to avoid duplicate init
       var wall = new Wall(pos[0], pos[1], world, e.options, e.id);
       Lazy(joints).each(function(j) {
-        wall.addJoint(j.pos[0], j.pos[1], j.options);
+        wall.addJoint(j.pos[0], j.pos[1], j.options, j.id);
       });
     });
     Lazy(loader.paths).each(function(e) {
@@ -1804,7 +1812,7 @@ World.prototype.load = function(loader, loadDefault) {
       var pos = e.children.joints ? [null, null] : e.pos; // to avoid duplicates init
       var path = new Path(pos[0], pos[1], world, e.options, e.id);
       Lazy(joints).each(function(j) {
-        path.addJoint(j.pos[0], j.pos[1], j.options);
+        path.addJoint(j.pos[0], j.pos[1], j.options, j.id);
       });
     });
     Lazy(loader.contexts).each(function(e) {
@@ -1845,6 +1853,15 @@ var CrowdSim = {
   World: require('./World'),
   Engine: require('./Engine'),
   Vec2: require('./Common/Vec2')
+};
+
+CrowdSim.restartIds = function() {
+  CrowdSim.Agent.id = 0;
+  CrowdSim.Context.id = 0;
+  CrowdSim.Group.id = 0;
+  CrowdSim.Path.id = 0;
+  CrowdSim.Wall.id = 0;
+  CrowdSim.Joint.id = 0;
 };
 
 module.exports = CrowdSim;

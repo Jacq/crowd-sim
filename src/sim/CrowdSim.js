@@ -13,6 +13,15 @@ var CrowdSim = {
   Vec2: require('./Common/Vec2')
 };
 
+CrowdSim.restartIds = function() {
+  CrowdSim.Agent.id = 0;
+  CrowdSim.Context.id = 0;
+  CrowdSim.Group.id = 0;
+  CrowdSim.Path.id = 0;
+  CrowdSim.Wall.id = 0;
+  CrowdSim.Joint.id = 0;
+};
+
 module.exports = CrowdSim;
 
 // browser

@@ -4,11 +4,11 @@ var Vec2 = require('../../Common/Vec2');
 var Entity = require('../Entity');
 var Joint = require('./Joint');
 
-var LinePrototype = function(id, type, defaults, fixedId) {
-  var Line = function(x, y, parent, options) {
+var LinePrototype = function(idPrefix, type, defaults, id) {
+  var Line = function(x, y, parent, options, id) {
     this.options = Lazy(options).defaults(defaults).toObject();
+    this.id = id || idPrefix + Line.id++;
     Entity.call(this, x, y, parent, this.options);
-    this.id = fixedId || id + Line.id++;
     this.children.joints = [];
     if (x && y) {
       this.addJoint(x,y,this.options);
@@ -66,10 +66,10 @@ var LinePrototype = function(id, type, defaults, fixedId) {
     }
   };
 
-  Line.prototype.addJoint = function(x, y, options) {
+  Line.prototype.addJoint = function(x, y, options, id) {
     Entity.prototype.updatePos.call(this,x,y);
     options = Lazy(options).defaults(defaults).toObject();
-    var joint = new Joint(x, y, this, options);
+    var joint = new Joint(x, y, this, options, id);
     return joint;
   };
 

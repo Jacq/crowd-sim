@@ -76,6 +76,8 @@ App.init = function(canvas, options) {
       timeStepRun: 0.001 // time between step runnings
     });
   var events = {
+    onPreRender: App.callbacks.onPreRender, // before each render cycle
+    onPostRender: App.callbacks.onPostRender,
     mouseover: App.entity.mouseover,
     mouseout: App.entity.mouseout,
     mousedown: App.entity.mousedown,
@@ -88,15 +90,13 @@ App.init = function(canvas, options) {
     height: h,
     onCreateAgents: App.onCreateAgents,
     onDestroyAgents: App.onDestroyAgents,
-    onCreateEntity: App.callbacks.onCreateEntity,
-    onDestroyEntity: App.callbacks.onDestroyEntity
+    onCreateEntity: App.onCreateEntity,
+    onDestroyEntity: App.onDestroyEntity
   };
   var world = App._world = new CrowdSim.World(this, optionsWorld);
-  App._render();
 };
 
 App.save = function(save) {
-  // TODO
   var raw = App._world.save(save);
   App.callbacks.onSave(App._world);
   return raw;
@@ -110,9 +110,22 @@ App.listExamples = function() {
   return Lazy(Worlds).keys().toArray();
 };
 
+App.clear = function() {
+  CrowdSim.restartIds();
+  // remove current entities
+  var entities = App._world.getEntitiesIterator().toArray();
+  Lazy(entities).each(function(entity) {
+    entity.view.destroy();
+  });
+};
+
 App.load = function(loader, loadDefault) {
+  this.clear();
+  App.selectEntity(null);
+  App.createEntityEnd();
   App._world.load(loader,loadDefault);
   App._engine.setWorld(App._world);
+  App._renderer.setWorld(App._world);
   // loads all entities creating render objects
   Lazy(App._world.getEntitiesIterator()).each(function(entity) {
     App.addEntity(entity);
@@ -133,12 +146,21 @@ App.onDestroyAgents = function(agents) {
   });
 };
 
+App.onCreateEntity = function(entity) {
+  if (App.callbacks.onCreateEntity) {
+    App.callbacks.onCreateEntity(entity);
+  }
+};
+
+App.onDestroyEntity = function(entity) {
+  if (App.callbacks.onDestroyEntity) {
+    App.callbacks.onDestroyEntity(entity);
+  }
+};
+
 App.createEntityStart = function(entityType, pos) {
   var entity = entityType.CreateFromPoint(pos.x, pos.y, App._world);
   App._newRenderEntity = entity;
-  if (App.callbacks.onCreateEntity) {
-    App.callbacks.onCreateEntity(App._newRenderEntity);
-  }
   return App._newRenderEntity;
 };
 
@@ -176,9 +198,6 @@ App.editEntity = function(entity) {
 App.addEntity = function(entity) {
   var renderEntityProto = App.EntityCreationMapping[entity.constructor.type];
   var renderEntity = renderEntityProto.CreateFromModel(entity, App._world);
-  if (App.callbacks.onCreateEntity) {
-    App.callbacks.onCreateEntity(renderEntity);
-  }
 };
 
 App.getEngineSettings = function() {
@@ -406,21 +425,19 @@ App.isRunning = function() {
 };
 
 App.run = function() {
-  var isRunning = App._engine.run();
-  return isRunning;
+  return App._engine.run();
 };
 
 App.stop = function() {
-  var isRunning = App._engine.stop();
-  return isRunning;
+  return App._engine.stop();
 };
 
 App.step = function() {
-  App._engine.step();
+  return App._engine.step();
 };
 
 App.reset = function() {
-  App._engine.reset();
+  return App._engine.reset();
 };
 
 App.getStats = function() {
@@ -439,39 +456,6 @@ App.getStats = function() {
 
 App.cycleDetail = function(entityType) {
   entityType.detail.cycleDetail();
-};
-
-App._render = function() {
-  // callback prerender
-  if (App.callbacks.onPreRender) {
-    App.callbacks.onPreRender();
-  }
-
-  if (App._world) {
-
-    var entities = App._world.entities;
-    // render/refresh entities
-    var agents = App._world.getAgents();
-    for (var i in agents) {
-      agents[i].view.render();
-    }
-    for (var prop in entities) {
-      Lazy(entities[prop]).each(function(a) {
-        if (a.view) { a.view.render(); }
-      });
-    }
-
-  }
-
-  // render the stage
-  App._renderer.render();
-
-  // callback postrender
-  if (App.callbacks.onPostRender) {
-    App.callbacks.onPostRender();
-  }
-
-  requestAnimationFrame(App._render);
 };
 
 module.exports = App;

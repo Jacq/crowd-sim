@@ -57,6 +57,8 @@ Render.prototype.init = function(textures, events) {
   // to draw everything
   //App._renderOnce();
 
+  this.onPreRender = events.onPreRender;
+  this.onPostRender = events.onPostRender;
   // wire Entity events
   Render.Entity.mouseover = events.mouseover;
   Render.Entity.mouseout = events.mouseout;
@@ -86,6 +88,40 @@ Render.prototype.init = function(textures, events) {
 
   this._worldContainer.addChild(this._graphicsHelper);
   this._worldContainer.addChild(graphicsAux);
+  this._render();
+};
+
+Render.prototype._render = function() {
+  var that = this;
+  (function() {
+  if (that.onPreRender) {
+    that.onPreRender();
+  }
+  if (that.world) {
+    var entities = that.world.entities;
+    // render/refresh entities
+    var agents = that.world.getAgents();
+    for (var i in agents) {
+      agents[i].view.render();
+    }
+    for (var prop in entities) {
+      Lazy(entities[prop]).each(function(a) {
+        if (a.view) { a.view.render(); }
+      });
+    }
+  }
+  // render the stage
+  that._renderer.render(that._stage);
+  requestAnimationFrame(that._render.bind(that));
+  if (that.onPostRender) {
+    that.onPostRender();
+  }
+})();
+
+};
+
+Render.prototype.setWorld = function(world) {
+  this.world = world;
 };
 
 Render.prototype.resize = function(w, h) {
@@ -123,10 +159,6 @@ Render.prototype.getWidth = function() {
 
 Render.prototype.getHeight = function() {
   return this._stage.height;
-};
-
-Render.prototype.render = function() {
-  this._renderer.render(this._stage);
 };
 
 Render.prototype.screenToWorld = function(x, y) {

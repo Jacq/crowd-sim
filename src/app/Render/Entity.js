@@ -15,9 +15,11 @@ var Entity = function(entity) {
 };
 
 Entity.prototype.destroy = function() {
-  this.entityModel.view = null;
-  this.entityModel.destroy();
-  this.entityModel = null;
+  if (this.entityModel) {
+    this.entityModel.view = null;
+    this.entityModel.destroy();
+    this.entityModel = null;
+  }
 };
 
 Entity.prototype.createGraphics = function(container, graphics) {

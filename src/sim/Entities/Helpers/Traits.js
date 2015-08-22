@@ -5,8 +5,8 @@ var AssignableToGroup = function(EntityPrototype) {
   var oldConstruct = EntityPrototype.prototype;
   var oldDestroy = EntityPrototype.prototype.destroy;
 
-  EntityPrototype = function(x, y, parent, options) {
-    oldConstruct.constructor.call(this,x, y, parent, options);
+  EntityPrototype = function(x, y, parent, options, id) {
+    oldConstruct.constructor.call(this,x, y, parent, options, id);
     this.entities.groups = [];
   };
   EntityPrototype.prototype = oldConstruct;

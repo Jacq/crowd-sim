@@ -282,6 +282,7 @@ function errorLogger(error) {
   log('*** Start of Error ***');
   log(error);
   log('*** End of Error ***');
+  $.util.beep();
   this.emit('end');
 }
 

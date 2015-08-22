@@ -84,10 +84,16 @@ button,
   padding: 0; }
   button:active,
   button.active,
+  button:active:hover,
   .btn:active,
-  .btn.active {
+  .btn.active,
+  .btn:active:hover {
     background-color: yellow;
     color: red; }
+  button:disabled,
+  .btn:disabled {
+    color: gray;
+    border: 1px dashed; }
 
 .highlight {
   background-color: yellow; }
@@ -101,17 +107,19 @@ button,
 .control.entity-panel {
   right: 0;
   text-align: left;
-  width: 150px;
-  /*max-height: 50%;
-  overflow-y: scroll;*/ }
+  width: 160px; }
   .control.entity-panel input {
     width: 80%; }
   .control.entity-panel input[type='checkbox'] {
     width: 20px;
     height: 20px;
-    position: absolute; }
+    float: right; }
   .control.entity-panel .properties {
+    overflow-y: scroll;
+    max-height: 60vh;
     padding: 5px; }
+    .control.entity-panel .properties .entity-props div {
+      padding: 3px; }
 
 .select-modes {
   text-align: left;
@@ -162,7 +170,8 @@ button,
 .engine {
   margin-bottom: 10px; }
 
-.engine, .properties {
+.engine,
+.properties {
   padding: 5px; }
 
 .entity {
@@ -197,7 +206,7 @@ button,
 .dialog {
   border: 5px solid gray;
   position: absolute;
-  height: 85%;
+  height: 80%;
   width: 60%;
   left: 20%;
   background-color: white;
@@ -211,8 +220,17 @@ button,
   overflow-y: auto; }
   .dialog .close {
     position: absolute;
-    right: 35px; }
+    right: 40px;
+    top: 20px; }
+  .dialog .upload {
+    position: absolute;
+    right: 150px;
+    top: 20px; }
 
-notebook {
-  height: 100%;
-  width: 100%; }
+.notebook {
+  position: absolute;
+  left: 1%;
+  top: 1%;
+  height: 98%;
+  width: 98%;
+  box-sizing: border-box; }

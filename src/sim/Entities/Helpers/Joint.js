@@ -1,11 +1,11 @@
 var Entity = require('../Entity');
 var Vec2 = require('../../Common/Vec2');
 
-var Joint = function(x, y, parent, options) {
+var Joint = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
   Entity.call(this, x, y, parent, this.options);
   delete this.options.previousJoint; // delete not neccesary
-  this.id = 'J' + Joint.id++;
+  this.id = id || 'J' + Joint.id++;
 };
 
 Joint.prototype.destroy = function() {

@@ -29,17 +29,22 @@ Agent.prototype.followPath = function(path, index) {
   index = index || 0;
   this.path = path;
   if (path) {
-    this.joints = path.getJoints();
-    if (this.group.isPathReverse()) {
-      this.target = this.joints[index];
-      this.pathNextIdx = index - 1;
-    } else {
-      this.target = this.joints[index];
-      this.pathNextIdx = index + 1;
-    }
+    this.pathStartIdx = index;
+    this._startPath();
   } else {
     this.target = null;
     this.pathNextIdx = 0;
+  }
+};
+
+Agent.prototype._startPath = function() {
+  this.joints = this.path.getJoints();
+  if (this.group.isPathReverse()) {
+    this.target = this.joints[this.pathStartIdx];
+    this.pathNextIdx = this.pathStartIdx - 1;
+  } else {
+    this.target = this.joints[this.pathStartIdx];
+    this.pathNextIdx = this.pathStartIdx + 1;
   }
 };
 
@@ -54,26 +59,32 @@ Agent.prototype.step = function(stepSize) {
 
   this.move(accel, stepSize);
   // update target to next if arrive at current
+  var last = false;
   if (this.target) {
-    var distToTarget = Vec2.distance(this.pos, this.target.pos);
-    if (distToTarget < this.target.getRadius()) {
+    if (this.pathNextIdx && this.target.in(this.pos)) {
       if (this.group.isPathReverse()) {
-        if (this.pathNextIdx > 0) {
+        if (this.pathNextIdx >= 0) {
           // follow to next waypoint
           this.target = this.joints[this.pathNextIdx--];
         } else {
-          // arrived at last!
-          this.pathNextIdx = null;
-          this.target = null;
+          last = true;
         }
       } else {
         if (this.pathNextIdx < this.joints.length) {
           // follow to next waypoint
           this.target = this.joints[this.pathNextIdx++];
         } else {
-          // arrived at last!
-          this.pathNextIdx = null;
-          this.target = null;
+          last = true;
+        }
+      }
+      if (last) { // last point check if is a circular path or end in endContext
+        if (this.group.isPathCircular()) {
+          this._startPath();
+        } else { // do one last trip for symetry to endContext if exists for symetry
+          var endContext = this.group.getEndContext();
+          if (endContext) {
+            this.target = endContext;
+          }
         }
       }
     }
@@ -143,20 +154,20 @@ var Panic = function(world, options) {
   this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
-// path point, point, other agent {point , radius}
+// path point, point, other agent {point , with in. function}
 Panic.prototype.getAccel = function(agent, target) {
   Behavior.prototype.getAccel.call(this, agent, target);
   var desiredForce = Vec2.create();
   var agentsForce = Vec2.create();
   var wallsForce = Vec2.create();
   var accel = Vec2.create();
-  var distanceToTarget;
+  var arrived;
 
   // check agent desired force
   Vec2.add(accel, agentsForce, wallsForce);
   if (target) { // agent is going somewhere?
-    distanceToTarget = Vec2.distance(agent.pos, target.pos);
-    if (distanceToTarget > target.getRadius()) {
+    arrived = target.in(agent.pos);
+    if (!arrived) {
       Vec2.subtract(desiredForce, target.pos, agent.pos);
       if (Vec2.length(desiredForce) > agent.maxAccel) {
         Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxAccel * agent.mass);
@@ -190,7 +201,7 @@ Panic.prototype.getAccel = function(agent, target) {
   }
 
   // fix to stay in place if no target is selected or already at target
-  if (!target || distanceToTarget < target.radius) {
+  if (!target || arrived) {
     Vec2.negate(desiredForce, agent.vel);
     Vec2.scale(desiredForce, desiredForce, this.options.relaxationTime);
     if (Vec2.length(desiredForce) > agent.maxAccel) {
@@ -986,10 +997,10 @@ var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
 var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
-var Context = function(x, y, parent, options) {
+var Context = function(x, y, parent, options, fixedId) {
   this.options = Lazy(options).defaults(Context.defaults).toObject();
   Entity.call(this, x, y, parent, this.options);
-  this.id = 'C' + Context.id++;
+  this.id = fixedId || 'C' + Context.id++;
 };
 
 Context.prototype.destroy = function() {
@@ -1046,6 +1057,7 @@ var Entity = function(x, y, parent, options) {
   this.extra = {}; // for extra information, e.g. render object
   this.pos = Vec2.fromValues(x, y);
   this.entities = {}; // stores diferent structures with related entities
+  this.children = {}; // stores children entities
   this.view = null; // to store references to render objects
   if (parent) {
     this.parent = parent;
@@ -1084,10 +1096,10 @@ var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
 var Panic = require('../Behavior/Panic');
 
-var Group = function(x, y, parent, options) {
+var Group = function(x, y, parent, options, fixedId) {
   this.options = Lazy(options).defaults(Group.defaults).toObject();
   Entity.call(this, x, y, parent, this.options);
-  this.id = 'G' + Group.id++;
+  this.id = fixedId || 'G' + Group.id++;
   this.behavior = new Panic(this.parent);
   this.agents = [];
   this.agentsCount = this.options.agentsCount;
@@ -1149,13 +1161,17 @@ Group.prototype.assignPath = function(path, idx) {
   if (path) {
     path.assignToGroup(this);
     for (var i  in this.agents) {
-      this.agents[i].followPath(this.options.pathStart, this.options.startIdx);
+      this.agents[i].followPath(path, this.options.pathStart);
     }
   }
 };
 
 Group.prototype.isPathReverse = function() {
   return this.options.pathReverse;
+};
+
+Group.prototype.isPathCircular = function() {
+  return this.options.pathCircular;
 };
 
 Group.prototype.getPathStartIdx = function() {
@@ -1203,7 +1219,8 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
     return startContext.getRandomPoint();
   }
   var getInitPos = startContext ? myContextPos : myInitPos;
-  for (var i = 0; i < agentsCount; i++) {
+  var numberToGenerate = Math.min(agentsCount, this.options.agentsMax);
+  for (var i = 0; i < numberToGenerate; i++) {
     pos = getInitPos(pos);
     var size = opts.agentsSizeMin;
     if (opts.agentsSizeMin !== opts.agentsSizeMax) {
@@ -1298,6 +1315,7 @@ Group.defaults = {
   debug: false,
   pathStart: 0,
   pathReverse: false,
+  pathCircular: false,
   radius: 3, // used when no start context is associated
   startProb: 0, // Adds agents per step in startContext
   startRate: 0, // Adds agents probability per step in startContext
@@ -1311,6 +1329,7 @@ module.exports = Group;
 
 },{"../Agent":1,"../Behavior/Panic":3,"../Common/Vec2":4,"./Context":6,"./Entity":7,"./Path":12}],9:[function(require,module,exports){
 var Entity = require('../Entity');
+var Vec2 = require('../../Common/Vec2');
 
 var Joint = function(x, y, parent, options) {
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
@@ -1325,6 +1344,11 @@ Joint.prototype.destroy = function() {
 
 Joint.prototype.getRadius = function() {
   return this.options.radius;
+};
+
+Joint.prototype.in = function(pos) {
+  var dist = Vec2.distance(pos, this.pos);
+  return dist < this.options.radius;
 };
 
 Joint.prototype.setRadius = function(radius) {
@@ -1349,19 +1373,19 @@ Joint.type = 'joint';
 
 module.exports = Joint;
 
-},{"../Entity":7}],10:[function(require,module,exports){
+},{"../../Common/Vec2":4,"../Entity":7}],10:[function(require,module,exports){
 'use strict';
 
 var Vec2 = require('../../Common/Vec2');
 var Entity = require('../Entity');
 var Joint = require('./Joint');
 
-var LinePrototype = function(id, type, defaults) {
+var LinePrototype = function(id, type, defaults, fixedId) {
   var Line = function(x, y, parent, options) {
     this.options = Lazy(options).defaults(defaults).toObject();
     Entity.call(this, x, y, parent, this.options);
-    this.id = id + Line.id++;
-    this.entities.joints = [];
+    this.id = fixedId || id + Line.id++;
+    this.children.joints = [];
     if (x && y) {
       this.addJoint(x,y,this.options);
     }
@@ -1370,25 +1394,25 @@ var LinePrototype = function(id, type, defaults) {
   Line.prototype.addEntity = function(joint, options) {
     // add a joint to the end or a given position by options.idx
     if (!options || options.previousJoint === null) {
-      this.entities.joints.push(joint);
+      this.children.joints.push(joint);
     } else {
-      var idx = this.entities.joints.indexOf(options.previousJoint);
+      var idx = this.children.joints.indexOf(options.previousJoint);
       if (idx === -1) { throw 'Previous joint not found'; }
-      this.entities.joints.splice(idx, 0, joint);
+      this.children.joints.splice(idx, 0, joint);
     }
   };
 
   Line.prototype.removeEntity = function(joint) {
-    var idx = this.entities.joints.indexOf(joint);
+    var idx = this.children.joints.indexOf(joint);
     if (idx !== -1) {
-      this.entities.joints.splice(idx, 1);
+      this.children.joints.splice(idx, 1);
       // destroy line if not contains joints
-      if (this.entities.joints.length === 0) {
+      if (this.children.joints.length === 0) {
         this.destroy();
       }
       if (idx === 0) { // relocate reference to next joint idx +1,
         //but we removed idx alreade so next is idx
-        var nextJoint = this.entities.joints[idx];
+        var nextJoint = this.children.joints[idx];
         this.pos[0] = nextJoint.pos[0];
         this.pos[1] = nextJoint.pos[1];
       }
@@ -1398,10 +1422,10 @@ var LinePrototype = function(id, type, defaults) {
   };
 
   Line.prototype.destroy = function() {
-    for (var j in this.entities.joints) {
-      this.entities.joints[j].destroy();
+    for (var j in this.children.joints) {
+      this.children.joints[j].destroy();
     }
-    this.entities.joints.length = 0;
+    this.children.joints.length = 0;
     Entity.prototype.destroy.call(this);
   };
 
@@ -1426,15 +1450,15 @@ var LinePrototype = function(id, type, defaults) {
   };
 
   Line.prototype.getJoints = function() {
-    return this.entities.joints;
+    return this.children.joints;
   };
 
   Line.prototype.getJointIdx = function(joint) {
-    return this.entities.joints.indexOf(joint);
+    return this.children.joints.indexOf(joint);
   };
 
   Line.prototype.getJointByIdx = function(idx) {
-    return this.entities.joints[idx];
+    return this.children.joints[idx];
   };
 
   Line.prototype.getWidth = function() {
@@ -1442,15 +1466,15 @@ var LinePrototype = function(id, type, defaults) {
   };
 
   Line.prototype.reverse = function() {
-    this.entities.joints = Lazy(this.entities.joints).reverse().toArray();
+    this.children.joints = Lazy(this.children.joints).reverse().toArray();
   };
 
   Line.prototype.getProjection = function(point, segment) {
-    if (segment < 0 || segment >= this.entities.joints.length - 1) {
+    if (segment < 0 || segment >= this.children.joints.length - 1) {
       throw 'Segment out of bounds';
     }
     var projection = Vec2.create();
-    return Vec2.projectionToSegment(projection, point, this.entities.joints[segment].pos, this.entities.joints[segment + 1].pos);
+    return Vec2.projectionToSegment(projection, point, this.children.joints[segment].pos, this.children.joints[segment + 1].pos);
   };
 
   Line.id = 0;
@@ -1553,7 +1577,7 @@ var Group = require('./Entities/Group');
 var Path = require('./Entities/Path');
 var Wall = require('./Entities/Wall');
 
-var World = function(x, y, parent, options) {
+var World = function(parent, options) {
   this.options = Lazy(options).defaults(World.defaults).toObject();
   var that = this;
   this.parent = parent;
@@ -1565,11 +1589,6 @@ var World = function(x, y, parent, options) {
     paths: [],
     walls: []
   };
-  this.wrap = true;
-  this.x = x;
-  this.y = y;
-  this.width = this.options.width;
-  this.height = this.options.height;
 };
 
 World.prototype.getDefaultGroup = function() {
@@ -1580,7 +1599,7 @@ World.prototype.getAgents = function() {
   return this.agents;
 };
 
-World.prototype.getEntities = function() {
+World.prototype.getEntitiesIterator = function() {
   return Lazy(this.entities).values().flatten();
 };
 
@@ -1610,7 +1629,7 @@ World.prototype.addAgents = function(agents) {
 World.prototype.removeAgents = function(agents) {
   for (var i in agents) {
     var j = this.agents.indexOf(agents[i]);
-    this.agents.splice(j,1);
+    this.agents.splice(j, 1);
   }
   if (this.options.onDestroyAgents) {
     this.options.onDestroyAgents(agents);
@@ -1625,7 +1644,7 @@ World.prototype._onCreate = function(entity) {
 
 World.prototype._onDestroy = function(entity) {
   if (this.options.onDestroyEntity) {
-    this.options.onDestroyEntity(entity);
+    this.options.onDestroyEntity([entity]);
   }
 };
 
@@ -1646,13 +1665,14 @@ World.prototype._getEntityList = function(entity) {
 World.prototype.removeEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   var idx = entityList.indexOf(entity);
-  entityList.splice(idx,1);
+  entityList.splice(idx, 1);
   this._onDestroy(entity);
 };
 
 World.prototype.addEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   entityList.push(entity);
+  this._onCreate(entity);
 };
 
 World.prototype.addContext = function(context) {
@@ -1679,29 +1699,12 @@ World.prototype.getEntityById = function(id) {
   return Lazy(this.entities).values().flatten().findWhere({id: id});
 };
 
-World.prototype._saveHelper = function(o) {
-  var cache = [];
-  var result = JSON.stringify(o, function(key, value) {
-    if (typeof value === 'object' && value !== null) {
-      if (cache.indexOf(value) !== -1) {
-        // Circular reference found, discard key
-        return;
-      }
-      // Store value in our collection
-      cache.push(value);
-    }
-    return value;
-  });
-  return result;
+World.prototype.getContextById = function(id) {
+  return Lazy(this.entities.contexts).findWhere({id: id});
 };
 
-World.prototype.save = function() {
-  this.entitiesSave = this._saveHelper(this.entities);
-  console.log(this.agentsSave);
-};
-
-World.prototype.restore = function() {
-  this.agents = JSON.parse(this.agentsSave);
+World.prototype.getPathById = function(id) {
+  return Lazy(this.entities.paths).findWhere({id: id});
 };
 
 // TODO add spatial structure to optimize this function
@@ -1727,6 +1730,96 @@ World.prototype.agentsInContext = function(context, agents) {
     }
   }
   return agentsIn;
+};
+
+World.prototype._saveHelper = function(o) {
+  var ignore = ['view', 'extra', 'agents', 'parent'];
+  var cache = [];
+  var result = JSON.stringify(o, function(key, value) {
+    if (ignore.indexOf(key) !== -1) { return; }
+    if (key === 'entities') {
+      var entities = {};
+      // map entities to array of ids
+      for (var prop in value) {
+        entities[prop] = value[prop].id;
+      }
+      return entities;
+    }
+    if (typeof value === 'object' && value !== null) {
+      if (cache.indexOf(value) !== -1) {
+        // Circular reference found, discard key
+        throw 'Circular reference found!';
+      }
+      // Store value in our collection
+      cache.push(value);
+    }
+    return value;
+  }, 2);
+  return result;
+};
+
+World.prototype.save = function(save) {
+  var raw = this._saveHelper(this.entities);
+  if (save) {
+    this.entitiesSave = raw;
+  } else {
+    console.log(raw);
+    return raw;
+  }
+};
+
+World.prototype.load = function(loader, loadDefault) {
+  if (!loader) {
+    if (loadDefault) {
+      loader = this.entitiesSave;
+    } else {
+      return;
+    }
+  }
+  if (typeof(loader) === 'function') {
+    // try function loader
+    loader(this);
+  } else {
+    var world = this;
+    // check if its json data
+    // entites are arred to world passing its reference
+
+    Lazy(loader.walls).each(function(e) {
+      var joints = e.children.joints;
+      var pos = e.children.joints ? [null, null] : e.pos; // to avoid duplicate init
+      var wall = new Wall(pos[0], pos[1], world, e.options, e.id);
+      Lazy(joints).each(function(j) {
+        wall.addJoint(j.pos[0], j.pos[1], j.options);
+      });
+    });
+    Lazy(loader.paths).each(function(e) {
+      var joints = e.children.joints;
+      var pos = e.children.joints ? [null, null] : e.pos; // to avoid duplicates init
+      var path = new Path(pos[0], pos[1], world, e.options, e.id);
+      Lazy(joints).each(function(j) {
+        path.addJoint(j.pos[0], j.pos[1], j.options);
+      });
+    });
+    Lazy(loader.contexts).each(function(e) {
+      new Context(e.pos[0], e.pos[1], world, e.options, e.id);
+    });
+    Lazy(loader.groups).each(function(e) {
+      var g = new Group(e.pos[0], e.pos[1], world, e.options, e.id);
+      if (e.entities.startContext) {
+        var startContext = world.getContextById(e.entities.startContext);
+        g.assignStartContext(startContext);
+      }
+      if (e.entities.endContext) {
+        var endContext = world.getContextById(e.entities.endContext);
+        g.assignEndContext(endContext);
+      }
+      if (e.entities.path) {
+        var path = world.getPathById(e.entities.path);
+        g.assignPath(path);
+      }
+      // TODO assign behavior
+    });
+  }
 };
 
 module.exports = World;
