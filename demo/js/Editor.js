@@ -335,12 +335,18 @@ var CrowdSimEditor = (function($) {
       var option = $('<option value=' + worlds[e] + ' ' + selected + '>' + worlds[e] + '</option>');
       selectWorlds.append(option);
     }
+    var timerSelectWorlds = setInterval(function() {
+      selectWorlds.toggleClass('highlight');
+    }, 200);
     selectWorlds.change(function() {
+      clearInterval(timerSelectWorlds);
+      selectWorlds.removeClass('highlight');
       CrowdSimApp.loadExample($(this).find(':selected').val());
       Editor._statusBarSetOne('message','Loaded world');
     });
+
     // default show first world
-    selectWorlds.val('world1').trigger('change');
+    //selectWorlds.val('simple').trigger('change');
   };
 
   Editor.modeToggle = function(mode) {

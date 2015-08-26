@@ -84,8 +84,8 @@ Engine.prototype.reset = function() {
 };
 
 Engine.defaults = {
-  timeStepSize: 0.2,
-  timeStepRun: 0.02
+  timeStepSize: 0.05,
+  timeStepRun: 0.01
 };
 
 module.exports = Engine;

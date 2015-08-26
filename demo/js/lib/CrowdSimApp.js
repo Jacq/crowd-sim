@@ -1346,7 +1346,7 @@ module.exports = Wall;
 var CrowdSim = require('CrowdSim');
 
 var Worlds = {
-    world1: function(world, debug) {
+    testFun: function(world, debug) {
       // wire world events and adding entities functions
       var sizeR = 20;
       var sizeC = 10;
@@ -1412,7 +1412,7 @@ var Worlds = {
       var wall = new CrowdSim.Wall(null, null, world);
       wall.addJoints(room1);
     },
-    world2: {
+    testJson: {
       'contexts': [{
         'options': {
           'width': 10,
@@ -4045,7 +4045,7 @@ wallsPathGr: {
         "endProb": 0.1,
         "endRate": 3
       },
-      "id": "G1111",
+      "id": "G2",
       "pos": {
         "0": 110,
         "1": 16
@@ -4084,7 +4084,7 @@ wallsPathGr: {
         "endProb": 0,
         "endRate": 0
       },
-      "id": "G11111",
+      "id": "G3",
       "pos": {
         "0": 38.79999923706055,
         "1": 79.19999694824219
@@ -4123,7 +4123,7 @@ wallsPathGr: {
         "endProb": 0.5,
         "endRate": 2
       },
-      "id": "G111111",
+      "id": "G4",
       "pos": {
         "0": 73,
         "1": 82.80000305175781

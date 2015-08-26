@@ -8,6 +8,7 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
   var Line = function(x, y, parent, options, id) {
     this.options = Lazy(options).defaults(defaults).toObject();
     this.id = id || idPrefix + Line.id++;
+    Line.id = Entity.prototype.calcNewId.call(this, Line.id);
     Entity.call(this, x, y, parent, this.options);
     this.children.joints = [];
     if (x && y) {

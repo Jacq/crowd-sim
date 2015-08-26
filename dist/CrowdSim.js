@@ -18,6 +18,10 @@ var Agent = function(x, y, group, options) {
   }
   if (this.path) {
     this.followPath(this.path, this.pathStart);
+  } else if (this.group.getEndContext()) {
+    this.target = this.group.getEndContext();
+  } else {
+    this.target = this.group;
   }
 };
 
@@ -65,7 +69,7 @@ Agent.prototype.step = function(stepSize) {
   // update target to next if arrive at current
   var last = false;
   if (this.target) {
-    if (this.pathNextIdx && this.target.in(this.pos)) {
+    if (this.pathNextIdx >= -1 && this.target.in(this.pos)) {
       if (this.group.isPathReverse()) {
         if (this.pathNextIdx >= 0) {
           // follow to next waypoint
@@ -1006,6 +1010,7 @@ Engine.prototype.run = function() {
     return;
   }
   this.running = true;
+  this.world.freeze(false);
   this._step();
   return this.running;
 };
@@ -1046,6 +1051,7 @@ Engine.prototype.stop = function() {
   if (!this.running) {
     return;
   }
+  this.world.freeze(true);
   this.running = false;
   return this.running;
 };
@@ -1142,6 +1148,10 @@ var Entity = function(x, y, parent, options) {
   }
 };
 
+Entity.prototype.calcNewId = function(id) {
+  return Math.max(id + 1, Number(this.id.substring(1) + 1));
+};
+
 Entity.prototype.destroy = function() {
   if (this.parent) {
     // request to parent removal of entity
@@ -1174,7 +1184,8 @@ var Panic = require('../Behavior/Panic');
 
 var Group = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Group.defaults).toObject();
-  this.id = id || 'G' + Group.id++;
+  this.id = id || 'G' + Group.id;
+  Group.id = Entity.prototype.calcNewId.call(this, Group.id);
   Entity.call(this, x, y, parent, this.options);
   this.behavior = new Panic(this.parent);
   this.agents = [];
@@ -1198,6 +1209,12 @@ Group.prototype.destroy = function() {
 
 Group.prototype.getRadius = function() {
   return this.options.radius;
+};
+Group.prototype.setRadius = function(radius) {
+  this.options.radius = radius;
+};
+Group.prototype.incrRadius = function(dr) {
+  this.options.radius += dr;
 };
 
 Group.prototype.getStartContext = function() {
@@ -1287,8 +1304,9 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   var radius = this.options.radius;
   var initPos = this.pos;
   function myInitPos(pos) {
-    Vec2.random(pos, radius);
-    Vec2.add(pos,pos, initPos);
+    var r = Math.random() * radius;
+    Vec2.random(pos, r);
+    Vec2.add(pos, pos, initPos);
     return pos;
   }
   function myContextPos() {
@@ -1308,7 +1326,7 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
       size: size,
       debug: opts.debug,
       path: this.entities.path,
-      aspect: this.options.aspect || Math.round(Math.random() * 0xFFFFFF),
+      aspect: this.options.agentsAspect || Math.round(Math.random() * 0xFFFFFF),
       pathStart: this.options.pathStart
     });
     //agent.followPath(this.entities.path, this.options.startIdx);
@@ -1354,6 +1372,10 @@ Group.prototype.getArea = function() {
   ];
 };
 
+Group.prototype.in = function(pos) {
+  return Vec2.squaredDistance(pos, this) < this.options.radius * this.options.radius;
+};
+
 Group.prototype.addAgent = function(agent) {
   this.agents.push(agent);
 };
@@ -1379,6 +1401,7 @@ Group.prototype.step = function() {
     if (agentsIn.length > 0 && this.options.endRate > 0 && this.options.endProb > 0) {
       var probDie = Math.random();
       if (probDie < this.options.endProb) {
+        agentsIn = agentsIn.slice(0,this.options.endRate);
         this.removeAgents(agentsIn);
       }
     }
@@ -1671,6 +1694,8 @@ var World = function(parent, options) {
     walls: []
   };
   this.grid = new Grid(this.options.near);
+  this.changes = 1;
+  this.isFrozen = true;
 };
 
 World.prototype.getDefaultGroup = function() {
@@ -1752,6 +1777,7 @@ World.prototype.removeEntity = function(entity) {
   if (idx !== -1) {
     entityList.splice(idx, 1);
     this._onDestroy(entity);
+    this.changes++;
   }
 };
 
@@ -1759,6 +1785,7 @@ World.prototype.addEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   entityList.push(entity);
   this._onCreate(entity);
+  this.changes++;
 };
 
 World.prototype.addContext = function(context) {
@@ -1807,7 +1834,7 @@ World.prototype.agentsInContext = function(context, agents) {
   if (!agents) {
     agents = this.agents;
   }
-  agents = this.grid.in(context);
+  //agents = this.grid.in(context);
   var agentsIn = [];
   for (var i in agents) {
     var agent = agents[i];
@@ -1819,7 +1846,7 @@ World.prototype.agentsInContext = function(context, agents) {
 };
 
 World.prototype._saveHelper = function(o) {
-  var ignore = ['view', 'extra', 'agents', 'parent'];
+  var ignore = ['view', 'extra', 'agents', 'parent', 'world'];
   var cache = [];
   var result = JSON.stringify(o, function(key, value) {
     if (ignore.indexOf(key) !== -1) { return; }
@@ -1827,7 +1854,7 @@ World.prototype._saveHelper = function(o) {
       var entities = {};
       // map entities to array of ids
       for (var prop in value) {
-        entities[prop] = value[prop].id;
+        entities[prop] = value[prop] ? value[prop].id : null;
       }
       return entities;
     }
@@ -1907,11 +1934,12 @@ World.prototype.load = function(loader, loadDefault) {
       }
       if (e.entities.path) {
         var path = world.getPathById(e.entities.path);
-        g.assignPath(path);
+        g.assignPath(path, g.options.pathStart);
       }
       // TODO assign behavior
     });
   }
+  this.changes++;
 };
 
 World.prototype.step = function(stepSize) {
@@ -1923,10 +1951,21 @@ World.prototype.step = function(stepSize) {
   Lazy(this.entities.groups).each(function(group) {
     group.step(stepSize);
   });
+  this.changes++;
+};
+
+World.prototype.changesNumber = function() {
+  var changes = this.changes;
+  this.changes = 0;
+  return changes;
+};
+World.prototype.freeze = function(freeze) {
+  this.isFrozen = freeze || this.isFrozen;
+  return this.isFrozen;
 };
 
 World.defaults = {
-  near: 10,
+  near: 2, // grid of 3x3 squares of 2 meters
   width: null,
   height: null,
   onCreateAgents: null,

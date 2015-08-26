@@ -14,7 +14,7 @@ var Entity = function(x, y, parent, options) {
 };
 
 Entity.prototype.calcNewId = function(id) {
-  return Math.max(id + 1, Number(this.id.substring(1) + 1));
+  return Math.max(id + 1, Number(this.id.substring(1)) + 1);
 };
 
 Entity.prototype.destroy = function() {

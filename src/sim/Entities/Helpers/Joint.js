@@ -6,6 +6,7 @@ var Joint = function(x, y, parent, options, id) {
   Entity.call(this, x, y, parent, this.options);
   delete this.options.previousJoint; // delete not neccesary
   this.id = id || 'J' + Joint.id++;
+  Joint.id = Entity.prototype.calcNewId.call(this, Joint.id);
 };
 
 Joint.prototype.destroy = function() {

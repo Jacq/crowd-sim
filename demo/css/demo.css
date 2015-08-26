@@ -131,7 +131,7 @@ button,
   opacity: 0.6;
   background-color: lightgray;
   position: absolute;
-  top: 10%;
+  top: 60px;
   width: 100px;
   opacity: 0.8; }
 
@@ -179,6 +179,7 @@ button,
   width: 100%; }
 
 .entity-list-container {
+  max-height: 50vh;
   height: 100%;
   overflow-y: auto; }
   .entity-list-container li {
