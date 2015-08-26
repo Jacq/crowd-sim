@@ -17,6 +17,10 @@ var Agent = function(x, y, group, options) {
   }
   if (this.path) {
     this.followPath(this.path, this.pathStart);
+  } else if (this.group.getEndContext()) {
+    this.target = this.group.getEndContext();
+  } else {
+    this.target = this.group;
   }
 };
 
@@ -64,7 +68,7 @@ Agent.prototype.step = function(stepSize) {
   // update target to next if arrive at current
   var last = false;
   if (this.target) {
-    if (this.pathNextIdx && this.target.in(this.pos)) {
+    if (this.pathNextIdx >= -1 && this.target.in(this.pos)) {
       if (this.group.isPathReverse()) {
         if (this.pathNextIdx >= 0) {
           // follow to next waypoint

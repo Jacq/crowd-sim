@@ -9,7 +9,8 @@ var Panic = require('../Behavior/Panic');
 
 var Group = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Group.defaults).toObject();
-  this.id = id || 'G' + Group.id++;
+  this.id = id || 'G' + Group.id;
+  Group.id = Entity.prototype.calcNewId.call(this, Group.id);
   Entity.call(this, x, y, parent, this.options);
   this.behavior = new Panic(this.parent);
   this.agents = [];
@@ -33,6 +34,12 @@ Group.prototype.destroy = function() {
 
 Group.prototype.getRadius = function() {
   return this.options.radius;
+};
+Group.prototype.setRadius = function(radius) {
+  this.options.radius = radius;
+};
+Group.prototype.incrRadius = function(dr) {
+  this.options.radius += dr;
 };
 
 Group.prototype.getStartContext = function() {
@@ -122,8 +129,9 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   var radius = this.options.radius;
   var initPos = this.pos;
   function myInitPos(pos) {
-    Vec2.random(pos, radius);
-    Vec2.add(pos,pos, initPos);
+    var r = Math.random() * radius;
+    Vec2.random(pos, r);
+    Vec2.add(pos, pos, initPos);
     return pos;
   }
   function myContextPos() {
@@ -143,7 +151,7 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
       size: size,
       debug: opts.debug,
       path: this.entities.path,
-      aspect: this.options.aspect || Math.round(Math.random() * 0xFFFFFF),
+      aspect: this.options.agentsAspect || Math.round(Math.random() * 0xFFFFFF),
       pathStart: this.options.pathStart
     });
     //agent.followPath(this.entities.path, this.options.startIdx);
@@ -189,6 +197,10 @@ Group.prototype.getArea = function() {
   ];
 };
 
+Group.prototype.in = function(pos) {
+  return Vec2.squaredDistance(pos, this) < this.options.radius * this.options.radius;
+};
+
 Group.prototype.addAgent = function(agent) {
   this.agents.push(agent);
 };
@@ -214,6 +226,7 @@ Group.prototype.step = function() {
     if (agentsIn.length > 0 && this.options.endRate > 0 && this.options.endProb > 0) {
       var probDie = Math.random();
       if (probDie < this.options.endProb) {
+        agentsIn = agentsIn.slice(0,this.options.endRate);
         this.removeAgents(agentsIn);
       }
     }

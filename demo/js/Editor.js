@@ -360,12 +360,20 @@ var CrowdSimEditor = (function($) {
     $(Editor._canvas).css('cursor', Editor.currentMode.cursor);
   };
 
+  var engineTimer = null;
   Editor.engineChange = function(newStatus) {
     // toggle running/stop modes
     Editor.engineStatus = newStatus;
     var isRunning = newStatus.action(newStatus);
     $(Editor.buttons.run).toggleClass('hide', isRunning);
     $(Editor.buttons.stop).toggleClass('hide', !isRunning);
+    if (isRunning) {
+      engineTimer = setInterval(function() {
+        $(Editor.buttons.stop).toggleClass('highlight');
+      },200);
+    } else {
+      clearInterval(engineTimer);
+    }
     return isRunning;
   };
 
@@ -535,7 +543,7 @@ var CrowdSimEditor = (function($) {
           if (Editor._entityCreated) {
             // ends creation of current entity
             Editor._entityCreated = CrowdSimApp.createEntityEnd();
-            Editor._statusBarSet('message', 'Entity creation mode finished');
+            Editor._statusBarSetOne('message', 'Entity creation mode finished');
           } else {
             // cancels mode creation
             Editor.modeToggle();

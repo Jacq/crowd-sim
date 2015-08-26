@@ -69,7 +69,9 @@ Group.prototype.render = function(options) {
     if (entities.path) {
       this.graphics.moveTo(group.pos[0],group.pos[1]);
       var start = entities.path.getJointByIdx(group.getPathStartIdx());
-      this.graphics.lineTo(start.pos[0],start.pos[1]);
+      if (start) {
+        this.graphics.lineTo(start.pos[0],start.pos[1]);
+      }
     }
     if (entities.startContext) {
       this.graphics.moveTo(group.pos[0],group.pos[1]);

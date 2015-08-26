@@ -27,6 +27,7 @@ Engine.prototype.run = function() {
     return;
   }
   this.running = true;
+  this.world.freeze(false);
   this._step();
   return this.running;
 };
@@ -40,32 +41,26 @@ Engine.prototype.step = function() {
 };
 
 Engine.prototype._step = function() {
-  var world = this.world;
+  // calculate next execution
+  var startTime = new Date();
   var opts = this.settings;
   var timeStepSize = opts.timeStepSize;
-  var agents = this.world.getAgents();
-  Lazy(agents).each(function(agent) {
-    agent.step(timeStepSize);
-    if (agent.selected) {
-      world.agentSelected = agent;
-      return;
-    }
-  });
-  Lazy(this.world.getGroups()).each(function(group) {
-    group.step(timeStepSize);
-  });
+
+  this.world.step(timeStepSize);
+  this.iterations++;
+  if (this.onStep) {
+    this.onStep(this.world);
+  }
 
   if (this.running) {
     var that = this;
     // using setTimeout instead of setInterval allows dinamycally changing timeStep while running
+    var endTime = new Date();
+    var timeToWait = (opts.timeStepRun * 1000) - (endTime - startTime);
+    timeToWait = timeToWait > 0 ? timeToWait : 0;
     setTimeout(function() {
       that._step();
-    }, opts.timeStepRun * 1000);
-  }
-
-  this.iterations++;
-  if (this.onStep) {
-    this.onStep(world);
+    }, timeToWait);
   }
 };
 
@@ -73,6 +68,7 @@ Engine.prototype.stop = function() {
   if (!this.running) {
     return;
   }
+  this.world.freeze(true);
   this.running = false;
   return this.running;
 };
@@ -88,8 +84,8 @@ Engine.prototype.reset = function() {
 };
 
 Engine.defaults = {
-  timeStepSize: 0.1,
-  timeStepRun: 0.001
+  timeStepSize: 0.2,
+  timeStepRun: 0.02
 };
 
 module.exports = Engine;

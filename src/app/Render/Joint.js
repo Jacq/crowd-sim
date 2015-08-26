@@ -15,8 +15,9 @@ var Joint = function(joint, texture) {
 };
 
 Joint.prototype.destroy = function(graphics) {
+  var line = this.entityModel.parent;
   this.graphics.removeChild(this.label);
-  this.label.destroy();
+  //this.label.destroy();
   Entity.prototype.destroyGraphics.call(this, this.graphics , this.sprite);
   Entity.prototype.destroy.call(this);
 };
@@ -24,9 +25,9 @@ Joint.prototype.destroy = function(graphics) {
 Joint.prototype.createGraphics = function(graphics) {
   this.graphics = graphics;
   var joint = this.entityModel;
-  this.label = new PIXI.Text(joint.id, Base.Fonts.default);
-  this.label.resolution = Base.Fonts.resolution;
-  graphics.addChild(this.label);
+  //this.label = new PIXI.Text(joint.id, Base.Fonts.default);
+  //this.label.resolution = Base.Fonts.resolution;
+  //graphics.addChild(this.label);
   this.sprite = new PIXI.Sprite(this.texture);
   Entity.prototype.createGraphics.call(this, graphics, this.sprite);
   this.sprite.anchor.x = 0.5;
@@ -42,8 +43,8 @@ Joint.prototype.render = function() {
   this.sprite.width = 2 * this.entityModel.getRadius();
   this.sprite.height = 2 * this.entityModel.getRadius();
   this.sprite.tint = this.hover ? Colors.Hover : Colors.Joint;
-  this.label.x = this.sprite.x - this.label.width / 3;
-  this.label.y = this.sprite.y - this.label.height / 2;
+  //this.label.x = this.sprite.x - this.label.width / 3;
+  //this.label.y = this.sprite.y - this.label.height / 2;
 };
 
 Joint.prototype.getAnchor = function(init) {

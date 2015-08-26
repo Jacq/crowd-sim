@@ -92,36 +92,49 @@ Render.prototype.init = function(textures, events) {
 
   this._worldContainer.addChild(this._graphicsHelper);
   this._worldContainer.addChild(graphicsAux);
-  this._render();
+  this._stop = false;
+  this.animate();
 };
 
-Render.prototype._render = function() {
-  var that = this;
-  (function() {
-  if (that.onPreRender) {
-    that.onPreRender();
+Render.prototype.start = function() {
+  this._stop = false;
+  this.animate();
+};
+
+Render.prototype.animate = function() {
+  if (this.onPreRender) {
+    this.onPreRender();
   }
-  if (that.world) {
-    var entities = that.world.entities;
-    // render/refresh entities
-    for (var prop in entities) {
-      Lazy(entities[prop]).each(function(a) {
-        if (a.view) { a.view.render(); }
-      });
-    }
-    var agents = that.world.getAgents();
-    for (var i in agents) {
-      agents[i].view.render();
+  if (this.world) {
+    if (this.world.changesNumber() > 0 || this.world.freeze()) {
+      // jump renders when no changes happened yet
+
+      var entities = this.world.entities;
+      // render/refresh entities
+      for (var prop in entities) {
+        Lazy(entities[prop]).each(function(a) {
+          if (a.view) { a.view.render(); }
+        });
+      }
+      var agents = this.world.getAgents();
+      for (var i in agents) {
+        agents[i].view.render();
+      }
     }
   }
   // render the stage
-  that._renderer.render(that._stage);
-  requestAnimationFrame(that._render.bind(that));
-  if (that.onPostRender) {
-    that.onPostRender();
+  this._renderer.render(this._stage);
+  if (!this._stop) {
+    requestAnimationFrame(this.animate.bind(this));
   }
-})();
+  if (this.onPostRender) {
+    this.onPostRender();
+  }
 
+};
+
+Render.prototype.stop = function() {
+  this._stop = true;
 };
 
 Render.prototype.setWorld = function(world) {
@@ -183,7 +196,7 @@ Render.Wall = require('./Wall');
 Render.Joint = require('./Joint');
 
 Render.defaults = {
-  particleContainer: true,
+  useParticle: true,
   scale: 10,
   mxAgents: 1000, // to init particle container
   debug: false,

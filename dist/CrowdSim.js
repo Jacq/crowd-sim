@@ -122,7 +122,7 @@ Agent.type = 'agent';
 
 module.exports = Agent;
 
-},{"./Common/Vec2":4}],2:[function(require,module,exports){
+},{"./Common/Vec2":5}],2:[function(require,module,exports){
 'use strict';
 
 /**
@@ -288,7 +288,83 @@ Panic.defaults = {
 };
 module.exports = Panic;
 
-},{"../Common/Vec2":4,"./Behavior":2}],4:[function(require,module,exports){
+},{"../Common/Vec2":5,"./Behavior":2}],4:[function(require,module,exports){
+'use strict';
+
+var Grid = function(near) {
+  this.near = near;
+  this.grid = {};
+};
+
+Grid.prototype.insert = function(entities) {
+  for (var i in entities) {
+    var entity = entities[i];
+    var key = this._key(entity);
+    if (this.grid.hasOwnProperty(key)) {
+      this.grid[key].push(entity);
+    } else {
+      this.grid[key] = [entity];
+    }
+  }
+};
+
+Grid.prototype.remove = function(entities) {
+  for (var i in entity) {
+    var entity = entities[i];
+    var key = this._key(entity);
+    var bucket = this.grid[key];
+    var j = bucket.indexOf(entity);
+    this.grid[key].splice(j, 1);
+  }
+};
+
+Grid.prototype.updateAll = function(entities) {
+  this.clear();
+  this.insert(entities);
+};
+
+Grid.prototype.update = function(entities) {
+  this.remove(entities);
+  this.insert(entities);
+};
+
+Grid.prototype.clear = function() {
+  this.grid = {};
+};
+
+Grid.prototype.in = function(entity, width, height) {
+  return this.neighbours(entity) ;
+};
+
+Grid.prototype.neighbours = function(entity) {
+  var o = this.near / 2;
+  var keys = this._keyNeighbours(entity);
+  var neighbours = [];
+  for (var k in keys) {
+    neighbours = neighbours.concat(this.grid[keys[k]]);
+  }
+  return neighbours.filter(function(e) { return e;});
+};
+
+Grid.prototype._keyNeighbours = function(entity) {
+  var x = Math.floor(entity.pos[0] / this.near) * this.near;
+  var y = Math.floor(entity.pos[1] / this.near) * this.near;
+  return [
+    (x - 1) + ':' + (y + 1), x + ':' + (y + 1), (x + 1) + ':' + (y + 1),
+    (x - 1) + ':' + y      , x + ':' + y      , (x + 1) + ':' + y,
+    (x - 1) + ':' + (y - 1), x + ':' + (y - 1), (x + 1) + ':' + (y - 1)
+  ];
+};
+
+Grid.prototype._key = function(entity) {
+  var x = Math.floor(entity.pos[0] / this.near) * this.near;
+  var y = Math.floor(entity.pos[1] / this.near) * this.near;
+  return x + ':' + y;
+};
+
+module.exports = Grid;
+
+},{}],5:[function(require,module,exports){
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -900,7 +976,7 @@ vec2.normalizeAndScale = function(out, a, b) {
     return out;
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 //var $ = jQuery =
@@ -943,32 +1019,26 @@ Engine.prototype.step = function() {
 };
 
 Engine.prototype._step = function() {
-  var world = this.world;
+  // calculate next execution
+  var startTime = new Date();
   var opts = this.settings;
   var timeStepSize = opts.timeStepSize;
-  var agents = this.world.getAgents();
-  Lazy(agents).each(function(agent) {
-    agent.step(timeStepSize);
-    if (agent.selected) {
-      world.agentSelected = agent;
-      return;
-    }
-  });
-  Lazy(this.world.getGroups()).each(function(group) {
-    group.step(timeStepSize);
-  });
+
+  this.world.step(timeStepSize);
+  this.iterations++;
+  if (this.onStep) {
+    this.onStep(this.world);
+  }
 
   if (this.running) {
     var that = this;
     // using setTimeout instead of setInterval allows dinamycally changing timeStep while running
+    var endTime = new Date();
+    var timeToWait = (opts.timeStepRun * 1000) - (endTime - startTime);
+    timeToWait = timeToWait > 0 ? timeToWait : 0;
     setTimeout(function() {
       that._step();
-    }, opts.timeStepRun * 1000);
-  }
-
-  this.iterations++;
-  if (this.onStep) {
-    this.onStep(world);
+    }, timeToWait);
   }
 };
 
@@ -991,13 +1061,13 @@ Engine.prototype.reset = function() {
 };
 
 Engine.defaults = {
-  timeStepSize: 0.1,
-  timeStepRun: 0.001
+  timeStepSize: 0.2,
+  timeStepRun: 0.02
 };
 
 module.exports = Engine;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 
 var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
@@ -1056,7 +1126,7 @@ Context = AssignableToGroup(Context);
 Context.id = 0;
 module.exports = Context;
 
-},{"../Common/Vec2":4,"./Entity":7,"./Helpers/Traits":11}],7:[function(require,module,exports){
+},{"../Common/Vec2":5,"./Entity":8,"./Helpers/Traits":12}],8:[function(require,module,exports){
 var Vec2 = require('../Common/Vec2');
 
 var Entity = function(x, y, parent, options) {
@@ -1092,7 +1162,7 @@ Entity.prototype.removeEntity = function(joint) {};
 
 module.exports = Entity;
 
-},{"../Common/Vec2":4}],8:[function(require,module,exports){
+},{"../Common/Vec2":5}],9:[function(require,module,exports){
 'use strict';
 
 var Entity = require('./Entity');
@@ -1336,7 +1406,7 @@ Group.type = 'group';
 
 module.exports = Group;
 
-},{"../Agent":1,"../Behavior/Panic":3,"../Common/Vec2":4,"./Context":6,"./Entity":7,"./Path":12}],9:[function(require,module,exports){
+},{"../Agent":1,"../Behavior/Panic":3,"../Common/Vec2":5,"./Context":7,"./Entity":8,"./Path":13}],10:[function(require,module,exports){
 var Entity = require('../Entity');
 var Vec2 = require('../../Common/Vec2');
 
@@ -1348,7 +1418,9 @@ var Joint = function(x, y, parent, options, id) {
 };
 
 Joint.prototype.destroy = function() {
-  this.parent.removeEntity(this);
+  if (this.parent) {
+    this.parent.removeEntity(this);
+  }
 };
 
 Joint.prototype.getRadius = function() {
@@ -1382,7 +1454,7 @@ Joint.type = 'joint';
 
 module.exports = Joint;
 
-},{"../../Common/Vec2":4,"../Entity":7}],10:[function(require,module,exports){
+},{"../../Common/Vec2":5,"../Entity":8}],11:[function(require,module,exports){
 'use strict';
 
 var Vec2 = require('../../Common/Vec2');
@@ -1398,6 +1470,15 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     if (x && y) {
       this.addJoint(x,y,this.options);
     }
+  };
+
+  Line.prototype.destroy = function() {
+    for (var j in this.children.joints) {
+      this.children.joints[j].parent = null;
+      this.children.joints[j].destroy();
+    }
+    this.children.joints.length = 0;
+    Entity.prototype.destroy.call(this);
   };
 
   Line.prototype.addEntity = function(joint, options) {
@@ -1418,8 +1499,7 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
       // destroy line if not contains joints
       if (this.children.joints.length === 0) {
         this.destroy();
-      }
-      if (idx === 0) { // relocate reference to next joint idx +1,
+      } else if (idx === 0 && this.children.joints.length !== 0) { // relocate reference to next joint idx +1,
         //but we removed idx alreade so next is idx
         var nextJoint = this.children.joints[idx];
         this.pos[0] = nextJoint.pos[0];
@@ -1428,14 +1508,6 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     } else {
       throw 'Joint not found in ' + Line.type;
     }
-  };
-
-  Line.prototype.destroy = function() {
-    for (var j in this.children.joints) {
-      this.children.joints[j].destroy();
-    }
-    this.children.joints.length = 0;
-    Entity.prototype.destroy.call(this);
   };
 
   Line.prototype.addJoints = function(joints) {
@@ -1493,7 +1565,7 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
 
 module.exports = LinePrototype;
 
-},{"../../Common/Vec2":4,"../Entity":7,"./Joint":9}],11:[function(require,module,exports){
+},{"../../Common/Vec2":5,"../Entity":8,"./Joint":10}],12:[function(require,module,exports){
 
 
 var AssignableToGroup = function(EntityPrototype) {
@@ -1513,7 +1585,6 @@ var AssignableToGroup = function(EntityPrototype) {
       this.entities.groups[g].unAssign(this);
     }
     this.entities.groups.length = 0;
-    this.entities.groups = null;
     // call original destroy
     return oldDestroy.call(this);
   };
@@ -1545,7 +1616,7 @@ var AssignableToGroup = function(EntityPrototype) {
 
 module.exports.AssignableToGroup = AssignableToGroup;
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var LinePrototype = require('./Helpers/LinePrototype');
@@ -1564,7 +1635,7 @@ Path.id = 0;
 Path = AssignableToGroup(Path);
 module.exports = Path;
 
-},{"./Helpers/LinePrototype":10,"./Helpers/Traits":11}],13:[function(require,module,exports){
+},{"./Helpers/LinePrototype":11,"./Helpers/Traits":12}],14:[function(require,module,exports){
 
 
 var LinePrototype = require('./Helpers/LinePrototype');
@@ -1578,13 +1649,14 @@ Wall.id = 0;
 
 module.exports = Wall;
 
-},{"./Helpers/LinePrototype":10}],14:[function(require,module,exports){
+},{"./Helpers/LinePrototype":11}],15:[function(require,module,exports){
 'use strict';
 
 var Context = require('./Entities/Context');
 var Group = require('./Entities/Group');
 var Path = require('./Entities/Path');
 var Wall = require('./Entities/Wall');
+var Grid = require('./Common/Grid');
 
 var World = function(parent, options) {
   this.options = Lazy(options).defaults(World.defaults).toObject();
@@ -1598,6 +1670,7 @@ var World = function(parent, options) {
     paths: [],
     walls: []
   };
+  this.grid = new Grid(this.options.near);
 };
 
 World.prototype.getDefaultGroup = function() {
@@ -1630,6 +1703,7 @@ World.prototype.getWalls = function() {
 
 World.prototype.addAgents = function(agents) {
   this.agents = this.agents.concat(agents);
+  this.grid.insert(agents);
   if (this.options.onCreateAgents) {
     this.options.onCreateAgents(agents);
   }
@@ -1640,6 +1714,7 @@ World.prototype.removeAgents = function(agents) {
     var j = this.agents.indexOf(agents[i]);
     this.agents.splice(j, 1);
   }
+  this.grid.remove(agents);
   if (this.options.onDestroyAgents) {
     this.options.onDestroyAgents(agents);
   }
@@ -1674,8 +1749,10 @@ World.prototype._getEntityList = function(entity) {
 World.prototype.removeEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   var idx = entityList.indexOf(entity);
-  entityList.splice(idx, 1);
-  this._onDestroy(entity);
+  if (idx !== -1) {
+    entityList.splice(idx, 1);
+    this._onDestroy(entity);
+  }
 };
 
 World.prototype.addEntity = function(entity) {
@@ -1716,9 +1793,8 @@ World.prototype.getPathById = function(id) {
   return Lazy(this.entities.paths).findWhere({id: id});
 };
 
-// TODO add spatial structure to optimize this function
 World.prototype.getNeighbours = function(agent) {
-  return this.agents;
+  return this.grid.neighbours(agent);
 };
 
 // TODO add spatial structure to optimize this function
@@ -1731,6 +1807,7 @@ World.prototype.agentsInContext = function(context, agents) {
   if (!agents) {
     agents = this.agents;
   }
+  agents = this.grid.in(context);
   var agentsIn = [];
   for (var i in agents) {
     var agent = agents[i];
@@ -1837,9 +1914,29 @@ World.prototype.load = function(loader, loadDefault) {
   }
 };
 
+World.prototype.step = function(stepSize) {
+  this.grid.updateAll(this.agents);
+
+  Lazy(this.agents).each(function(agent) {
+    agent.step(stepSize);
+  });
+  Lazy(this.entities.groups).each(function(group) {
+    group.step(stepSize);
+  });
+};
+
+World.defaults = {
+  near: 10,
+  width: null,
+  height: null,
+  onCreateAgents: null,
+  onDestroyAgents: null,
+  onCreateEntity: null,
+  onDestroyEntity: null
+};
 module.exports = World;
 
-},{"./Entities/Context":6,"./Entities/Group":8,"./Entities/Path":12,"./Entities/Wall":13}],"CrowdSim":[function(require,module,exports){
+},{"./Common/Grid":4,"./Entities/Context":7,"./Entities/Group":9,"./Entities/Path":13,"./Entities/Wall":14}],"CrowdSim":[function(require,module,exports){
 /* global window,module, exports : true, define */
 
 var CrowdSim = {
@@ -1871,7 +1968,7 @@ if (typeof window === 'object' && typeof window.document === 'object') {
   window.CrowdSim = CrowdSim;
 }
 
-},{"./Agent":1,"./Common/Vec2":4,"./Engine":5,"./Entities/Context":6,"./Entities/Entity":7,"./Entities/Group":8,"./Entities/Helpers/Joint":9,"./Entities/Path":12,"./Entities/Wall":13,"./World":14}]},{},["CrowdSim"])
+},{"./Agent":1,"./Common/Vec2":5,"./Engine":6,"./Entities/Context":7,"./Entities/Entity":8,"./Entities/Group":9,"./Entities/Helpers/Joint":10,"./Entities/Path":13,"./Entities/Wall":14,"./World":15}]},{},["CrowdSim"])
 
 
 //# sourceMappingURL=CrowdSim.js.map

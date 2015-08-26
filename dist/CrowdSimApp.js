@@ -14,6 +14,7 @@ App.defaultOptions = {
   logEvents: false,
   renderer: {
     scale: 10,
+    useParticle: true,
     MaxAgents: 1000, // to init particle container
     debug: true,
   },
@@ -72,10 +73,11 @@ App.init = function(canvas, options) {
     wall: [274, 14, 32, 32],
     path: [326, 14, 32, 32]
   };
-  App._engine = new CrowdSim.Engine(App._world, {
+  App._engine = new CrowdSim.Engine(App._world);
+  /* use default {
       timeStepSize: 0.1, // time per step
       timeStepRun: 0.001 // time between step runnings
-    });
+    });/*/
   var events = {
     onPreRender: App.callbacks.onPreRender, // before each render cycle
     onPostRender: App.callbacks.onPostRender,
@@ -104,7 +106,9 @@ App.save = function(save) {
 };
 
 App.loadExample = function(name) {
+  App._renderer.stop();
   App.load(Worlds[name],false);
+  App._renderer.start();
 };
 
 App.listExamples = function() {
@@ -154,6 +158,9 @@ App.onCreateEntity = function(entity) {
 };
 
 App.onDestroyEntity = function(entity) {
+  if (entity.view) {
+    entity.view.destroy();
+  }
   if (App.callbacks.onDestroyEntity) {
     App.callbacks.onDestroyEntity(entity);
   }
@@ -237,7 +244,9 @@ App.getSelectedEntity = function() {
 
 App.selectEntityById = function(id) {
   var entity = App._world.getEntityById(id);
-  App.selectEntity(entity.view);
+  if (entity) {
+    App.selectEntity(entity.view);
+  }
 };
 
 /* Stagen a render entities mouse events */
@@ -258,6 +267,7 @@ App.entity.mousedown = function(event) {
   this.mousedownAnchor = {x: anchor.x - point.x, y: anchor.y - point.y};
   event.stopPropagation();
   App.selectEntity(this.entity);
+  App._entityHit = this.entity; // to deselect
   return false;
 };
 
@@ -317,6 +327,10 @@ App.mousedown = function(event) {
       App.entityClick(pos, App._newRenderEntity, App._entitySelected);
     }
   }
+  if (!App._entityHit) {
+    App.selectEntity(null);
+  }
+  App._entityHit = false;
 };
 
 App.entity.mousemove = function(event) {
@@ -745,9 +759,10 @@ Entity.prototype.createGraphics = function(container, graphics) {
 
 Entity.prototype.destroyGraphics = function(container, graphics) {
   if (graphics) {
-    //graphics.clear();
-    graphics.destroy();
     container.removeChild(graphics);
+    graphics.interactive = false;
+    graphics.buttonMode = false;
+    graphics.destroy();
   }
 };
 
@@ -903,8 +918,9 @@ var Joint = function(joint, texture) {
 };
 
 Joint.prototype.destroy = function(graphics) {
+  var line = this.entityModel.parent;
   this.graphics.removeChild(this.label);
-  this.label.destroy();
+  //this.label.destroy();
   Entity.prototype.destroyGraphics.call(this, this.graphics , this.sprite);
   Entity.prototype.destroy.call(this);
 };
@@ -912,9 +928,9 @@ Joint.prototype.destroy = function(graphics) {
 Joint.prototype.createGraphics = function(graphics) {
   this.graphics = graphics;
   var joint = this.entityModel;
-  this.label = new PIXI.Text(joint.id, Base.Fonts.default);
-  this.label.resolution = Base.Fonts.resolution;
-  graphics.addChild(this.label);
+  //this.label = new PIXI.Text(joint.id, Base.Fonts.default);
+  //this.label.resolution = Base.Fonts.resolution;
+  //graphics.addChild(this.label);
   this.sprite = new PIXI.Sprite(this.texture);
   Entity.prototype.createGraphics.call(this, graphics, this.sprite);
   this.sprite.anchor.x = 0.5;
@@ -930,8 +946,8 @@ Joint.prototype.render = function() {
   this.sprite.width = 2 * this.entityModel.getRadius();
   this.sprite.height = 2 * this.entityModel.getRadius();
   this.sprite.tint = this.hover ? Colors.Hover : Colors.Joint;
-  this.label.x = this.sprite.x - this.label.width / 3;
-  this.label.y = this.sprite.y - this.label.height / 2;
+  //this.label.x = this.sprite.x - this.label.width / 3;
+  //this.label.y = this.sprite.y - this.label.height / 2;
 };
 
 Joint.prototype.getAnchor = function(init) {
@@ -980,10 +996,11 @@ var LinePrototype = function(color) {
   };
 
   Line.prototype.destroy = function() {
-    this.graphics.removeChild(this.label);
-    this.label.destroy();
-    Entity.prototype.destroyGraphics.call(this, Line.container, this.graphics);
-    Entity.prototype.destroy.call(this);
+    var that = this;
+    that.graphics.removeChild(that.label);
+    that.label.destroy();
+    Entity.prototype.destroyGraphics.call(that, Line.container, that.graphics);
+    Entity.prototype.destroy.call(that);
   };
 
   Line.prototype.createGraphics = function(line) {
@@ -1021,6 +1038,9 @@ var LinePrototype = function(color) {
     Entity.prototype.render.call(this, this.graphics);
     var line = this.entityModel;
     var jts = line.getJoints();
+    if (!line || jts.length === 0) {
+      this.destroy();
+    }
     // init render
     if (!this.graphics && Line.detail.level > 0) {
       this.createGraphics(line);
@@ -1097,13 +1117,17 @@ var Render = function(canvas, w, h, options) {
   this._stage.scale.y = this.options.scale; // 10pix ~ 1m
   // create agents container
   this._worldContainer = new PIXI.Container();
-  this._agentsContainer = new PIXI.ParticleContainer(this.options.maxAgents, {
-    scale: true,
-    position: true,
-    rotation: true,
-    uvs: true,
-    alpha: true
-  });
+  if (this.options.useParticle) {
+    this._agentsContainer = new PIXI.ParticleContainer(this.options.maxAgents, {
+      scale: true,
+      position: true,
+      rotation: true,
+      uvs: true,
+      alpha: true
+    });
+  } else {
+    this._agentsContainer = new PIXI.Container();
+  }
   this._stage.addChild(this._agentsContainer);
   this._stage.addChild(this._worldContainer);
 
@@ -1168,10 +1192,16 @@ Render.prototype.init = function(textures, events) {
 
   this._worldContainer.addChild(this._graphicsHelper);
   this._worldContainer.addChild(graphicsAux);
-  this._render();
+  this._stop = false;
+  this.render();
 };
 
-Render.prototype._render = function() {
+Render.prototype.start = function() {
+  this._stop = false;
+  this.render();
+};
+
+Render.prototype.render = function() {
   var that = this;
   (function() {
   if (that.onPreRender) {
@@ -1180,24 +1210,30 @@ Render.prototype._render = function() {
   if (that.world) {
     var entities = that.world.entities;
     // render/refresh entities
-    var agents = that.world.getAgents();
-    for (var i in agents) {
-      agents[i].view.render();
-    }
     for (var prop in entities) {
       Lazy(entities[prop]).each(function(a) {
         if (a.view) { a.view.render(); }
       });
     }
+    var agents = that.world.getAgents();
+    for (var i in agents) {
+      agents[i].view.render();
+    }
   }
   // render the stage
   that._renderer.render(that._stage);
-  requestAnimationFrame(that._render.bind(that));
+  if (!that._stop) {
+    requestAnimationFrame(that.render.bind(that));
+  }
   if (that.onPostRender) {
     that.onPostRender();
   }
 })();
 
+};
+
+Render.prototype.stop = function() {
+  this._stop = true;
 };
 
 Render.prototype.setWorld = function(world) {
@@ -1259,6 +1295,7 @@ Render.Wall = require('./Wall');
 Render.Joint = require('./Joint');
 
 Render.defaults = {
+  useParticle: true,
   scale: 10,
   mxAgents: 1000, // to init particle container
   debug: false,

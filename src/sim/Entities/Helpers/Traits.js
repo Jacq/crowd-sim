@@ -17,7 +17,6 @@ var AssignableToGroup = function(EntityPrototype) {
       this.entities.groups[g].unAssign(this);
     }
     this.entities.groups.length = 0;
-    this.entities.groups = null;
     // call original destroy
     return oldDestroy.call(this);
   };

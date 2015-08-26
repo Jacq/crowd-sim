@@ -35,9 +35,10 @@ Entity.prototype.createGraphics = function(container, graphics) {
 
 Entity.prototype.destroyGraphics = function(container, graphics) {
   if (graphics) {
-    //graphics.clear();
-    graphics.destroy();
     container.removeChild(graphics);
+    graphics.interactive = false;
+    graphics.buttonMode = false;
+    graphics.destroy();
   }
 };
 

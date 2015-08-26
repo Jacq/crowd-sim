@@ -15,6 +15,15 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  Line.prototype.destroy = function() {
+    for (var j in this.children.joints) {
+      this.children.joints[j].parent = null;
+      this.children.joints[j].destroy();
+    }
+    this.children.joints.length = 0;
+    Entity.prototype.destroy.call(this);
+  };
+
   Line.prototype.addEntity = function(joint, options) {
     // add a joint to the end or a given position by options.idx
     if (!options || options.previousJoint === null) {
@@ -33,8 +42,7 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
       // destroy line if not contains joints
       if (this.children.joints.length === 0) {
         this.destroy();
-      }
-      if (idx === 0) { // relocate reference to next joint idx +1,
+      } else if (idx === 0 && this.children.joints.length !== 0) { // relocate reference to next joint idx +1,
         //but we removed idx alreade so next is idx
         var nextJoint = this.children.joints[idx];
         this.pos[0] = nextJoint.pos[0];
@@ -43,14 +51,6 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     } else {
       throw 'Joint not found in ' + Line.type;
     }
-  };
-
-  Line.prototype.destroy = function() {
-    for (var j in this.children.joints) {
-      this.children.joints[j].destroy();
-    }
-    this.children.joints.length = 0;
-    Entity.prototype.destroy.call(this);
   };
 
   Line.prototype.addJoints = function(joints) {

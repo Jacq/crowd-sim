@@ -13,6 +13,7 @@ App.defaultOptions = {
   logEvents: false,
   renderer: {
     scale: 10,
+    useParticle: false,
     MaxAgents: 1000, // to init particle container
     debug: true,
   },
@@ -69,13 +70,13 @@ App.init = function(canvas, options) {
     file: 'img/flt.png',
     agent: [26, 16, 51, 36],
     wall: [274, 14, 32, 32],
-    path: [326, 14, 32, 32],
-    useParticleContainer: true
+    path: [326, 14, 32, 32]
   };
-  App._engine = new CrowdSim.Engine(App._world, {
+  App._engine = new CrowdSim.Engine(App._world);
+  /* use default {
       timeStepSize: 0.1, // time per step
       timeStepRun: 0.001 // time between step runnings
-    });
+    });/*/
   var events = {
     onPreRender: App.callbacks.onPreRender, // before each render cycle
     onPostRender: App.callbacks.onPostRender,
@@ -104,7 +105,9 @@ App.save = function(save) {
 };
 
 App.loadExample = function(name) {
+  App._renderer.stop();
   App.load(Worlds[name],false);
+  App._renderer.start();
 };
 
 App.listExamples = function() {
@@ -154,6 +157,9 @@ App.onCreateEntity = function(entity) {
 };
 
 App.onDestroyEntity = function(entity) {
+  if (entity.view) {
+    entity.view.destroy();
+  }
   if (App.callbacks.onDestroyEntity) {
     App.callbacks.onDestroyEntity(entity);
   }
@@ -237,7 +243,9 @@ App.getSelectedEntity = function() {
 
 App.selectEntityById = function(id) {
   var entity = App._world.getEntityById(id);
-  App.selectEntity(entity.view);
+  if (entity) {
+    App.selectEntity(entity.view);
+  }
 };
 
 /* Stagen a render entities mouse events */
@@ -358,6 +366,10 @@ App.mousewheel = function(event) {
     if (entity instanceof Render.Joint) {
       var joint  = entity.getJoint();
       joint.incrRadius(event.deltaY);
+      return true;
+    } else if (entity instanceof Render.Group) {
+      var group  = entity.getGroup();
+      group.incrRadius(event.deltaY);
       return true;
     } else if (entity instanceof Render.Context) {
       var context  = entity.getContext();

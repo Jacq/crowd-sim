@@ -4,6 +4,7 @@ var Context = require('./Entities/Context');
 var Group = require('./Entities/Group');
 var Path = require('./Entities/Path');
 var Wall = require('./Entities/Wall');
+var Grid = require('./Common/Grid');
 
 var World = function(parent, options) {
   this.options = Lazy(options).defaults(World.defaults).toObject();
@@ -17,6 +18,9 @@ var World = function(parent, options) {
     paths: [],
     walls: []
   };
+  this.grid = new Grid(this.options.near);
+  this.changes = 1;
+  this.isFrozen = true;
 };
 
 World.prototype.getDefaultGroup = function() {
@@ -49,6 +53,7 @@ World.prototype.getWalls = function() {
 
 World.prototype.addAgents = function(agents) {
   this.agents = this.agents.concat(agents);
+  this.grid.insert(agents);
   if (this.options.onCreateAgents) {
     this.options.onCreateAgents(agents);
   }
@@ -59,6 +64,7 @@ World.prototype.removeAgents = function(agents) {
     var j = this.agents.indexOf(agents[i]);
     this.agents.splice(j, 1);
   }
+  this.grid.remove(agents);
   if (this.options.onDestroyAgents) {
     this.options.onDestroyAgents(agents);
   }
@@ -93,14 +99,18 @@ World.prototype._getEntityList = function(entity) {
 World.prototype.removeEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   var idx = entityList.indexOf(entity);
-  entityList.splice(idx, 1);
-  this._onDestroy(entity);
+  if (idx !== -1) {
+    entityList.splice(idx, 1);
+    this._onDestroy(entity);
+    this.changes++;
+  }
 };
 
 World.prototype.addEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   entityList.push(entity);
   this._onCreate(entity);
+  this.changes++;
 };
 
 World.prototype.addContext = function(context) {
@@ -135,9 +145,8 @@ World.prototype.getPathById = function(id) {
   return Lazy(this.entities.paths).findWhere({id: id});
 };
 
-// TODO add spatial structure to optimize this function
 World.prototype.getNeighbours = function(agent) {
-  return this.agents;
+  return this.grid.neighbours(agent);
 };
 
 // TODO add spatial structure to optimize this function
@@ -150,6 +159,7 @@ World.prototype.agentsInContext = function(context, agents) {
   if (!agents) {
     agents = this.agents;
   }
+  //agents = this.grid.in(context);
   var agentsIn = [];
   for (var i in agents) {
     var agent = agents[i];
@@ -161,7 +171,7 @@ World.prototype.agentsInContext = function(context, agents) {
 };
 
 World.prototype._saveHelper = function(o) {
-  var ignore = ['view', 'extra', 'agents', 'parent'];
+  var ignore = ['view', 'extra', 'agents', 'parent', 'world'];
   var cache = [];
   var result = JSON.stringify(o, function(key, value) {
     if (ignore.indexOf(key) !== -1) { return; }
@@ -169,7 +179,7 @@ World.prototype._saveHelper = function(o) {
       var entities = {};
       // map entities to array of ids
       for (var prop in value) {
-        entities[prop] = value[prop].id;
+        entities[prop] = value[prop] ? value[prop].id : null;
       }
       return entities;
     }
@@ -249,11 +259,43 @@ World.prototype.load = function(loader, loadDefault) {
       }
       if (e.entities.path) {
         var path = world.getPathById(e.entities.path);
-        g.assignPath(path);
+        g.assignPath(path, g.options.pathStart);
       }
       // TODO assign behavior
     });
   }
+  this.changes++;
 };
 
+World.prototype.step = function(stepSize) {
+  this.grid.updateAll(this.agents);
+
+  Lazy(this.agents).each(function(agent) {
+    agent.step(stepSize);
+  });
+  Lazy(this.entities.groups).each(function(group) {
+    group.step(stepSize);
+  });
+  this.changes++;
+};
+
+World.prototype.changesNumber = function() {
+  var changes = this.changes;
+  this.changes = 0;
+  return changes;
+};
+World.prototype.freeze = function(freeze) {
+  this.isFrozen = freeze || this.isFrozen;
+  return this.isFrozen;
+};
+
+World.defaults = {
+  near: 2, // grid of 3x3 squares of 2 meters
+  width: null,
+  height: null,
+  onCreateAgents: null,
+  onDestroyAgents: null,
+  onCreateEntity: null,
+  onDestroyEntity: null
+};
 module.exports = World;

@@ -96,20 +96,20 @@ gulp.task('sass-watcher', function() {
  * @return {Stream}
  */
 gulp.task('bower', function() {
-  var jsFilter = $.filter(['*.js', '*.map']);
-  var cssFilter = $.filter(['*.css']);
-  var fontsFilter = $.filter(['*.eot', '*.svg', '*.ttf', '*.woff', '*.woff2', '*.otf']);
+  var jsFilter = $.filter(['*.js', '*.map'], {restore: true});
+  var cssFilter = $.filter(['*.css'], {restore: true});
+  var fontsFilter = $.filter(['*.eot', '*.svg', '*.ttf', '*.woff', '*.woff2', '*.otf'], {restore: true});
   var sources = gulp.src(bowerFiles())
     .pipe($.filter(['*','!*.scss'])) // font remove sass files
     .pipe(jsFilter)
     .pipe(gulp.dest(config.lib))
-    .pipe(jsFilter.restore())
+    .pipe(jsFilter.restore)
     .pipe(cssFilter)
     .pipe(gulp.dest(config.css))
-    .pipe(cssFilter.restore())
+    .pipe(cssFilter.restore)
     .pipe(fontsFilter)
     .pipe(gulp.dest(config.fonts))
-    .pipe(fontsFilter.restore());
+    .pipe(fontsFilter.restore);
   return gulp.src(config.index)
       .pipe($.inject(sources, {relative: true, name: 'bower'})).pipe(gulp.dest(config.demo));
 });

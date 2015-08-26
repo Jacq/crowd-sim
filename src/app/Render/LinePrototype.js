@@ -16,10 +16,11 @@ var LinePrototype = function(color) {
   };
 
   Line.prototype.destroy = function() {
-    this.graphics.removeChild(this.label);
-    this.label.destroy();
-    Entity.prototype.destroyGraphics.call(this, Line.container, this.graphics);
-    Entity.prototype.destroy.call(this);
+    var that = this;
+    that.graphics.removeChild(that.label);
+    that.label.destroy();
+    Entity.prototype.destroyGraphics.call(that, Line.container, that.graphics);
+    Entity.prototype.destroy.call(that);
   };
 
   Line.prototype.createGraphics = function(line) {
@@ -57,6 +58,9 @@ var LinePrototype = function(color) {
     Entity.prototype.render.call(this, this.graphics);
     var line = this.entityModel;
     var jts = line.getJoints();
+    if (!line || jts.length === 0) {
+      this.destroy();
+    }
     // init render
     if (!this.graphics && Line.detail.level > 0) {
       this.createGraphics(line);

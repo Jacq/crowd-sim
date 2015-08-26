@@ -9,7 +9,9 @@ var Joint = function(x, y, parent, options, id) {
 };
 
 Joint.prototype.destroy = function() {
-  this.parent.removeEntity(this);
+  if (this.parent) {
+    this.parent.removeEntity(this);
+  }
 };
 
 Joint.prototype.getRadius = function() {
