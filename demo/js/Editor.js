@@ -346,7 +346,7 @@ var CrowdSimEditor = (function($) {
     });
 
     // default show first world
-    //selectWorlds.val('simple').trigger('change');
+    selectWorlds.val('simple').trigger('change');
   };
 
   Editor.modeToggle = function(mode) {

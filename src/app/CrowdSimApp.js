@@ -13,7 +13,7 @@ App.defaultOptions = {
   logEvents: false,
   renderer: {
     scale: 10,
-    useParticle: false,
+    useParticle: true,
     MaxAgents: 1000, // to init particle container
     debug: true,
   },
@@ -362,7 +362,7 @@ App.mousemove = function(event) {
 
 App.mousewheel = function(event) {
   var entity = App._entitySelected;
-  if (entity) {
+  if (entity && App._globalMousePressed) {
     if (entity instanceof Render.Joint) {
       var joint  = entity.getJoint();
       joint.incrRadius(event.deltaY);

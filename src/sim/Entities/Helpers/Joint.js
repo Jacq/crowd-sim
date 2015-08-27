@@ -32,7 +32,7 @@ Joint.prototype.setRadius = function(radius) {
 
 Joint.prototype.incrRadius = function(dr) {
   if (this.options.scalable) {
-    this.options.radius += dr;
+    this.options.radius = Math.abs(this.options.radius + dr);
   }
 };
 

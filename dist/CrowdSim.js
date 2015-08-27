@@ -1067,8 +1067,8 @@ Engine.prototype.reset = function() {
 };
 
 Engine.defaults = {
-  timeStepSize: 0.2,
-  timeStepRun: 0.02
+  timeStepSize: 0.05,
+  timeStepRun: 0.01
 };
 
 module.exports = Engine;
@@ -1082,6 +1082,7 @@ var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 var Context = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Context.defaults).toObject();
   this.id = id || 'C' + Context.id++;
+  Context.id = Entity.prototype.calcNewId.call(this, Context.id);
   Entity.call(this, x, y, parent, this.options);
 };
 
@@ -1149,7 +1150,7 @@ var Entity = function(x, y, parent, options) {
 };
 
 Entity.prototype.calcNewId = function(id) {
-  return Math.max(id + 1, Number(this.id.substring(1) + 1));
+  return Math.max(id + 1, Number(this.id.substring(1)) + 1);
 };
 
 Entity.prototype.destroy = function() {
@@ -1438,6 +1439,7 @@ var Joint = function(x, y, parent, options, id) {
   Entity.call(this, x, y, parent, this.options);
   delete this.options.previousJoint; // delete not neccesary
   this.id = id || 'J' + Joint.id++;
+  Joint.id = Entity.prototype.calcNewId.call(this, Joint.id);
 };
 
 Joint.prototype.destroy = function() {
@@ -1488,6 +1490,7 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
   var Line = function(x, y, parent, options, id) {
     this.options = Lazy(options).defaults(defaults).toObject();
     this.id = id || idPrefix + Line.id++;
+    Line.id = Entity.prototype.calcNewId.call(this, Line.id);
     Entity.call(this, x, y, parent, this.options);
     this.children.joints = [];
     if (x && y) {

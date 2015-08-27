@@ -39,7 +39,7 @@ Group.prototype.setRadius = function(radius) {
   this.options.radius = radius;
 };
 Group.prototype.incrRadius = function(dr) {
-  this.options.radius += dr;
+  this.options.radius = Math.abs(this.options.radius + dr);
 };
 
 Group.prototype.getStartContext = function() {
