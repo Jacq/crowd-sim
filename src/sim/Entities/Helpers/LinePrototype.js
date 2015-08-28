@@ -32,6 +32,9 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     } else {
       var idx = this.children.joints.indexOf(options.previousJoint);
       if (idx === -1) { throw 'Previous joint not found'; }
+      if (idx !== 0) { // add end
+        idx++;
+      }
       this.children.joints.splice(idx, 0, joint);
     }
   };

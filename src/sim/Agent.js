@@ -12,16 +12,24 @@ var Agent = function(x, y, group, options) {
   this.pos = Vec2.fromValues(x, y);
   this.vel = Vec2.create();
   this.group = group;
+  this.currentMobility = this.mobility;
   if (this.debug) {
     this.debug = {};
   }
   if (this.path) {
     this.followPath(this.path, this.pathStart);
   } else if (this.group.getEndContext()) {
-    this.target = this.group.getEndContext();
+    this.setTargetInContext(this.group.getEndContext());
   } else {
     this.target = this.group;
   }
+};
+
+Agent.prototype.setTargetInContext = function(context) {
+  // go to nearest point in contexts
+  var point = context.getNearestPoint(this.pos);
+  // generate virtual target
+  this.target = {pos: point, in: context.in.bind(context)};
 };
 
 Agent.prototype.getAspect = function() {
@@ -30,6 +38,10 @@ Agent.prototype.getAspect = function() {
 
 Agent.prototype.getRadius = function() {
   return this.radius;
+};
+
+Agent.prototype.setCurrentMobility = function(mobility) {
+  this.currentMobility = mobility;
 };
 
 Agent.prototype.followPath = function(path, index) {
@@ -90,7 +102,7 @@ Agent.prototype.step = function(stepSize) {
         } else { // do one last trip for symetry to endContext if exists for symetry
           var endContext = this.group.getEndContext();
           if (endContext) {
-            this.target = endContext;
+            this.setTargetInContext(endContext);
           }
         }
       }
@@ -99,16 +111,13 @@ Agent.prototype.step = function(stepSize) {
 };
 
 Agent.prototype.move = function(accel, stepSize) {
-  /*if (Vec2.length(accel) > this.maxAccel) {
-    Vec2.normalizeAndScale(accel, accel, this.maxAccel);
-  }*/
   Vec2.scaleAndAdd(this.vel, this.vel, accel, stepSize);
-
   if (Vec2.length(this.vel) > this.maxVel) {
     Vec2.normalizeAndScale(this.vel, this.vel, this.maxVel);
   }
+  Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize * this.currentMobility);
 
-  Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize * this.mobility);
+  this.currentMobility = this.mobility; // restore mobility for next step reduced by contexts
 };
 
 Agent.defaults = {

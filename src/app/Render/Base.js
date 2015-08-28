@@ -4,7 +4,7 @@ var Colors = {
   Hover: 0xebff00,
   Context: 0x646729,
   Agent: 0xFF0000,
-  Group: 0xFFFFFF,
+  Group: 0xAAAAAA,
   Wall: 0x00FF00,
   Joint: 0xAAAAAA,
   Path: 0xe00777,

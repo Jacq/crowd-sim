@@ -37,7 +37,7 @@ Panic.prototype.getAccel = function(agent, target) {
   }
 
   // check other agents interaction
-  var neighbours = this.world.getNeighbours(agent);
+  var neighbours = this.world.getNearAgents(agent);
   if (neighbours.length) {
     for (var n in neighbours) {
       var neighbour = neighbours[n];

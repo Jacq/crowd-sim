@@ -7,6 +7,7 @@ var Render = function(canvas, w, h, options) {
   this.options = Lazy(options).defaults(Render.defaults).toObject();
   // create a renderer instance.
   this._renderer = PIXI.autoDetectRenderer(w, h);
+  this._renderer.backgroundColor = this.options.backgroundColor;
   this._renderer.autoResize = true;
   // add the renderer view element to the DOM
   canvas.appendChild(this._renderer.view);
@@ -196,6 +197,7 @@ Render.Wall = require('./Wall');
 Render.Joint = require('./Joint');
 
 Render.defaults = {
+  backgroundColor: 0,
   useParticle: true,
   scale: 10,
   mxAgents: 1000, // to init particle container

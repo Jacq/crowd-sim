@@ -45,6 +45,11 @@ var CrowdSimEditor = (function($) {
       id: 'reset',
       label: 'Reset',
       action: function() { return Editor.engineStatusChange(CrowdSimApp.reset()); }
+    },
+    trigger: { // stop trigger by engine
+      id: 'trigger',
+      label: 'Trigger',
+      action: function() {  }
     }
   };
 
@@ -185,7 +190,6 @@ var CrowdSimEditor = (function($) {
       'top': 0
     });
     $(document.body).append(stats.domElement);
-    // wire Crowdsim callbacks
     // Stats rendering
     var entityList = $('.entity-list-container');
     // init toolbar buttons
@@ -267,11 +271,18 @@ var CrowdSimEditor = (function($) {
           $('#entitiy-id-' + entity.id, entityList).off('click').remove();
         },
         onLoad: function(world) {
+          // clear selections and hide load dialog
           CrowdSimApp.selectEntity(null);
           Editor._entityInfoSet(null);
           Editor.notebook.addClass('hide');
         },
         onSave: function(world) {
+        },
+        onStop: function(entity) {
+          // shows stop situation and message
+          Editor.engineChange(Editor.engineStatuses.trigger);
+          Editor.engineStatusChange(false);
+          Editor._statusBarSetOne('message','Engine stopped due to entity: ' + entity.id);
         }
       }
     };
@@ -346,7 +357,8 @@ var CrowdSimEditor = (function($) {
     });
 
     // default show first world
-    selectWorlds.val('simple').trigger('change');
+    var initialWorld = Editor.getURLParameter('world') || 'simple';
+    selectWorlds.val(initialWorld).trigger('change');
   };
 
   Editor.modeToggle = function(mode) {
@@ -466,7 +478,7 @@ var CrowdSimEditor = (function($) {
                 }
               } else { // starts creating
                 Editor._entityCreated = CrowdSimApp.createEntityStart(Editor.currentMode.entity, pos);
-                Editor._statusBarSetOne('message', 'Entity creation mode starterd. Press ESC or right button to end');
+                Editor._statusBarSetOne('message', 'Entity creation mode started. Press ESC or right button to end');
               }
             break;
             default:
@@ -614,6 +626,17 @@ var CrowdSimEditor = (function($) {
     Editor._statusBarSet(setOpts);
   };
 
+  // ref http://www.jquerybyexample.net/2012/06/get-url-parameters-using-jquery.html
+  Editor.getURLParameter = function(sParam) {
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) {
+      var sParameterName = sURLVariables[i].split('=');
+      if (sParameterName[0] == sParam) {
+        return sParameterName[1];
+      }
+    }
+  };
   // inits all!
   Editor.init('canvas');
   return Editor;

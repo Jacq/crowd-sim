@@ -13,10 +13,25 @@ App.defaultOptions = {
   snapToGrid: false, // snaps the mouse position to a grid of integers
   logEvents: false,
   renderer: {
+    backgroundColor: 0xffffff,
     scale: 10,
     useParticle: true,
     MaxAgents: 1000, // to init particle container
     debug: true,
+  },
+  engine: {
+    timeStepSize: 0.05,
+    timeStepRun: 0.01,
+    callbacks: {
+      onStart: null,
+      onStep: null,
+      onStop: function(entity) {
+        App.selectEntity(entity.view); // highlight entity that causes stop
+        if (App.callbacks.onStop) {
+          App.callbacks.onStop(entity);
+        }
+      }
+    }
   },
   callbacks: {
     onPreRender: null, // before each render cycle
@@ -27,6 +42,7 @@ App.defaultOptions = {
     onEntityUnSelected: null,
     onLoad: null, // when new world is loaded
     onSave: null, // when the current world is saved
+    onStop: null, // engine stops due to a context empty
   }
 };
 
@@ -73,7 +89,7 @@ App.init = function(canvas, options) {
     wall: [274, 14, 32, 32],
     path: [326, 14, 32, 32]
   };
-  App._engine = new CrowdSim.Engine(App._world);
+  App._engine = new CrowdSim.Engine(App._world, App.options.engine);
   /* use default {
       timeStepSize: 0.1, // time per step
       timeStepRun: 0.001 // time between step runnings
@@ -274,7 +290,7 @@ App.entity.mousedown = function(event) {
 App.entityClick = function(pos, newEntity, selected) {
   if (newEntity instanceof Render.Joint) { // add joint to joint
     var existingJoint = newEntity.getJoint();
-    existingJoint.parent.view.addJoint(pos.x, pos.y, {previousJoint: existingJoint});
+    App._newRenderEntity = existingJoint.parent.view.addJoint(pos.x, pos.y, {previousJoint: existingJoint});
   } else if (newEntity instanceof Render.Wall) { // add joint to wall
     newEntity.addJoint(pos.x, pos.y);
   } else if (newEntity instanceof Render.Path) { // add join to waypoint
@@ -318,14 +334,15 @@ App.mousedown = function(event) {
   }
   App._globalMousePressed = true;
   switch (event.button) {
-  case 0: // left button
-    if (App._editingEntity) { // change editing to create
-      App._newRenderEntity = App._editingEntity;
-      App._editingEntity = null;
-    } else if (App._newRenderEntity) { // creating/entities entities
-      var pos = App._renderer.screenToWorld(event.clientX, event.clientY);
-      App.entityClick(pos, App._newRenderEntity, App._entitySelected);
-    }
+    case 0: // left button
+      if (App._editingEntity) { // change editing to create
+        App._newRenderEntity = App._editingEntity;
+        App._editingEntity = null;
+      } else if (App._newRenderEntity) { // creating/entities entities
+        var pos = App._renderer.screenToWorld(event.clientX, event.clientY);
+        App.entityClick(pos, App._newRenderEntity, App._entitySelected);
+        App._entityHit = true;
+      }
   }
   if (!App._entityHit) {
     App.selectEntity(null);
@@ -587,7 +604,7 @@ var Colors = {
   Hover: 0xebff00,
   Context: 0x646729,
   Agent: 0xFF0000,
-  Group: 0xFFFFFF,
+  Group: 0xAAAAAA,
   Wall: 0x00FF00,
   Joint: 0xAAAAAA,
   Path: 0xe00777,
@@ -1113,6 +1130,7 @@ var Render = function(canvas, w, h, options) {
   this.options = Lazy(options).defaults(Render.defaults).toObject();
   // create a renderer instance.
   this._renderer = PIXI.autoDetectRenderer(w, h);
+  this._renderer.backgroundColor = this.options.backgroundColor;
   this._renderer.autoResize = true;
   // add the renderer view element to the DOM
   canvas.appendChild(this._renderer.view);
@@ -1302,6 +1320,7 @@ Render.Wall = require('./Wall');
 Render.Joint = require('./Joint');
 
 Render.defaults = {
+  backgroundColor: 0,
   useParticle: true,
   scale: 10,
   mxAgents: 1000, // to init particle container
@@ -1465,13 +1484,13 @@ var Worlds = {
         "agentsAspect": 0,
         "agentsSizeMin": 0.5,
         "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
+        "agentsCount": 100,
+        "agentsMax": 1000,
         "debug": false,
         "pathStart": 0,
         "pathReverse": false,
         "pathCircular": false,
-        "radius": 3,
+        "radius": 30,
         "startProb": 0,
         "startRate": 0,
         "endProb": 0.2,
@@ -1534,7 +1553,7 @@ var Worlds = {
         "agentsSizeMin": 0.5,
         "agentsSizeMax": 0.5,
         "agentsCount": 10,
-        "agentsMax": 1000,
+        "agentsMax": 200,
         "debug": false,
         "pathStart": 0,
         "pathReverse": false,
@@ -1570,6 +1589,147 @@ var Worlds = {
     "paths": [],
     "walls": []
   },
+  contextMobility: {
+  "contexts": [
+    {
+      "options": {
+        "width": 39,
+        "height": 17.000001525878908,
+        "mobility": 1,
+        "hazardLevel": 0
+      },
+      "id": "C0",
+      "pos": {
+        "0": 75.5999984741211,
+        "1": 23.100000381469727
+      },
+      "entities": {},
+      "children": {}
+    },
+    {
+      "options": {
+        "mobility": 0.5,
+        "hazardLevel": 0,
+        "width": 10,
+        "height": 10
+      },
+      "id": "C1",
+      "pos": {
+        "0": 76.5999984741211,
+        "1": 44.20000076293945
+      },
+      "entities": {},
+      "children": {}
+    }
+  ],
+  "groups": [
+    {
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 100,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 3,
+        "startProb": 0.2,
+        "startRate": 5,
+        "endProb": 0,
+        "endRate": 0
+      },
+      "id": "G0",
+      "pos": {
+        "0": 75.5999984741211,
+        "1": 61.599998474121094
+      },
+      "entities": {
+        "path": null,
+        "startContext": "C0",
+        "endContext": null
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }
+  ],
+  "paths": [],
+  "walls": []
+},
+contextTrigger: {
+  "contexts": [
+    {
+      "options": {
+        "width": 24,
+        "height": 2.0000015258789077,
+        "mobility": 1,
+        "hazardLevel": 0,
+        "triggerOnEmpty": true
+      },
+      "id": "C0",
+      "pos": {
+        "0": 75.1729736328125,
+        "1": 46.50312423706055
+      },
+      "entities": {},
+      "children": {}
+    }
+  ],
+  "groups": [
+    {
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 100,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 3,
+        "startProb": 0,
+        "startRate": 5,
+        "endProb": 0,
+        "endRate": 0,
+        "near": 10
+      },
+      "id": "G0",
+      "pos": {
+        "0": 75.47578430175781,
+        "1": 61.03791427612305
+      },
+      "entities": {
+        "path": null,
+        "startContext": "C0",
+        "endContext": null
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }
+  ],
+  "paths": [],
+  "walls": []
+},
   path: {
     "contexts": [],
     "groups": [{

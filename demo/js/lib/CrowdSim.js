@@ -13,16 +13,24 @@ var Agent = function(x, y, group, options) {
   this.pos = Vec2.fromValues(x, y);
   this.vel = Vec2.create();
   this.group = group;
+  this.currentMobility = this.mobility;
   if (this.debug) {
     this.debug = {};
   }
   if (this.path) {
     this.followPath(this.path, this.pathStart);
   } else if (this.group.getEndContext()) {
-    this.target = this.group.getEndContext();
+    this.setTargetInContext(this.group.getEndContext());
   } else {
     this.target = this.group;
   }
+};
+
+Agent.prototype.setTargetInContext = function(context) {
+  // go to nearest point in contexts
+  var point = context.getNearestPoint(this.pos);
+  // generate virtual target
+  this.target = {pos: point, in: context.in.bind(context)};
 };
 
 Agent.prototype.getAspect = function() {
@@ -31,6 +39,10 @@ Agent.prototype.getAspect = function() {
 
 Agent.prototype.getRadius = function() {
   return this.radius;
+};
+
+Agent.prototype.setCurrentMobility = function(mobility) {
+  this.currentMobility = mobility;
 };
 
 Agent.prototype.followPath = function(path, index) {
@@ -91,7 +103,7 @@ Agent.prototype.step = function(stepSize) {
         } else { // do one last trip for symetry to endContext if exists for symetry
           var endContext = this.group.getEndContext();
           if (endContext) {
-            this.target = endContext;
+            this.setTargetInContext(endContext);
           }
         }
       }
@@ -100,16 +112,13 @@ Agent.prototype.step = function(stepSize) {
 };
 
 Agent.prototype.move = function(accel, stepSize) {
-  /*if (Vec2.length(accel) > this.maxAccel) {
-    Vec2.normalizeAndScale(accel, accel, this.maxAccel);
-  }*/
   Vec2.scaleAndAdd(this.vel, this.vel, accel, stepSize);
-
   if (Vec2.length(this.vel) > this.maxVel) {
     Vec2.normalizeAndScale(this.vel, this.vel, this.maxVel);
   }
+  Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize * this.currentMobility);
 
-  Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize * this.mobility);
+  this.currentMobility = this.mobility; // restore mobility for next step reduced by contexts
 };
 
 Agent.defaults = {
@@ -185,7 +194,7 @@ Panic.prototype.getAccel = function(agent, target) {
   }
 
   // check other agents interaction
-  var neighbours = this.world.getNeighbours(agent);
+  var neighbours = this.world.getNearAgents(agent);
   if (neighbours.length) {
     for (var n in neighbours) {
       var neighbour = neighbours[n];
@@ -295,6 +304,8 @@ module.exports = Panic;
 },{"../Common/Vec2":5,"./Behavior":2}],4:[function(require,module,exports){
 'use strict';
 
+var Vec2 = require('./Vec2');
+
 var Grid = function(near) {
   this.near = near;
   this.grid = {};
@@ -308,6 +319,51 @@ Grid.prototype.insert = function(entities) {
       this.grid[key].push(entity);
     } else {
       this.grid[key] = [entity];
+    }
+  }
+};
+
+Grid.prototype.insertOne = function(entity, x, y) {
+  var key = this._key(entity, x, y);
+  if (this.grid.hasOwnProperty(key)) {
+    this.grid[key].push(entity);
+  } else {
+    this.grid[key] = [entity];
+  }
+};
+
+Grid.prototype.updateContextsHelper = function(contexts) {
+  this.grid = {};
+  for (var i in contexts) {
+    var context = contexts[i];
+    var init = context.getMinXY();
+    var end = context.getMaxXY();
+    // generate samples from context to insert into grid
+    for (var x = init[0]; x <= end[0]; x += this.near) {
+      for (var y = init[1]; y <= end[1]; y += this.near) {
+        this.insertOne(context, x, y);
+      }
+    }
+  }
+};
+
+Grid.prototype.updateWallsHelper = function(walls) {
+  this.grid = {};
+  for (var w in walls) {
+    var wall = walls[w];
+    var joints = wall.getJoints();
+    if (joints.length > 0) {
+      var point = Vec2.create();
+      var squareStep = 2 * this.near * this.near; // sample step to ensure that line cross region at least half square
+      for (var j = 1; j < joints.length; j++) {
+        var squaredDistance = Vec2.squaredDistance(joints[j - 1].pos, joints[j].pos);
+        var samples = Math.floor(squaredDistance / squareStep);
+        for (var s = 0; s < samples; s++) {
+          // generate sample of segment
+          Vec2.lerp(point, joints[j - 1].pos, joints[j].pos, s / samples);
+          this.insertOne(wall, point[0], point[1]);
+        }
+      }
     }
   }
 };
@@ -336,23 +392,34 @@ Grid.prototype.clear = function() {
   this.grid = {};
 };
 
-Grid.prototype.in = function(entity, width, height) {
-  return this.neighbours(entity) ;
-};
-
-Grid.prototype.neighbours = function(entity) {
+Grid.prototype.neighbours = function(entity, x, y) {
+  var that = this;
   var o = this.near / 2;
-  var keys = this._keyNeighbours(entity);
-  var neighbours = [];
-  for (var k in keys) {
-    neighbours = neighbours.concat(this.grid[keys[k]]);
-  }
-  return neighbours.filter(function(e) { return e;});
+  x = x || entity.pos[0];
+  y = y || entity.pos[1];
+  var keys = this._keyNeighbours(x, y);
+  // find neighbours in hashmap looking in all buckets and filtering empty or duplicates
+  return Lazy(keys).map(function(key) {
+    return that.grid[key];
+  }).flatten().filter(function(e) { return e;});
 };
 
-Grid.prototype._keyNeighbours = function(entity) {
-  var x = Math.floor(entity.pos[0] / this.near) * this.near;
-  var y = Math.floor(entity.pos[1] / this.near) * this.near;
+Grid.prototype.neighboursContext = function(context) {
+  // generate sampling and find entities near
+  var init = context.getMinXY();
+  var end = context.getMaxXY();
+  var neighbours = Lazy([]);
+  for (var x = init[0]; x < end[0]; x += this.near) {
+    for (var y = init[1]; y < end[1]; y += this.near) {
+      neighbours = neighbours.concat(this.neighbours(null, x, y));
+    }
+  }
+  return neighbours.flatten();
+};
+
+Grid.prototype._keyNeighbours = function(x, y) {
+  x = Math.floor(x / this.near) * this.near;
+  y = Math.floor(y / this.near) * this.near;
   return [
     (x - 1) + ':' + (y + 1), x + ':' + (y + 1), (x + 1) + ':' + (y + 1),
     (x - 1) + ':' + y      , x + ':' + y      , (x + 1) + ':' + y,
@@ -360,15 +427,18 @@ Grid.prototype._keyNeighbours = function(entity) {
   ];
 };
 
-Grid.prototype._key = function(entity) {
-  var x = Math.floor(entity.pos[0] / this.near) * this.near;
-  var y = Math.floor(entity.pos[1] / this.near) * this.near;
+Grid.prototype._key = function(entity, x, y) {
+  // use x,y if available if not just entity position
+  x = x || entity.pos[0];
+  x = Math.floor(x / this.near) * this.near;
+  y = y || entity.pos[1];
+  y = Math.floor(y / this.near) * this.near;
   return x + ':' + y;
 };
 
 module.exports = Grid;
 
-},{}],5:[function(require,module,exports){
+},{"./Vec2":5}],5:[function(require,module,exports){
 /* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -991,6 +1061,8 @@ var Engine = function(world, options) {
   //this.agentsSave = JSON.parse(JSON.stringify(world.agents));
   this.world = world || {};
   this.settings = Lazy(options).defaults(Engine.defaults).toObject();
+  this.callbacks = this.settings.callbacks;
+  delete this.settings.callbacks;
 };
 
 Engine.prototype.getSettings = function() {
@@ -1005,12 +1077,15 @@ Engine.prototype.getWorld = function() {
   return this.world;
 };
 
-Engine.prototype.run = function() {
+Engine.prototype.run = function(entity) {
   if (this.running) {
     return;
   }
   this.running = true;
   this.world.freeze(false);
+  if (this.callbacks.onStart) {
+    this.callbacks.onStart(entity);
+  }
   this._step();
   return this.running;
 };
@@ -1029,10 +1104,14 @@ Engine.prototype._step = function() {
   var opts = this.settings;
   var timeStepSize = opts.timeStepSize;
 
-  this.world.step(timeStepSize);
+  var entity = this.world.step(timeStepSize); // returns entity that request stop a contexts
   this.iterations++;
-  if (this.onStep) {
-    this.onStep(this.world);
+  if (this.callbacks.onStep) {
+    this.callbacks.onStep(this.world);
+  }
+  // entity requests stop of simulation
+  if (entity) {
+    this.stop(entity);
   }
 
   if (this.running) {
@@ -1047,12 +1126,15 @@ Engine.prototype._step = function() {
   }
 };
 
-Engine.prototype.stop = function() {
+Engine.prototype.stop = function(entity) {
   if (!this.running) {
     return;
   }
   this.world.freeze(true);
   this.running = false;
+  if (this.callbacks.onStop) {
+    this.callbacks.onStop(entity);
+  }
   return this.running;
 };
 
@@ -1068,7 +1150,12 @@ Engine.prototype.reset = function() {
 
 Engine.defaults = {
   timeStepSize: 0.05,
-  timeStepRun: 0.01
+  timeStepRun: 0.01,
+  callbacks: {
+    onStart: null,
+    onStep: null,
+    onStop: null
+  }
 };
 
 module.exports = Engine;
@@ -1108,10 +1195,53 @@ Context.prototype.getHeight = function() {
   return this.options.height;
 };
 
+Context.prototype.getMinXY = function() {
+  var point = Vec2.create();
+  var halfSize = Vec2.fromValues(this.options.width / 2, this.options.height / 2);
+  return Vec2.subtract(point, this.pos, halfSize);
+};
+
+Context.prototype.getMaxXY = function() {
+  var point = Vec2.create();
+  var halfSize = Vec2.fromValues(this.options.width / 2, this.options.height / 2);
+  return Vec2.add(point, this.pos, halfSize);
+};
+
 Context.prototype.getRandomPoint = function() {
   var x = this.pos[0] + (Math.random() - 0.5) * this.options.width;
   var y = this.pos[1] + (Math.random() - 0.5) * this.options.height;
   return Vec2.fromValues(x, y);
+};
+
+Context.prototype.getNearestPoint = function(point, border) {
+  var w2 = this.options.width / 2 - this.options.width / 10; // half-width + 10% margin to avoid borders errors
+  var h2 = this.options.height / 2 - this.options.height / 10;
+  // all segments
+  var corners = [[this.pos[0] - w2, this.pos[1] - h2], [this.pos[0] + w2, this.pos[1] - h2],
+                 [this.pos[0] + w2, this.pos[1] + h2], [this.pos[0] - w2, this.pos[1] + h2],
+                 [this.pos[0] - w2, this.pos[1] - h2]];
+  var nearestPoint = this.pos;
+  var projection = Vec2.create();
+  // find shortest linear path
+  var shortestProjection = Vec2.fromValues(point[0] - this.pos[0], point[1] - this.pos[1]);
+  var shortestProjectionDistance = Vec2.squaredLength(shortestProjection);
+  for (var c = 1; c < corners.length; c++) {
+    projection = Vec2.projectionToSegment(projection, point, corners[c - 1], corners[c]);
+    var distance = Vec2.squaredLength(projection);
+    if (distance < shortestProjectionDistance) {
+      shortestProjection = projection;
+      shortestProjectionDistance = distance;
+    }
+  }
+  return Vec2.subtract(shortestProjection,point,shortestProjection);
+};
+
+Context.prototype.getMobility = function() {
+  return this.options.mobility;
+};
+
+Context.prototype.getTrigger = function() {
+  return this.options.triggerOnEmpty;
 };
 
 Context.prototype.in = function(pos) {
@@ -1122,14 +1252,15 @@ Context.prototype.in = function(pos) {
   return isIn;
 };
 
+Context.type = 'context';
+Context = AssignableToGroup(Context);
+
 Context.defaults = {
   mobility: 1,
-  hazardLevel: 0,
+  triggerOnEmpty: false,
   width: 10,
   height: 10
 };
-Context.type = 'context';
-Context = AssignableToGroup(Context);
 Context.id = 0;
 module.exports = Context;
 
@@ -1181,6 +1312,7 @@ var Context = require('./Context');
 var Path = require('./Path');
 var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
+var Grid = require('../Common/Grid');
 var Panic = require('../Behavior/Panic');
 
 var Group = function(x, y, parent, options, id) {
@@ -1386,6 +1518,7 @@ Group.prototype.step = function() {
     this.addAgents(this.options.agentsCount);
   }
 
+  // generate agents in startContext based on uniform distribution
   if (this.options.startRate > 0 && this.options.startProb > 0 && this.agents.length < this.options.agentsMax) {
     var probBirth = Math.random();
     if (probBirth < this.options.startProb) {
@@ -1397,14 +1530,16 @@ Group.prototype.step = function() {
       this.addAgents(rate);
     }
   }
-  if (this.entities.endContext) {
-    var agentsIn = this.parent.agentsInContext(this.entities.endContext, this.agents);
-    if (agentsIn.length > 0 && this.options.endRate > 0 && this.options.endProb > 0) {
-      var probDie = Math.random();
-      if (probDie < this.options.endProb) {
-        agentsIn = agentsIn.slice(0,this.options.endRate);
-        this.removeAgents(agentsIn);
-      }
+  // destroy nth-first agents in endContext based on uniform distribution
+  if (this.entities.endContext && this.options.endRate > 0 && this.options.endProb > 0) {
+    var probDie = Math.random();
+    if (probDie < this.options.endProb) {
+      var endContext = this.entities.endContext;
+      var agentsOut = Lazy(this.agents).filter(function(agent) {
+          return endContext.in(agent.pos);
+        })
+        .first(this.options.endRate).toArray();
+      this.removeAgents(agentsOut);
     }
   }
 };
@@ -1423,14 +1558,15 @@ Group.defaults = {
   startProb: 0, // Adds agents per step in startContext
   startRate: 0, // Adds agents probability per step in startContext
   endProb: 0, // Removes agents per step in endContext
-  endRate: 0 // Removes agents probability per step in endContext
+  endRate: 0, // Removes agents probability per step in endContext
+  near: 10 // hasmap grid size for endContext checks
 };
 Group.id = 0;
 Group.type = 'group';
 
 module.exports = Group;
 
-},{"../Agent":1,"../Behavior/Panic":3,"../Common/Vec2":5,"./Context":7,"./Entity":8,"./Path":13}],10:[function(require,module,exports){
+},{"../Agent":1,"../Behavior/Panic":3,"../Common/Grid":4,"../Common/Vec2":5,"./Context":7,"./Entity":8,"./Path":13}],10:[function(require,module,exports){
 var Entity = require('../Entity');
 var Vec2 = require('../../Common/Vec2');
 
@@ -1514,6 +1650,9 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     } else {
       var idx = this.children.joints.indexOf(options.previousJoint);
       if (idx === -1) { throw 'Previous joint not found'; }
+      if (idx !== 0) { // add end
+        idx++;
+      }
       this.children.joints.splice(idx, 0, joint);
     }
   };
@@ -1697,6 +1836,8 @@ var World = function(parent, options) {
     walls: []
   };
   this.grid = new Grid(this.options.near);
+  this.gridWalls = new Grid(this.options.near);
+  this.gridContexts = new Grid(this.options.near);
   this.changes = 1;
   this.isFrozen = true;
 };
@@ -1823,29 +1964,18 @@ World.prototype.getPathById = function(id) {
   return Lazy(this.entities.paths).findWhere({id: id});
 };
 
-World.prototype.getNeighbours = function(agent) {
-  return this.grid.neighbours(agent);
+World.prototype.getNearAgents = function(agent) {
+  return this.grid.neighbours(agent).toArray();
 };
 
-// TODO add spatial structure to optimize this function
 World.prototype.getNearWalls = function(agent) {
-  return this.entities.walls;
+  return this.gridWalls.neighbours(agent).uniq().toArray();
 };
 
-// TODO add spatial structure to optimize this function
-World.prototype.agentsInContext = function(context, agents) {
-  if (!agents) {
-    agents = this.agents;
-  }
-  //agents = this.grid.in(context);
-  var agentsIn = [];
-  for (var i in agents) {
-    var agent = agents[i];
-    if (context.in(agent.pos)) {
-      agentsIn.push(agent);
-    }
-  }
-  return agentsIn;
+World.prototype.agentsInContext = function(context) {
+  return this.grid.neighboursContext(context).filter(function(agent) {
+    return context.in(agent.pos);
+  }).toArray();
 };
 
 World.prototype._saveHelper = function(o) {
@@ -1939,22 +2069,45 @@ World.prototype.load = function(loader, loadDefault) {
         var path = world.getPathById(e.entities.path);
         g.assignPath(path, g.options.pathStart);
       }
-      // TODO assign behavior
     });
   }
   this.changes++;
 };
 
 World.prototype.step = function(stepSize) {
+  var that = this;
   this.grid.updateAll(this.agents);
+  this.gridWalls.updateWallsHelper(this.entities.walls);
+  this.gridContexts.updateContextsHelper(this.entities.contexts);
+
+  // check contexts interaction reducing speed or life of agents
+  Lazy(this.entities.contexts).filter(function(c) {return c.getMobility() < 1;}).each(function(context) {
+    var agents = that.agentsInContext(context, that.agents);
+    if (agents.length > 0) {
+      Lazy(agents).each(function(agent) {
+        agent.setCurrentMobility(context.getMobility());
+      });
+    }
+  });
 
   Lazy(this.agents).each(function(agent) {
     agent.step(stepSize);
   });
+
   Lazy(this.entities.groups).each(function(group) {
     group.step(stepSize);
   });
+
+  // check contexts that triggers stop on empty
+  var contextEmpty = null;
+  Lazy(this.entities.contexts).filter(function(c) {return c.getTrigger();}).each(function(context) {
+    var agents = that.agentsInContext(context, that.agents);
+    if (agents.length === 0) {
+      contextEmpty = context; // to inform engine of stop source
+    }
+  });
   this.changes++;
+  return contextEmpty;
 };
 
 World.prototype.changesNumber = function() {
@@ -1968,7 +2121,7 @@ World.prototype.freeze = function(freeze) {
 };
 
 World.defaults = {
-  near: 2, // grid of 3x3 squares of 2 meters
+  near: 10, // grid of 3x3 squares of 2 meters
   width: null,
   height: null,
   onCreateAgents: null,

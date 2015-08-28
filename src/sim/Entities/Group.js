@@ -5,6 +5,7 @@ var Context = require('./Context');
 var Path = require('./Path');
 var Agent = require('../Agent');
 var Vec2 = require('../Common/Vec2');
+var Grid = require('../Common/Grid');
 var Panic = require('../Behavior/Panic');
 
 var Group = function(x, y, parent, options, id) {
@@ -210,6 +211,7 @@ Group.prototype.step = function() {
     this.addAgents(this.options.agentsCount);
   }
 
+  // generate agents in startContext based on uniform distribution
   if (this.options.startRate > 0 && this.options.startProb > 0 && this.agents.length < this.options.agentsMax) {
     var probBirth = Math.random();
     if (probBirth < this.options.startProb) {
@@ -221,14 +223,16 @@ Group.prototype.step = function() {
       this.addAgents(rate);
     }
   }
-  if (this.entities.endContext) {
-    var agentsIn = this.parent.agentsInContext(this.entities.endContext, this.agents);
-    if (agentsIn.length > 0 && this.options.endRate > 0 && this.options.endProb > 0) {
-      var probDie = Math.random();
-      if (probDie < this.options.endProb) {
-        agentsIn = agentsIn.slice(0,this.options.endRate);
-        this.removeAgents(agentsIn);
-      }
+  // destroy nth-first agents in endContext based on uniform distribution
+  if (this.entities.endContext && this.options.endRate > 0 && this.options.endProb > 0) {
+    var probDie = Math.random();
+    if (probDie < this.options.endProb) {
+      var endContext = this.entities.endContext;
+      var agentsOut = Lazy(this.agents).filter(function(agent) {
+          return endContext.in(agent.pos);
+        })
+        .first(this.options.endRate).toArray();
+      this.removeAgents(agentsOut);
     }
   }
 };
@@ -247,7 +251,8 @@ Group.defaults = {
   startProb: 0, // Adds agents per step in startContext
   startRate: 0, // Adds agents probability per step in startContext
   endProb: 0, // Removes agents per step in endContext
-  endRate: 0 // Removes agents probability per step in endContext
+  endRate: 0, // Removes agents probability per step in endContext
+  near: 10 // hasmap grid size for endContext checks
 };
 Group.id = 0;
 Group.type = 'group';

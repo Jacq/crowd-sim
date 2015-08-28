@@ -8,6 +8,8 @@ var Engine = function(world, options) {
   //this.agentsSave = JSON.parse(JSON.stringify(world.agents));
   this.world = world || {};
   this.settings = Lazy(options).defaults(Engine.defaults).toObject();
+  this.callbacks = this.settings.callbacks;
+  delete this.settings.callbacks;
 };
 
 Engine.prototype.getSettings = function() {
@@ -22,12 +24,15 @@ Engine.prototype.getWorld = function() {
   return this.world;
 };
 
-Engine.prototype.run = function() {
+Engine.prototype.run = function(entity) {
   if (this.running) {
     return;
   }
   this.running = true;
   this.world.freeze(false);
+  if (this.callbacks.onStart) {
+    this.callbacks.onStart(entity);
+  }
   this._step();
   return this.running;
 };
@@ -46,10 +51,14 @@ Engine.prototype._step = function() {
   var opts = this.settings;
   var timeStepSize = opts.timeStepSize;
 
-  this.world.step(timeStepSize);
+  var entity = this.world.step(timeStepSize); // returns entity that request stop a contexts
   this.iterations++;
-  if (this.onStep) {
-    this.onStep(this.world);
+  if (this.callbacks.onStep) {
+    this.callbacks.onStep(this.world);
+  }
+  // entity requests stop of simulation
+  if (entity) {
+    this.stop(entity);
   }
 
   if (this.running) {
@@ -64,12 +73,15 @@ Engine.prototype._step = function() {
   }
 };
 
-Engine.prototype.stop = function() {
+Engine.prototype.stop = function(entity) {
   if (!this.running) {
     return;
   }
   this.world.freeze(true);
   this.running = false;
+  if (this.callbacks.onStop) {
+    this.callbacks.onStop(entity);
+  }
   return this.running;
 };
 
@@ -85,7 +97,12 @@ Engine.prototype.reset = function() {
 
 Engine.defaults = {
   timeStepSize: 0.05,
-  timeStepRun: 0.01
+  timeStepRun: 0.01,
+  callbacks: {
+    onStart: null,
+    onStep: null,
+    onStop: null
+  }
 };
 
 module.exports = Engine;

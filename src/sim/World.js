@@ -19,6 +19,8 @@ var World = function(parent, options) {
     walls: []
   };
   this.grid = new Grid(this.options.near);
+  this.gridWalls = new Grid(this.options.near);
+  this.gridContexts = new Grid(this.options.near);
   this.changes = 1;
   this.isFrozen = true;
 };
@@ -145,29 +147,18 @@ World.prototype.getPathById = function(id) {
   return Lazy(this.entities.paths).findWhere({id: id});
 };
 
-World.prototype.getNeighbours = function(agent) {
-  return this.grid.neighbours(agent);
+World.prototype.getNearAgents = function(agent) {
+  return this.grid.neighbours(agent).toArray();
 };
 
-// TODO add spatial structure to optimize this function
 World.prototype.getNearWalls = function(agent) {
-  return this.entities.walls;
+  return this.gridWalls.neighbours(agent).uniq().toArray();
 };
 
-// TODO add spatial structure to optimize this function
-World.prototype.agentsInContext = function(context, agents) {
-  if (!agents) {
-    agents = this.agents;
-  }
-  //agents = this.grid.in(context);
-  var agentsIn = [];
-  for (var i in agents) {
-    var agent = agents[i];
-    if (context.in(agent.pos)) {
-      agentsIn.push(agent);
-    }
-  }
-  return agentsIn;
+World.prototype.agentsInContext = function(context) {
+  return this.grid.neighboursContext(context).filter(function(agent) {
+    return context.in(agent.pos);
+  }).toArray();
 };
 
 World.prototype._saveHelper = function(o) {
@@ -261,22 +252,45 @@ World.prototype.load = function(loader, loadDefault) {
         var path = world.getPathById(e.entities.path);
         g.assignPath(path, g.options.pathStart);
       }
-      // TODO assign behavior
     });
   }
   this.changes++;
 };
 
 World.prototype.step = function(stepSize) {
+  var that = this;
   this.grid.updateAll(this.agents);
+  this.gridWalls.updateWallsHelper(this.entities.walls);
+  this.gridContexts.updateContextsHelper(this.entities.contexts);
+
+  // check contexts interaction reducing speed or life of agents
+  Lazy(this.entities.contexts).filter(function(c) {return c.getMobility() < 1;}).each(function(context) {
+    var agents = that.agentsInContext(context, that.agents);
+    if (agents.length > 0) {
+      Lazy(agents).each(function(agent) {
+        agent.setCurrentMobility(context.getMobility());
+      });
+    }
+  });
 
   Lazy(this.agents).each(function(agent) {
     agent.step(stepSize);
   });
+
   Lazy(this.entities.groups).each(function(group) {
     group.step(stepSize);
   });
+
+  // check contexts that triggers stop on empty
+  var contextEmpty = null;
+  Lazy(this.entities.contexts).filter(function(c) {return c.getTrigger();}).each(function(context) {
+    var agents = that.agentsInContext(context, that.agents);
+    if (agents.length === 0) {
+      contextEmpty = context; // to inform engine of stop source
+    }
+  });
   this.changes++;
+  return contextEmpty;
 };
 
 World.prototype.changesNumber = function() {
@@ -290,7 +304,7 @@ World.prototype.freeze = function(freeze) {
 };
 
 World.defaults = {
-  near: 2, // grid of 3x3 squares of 2 meters
+  near: 10, // grid of 3x3 squares of 2 meters
   width: null,
   height: null,
   onCreateAgents: null,

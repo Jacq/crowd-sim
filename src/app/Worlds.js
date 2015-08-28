@@ -121,13 +121,13 @@ var Worlds = {
         "agentsAspect": 0,
         "agentsSizeMin": 0.5,
         "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
+        "agentsCount": 100,
+        "agentsMax": 1000,
         "debug": false,
         "pathStart": 0,
         "pathReverse": false,
         "pathCircular": false,
-        "radius": 3,
+        "radius": 30,
         "startProb": 0,
         "startRate": 0,
         "endProb": 0.2,
@@ -190,7 +190,7 @@ var Worlds = {
         "agentsSizeMin": 0.5,
         "agentsSizeMax": 0.5,
         "agentsCount": 10,
-        "agentsMax": 1000,
+        "agentsMax": 200,
         "debug": false,
         "pathStart": 0,
         "pathReverse": false,
@@ -226,6 +226,147 @@ var Worlds = {
     "paths": [],
     "walls": []
   },
+  contextMobility: {
+  "contexts": [
+    {
+      "options": {
+        "width": 39,
+        "height": 17.000001525878908,
+        "mobility": 1,
+        "hazardLevel": 0
+      },
+      "id": "C0",
+      "pos": {
+        "0": 75.5999984741211,
+        "1": 23.100000381469727
+      },
+      "entities": {},
+      "children": {}
+    },
+    {
+      "options": {
+        "mobility": 0.5,
+        "hazardLevel": 0,
+        "width": 10,
+        "height": 10
+      },
+      "id": "C1",
+      "pos": {
+        "0": 76.5999984741211,
+        "1": 44.20000076293945
+      },
+      "entities": {},
+      "children": {}
+    }
+  ],
+  "groups": [
+    {
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 100,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 3,
+        "startProb": 0.2,
+        "startRate": 5,
+        "endProb": 0,
+        "endRate": 0
+      },
+      "id": "G0",
+      "pos": {
+        "0": 75.5999984741211,
+        "1": 61.599998474121094
+      },
+      "entities": {
+        "path": null,
+        "startContext": "C0",
+        "endContext": null
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }
+  ],
+  "paths": [],
+  "walls": []
+},
+contextTrigger: {
+  "contexts": [
+    {
+      "options": {
+        "width": 24,
+        "height": 2.0000015258789077,
+        "mobility": 1,
+        "hazardLevel": 0,
+        "triggerOnEmpty": true
+      },
+      "id": "C0",
+      "pos": {
+        "0": 75.1729736328125,
+        "1": 46.50312423706055
+      },
+      "entities": {},
+      "children": {}
+    }
+  ],
+  "groups": [
+    {
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 100,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 3,
+        "startProb": 0,
+        "startRate": 5,
+        "endProb": 0,
+        "endRate": 0,
+        "near": 10
+      },
+      "id": "G0",
+      "pos": {
+        "0": 75.47578430175781,
+        "1": 61.03791427612305
+      },
+      "entities": {
+        "path": null,
+        "startContext": "C0",
+        "endContext": null
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }
+  ],
+  "paths": [],
+  "walls": []
+},
   path: {
     "contexts": [],
     "groups": [{

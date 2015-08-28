@@ -12,10 +12,25 @@ App.defaultOptions = {
   snapToGrid: false, // snaps the mouse position to a grid of integers
   logEvents: false,
   renderer: {
+    backgroundColor: 0xffffff,
     scale: 10,
     useParticle: true,
     MaxAgents: 1000, // to init particle container
     debug: true,
+  },
+  engine: {
+    timeStepSize: 0.05,
+    timeStepRun: 0.01,
+    callbacks: {
+      onStart: null,
+      onStep: null,
+      onStop: function(entity) {
+        App.selectEntity(entity.view); // highlight entity that causes stop
+        if (App.callbacks.onStop) {
+          App.callbacks.onStop(entity);
+        }
+      }
+    }
   },
   callbacks: {
     onPreRender: null, // before each render cycle
@@ -26,6 +41,7 @@ App.defaultOptions = {
     onEntityUnSelected: null,
     onLoad: null, // when new world is loaded
     onSave: null, // when the current world is saved
+    onStop: null, // engine stops due to a context empty
   }
 };
 
@@ -72,7 +88,7 @@ App.init = function(canvas, options) {
     wall: [274, 14, 32, 32],
     path: [326, 14, 32, 32]
   };
-  App._engine = new CrowdSim.Engine(App._world);
+  App._engine = new CrowdSim.Engine(App._world, App.options.engine);
   /* use default {
       timeStepSize: 0.1, // time per step
       timeStepRun: 0.001 // time between step runnings
@@ -273,7 +289,7 @@ App.entity.mousedown = function(event) {
 App.entityClick = function(pos, newEntity, selected) {
   if (newEntity instanceof Render.Joint) { // add joint to joint
     var existingJoint = newEntity.getJoint();
-    existingJoint.parent.view.addJoint(pos.x, pos.y, {previousJoint: existingJoint});
+    App._newRenderEntity = existingJoint.parent.view.addJoint(pos.x, pos.y, {previousJoint: existingJoint});
   } else if (newEntity instanceof Render.Wall) { // add joint to wall
     newEntity.addJoint(pos.x, pos.y);
   } else if (newEntity instanceof Render.Path) { // add join to waypoint
@@ -317,14 +333,15 @@ App.mousedown = function(event) {
   }
   App._globalMousePressed = true;
   switch (event.button) {
-  case 0: // left button
-    if (App._editingEntity) { // change editing to create
-      App._newRenderEntity = App._editingEntity;
-      App._editingEntity = null;
-    } else if (App._newRenderEntity) { // creating/entities entities
-      var pos = App._renderer.screenToWorld(event.clientX, event.clientY);
-      App.entityClick(pos, App._newRenderEntity, App._entitySelected);
-    }
+    case 0: // left button
+      if (App._editingEntity) { // change editing to create
+        App._newRenderEntity = App._editingEntity;
+        App._editingEntity = null;
+      } else if (App._newRenderEntity) { // creating/entities entities
+        var pos = App._renderer.screenToWorld(event.clientX, event.clientY);
+        App.entityClick(pos, App._newRenderEntity, App._entitySelected);
+        App._entityHit = true;
+      }
   }
   if (!App._entityHit) {
     App.selectEntity(null);
