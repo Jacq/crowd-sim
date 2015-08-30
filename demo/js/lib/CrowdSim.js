@@ -114,9 +114,9 @@ Agent.prototype.step = function(stepSize) {
 Agent.prototype.move = function(accel, stepSize) {
   Vec2.scaleAndAdd(this.vel, this.vel, accel, stepSize);
   if (Vec2.length(this.vel) > this.maxVel) {
-    Vec2.normalizeAndScale(this.vel, this.vel, this.maxVel);
+    Vec2.normalizeAndScale(this.vel, this.vel, this.maxVel * this.currentMobility);
   }
-  Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize * this.currentMobility);
+  Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize);
 
   this.currentMobility = this.mobility; // restore mobility for next step reduced by contexts
 };
@@ -409,8 +409,8 @@ Grid.prototype.neighboursContext = function(context) {
   var init = context.getMinXY();
   var end = context.getMaxXY();
   var neighbours = Lazy([]);
-  for (var x = init[0]; x < end[0]; x += this.near) {
-    for (var y = init[1]; y < end[1]; y += this.near) {
+  for (var x = init[0]; x < end[0] + this.near; x += this.near) {
+    for (var y = init[1]; y < end[1] + this.near; y += this.near) {
       neighbours = neighbours.concat(this.neighbours(null, x, y));
     }
   }
@@ -418,8 +418,8 @@ Grid.prototype.neighboursContext = function(context) {
 };
 
 Grid.prototype._keyNeighbours = function(x, y) {
-  x = Math.floor(x / this.near) * this.near;
-  y = Math.floor(y / this.near) * this.near;
+  x = Math.floor(x / this.near);
+  y = Math.floor(y / this.near);
   return [
     (x - 1) + ':' + (y + 1), x + ':' + (y + 1), (x + 1) + ':' + (y + 1),
     (x - 1) + ':' + y      , x + ':' + y      , (x + 1) + ':' + y,
@@ -430,9 +430,9 @@ Grid.prototype._keyNeighbours = function(x, y) {
 Grid.prototype._key = function(entity, x, y) {
   // use x,y if available if not just entity position
   x = x || entity.pos[0];
-  x = Math.floor(x / this.near) * this.near;
+  x = Math.floor(x / this.near);
   y = y || entity.pos[1];
-  y = Math.floor(y / this.near) * this.near;
+  y = Math.floor(y / this.near);
   return x + ':' + y;
 };
 
@@ -1451,16 +1451,22 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   for (var i = 0; i < numberToGenerate; i++) {
     pos = getInitPos(pos);
     var size = opts.agentsSizeMin;
+    var mass = Agent.defaults.mass;
     if (opts.agentsSizeMin !== opts.agentsSizeMax) {
       // random uniform distribution
       size = opts.agentsSizeMin + Math.random() * (opts.agentsSizeMax - opts.agentsSizeMin);
+      // scale mass around average proportional to size
+      mass = Agent.defaults.mass * (size - (opts.agentsSizeMax + opts.agentsSizeMin) / 2 + 1);
     }
     var agent = new Agent(pos[0], pos[1], this, {
       size: size,
+      mass: mass,
       debug: opts.debug,
       path: this.entities.path,
       aspect: this.options.agentsAspect || Math.round(Math.random() * 0xFFFFFF),
-      pathStart: this.options.pathStart
+      pathStart: this.options.pathStart,
+      maxAccel: this.options.agentsMaxAccel,
+      maxVel: this.options.agentsMaxVel
     });
     //agent.followPath(this.entities.path, this.options.startIdx);
     //agent.assignBehavior(behavior);
@@ -1545,6 +1551,8 @@ Group.prototype.step = function() {
 };
 
 Group.defaults = {
+  agentsMaxVel: 1,
+  agentsMaxAccel: 0.5,
   agentsAspect: 0, // used for colors
   agentsSizeMin: 0.5,
   agentsSizeMax: 0.5,
@@ -1558,8 +1566,7 @@ Group.defaults = {
   startProb: 0, // Adds agents per step in startContext
   startRate: 0, // Adds agents probability per step in startContext
   endProb: 0, // Removes agents per step in endContext
-  endRate: 0, // Removes agents probability per step in endContext
-  near: 10 // hasmap grid size for endContext checks
+  endRate: 0 // Removes agents probability per step in endContext
 };
 Group.id = 0;
 Group.type = 'group';
@@ -1768,7 +1775,7 @@ var AssignableToGroup = function(EntityPrototype) {
     if (idx > -1) {
       this.entities.groups.splice(idx, 1);
     } else {
-      throw 'Entity not associated';
+      // already removed;
     }
   };
 
@@ -1837,7 +1844,6 @@ var World = function(parent, options) {
   };
   this.grid = new Grid(this.options.near);
   this.gridWalls = new Grid(this.options.near);
-  this.gridContexts = new Grid(this.options.near);
   this.changes = 1;
   this.isFrozen = true;
 };
@@ -2078,10 +2084,9 @@ World.prototype.step = function(stepSize) {
   var that = this;
   this.grid.updateAll(this.agents);
   this.gridWalls.updateWallsHelper(this.entities.walls);
-  this.gridContexts.updateContextsHelper(this.entities.contexts);
 
   // check contexts interaction reducing speed or life of agents
-  Lazy(this.entities.contexts).filter(function(c) {return c.getMobility() < 1;}).each(function(context) {
+  Lazy(this.entities.contexts).filter(function(c) {return c.getMobility() !== 1;}).each(function(context) {
     var agents = that.agentsInContext(context, that.agents);
     if (agents.length > 0) {
       Lazy(agents).each(function(agent) {
@@ -2121,7 +2126,7 @@ World.prototype.freeze = function(freeze) {
 };
 
 World.defaults = {
-  near: 10, // grid of 3x3 squares of 2 meters
+  near: 8, // grid of 3x3 squares of 3 meters
   width: null,
   height: null,
   onCreateAgents: null,

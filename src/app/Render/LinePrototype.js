@@ -60,6 +60,9 @@ var LinePrototype = function(color) {
     var jts = line.getJoints();
     if (!line || jts.length === 0) {
       this.destroy();
+      for (var i = 0; i < jts.length; i++) {
+        jts[i].view.show(false);
+      }
     }
     // init render
     if (!this.graphics && Line.detail.level > 0) {
@@ -73,9 +76,9 @@ var LinePrototype = function(color) {
       this.label.x = jts[0].pos[0] - this.label.width / 3;
       this.label.y = jts[0].pos[1] - this.label.height ;
       this.graphics.lineStyle(line.getWidth(), this.hover ? Colors.Hover : color, 0.6);
-      for (var i = 0; i < jts.length; i++) {
-        points.push(jts[i].pos[0], jts[i].pos[1]);
-        jts[i].view.render();
+      for (var j = 0; j < jts.length; j++) {
+        points.push(jts[j].pos[0], jts[j].pos[1]);
+        jts[j].view.render();
       }
       this.graphics.drawPolygon(points);
     }

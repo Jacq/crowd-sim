@@ -38,6 +38,8 @@ Joint.prototype.createGraphics = function(graphics) {
 };
 
 Joint.prototype.render = function() {
+  this.sprite.visible = true;
+  this.sprite.alpha = 0.5;
   this.sprite.x = this.entityModel.pos[0];
   this.sprite.y = this.entityModel.pos[1];
   this.sprite.width = 2 * this.entityModel.getRadius();
@@ -70,6 +72,11 @@ Joint.prototype.getJoint = function() {
 
 Joint.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
+};
+
+Joint.prototype.show = function(show) {
+  this.sprite.visible = false;
+  this.sprite.alpha = 0;
 };
 
 module.exports = Joint;

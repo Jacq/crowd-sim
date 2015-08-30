@@ -282,7 +282,9 @@ var CrowdSimEditor = (function($) {
           // shows stop situation and message
           Editor.engineChange(Editor.engineStatuses.trigger);
           Editor.engineStatusChange(false);
-          Editor._statusBarSetOne('message','Engine stopped due to entity: ' + entity.id);
+          if (entity) {
+            Editor._statusBarSetOne('message','Engine stopped due to entity: ' + entity.id);
+          }
         }
       }
     };

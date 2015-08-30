@@ -200,7 +200,7 @@ Render.defaults = {
   backgroundColor: 0,
   useParticle: true,
   scale: 10,
-  mxAgents: 1000, // to init particle container
+  mxAgents: 5000, // to init particle container
   debug: false,
 };
 

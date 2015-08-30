@@ -113,9 +113,9 @@ Agent.prototype.step = function(stepSize) {
 Agent.prototype.move = function(accel, stepSize) {
   Vec2.scaleAndAdd(this.vel, this.vel, accel, stepSize);
   if (Vec2.length(this.vel) > this.maxVel) {
-    Vec2.normalizeAndScale(this.vel, this.vel, this.maxVel);
+    Vec2.normalizeAndScale(this.vel, this.vel, this.maxVel * this.currentMobility);
   }
-  Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize * this.currentMobility);
+  Vec2.scaleAndAdd(this.pos, this.pos, this.vel, stepSize);
 
   this.currentMobility = this.mobility; // restore mobility for next step reduced by contexts
 };

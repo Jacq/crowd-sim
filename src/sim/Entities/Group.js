@@ -144,16 +144,22 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   for (var i = 0; i < numberToGenerate; i++) {
     pos = getInitPos(pos);
     var size = opts.agentsSizeMin;
+    var mass = Agent.defaults.mass;
     if (opts.agentsSizeMin !== opts.agentsSizeMax) {
       // random uniform distribution
       size = opts.agentsSizeMin + Math.random() * (opts.agentsSizeMax - opts.agentsSizeMin);
+      // scale mass around average proportional to size
+      mass = Agent.defaults.mass * (size - (opts.agentsSizeMax + opts.agentsSizeMin) / 2 + 1);
     }
     var agent = new Agent(pos[0], pos[1], this, {
       size: size,
+      mass: mass,
       debug: opts.debug,
       path: this.entities.path,
       aspect: this.options.agentsAspect || Math.round(Math.random() * 0xFFFFFF),
-      pathStart: this.options.pathStart
+      pathStart: this.options.pathStart,
+      maxAccel: this.options.agentsMaxAccel,
+      maxVel: this.options.agentsMaxVel
     });
     //agent.followPath(this.entities.path, this.options.startIdx);
     //agent.assignBehavior(behavior);
@@ -238,6 +244,8 @@ Group.prototype.step = function() {
 };
 
 Group.defaults = {
+  agentsMaxVel: 1,
+  agentsMaxAccel: 0.5,
   agentsAspect: 0, // used for colors
   agentsSizeMin: 0.5,
   agentsSizeMax: 0.5,
@@ -251,8 +259,7 @@ Group.defaults = {
   startProb: 0, // Adds agents per step in startContext
   startRate: 0, // Adds agents probability per step in startContext
   endProb: 0, // Removes agents per step in endContext
-  endRate: 0, // Removes agents probability per step in endContext
-  near: 10 // hasmap grid size for endContext checks
+  endRate: 0 // Removes agents probability per step in endContext
 };
 Group.id = 0;
 Group.type = 'group';

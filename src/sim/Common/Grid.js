@@ -105,8 +105,8 @@ Grid.prototype.neighboursContext = function(context) {
   var init = context.getMinXY();
   var end = context.getMaxXY();
   var neighbours = Lazy([]);
-  for (var x = init[0]; x < end[0]; x += this.near) {
-    for (var y = init[1]; y < end[1]; y += this.near) {
+  for (var x = init[0]; x < end[0] + this.near; x += this.near) {
+    for (var y = init[1]; y < end[1] + this.near; y += this.near) {
       neighbours = neighbours.concat(this.neighbours(null, x, y));
     }
   }
@@ -114,8 +114,8 @@ Grid.prototype.neighboursContext = function(context) {
 };
 
 Grid.prototype._keyNeighbours = function(x, y) {
-  x = Math.floor(x / this.near) * this.near;
-  y = Math.floor(y / this.near) * this.near;
+  x = Math.floor(x / this.near);
+  y = Math.floor(y / this.near);
   return [
     (x - 1) + ':' + (y + 1), x + ':' + (y + 1), (x + 1) + ':' + (y + 1),
     (x - 1) + ':' + y      , x + ':' + y      , (x + 1) + ':' + y,
@@ -126,9 +126,9 @@ Grid.prototype._keyNeighbours = function(x, y) {
 Grid.prototype._key = function(entity, x, y) {
   // use x,y if available if not just entity position
   x = x || entity.pos[0];
-  x = Math.floor(x / this.near) * this.near;
+  x = Math.floor(x / this.near);
   y = y || entity.pos[1];
-  y = Math.floor(y / this.near) * this.near;
+  y = Math.floor(y / this.near);
   return x + ':' + y;
 };
 

@@ -20,7 +20,6 @@ var World = function(parent, options) {
   };
   this.grid = new Grid(this.options.near);
   this.gridWalls = new Grid(this.options.near);
-  this.gridContexts = new Grid(this.options.near);
   this.changes = 1;
   this.isFrozen = true;
 };
@@ -261,10 +260,9 @@ World.prototype.step = function(stepSize) {
   var that = this;
   this.grid.updateAll(this.agents);
   this.gridWalls.updateWallsHelper(this.entities.walls);
-  this.gridContexts.updateContextsHelper(this.entities.contexts);
 
   // check contexts interaction reducing speed or life of agents
-  Lazy(this.entities.contexts).filter(function(c) {return c.getMobility() < 1;}).each(function(context) {
+  Lazy(this.entities.contexts).filter(function(c) {return c.getMobility() !== 1;}).each(function(context) {
     var agents = that.agentsInContext(context, that.agents);
     if (agents.length > 0) {
       Lazy(agents).each(function(agent) {
@@ -304,7 +302,7 @@ World.prototype.freeze = function(freeze) {
 };
 
 World.defaults = {
-  near: 10, // grid of 3x3 squares of 2 meters
+  near: 8, // grid of 3x3 squares of 3 meters
   width: null,
   height: null,
   onCreateAgents: null,

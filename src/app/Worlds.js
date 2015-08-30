@@ -2,7 +2,9 @@
 var CrowdSim = require('CrowdSim');
 
 var Worlds = {
-  simple: {
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  groupSimple: {
     "contexts": [],
     "groups": [{
       "options": {
@@ -46,6 +48,200 @@ var Worlds = {
     "paths": [],
     "walls": []
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  groupSizes: {
+    "contexts": [],
+    "groups": [{
+      "options": {
+        "agentsMaxVel": 2,
+        "agentsMaxAccel": 0.5,
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.3,
+        "agentsSizeMax": 0.9,
+        "agentsCount": 200,
+        "agentsMax": 200,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 3,
+        "startProb": 0,
+        "startRate": 0,
+        "endProb": 0,
+        "endRate": 0,
+        "near": 10
+      },
+      "id": "G1",
+      "pos": {
+        "0": 51,
+        "1": 43
+      },
+      "entities": {
+        "path": null,
+        "startContext": null,
+        "endContext": null
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }],
+    "paths": [],
+    "walls": []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  groupSizeVel: {
+    "contexts": [],
+    "groups": [{
+      "options": {
+        "agentsMaxVel": 2,
+        "agentsMaxAccel": 0.5,
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.4,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 100,
+        "agentsMax": 300,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 8,
+        "startProb": 0,
+        "startRate": 0,
+        "endProb": 0,
+        "endRate": 0,
+        "near": 10
+      },
+      "id": "G0",
+      "pos": {
+        "0": 28.899999618530273,
+        "1": 39.900001525878906
+      },
+      "entities": {
+        "path": "P0",
+        "startContext": null,
+        "endContext": null
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }, {
+      "options": {
+        "agentsMaxVel": 0.9,
+        "agentsMaxAccel": 0.5,
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.8,
+        "agentsCount": 100,
+        "agentsMax": 300,
+        "debug": false,
+        "pathStart": 2,
+        "pathReverse": true,
+        "pathCircular": false,
+        "radius": 8,
+        "startProb": 0,
+        "startRate": 0,
+        "endProb": 0,
+        "endRate": 0,
+        "near": 10
+      },
+      "id": "G1",
+      "pos": {
+        "0": 115.5,
+        "1": 40.29999923706055
+      },
+      "entities": {
+        "path": "P0",
+        "startContext": null,
+        "endContext": null
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }],
+    "paths": [{
+      "options": {
+        "width": 0.2,
+        "radius": 4
+      },
+      "id": "P0",
+      "pos": {
+        "0": 98.5,
+        "1": 40.20000076293945
+      },
+      "entities": {},
+      "children": {
+        "joints": [{
+          "options": {
+            "width": 0.2,
+            "radius": 7,
+            "scalable": true
+          },
+          "pos": {
+            "0": 46.900001525878906,
+            "1": 39.900001525878906
+          },
+          "entities": {},
+          "children": {},
+          "id": "J0"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 8,
+            "scalable": true
+          },
+          "pos": {
+            "0": 83.30000305175781,
+            "1": 40.29999923706055
+          },
+          "entities": {},
+          "children": {},
+          "id": "J2"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 7,
+            "scalable": true
+          },
+          "pos": {
+            "0": 99.5999984741211,
+            "1": 40.20000076293945
+          },
+          "entities": {},
+          "children": {},
+          "id": "J4"
+        }]
+      }
+    }],
+    "walls": []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   contextIn: {
     "contexts": [{
       "options": {
@@ -102,6 +298,8 @@ var Worlds = {
     "paths": [],
     "walls": []
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   contextOut: {
     "contexts": [{
       "options": {
@@ -158,6 +356,8 @@ var Worlds = {
     "paths": [],
     "walls": []
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   contextInOut: {
     "contexts": [{
       "options": {
@@ -226,9 +426,10 @@ var Worlds = {
     "paths": [],
     "walls": []
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   contextMobility: {
-  "contexts": [
-    {
+    "contexts": [{
       "options": {
         "width": 39,
         "height": 17.000001525878908,
@@ -242,8 +443,7 @@ var Worlds = {
       },
       "entities": {},
       "children": {}
-    },
-    {
+    }, {
       "options": {
         "mobility": 0.5,
         "hazardLevel": 0,
@@ -257,10 +457,8 @@ var Worlds = {
       },
       "entities": {},
       "children": {}
-    }
-  ],
-  "groups": [
-    {
+    }],
+    "groups": [{
       "options": {
         "agentsAspect": 0,
         "agentsSizeMin": 0.5,
@@ -298,14 +496,14 @@ var Worlds = {
         }
       },
       "agentsCount": 10
-    }
-  ],
-  "paths": [],
-  "walls": []
-},
-contextTrigger: {
-  "contexts": [
-    {
+    }],
+    "paths": [],
+    "walls": []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  contextTrigger: {
+    "contexts": [{
       "options": {
         "width": 24,
         "height": 2.0000015258789077,
@@ -320,10 +518,8 @@ contextTrigger: {
       },
       "entities": {},
       "children": {}
-    }
-  ],
-  "groups": [
-    {
+    }],
+    "groups": [{
       "options": {
         "agentsAspect": 0,
         "agentsSizeMin": 0.5,
@@ -362,14 +558,101 @@ contextTrigger: {
         }
       },
       "agentsCount": 10
-    }
-  ],
-  "paths": [],
-  "walls": []
-},
-  path: {
-    "contexts": [],
+    }],
+    "paths": [],
+    "walls": []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  contextRate: {
+    "contexts": [{
+      "options": {
+        "width": 9.799996948242182,
+        "height": 10.599999999999994
+      },
+      "id": "C0",
+      "pos": {
+        "0": 41.400001525878906,
+        "1": 31.700000762939453
+      },
+      "entities": {},
+      "children": {}
+    }, {
+      "options": {
+        "width": 16.9999969482422,
+        "height": 19.00000076293945
+      },
+      "id": "C1",
+      "pos": {
+        "0": 95.4000015258789,
+        "1": 31
+      },
+      "entities": {},
+      "children": {}
+    }, {
+      "options": {
+        "width": 16.200001525878903,
+        "height": 14.800001525878912
+      },
+      "id": "C2",
+      "pos": {
+        "0": 42.5,
+        "1": 59
+      },
+      "entities": {},
+      "children": {}
+    }, {
+      "options": {
+        "width": 13.600003051757824,
+        "height": 13.799996948242182
+      },
+      "id": "C3",
+      "pos": {
+        "0": 94.30000305175781,
+        "1": 57.900001525878906
+      },
+      "entities": {},
+      "children": {}
+    }],
     "groups": [{
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 200,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 3,
+        "startProb": 0.5,
+        "startRate": 1,
+        "endProb": 0.1,
+        "endRate": 2
+      },
+      "id": "G0",
+      "pos": {
+        "0": 62.79999923706055,
+        "1": 17.5
+      },
+      "entities": {
+        "path": null,
+        "startContext": "C0",
+        "endContext": "C1"
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }, {
       "options": {
         "agentsAspect": 0,
         "agentsSizeMin": 0.5,
@@ -380,16 +663,97 @@ contextTrigger: {
         "pathStart": 0,
         "pathReverse": false,
         "pathCircular": false,
-        "radius": 3,
+        "radius": 2,
+        "startProb": 0.1,
+        "startRate": 1,
+        "endProb": 0.15,
+        "endRate": 1
+      },
+      "id": "G1",
+      "pos": {
+        "0": 68,
+        "1": 72.9000015258789
+      },
+      "entities": {
+        "path": null,
+        "startContext": "C3",
+        "endContext": "C2"
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }],
+    "paths": [],
+    "walls": []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathCtxMobility: {
+  "contexts": [
+    {
+      "options": {
+        "mobility": 3,
+        "triggerOnEmpty": false,
+        "width": 44.72726912064988,
+        "height": 19.8181811246005
+      },
+      "id": "C0",
+      "pos": {
+        "0": 82.34545135498047,
+        "1": 26.045454025268555
+      },
+      "entities": {},
+      "children": {}
+    },
+    {
+      "options": {
+        "mobility": 0.5,
+        "triggerOnEmpty": false,
+        "width": 42.36364246715199,
+        "height": 16.545458013361156
+      },
+      "id": "C2",
+      "pos": {
+        "0": 81.61817932128906,
+        "1": 55.40909194946289
+      },
+      "entities": {},
+      "children": {}
+    }
+  ],
+  "groups": [
+    {
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 100,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 13,
         "startProb": 0.2,
         "startRate": 5,
         "endProb": 0,
-        "endRate": 0
+        "endRate": 0,
+        "agentsMaxVel": 1,
+        "agentsMaxAccel": 0.5,
+        "near": 10
       },
       "id": "G0",
       "pos": {
-        "0": 36.599998474121094,
-        "1": 44.400001525878906
+        "0": 55.79999923706055,
+        "1": 25.200000762939453
       },
       "entities": {
         "path": "P1",
@@ -407,128 +771,72 @@ contextTrigger: {
         }
       },
       "agentsCount": 10
-    }],
-    "paths": [{
+    }
+  ],
+  "paths": [
+    {
       "options": {
         "width": 0.2,
         "radius": 4
       },
       "id": "P1",
       "pos": {
-        "0": 46.79999923706055,
-        "1": 54
+        "0": 55.16363525390625,
+        "1": 54.95454406738281
       },
       "entities": {},
       "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+        "joints": [
+          {
+            "options": {
+              "width": 0.2,
+              "radius": 4,
+              "scalable": true
+            },
+            "pos": {
+              "0": 110.34545135498047,
+              "1": 26.68181800842285
+            },
+            "entities": {},
+            "children": {},
+            "id": "J3"
           },
-          "pos": {
-            "0": 43.400001525878906,
-            "1": 30.5
+          {
+            "options": {
+              "width": 0.2,
+              "radius": 4,
+              "scalable": true
+            },
+            "pos": {
+              "0": 110.25454711914062,
+              "1": 54.95454406738281
+            },
+            "entities": {},
+            "children": {},
+            "id": "J4"
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 64,
-            "1": 15.800000190734863
-          },
-          "entities": {},
-          "children": {},
-          "id": "J1"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 108.9000015258789,
-            "1": 18.299999237060547
-          },
-          "entities": {},
-          "children": {},
-          "id": "J2"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 120,
-            "1": 35.099998474121094
-          },
-          "entities": {},
-          "children": {},
-          "id": "J3"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 115.30000305175781,
-            "1": 53.79999923706055
-          },
-          "entities": {},
-          "children": {},
-          "id": "J4"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 97.69999694824219,
-            "1": 77
-          },
-          "entities": {},
-          "children": {},
-          "id": "J5"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 62,
-            "1": 71.5999984741211
-          },
-          "entities": {},
-          "children": {},
-          "id": "J6"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 46.79999923706055,
-            "1": 54
-          },
-          "entities": {},
-          "children": {},
-          "id": "J7"
-        }]
+          {
+            "options": {
+              "width": 0.2,
+              "radius": 4,
+              "scalable": true
+            },
+            "pos": {
+              "0": 55.16363525390625,
+              "1": 54.95454406738281
+            },
+            "entities": {},
+            "children": {},
+            "id": "J7"
+          }
+        ]
       }
-    }],
-    "walls": []
-  },
+    }
+  ],
+  "walls": []
+},
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   pathLoop: {
     "contexts": [],
     "groups": [{
@@ -716,6 +1024,8 @@ contextTrigger: {
     }],
     "walls": []
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   pathGroup: {
     "contexts": [],
     "groups": [{
@@ -864,131 +1174,8 @@ contextTrigger: {
     }],
     "walls": []
   },
-  wall: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
-      },
-      "id": "G0",
-      "pos": {
-        "0": 68.80000305175781,
-        "1": 65.5
-      },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
-      },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
-        }
-      },
-      "agentsCount": 10
-    }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
-      },
-      "id": "P1",
-      "pos": {
-        "0": 48,
-        "1": 40.900001525878906
-      },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 90.0999984741211,
-            "1": 40.79999923706055
-          },
-          "entities": {},
-          "children": {},
-          "id": "J2"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 48,
-            "1": 40.900001525878906
-          },
-          "entities": {},
-          "children": {},
-          "id": "J3"
-        }]
-      }
-    }],
-    "walls": [{
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
-      },
-      "id": "W0",
-      "pos": {
-        "0": 67.30000305175781,
-        "1": 53.20000076293945
-      },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
-          },
-          "pos": {
-            "0": 67.4000015258789,
-            "1": 32
-          },
-          "entities": {},
-          "children": {},
-          "id": "J0"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
-          },
-          "pos": {
-            "0": 67.30000305175781,
-            "1": 53.20000076293945
-          },
-          "entities": {},
-          "children": {},
-          "id": "J1"
-        }]
-      }
-    }]
-  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   pathSize: {
     "contexts": [],
     "groups": [{
@@ -1112,6 +1299,8 @@ contextTrigger: {
     }],
     "walls": []
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   paths: {
     "contexts": [],
     "groups": [{
@@ -1599,95 +1788,12 @@ contextTrigger: {
     }],
     "walls": []
   },
-  contextRate: {
-    "contexts": [{
-      "options": {
-        "width": 9.799996948242182,
-        "height": 10.599999999999994
-      },
-      "id": "C0",
-      "pos": {
-        "0": 41.400001525878906,
-        "1": 31.700000762939453
-      },
-      "entities": {},
-      "children": {}
-    }, {
-      "options": {
-        "width": 16.9999969482422,
-        "height": 19.00000076293945
-      },
-      "id": "C1",
-      "pos": {
-        "0": 95.4000015258789,
-        "1": 31
-      },
-      "entities": {},
-      "children": {}
-    }, {
-      "options": {
-        "width": 16.200001525878903,
-        "height": 14.800001525878912
-      },
-      "id": "C2",
-      "pos": {
-        "0": 42.5,
-        "1": 59
-      },
-      "entities": {},
-      "children": {}
-    }, {
-      "options": {
-        "width": 13.600003051757824,
-        "height": 13.799996948242182
-      },
-      "id": "C3",
-      "pos": {
-        "0": 94.30000305175781,
-        "1": 57.900001525878906
-      },
-      "entities": {},
-      "children": {}
-    }],
+
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  wall: {
+    "contexts": [],
     "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 200,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.5,
-        "startRate": 1,
-        "endProb": 0.1,
-        "endRate": 2
-      },
-      "id": "G0",
-      "pos": {
-        "0": 62.79999923706055,
-        "1": 17.5
-      },
-      "entities": {
-        "path": null,
-        "startContext": "C0",
-        "endContext": "C1"
-      },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
-        }
-      },
-      "agentsCount": 10
-    }, {
       "options": {
         "agentsAspect": 0,
         "agentsSizeMin": 0.5,
@@ -1698,89 +1804,21 @@ contextTrigger: {
         "pathStart": 0,
         "pathReverse": false,
         "pathCircular": false,
-        "radius": 2,
-        "startProb": 0.1,
-        "startRate": 1,
-        "endProb": 0.15,
-        "endRate": 1
-      },
-      "id": "G1",
-      "pos": {
-        "0": 68,
-        "1": 72.9000015258789
-      },
-      "entities": {
-        "path": null,
-        "startContext": "C3",
-        "endContext": "C2"
-      },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
-        }
-      },
-      "agentsCount": 10
-    }],
-    "paths": [],
-    "walls": []
-  },
-  pathContexts: {
-    "contexts": [{
-      "options": {
-        "width": 10.800003051757812,
-        "height": 28.400001525878906
-      },
-      "id": "C0",
-      "pos": {
-        "0": 34.400001525878906,
-        "1": 45
-      },
-      "entities": {},
-      "children": {}
-    }, {
-      "options": {
-        "width": 9.600000000000023,
-        "height": 31.400001525878906
-      },
-      "id": "C1",
-      "pos": {
-        "0": 130.8000030517578,
-        "1": 45.20000076293945
-      },
-      "entities": {},
-      "children": {}
-    }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 1000,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
         "radius": 3,
-        "startProb": 0.1,
-        "startRate": 10,
-        "endProb": 0.2,
-        "endRate": 5
+        "startProb": 0,
+        "startRate": 0,
+        "endProb": 0,
+        "endRate": 0
       },
       "id": "G0",
       "pos": {
-        "0": 83.80000305175781,
-        "1": 72
+        "0": 68.80000305175781,
+        "1": 65.5
       },
       "entities": {
         "path": "P1",
-        "startContext": "C0",
-        "endContext": "C1"
+        "startContext": null,
+        "endContext": null
       },
       "children": {},
       "behavior": {
@@ -1801,8 +1839,8 @@ contextTrigger: {
       },
       "id": "P1",
       "pos": {
-        "0": 117.5,
-        "1": 45.400001525878906
+        "0": 48,
+        "1": 40.900001525878906
       },
       "entities": {},
       "children": {
@@ -1813,193 +1851,8 @@ contextTrigger: {
             "scalable": true
           },
           "pos": {
-            "0": 48.79999923706055,
-            "1": 45.5
-          },
-          "entities": {},
-          "children": {},
-          "id": "J0"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 82.4000015258789,
-            "1": 45.70000076293945
-          },
-          "entities": {},
-          "children": {},
-          "id": "J1"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 117.5,
-            "1": 45.400001525878906
-          },
-          "entities": {},
-          "children": {},
-          "id": "J2"
-        }]
-      }
-    }],
-    "walls": []
-  },
-  pathCtxGro: {
-    "contexts": [{
-      "options": {
-        "width": 14.399999237060541,
-        "height": 37.400000000000006
-      },
-      "id": "C0",
-      "pos": {
-        "0": 30,
-        "1": 43.20000076293945
-      },
-      "entities": {},
-      "children": {}
-    }, {
-      "options": {
-        "width": 8.600003051757824,
-        "height": 53.79999923706055
-      },
-      "id": "C1",
-      "pos": {
-        "0": 127.5999984741211,
-        "1": 48.29999923706055
-      },
-      "entities": {},
-      "children": {}
-    }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 6,
-        "startProb": 0.05,
-        "startRate": 2,
-        "endProb": 0.1,
-        "endRate": 2
-      },
-      "id": "G0",
-      "pos": {
-        "0": 80.0999984741211,
-        "1": 19.899999618530273
-      },
-      "entities": {
-        "path": "P1",
-        "startContext": "C0",
-        "endContext": "C1"
-      },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
-        }
-      },
-      "agentsCount": 10
-    }, {
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 3,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 6,
-        "startProb": 0.05,
-        "startRate": 2,
-        "endProb": 0.1,
-        "endRate": 2
-      },
-      "id": "G1",
-      "pos": {
-        "0": 80.5,
-        "1": 68.5
-      },
-      "entities": {
-        "path": "P1",
-        "startContext": "C1",
-        "endContext": "C0"
-      },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
-        }
-      },
-      "agentsCount": 10
-    }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
-      },
-      "id": "P1",
-      "pos": {
-        "0": 115.80000305175781,
-        "1": 46.599998474121094
-      },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
-          },
-          "pos": {
-            "0": 46.099998474121094,
-            "1": 46.70000076293945
-          },
-          "entities": {},
-          "children": {},
-          "id": "J0"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 8,
-            "scalable": true
-          },
-          "pos": {
-            "0": 67.9000015258789,
-            "1": 46.5
-          },
-          "entities": {},
-          "children": {},
-          "id": "J1"
-        }, {
-          "options": {
-            "width": 0.2,
-            "radius": 8,
-            "scalable": true
-          },
-          "pos": {
-            "0": 95.0999984741211,
-            "1": 46.29999923706055
+            "0": 90.0999984741211,
+            "1": 40.79999923706055
           },
           "entities": {},
           "children": {},
@@ -2011,8 +1864,8 @@ contextTrigger: {
             "scalable": true
           },
           "pos": {
-            "0": 115.80000305175781,
-            "1": 46.599998474121094
+            "0": 48,
+            "1": 40.900001525878906
           },
           "entities": {},
           "children": {},
@@ -2020,8 +1873,286 @@ contextTrigger: {
         }]
       }
     }],
-    "walls": []
+    "walls": [{
+      "options": {
+        "width": 0.2,
+        "radius": 1,
+        "scalable": false
+      },
+      "id": "W0",
+      "pos": {
+        "0": 67.30000305175781,
+        "1": 53.20000076293945
+      },
+      "entities": {},
+      "children": {
+        "joints": [{
+          "options": {
+            "width": 0.2,
+            "radius": 1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 67.4000015258789,
+            "1": 32
+          },
+          "entities": {},
+          "children": {},
+          "id": "J0"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 67.30000305175781,
+            "1": 53.20000076293945
+          },
+          "entities": {},
+          "children": {},
+          "id": "J1"
+        }]
+      }
+    }]
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  wallPass: {
+    "contexts": [{
+      "options": {
+        "mobility": 1,
+        "triggerOnEmpty": false,
+        "width": 11.423812252927874,
+        "height": 24.94855936539136
+      },
+      "id": "C0",
+      "pos": {
+        "0": 38.53074645996094,
+        "1": 44.29106140136719
+      },
+      "entities": {},
+      "children": {}
+    }],
+    "groups": [{
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.8,
+        "agentsCount": 100,
+        "agentsMax": 100,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 2,
+        "startProb": 0,
+        "startRate": 0,
+        "endProb": 0,
+        "endRate": 0,
+        "near": 10
+      },
+      "id": "G0",
+      "pos": {
+        "0": 28.354360580444336,
+        "1": 44.29106140136719
+      },
+      "entities": {
+        "path": "P2",
+        "startContext": "C0",
+        "endContext": null
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }],
+    "paths": [{
+      "options": {
+        "width": 0.2,
+        "radius": 4
+      },
+      "id": "P2",
+      "pos": {
+        "0": 52.597679138183594,
+        "1": 44.46891784667969
+      },
+      "entities": {},
+      "children": {
+        "joints": [{
+          "options": {
+            "width": 0.2,
+            "radius": 0.5,
+            "scalable": true
+          },
+          "pos": {
+            "0": 53.67130661010742,
+            "1": 43.89921951293945
+          },
+          "entities": {},
+          "children": {},
+          "id": "J16"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 1,
+            "scalable": true
+          },
+          "pos": {
+            "0": 67.78925323486328,
+            "1": 43.67342758178711
+          },
+          "entities": {},
+          "children": {},
+          "id": "J18"
+        }]
+      }
+    }],
+    "walls": [{
+      "options": {
+        "width": 0.2,
+        "radius": 1,
+        "scalable": false
+      },
+      "id": "W0",
+      "pos": {
+        "0": 54.961639404296875,
+        "1": 27.42833137512207
+      },
+      "entities": {},
+      "children": {
+        "joints": [{
+          "options": {
+            "width": 0.2,
+            "radius": 1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 52.41826248168945,
+            "1": 25.48590850830078
+          },
+          "entities": {},
+          "children": {},
+          "id": "J0"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 0.1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 53.86460876464844,
+            "1": 42.5235710144043
+          },
+          "entities": {},
+          "children": {},
+          "id": "J2"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 0.1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 54.79446792602539,
+            "1": 42.49207305908203
+          },
+          "entities": {},
+          "children": {},
+          "id": "J4"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 54.73858642578125,
+            "1": 25.48590850830078
+          },
+          "entities": {},
+          "children": {},
+          "id": "J6"
+        }]
+      }
+    }, {
+      "options": {
+        "width": 0.2,
+        "radius": 1,
+        "scalable": false
+      },
+      "id": "W2",
+      "pos": {
+        "0": 54.961639404296875,
+        "1": 56.580596923828125
+      },
+      "entities": {},
+      "children": {
+        "joints": [{
+          "options": {
+            "width": 0.2,
+            "radius": 1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 52.9486198425293,
+            "1": 61.61668395996094
+          },
+          "entities": {},
+          "children": {},
+          "id": "J8"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 0.1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 54.020259857177734,
+            "1": 44.71683883666992
+          },
+          "entities": {},
+          "children": {},
+          "id": "J10"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 0.1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 54.90620803833008,
+            "1": 44.72572326660156
+          },
+          "entities": {},
+          "children": {},
+          "id": "J12"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 1,
+            "scalable": false
+          },
+          "pos": {
+            "0": 55.26894760131836,
+            "1": 61.55038833618164
+          },
+          "entities": {},
+          "children": {},
+          "id": "J14"
+        }]
+      }
+    }]
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   wallsPathGr: {
     "contexts": [],
     "groups": [{
@@ -2240,6 +2371,305 @@ contextTrigger: {
       }
     }]
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathContexts: {
+    "contexts": [{
+      "options": {
+        "width": 10.800003051757812,
+        "height": 28.400001525878906
+      },
+      "id": "C0",
+      "pos": {
+        "0": 34.400001525878906,
+        "1": 45
+      },
+      "entities": {},
+      "children": {}
+    }, {
+      "options": {
+        "width": 9.600000000000023,
+        "height": 31.400001525878906
+      },
+      "id": "C1",
+      "pos": {
+        "0": 130.8000030517578,
+        "1": 45.20000076293945
+      },
+      "entities": {},
+      "children": {}
+    }],
+    "groups": [{
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 500,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 3,
+        "startProb": 0.1,
+        "startRate": 10,
+        "endProb": 0.2,
+        "endRate": 5
+      },
+      "id": "G0",
+      "pos": {
+        "0": 83.80000305175781,
+        "1": 72
+      },
+      "entities": {
+        "path": "P1",
+        "startContext": "C0",
+        "endContext": "C1"
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }],
+    "paths": [{
+      "options": {
+        "width": 0.2,
+        "radius": 4
+      },
+      "id": "P1",
+      "pos": {
+        "0": 117.5,
+        "1": 45.400001525878906
+      },
+      "entities": {},
+      "children": {
+        "joints": [{
+          "options": {
+            "width": 0.2,
+            "radius": 4,
+            "scalable": true
+          },
+          "pos": {
+            "0": 48.79999923706055,
+            "1": 45.5
+          },
+          "entities": {},
+          "children": {},
+          "id": "J0"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 4,
+            "scalable": true
+          },
+          "pos": {
+            "0": 82.4000015258789,
+            "1": 45.70000076293945
+          },
+          "entities": {},
+          "children": {},
+          "id": "J1"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 4,
+            "scalable": true
+          },
+          "pos": {
+            "0": 117.5,
+            "1": 45.400001525878906
+          },
+          "entities": {},
+          "children": {},
+          "id": "J2"
+        }]
+      }
+    }],
+    "walls": []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathCtxGro: {
+    "contexts": [{
+      "options": {
+        "width": 14.399999237060541,
+        "height": 37.400000000000006
+      },
+      "id": "C0",
+      "pos": {
+        "0": 30,
+        "1": 43.20000076293945
+      },
+      "entities": {},
+      "children": {}
+    }, {
+      "options": {
+        "width": 8.600003051757824,
+        "height": 53.79999923706055
+      },
+      "id": "C1",
+      "pos": {
+        "0": 127.5999984741211,
+        "1": 48.29999923706055
+      },
+      "entities": {},
+      "children": {}
+    }],
+    "groups": [{
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 100,
+        "debug": false,
+        "pathStart": 0,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 6,
+        "startProb": 0.05,
+        "startRate": 2,
+        "endProb": 0.1,
+        "endRate": 2
+      },
+      "id": "G0",
+      "pos": {
+        "0": 80.0999984741211,
+        "1": 19.899999618530273
+      },
+      "entities": {
+        "path": "P1",
+        "startContext": "C0",
+        "endContext": "C1"
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }, {
+      "options": {
+        "agentsAspect": 0,
+        "agentsSizeMin": 0.5,
+        "agentsSizeMax": 0.5,
+        "agentsCount": 10,
+        "agentsMax": 100,
+        "debug": false,
+        "pathStart": 3,
+        "pathReverse": false,
+        "pathCircular": false,
+        "radius": 6,
+        "startProb": 0.05,
+        "startRate": 2,
+        "endProb": 0.1,
+        "endRate": 2
+      },
+      "id": "G1",
+      "pos": {
+        "0": 80.5,
+        "1": 68.5
+      },
+      "entities": {
+        "path": "P1",
+        "startContext": "C1",
+        "endContext": "C0"
+      },
+      "children": {},
+      "behavior": {
+        "options": {
+          "A": 2000,
+          "B": 0.08,
+          "kn": 120000,
+          "Kv": 240000,
+          "relaxationTime": 0.3
+        }
+      },
+      "agentsCount": 10
+    }],
+    "paths": [{
+      "options": {
+        "width": 0.2,
+        "radius": 4
+      },
+      "id": "P1",
+      "pos": {
+        "0": 115.80000305175781,
+        "1": 46.599998474121094
+      },
+      "entities": {},
+      "children": {
+        "joints": [{
+          "options": {
+            "width": 0.2,
+            "radius": 4,
+            "scalable": true
+          },
+          "pos": {
+            "0": 46.099998474121094,
+            "1": 46.70000076293945
+          },
+          "entities": {},
+          "children": {},
+          "id": "J0"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 8,
+            "scalable": true
+          },
+          "pos": {
+            "0": 67.9000015258789,
+            "1": 46.5
+          },
+          "entities": {},
+          "children": {},
+          "id": "J1"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 8,
+            "scalable": true
+          },
+          "pos": {
+            "0": 95.0999984741211,
+            "1": 46.29999923706055
+          },
+          "entities": {},
+          "children": {},
+          "id": "J2"
+        }, {
+          "options": {
+            "width": 0.2,
+            "radius": 4,
+            "scalable": true
+          },
+          "pos": {
+            "0": 115.80000305175781,
+            "1": 46.599998474121094
+          },
+          "entities": {},
+          "children": {},
+          "id": "J3"
+        }]
+      }
+    }],
+    "walls": []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   rooms: {
     "contexts": [{
       "options": {
@@ -2793,6 +3223,8 @@ contextTrigger: {
       }
     }]
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   testFun: function(world, debug) {
     // wire world events and adding entities functions
     var sizeR = 20;
@@ -2859,6 +3291,8 @@ contextTrigger: {
     var wall = new CrowdSim.Wall(null, null, world);
     wall.addJoints(room1);
   },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
   testJson: {
     'contexts': [{
       'options': {

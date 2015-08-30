@@ -25,7 +25,7 @@ App.defaultOptions = {
       onStart: null,
       onStep: null,
       onStop: function(entity) {
-        App.selectEntity(entity.view); // highlight entity that causes stop
+        App.selectEntity(entity ? entity.view : null); // highlight entity that causes stop
         if (App.callbacks.onStop) {
           App.callbacks.onStop(entity);
         }
