@@ -1,32 +1,5962 @@
 {
-    "project": {
-        "name": "CrowdSim.js Crowd Simulator API Documentation for v0.1.2",
-        "description": "Crowd Simulator App",
-        "version": "v0.1.2",
-        "url": ""
-    },
+    "project": {},
     "files": {
-        "src\\core.js": {
-            "name": "src\\core.js",
+        "src\\app\\Render\\Agent.js": {
+            "name": "src\\app\\Render\\Agent.js",
+            "modules": {},
+            "classes": {
+                "Render.Agent": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Context.js": {
+            "name": "src\\app\\Render\\Context.js",
+            "modules": {},
+            "classes": {
+                "Render.Context": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Detail.js": {
+            "name": "src\\app\\Render\\Detail.js",
+            "modules": {},
+            "classes": {
+                "Detail": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Entity.js": {
+            "name": "src\\app\\Render\\Entity.js",
+            "modules": {},
+            "classes": {
+                "Render.Entity": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Group.js": {
+            "name": "src\\app\\Render\\Group.js",
+            "modules": {},
+            "classes": {
+                "Render.Group": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Joint.js": {
+            "name": "src\\app\\Render\\Joint.js",
+            "modules": {},
+            "classes": {
+                "Render.Joint": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\LinePrototype.js": {
+            "name": "src\\app\\Render\\LinePrototype.js",
+            "modules": {},
+            "classes": {
+                "Render.Line": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Path.js": {
+            "name": "src\\app\\Render\\Path.js",
+            "modules": {},
+            "classes": {
+                "Render.Path": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Render.js": {
+            "name": "src\\app\\Render\\Render.js",
+            "modules": {},
+            "classes": {
+                "Render": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Wall.js": {
+            "name": "src\\app\\Render\\Wall.js",
+            "modules": {},
+            "classes": {
+                "Render.Wall": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\CrowdSimApp.js": {
+            "name": "src\\app\\CrowdSimApp.js",
+            "modules": {},
+            "classes": {
+                "CrowdSimApp": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Worlds.js": {
+            "name": "src\\app\\Worlds.js",
             "modules": {},
             "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Behavior\\Behavior.js": {
+            "name": "src\\sim\\Behavior\\Behavior.js",
+            "modules": {},
+            "classes": {
+                "Behaviour": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Behavior\\Panic.js": {
+            "name": "src\\sim\\Behavior\\Panic.js",
+            "modules": {},
+            "classes": {
+                "Panic": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Common\\Grid.js": {
+            "name": "src\\sim\\Common\\Grid.js",
+            "modules": {},
+            "classes": {
+                "Grid": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Common\\Vec2.js": {
+            "name": "src\\sim\\Common\\Vec2.js",
+            "modules": {},
+            "classes": {
+                "Common utilities": 1,
+                "2 Dimensional Vector": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Entities\\Helpers\\Joint.js": {
+            "name": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "modules": {},
+            "classes": {
+                "Joint": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Entities\\Helpers\\LinePrototype.js": {
+            "name": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "modules": {},
+            "classes": {
+                "Line": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Entities\\Helpers\\Traits.js": {
+            "name": "src\\sim\\Entities\\Helpers\\Traits.js",
+            "modules": {},
+            "classes": {
+                "AssignableToGroup": 1,
+                "EntityPrototype": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Entities\\Context.js": {
+            "name": "src\\sim\\Entities\\Context.js",
+            "modules": {},
+            "classes": {
+                "Context": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Entities\\Entity.js": {
+            "name": "src\\sim\\Entities\\Entity.js",
+            "modules": {},
+            "classes": {
+                "Entity": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Entities\\Group.js": {
+            "name": "src\\sim\\Entities\\Group.js",
+            "modules": {},
+            "classes": {
+                "Group": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Agent.js": {
+            "name": "src\\sim\\Agent.js",
+            "modules": {},
+            "classes": {
+                "Agent": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\CrowdSim.js": {
+            "name": "src\\sim\\CrowdSim.js",
+            "modules": {},
+            "classes": {
+                "CrowdSim": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Engine.js": {
+            "name": "src\\sim\\Engine.js",
+            "modules": {},
+            "classes": {
+                "Engine": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\World.js": {
+            "name": "src\\sim\\World.js",
+            "modules": {},
+            "classes": {
+                "World": 1
+            },
             "fors": {},
             "namespaces": {}
         }
     },
     "modules": {},
-    "classes": {},
+    "classes": {
+        "Render.Agent": {
+            "name": "Render.Agent",
+            "shortname": "Render.Agent",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Agent.js",
+            "line": 8,
+            "description": "Agent render view.",
+            "itemtype": "method",
+            "params": [
+                {
+                    "name": "agent",
+                    "description": "",
+                    "type": "Agent"
+                }
+            ]
+        },
+        "Render.Context": {
+            "name": "Render.Context",
+            "shortname": "Render.Context",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Context.js",
+            "line": 9,
+            "description": "Context render view.",
+            "itemtype": "method",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ]
+        },
+        "Detail": {
+            "name": "Detail",
+            "shortname": "Detail",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Detail.js",
+            "line": 3,
+            "description": "Detail manager.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "maxDetail",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "detail",
+                    "description": "",
+                    "type": "Number"
+                }
+            ]
+        },
+        "Render.Entity": {
+            "name": "Render.Entity",
+            "shortname": "Render.Entity",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Entity.js",
+            "line": 5,
+            "description": "Base render prototype",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Entity"
+                }
+            ]
+        },
+        "Render.Group": {
+            "name": "Render.Group",
+            "shortname": "Render.Group",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Group.js",
+            "line": 9,
+            "description": "Create a group render view from a group entity.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "group",
+                    "description": "",
+                    "type": "Group"
+                }
+            ]
+        },
+        "Render.Joint": {
+            "name": "Render.Joint",
+            "shortname": "Render.Joint",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 9,
+            "description": "Joint render view",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "joint",
+                    "description": "",
+                    "type": "Joint"
+                },
+                {
+                    "name": "texture",
+                    "description": "",
+                    "type": "Pixi.Texture"
+                }
+            ]
+        },
+        "Render.Line": {
+            "name": "Render.Line",
+            "shortname": "Render.Line",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\LinePrototype.js",
+            "line": 9,
+            "description": "Line rendering for paths and walls prototype.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "color",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "Line prototype",
+                "type": "LinePrototype"
+            }
+        },
+        "Render.Path": {
+            "name": "Render.Path",
+            "shortname": "Render.Path",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Path.js",
+            "line": 12,
+            "description": "Create a Path render view from an Entity.",
+            "itemtype": "method",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "Particleh"
+                }
+            ],
+            "return": {
+                "description": "render path",
+                "type": "Path"
+            }
+        },
+        "Render": {
+            "name": "Render",
+            "shortname": "Render",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Render.js",
+            "line": 6,
+            "description": "Initialices rendering and animate entities.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "canvas",
+                    "description": "",
+                    "type": "Canvas"
+                },
+                {
+                    "name": "w",
+                    "description": "width",
+                    "type": "Number"
+                },
+                {
+                    "name": "h",
+                    "description": "height",
+                    "type": "Number"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Render.Wall": {
+            "name": "Render.Wall",
+            "shortname": "Render.Wall",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\Render\\Wall.js",
+            "line": 13,
+            "description": "Wall render view.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "wall",
+                    "description": "",
+                    "type": "Wall"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render.Wall"
+            }
+        },
+        "CrowdSimApp": {
+            "name": "CrowdSimApp",
+            "shortname": "CrowdSimApp",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 7,
+            "type": "{Object}"
+        },
+        "Behaviour": {
+            "name": "Behaviour",
+            "shortname": "Behaviour",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Behavior\\Behavior.js",
+            "line": 3,
+            "description": "Base behavior.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "world",
+                    "description": "parent",
+                    "type": "World"
+                }
+            ]
+        },
+        "Panic": {
+            "name": "Panic",
+            "shortname": "Panic",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Behavior\\Panic.js",
+            "line": 6,
+            "description": "Helbing-Farkas,Vicsek Simulating dynamical features of escape panic",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "world",
+                    "description": "parent",
+                    "type": "World"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "extends": "Behavior"
+        },
+        "Grid": {
+            "name": "Grid",
+            "shortname": "Grid",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 5,
+            "description": "Grid hashmap to store entities indexed by their position.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "near",
+                    "description": "is the cell size for the hashmap. Also the maximum distance to be consider \"neighbours\"",
+                    "type": "Number"
+                }
+            ]
+        },
+        "Common utilities": {
+            "name": "Common utilities",
+            "shortname": "Common utilities",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 21
+        },
+        "2 Dimensional Vector": {
+            "name": "2 Dimensional Vector",
+            "shortname": "2 Dimensional Vector",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 56
+        },
+        "Joint": {
+            "name": "Joint",
+            "shortname": "Joint",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "line": 4,
+            "description": "Joint helper entity children of Wall and Path",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "x",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "world",
+                    "type": "World"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                },
+                {
+                    "name": "id",
+                    "description": "to use insted of autogenerate it, used when loading worlds",
+                    "type": "String"
+                }
+            ],
+            "extends": "Entity"
+        },
+        "Line": {
+            "name": "Line",
+            "shortname": "Line",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 18,
+            "description": "Line Base",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "x",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "world",
+                    "type": "World"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                },
+                {
+                    "name": "id",
+                    "description": "to use insted of autogenerate it, used when loading world",
+                    "type": "String"
+                }
+            ],
+            "extends": "Entity"
+        },
+        "AssignableToGroup": {
+            "name": "AssignableToGroup",
+            "shortname": "AssignableToGroup",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Entities\\Helpers\\Traits.js",
+            "line": 3,
+            "description": "To extend object with assignable to group trait.",
+            "itemtype": "method",
+            "params": [
+                {
+                    "name": "EntityPrototype",
+                    "description": "",
+                    "type": "Entity"
+                }
+            ],
+            "return": {
+                "description": "EntityPrototype"
+            }
+        },
+        "EntityPrototype": {
+            "name": "EntityPrototype",
+            "shortname": "EntityPrototype",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Entities\\Helpers\\Traits.js",
+            "line": 16,
+            "description": "Create entity at position.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "",
+                    "type": "Entity"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "id",
+                    "description": "optional to set",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": ""
+            }
+        },
+        "Context": {
+            "name": "Context",
+            "shortname": "Context",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 6,
+            "description": "Context entity",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "x",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "world",
+                    "type": "World"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                },
+                {
+                    "name": "id",
+                    "description": "to use insted of autogenerate it, used when loading worlds",
+                    "type": "String"
+                }
+            ],
+            "extends": "Entity"
+        },
+        "Entity": {
+            "name": "Entity",
+            "shortname": "Entity",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Entities\\Entity.js",
+            "line": 3,
+            "description": "Base entity",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "x",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "",
+                    "type": "Entity"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ]
+        },
+        "Group": {
+            "name": "Group",
+            "shortname": "Group",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 11,
+            "description": "Group Entity where agents belong.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "x",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "world",
+                    "type": "World"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                },
+                {
+                    "name": "id",
+                    "description": "to use insted of autogenerate it, used when loading worlds",
+                    "type": "String"
+                }
+            ],
+            "extends": "Entity"
+        },
+        "Agent": {
+            "name": "Agent",
+            "shortname": "Agent",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Agent.js",
+            "line": 5,
+            "description": "The agents that live in the simulation engine.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "x",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "group",
+                    "description": "parent",
+                    "type": "Group"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ]
+        },
+        "CrowdSim": {
+            "name": "CrowdSim",
+            "shortname": "CrowdSim",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\CrowdSim.js",
+            "line": 3,
+            "type": "{Object}"
+        },
+        "Engine": {
+            "name": "Engine",
+            "shortname": "Engine",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\Engine.js",
+            "line": 5,
+            "description": "The simulation engine. Manages the state running of the simulation",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "world",
+                    "description": "",
+                    "type": "World"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ]
+        },
+        "World": {
+            "name": "World",
+            "shortname": "World",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src\\sim\\World.js",
+            "line": 9,
+            "description": "The world where al entities live",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "parent",
+                    "description": "entity",
+                    "type": "Object"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ]
+        }
+    },
+    "elements": {},
     "classitems": [
         {
-            "file": "src\\core.js",
+            "file": "src\\app\\Render\\Agent.js",
+            "line": 33,
+            "description": "Destroy agent.",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Render.Agent"
+        },
+        {
+            "file": "src\\app\\Render\\Agent.js",
+            "line": 47,
+            "description": "Animate agent.",
+            "itemtype": "method",
+            "name": "render",
+            "class": "Render.Agent"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 23,
+            "description": "Create context view from context entity.",
+            "itemtype": "method",
+            "name": "CreateFromModel",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render.Context"
+            },
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 34,
+            "description": "Create context view and context entity.",
+            "itemtype": "method",
+            "name": "CreateFromPoint",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "",
+                    "type": "Entity"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render.Context"
+            },
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 49,
+            "description": "Destroy Context.",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 59,
+            "description": "Create graphics.",
+            "itemtype": "method",
+            "name": "createGraphics",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 75,
+            "description": "Get context center for dragging actions.",
+            "itemtype": "method",
+            "name": "getAnchor",
+            "return": {
+                "description": "anchor",
+                "type": "Vec2"
+            },
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 86,
+            "description": "Drag render context.",
+            "itemtype": "method",
+            "name": "dragTo",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "anchor",
+                    "description": "",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": ""
+            },
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 100,
+            "description": "Animate context, update position and size.",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 135,
+            "description": "Set context area, from its center.",
+            "itemtype": "method",
+            "name": "setArea",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 146,
+            "description": "Get context entity.",
+            "itemtype": "method",
+            "name": "getContext",
+            "return": {
+                "description": "context",
+                "type": "Context"
+            },
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Context.js",
+            "line": 156,
+            "description": "Get context center.",
+            "itemtype": "method",
+            "name": "getPos",
+            "return": {
+                "description": "position",
+                "type": "Vec2"
+            },
+            "class": "Render.Context"
+        },
+        {
+            "file": "src\\app\\Render\\Detail.js",
+            "line": 16,
+            "description": "Cycle detail levels.",
+            "itemtype": "method",
+            "name": "cycleDetail",
+            "params": [
+                {
+                    "name": "detail",
+                    "description": "to set, optional.",
+                    "type": "Number"
+                }
+            ],
+            "class": "Detail"
+        },
+        {
+            "file": "src\\app\\Render\\Entity.js",
+            "line": 21,
+            "description": "Destroy entity.",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Render.Entity"
+        },
+        {
+            "file": "src\\app\\Render\\Entity.js",
+            "line": 34,
+            "description": "Create base grahpics.",
+            "itemtype": "method",
+            "name": "createGraphics",
+            "params": [
+                {
+                    "name": "container",
+                    "description": "",
+                    "type": "Pixi.Container"
+                },
+                {
+                    "name": "graphics",
+                    "description": ", optional created otherwise",
+                    "type": "Pixi.Graphics"
+                }
+            ],
+            "return": {
+                "description": "graphics",
+                "type": "Pixi.Graphics"
+            },
+            "class": "Render.Entity"
+        },
+        {
+            "file": "src\\app\\Render\\Entity.js",
+            "line": 53,
+            "description": "Destroy base graphics.",
+            "itemtype": "method",
+            "name": "destroyGraphics",
+            "params": [
+                {
+                    "name": "container",
+                    "description": "",
+                    "type": "Pixi.Container"
+                },
+                {
+                    "name": "graphics",
+                    "description": "",
+                    "type": "Pixi.Graphics"
+                }
+            ],
+            "class": "Render.Entity"
+        },
+        {
+            "file": "src\\app\\Render\\Entity.js",
+            "line": 69,
+            "description": "Set render entity as interactive.",
+            "itemtype": "method",
+            "name": "setInteractive",
+            "params": [
+                {
+                    "name": "displayObject",
+                    "description": "",
+                    "type": "Pixi.DisplayObject"
+                }
+            ],
+            "class": "Render.Entity"
+        },
+        {
+            "file": "src\\app\\Render\\Entity.js",
+            "line": 85,
+            "description": "Animate entity.",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "graphics",
+                    "description": "",
+                    "type": "Pixi.Graphics"
+                }
+            ],
+            "class": "Render.Entity"
+        },
+        {
+            "file": "src\\app\\Render\\Entity.js",
+            "line": 95,
+            "description": "Get entity position.",
+            "itemtype": "method",
+            "name": "getPos",
+            "return": {
+                "description": "position.",
+                "type": "Vec2"
+            },
+            "class": "Render.Entity"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 23,
+            "description": "Create a group render view from a group entity.",
+            "itemtype": "method",
+            "name": "CreateFromModel",
+            "params": [
+                {
+                    "name": "group",
+                    "description": "",
+                    "type": "Group"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render.Group"
+            },
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 33,
+            "description": "Create a group render and entity in a point.",
+            "itemtype": "method",
+            "name": "CreateFromPoint",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "",
+                    "type": "Entity"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render.Group"
+            },
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 48,
+            "description": "Destroy render group.",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 58,
+            "description": "Create base graphics for group.",
+            "itemtype": "method",
+            "name": "createGraphics",
+            "params": [
+                {
+                    "name": "group",
+                    "description": "",
+                    "type": "Group"
+                }
+            ],
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 74,
+            "description": "Animate group, update position and radius.",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "of the group",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": ""
+            },
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 128,
+            "description": "Get render group anchor.",
+            "itemtype": "method",
+            "name": "getAnchor",
+            "return": {
+                "description": "anchor",
+                "type": "Vec2"
+            },
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 139,
+            "description": "Drag action in groups.",
+            "itemtype": "method",
+            "name": "dragTo",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "anchor",
+                    "description": "",
+                    "type": "Vec2"
+                }
+            ],
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 152,
+            "description": "Get group position.",
+            "itemtype": "method",
+            "name": "getPos",
+            "return": {
+                "description": "position",
+                "type": "Vec2"
+            },
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Group.js",
+            "line": 162,
+            "description": "Get associated group entity.",
+            "itemtype": "method",
+            "name": "getGroup",
+            "return": {
+                "description": "",
+                "type": "Group"
+            },
+            "class": "Render.Group"
+        },
+        {
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 25,
+            "description": "Destroy base graphics.",
+            "itemtype": "method",
+            "name": "destroy",
+            "params": [
+                {
+                    "name": "graphics",
+                    "description": "",
+                    "type": "Pixi.Graphics"
+                }
+            ],
+            "class": "Render.Joint"
+        },
+        {
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 39,
+            "description": "Create base graphics.",
+            "itemtype": "method",
+            "name": "createGraphics",
+            "params": [
+                {
+                    "name": "graphics",
+                    "description": "",
+                    "type": "Pixi.Graphics"
+                }
+            ],
+            "class": "Render.Joint"
+        },
+        {
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 60,
+            "description": "Animate joint, update position and radius.",
+            "itemtype": "method",
+            "name": "render",
+            "class": "Render.Joint"
+        },
+        {
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 77,
+            "description": "Get joint anchor for dragging actions.",
+            "itemtype": "method",
+            "name": "getAnchor",
+            "return": {
+                "description": "anchor",
+                "type": "Vec2"
+            },
+            "class": "Render.Joint"
+        },
+        {
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 87,
+            "description": "Draggin actino.",
+            "itemtype": "method",
+            "name": "dragTo",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "anchor",
+                    "description": "",
+                    "type": "Vec2"
+                }
+            ],
+            "class": "Render.Joint"
+        },
+        {
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 107,
+            "description": "Get joint associated entity.",
+            "itemtype": "method",
+            "name": "getJoint",
+            "return": {
+                "description": "joint",
+                "type": "Joint"
+            },
+            "class": "Render.Joint"
+        },
+        {
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 117,
+            "description": "Get joint position.",
+            "itemtype": "method",
+            "name": "getPos",
+            "return": {
+                "description": "position",
+                "type": "Vec2"
+            },
+            "class": "Render.Joint"
+        },
+        {
+            "file": "src\\app\\Render\\Joint.js",
+            "line": 127,
+            "description": "Shows or hides render joint.",
+            "itemtype": "method",
+            "name": "show",
+            "params": [
+                {
+                    "name": "show",
+                    "description": "true for visible",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "Render.Joint"
+        },
+        {
+            "file": "src\\app\\Render\\LinePrototype.js",
+            "line": 19,
+            "description": "Line rendering for paths and walls.",
+            "is_constructor": 1,
+            "itemtype": "method",
+            "name": "Line",
+            "params": [
+                {
+                    "name": "line",
+                    "description": "",
+                    "type": "Wall|Path"
+                }
+            ],
+            "class": "Render.Line"
+        },
+        {
+            "file": "src\\app\\Render\\LinePrototype.js",
+            "line": 33,
+            "description": "Create base graphics.",
+            "itemtype": "method",
+            "name": "createGraphics",
+            "params": [
+                {
+                    "name": "line",
+                    "description": "",
+                    "type": "Wall|Path"
+                }
+            ],
+            "class": "Render.Line"
+        },
+        {
+            "file": "src\\app\\Render\\LinePrototype.js",
+            "line": 54,
+            "description": "Destroy base graphics.",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Render.Line"
+        },
+        {
+            "file": "src\\app\\Render\\LinePrototype.js",
+            "line": 67,
+            "description": "Add a render joint from a joint entity.",
+            "itemtype": "method",
+            "name": "addJointFromModel",
+            "params": [
+                {
+                    "name": "joint",
+                    "description": "",
+                    "type": "Joint"
+                }
+            ],
+            "return": {
+                "description": "render joint",
+                "type": "Render.Joint"
+            },
+            "class": "Render.Line"
+        },
+        {
+            "file": "src\\app\\Render\\LinePrototype.js",
+            "line": 80,
+            "description": "Create a joint in a position.",
+            "itemtype": "method",
+            "name": "addJoint",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "options",
+                    "description": "for creation",
+                    "type": "Options"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render.Joint"
+            },
+            "class": "Render.Line"
+        },
+        {
+            "file": "src\\app\\Render\\LinePrototype.js",
+            "line": 95,
+            "description": "Animate joint, position and radius.",
+            "itemtype": "method",
+            "name": "render",
+            "params": [
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "Render.Line"
+        },
+        {
+            "file": "src\\app\\Render\\Path.js",
+            "line": 24,
+            "description": "Create a Path at a position.",
+            "itemtype": "method",
+            "name": "CreateFromPoint",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "parent",
+                    "description": "",
+                    "type": "Entity"
+                },
+                {
+                    "name": "options",
+                    "description": "for creation of the path",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "render path",
+                "type": "Path"
+            },
+            "class": "Render.Path"
+        },
+        {
+            "file": "src\\app\\Render\\Path.js",
+            "line": 39,
+            "description": "Get the path position, last joint added.",
+            "itemtype": "method",
+            "name": "getPos",
+            "return": {
+                "description": "position",
+                "type": "Vec2"
+            },
+            "class": "Render.Path"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 52,
+            "description": "Initialice render.",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "textures",
+                    "description": "coordinates for create Pixi.Textures.",
+                    "type": "Array"
+                },
+                {
+                    "name": "events",
+                    "description": "to receive world callbacks",
+                    "type": "Array"
+                }
+            ],
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 117,
+            "description": "Start rendering loop.",
+            "itemtype": "method",
+            "name": "start",
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 127,
+            "description": "Rendering loop.",
+            "itemtype": "method",
+            "name": "animate",
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 164,
+            "description": "Stop rendering loop.",
+            "itemtype": "method",
+            "name": "stop",
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 173,
+            "description": "Set current rendered world.",
+            "itemtype": "method",
+            "name": "setWorld",
+            "params": [
+                {
+                    "name": "world",
+                    "description": "",
+                    "type": "World"
+                }
+            ],
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 183,
+            "description": "Resize rendering stage.",
+            "itemtype": "method",
+            "name": "resize",
+            "params": [
+                {
+                    "name": "w",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "h",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 194,
+            "description": "Draw a helper line from 0 to 1.",
+            "itemtype": "method",
+            "name": "drawHelperLine",
+            "params": [
+                {
+                    "name": "x0",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y0",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "x1",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y1",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 213,
+            "description": "Zoom-in, zoom-out stage.",
+            "itemtype": "method",
+            "name": "zoom",
+            "params": [
+                {
+                    "name": "scale",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "x",
+                    "description": "center of zoom",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "center of zoom",
+                    "type": "Number"
+                }
+            ],
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 231,
+            "description": "Pan view of stage.",
+            "itemtype": "method",
+            "name": "pan",
+            "params": [
+                {
+                    "name": "dx",
+                    "description": "displacement x",
+                    "type": "Number"
+                },
+                {
+                    "name": "dy",
+                    "description": "displacement y",
+                    "type": "Number"
+                }
+            ],
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 243,
+            "description": "Get stage width.",
+            "itemtype": "method",
+            "name": "getWidth",
+            "return": {
+                "description": "width",
+                "type": "Number"
+            },
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 253,
+            "description": "Get stage height.",
+            "itemtype": "method",
+            "name": "getHeight",
+            "return": {
+                "description": "height",
+                "type": "Number"
+            },
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 263,
+            "description": "Convert screen coordinates to world coordinates.",
+            "itemtype": "method",
+            "name": "screenToWorld",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "world coordinate {x:x,y:y}",
+                "type": "Object"
+            },
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Render.js",
+            "line": 276,
+            "description": "Convert world coordinates to screen coordinates.",
+            "itemtype": "method",
+            "name": "worldToScreen",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "screen coordinate {x:x,y:y}",
+                "type": "Object"
+            },
+            "class": "Render"
+        },
+        {
+            "file": "src\\app\\Render\\Wall.js",
+            "line": 25,
+            "description": "Description",
+            "itemtype": "method",
+            "name": "CreateFromPoint",
+            "params": [
+                {
+                    "name": "x",
+                    "description": ""
+                },
+                {
+                    "name": "y",
+                    "description": ""
+                },
+                {
+                    "name": "parent",
+                    "description": ""
+                },
+                {
+                    "name": "options",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "NewExpression"
+            },
+            "class": "Render.Wall"
+        },
+        {
+            "file": "src\\app\\Render\\Wall.js",
+            "line": 39,
+            "description": "Description",
+            "itemtype": "method",
+            "name": "getPos",
+            "return": {
+                "description": "CallExpression"
+            },
+            "class": "Render.Wall"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 31,
+            "description": "Callback on simulation stop.",
+            "itemtype": "method",
+            "name": "onStop",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "that triggered the stop",
+                    "type": "Entity"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 75,
+            "description": "Inicialization of application.",
+            "itemtype": "method",
+            "name": "init",
+            "params": [
+                {
+                    "name": "canvas",
+                    "description": "to render scene.",
+                    "type": "Canvas"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 125,
+            "description": "Resizes the scene.",
+            "itemtype": "method",
+            "name": "resize",
+            "params": [
+                {
+                    "name": "window",
+                    "description": "to use the current width or height",
+                    "type": "Window"
+                },
+                {
+                    "name": "width",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "height",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 142,
+            "description": "Zoom in a position.",
+            "itemtype": "method",
+            "name": "zoom",
+            "params": [
+                {
+                    "name": "scale",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 154,
+            "description": "Displace scene view.",
+            "itemtype": "method",
+            "name": "pan",
+            "params": [
+                {
+                    "name": "dx",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "dy",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 165,
+            "description": "Convert screen to world coordinates.",
+            "itemtype": "method",
+            "name": "screenToWorld",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "world coordinates",
+                "type": "Vec2"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 176,
+            "description": "Convert world toscreen coordinates.",
+            "itemtype": "method",
+            "name": "worldToScreen",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "screen coordinates",
+                "type": "Vec2"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 188,
+            "description": "Start/stop simulation.",
+            "itemtype": "method",
+            "name": "toggleRun",
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 202,
+            "description": "Gets engine running state.",
+            "itemtype": "method",
+            "name": "isRunning",
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 212,
+            "description": "Start simulation.",
+            "itemtype": "method",
+            "name": "run",
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 222,
+            "description": "Stop simulation.",
+            "itemtype": "method",
+            "name": "stop",
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 232,
+            "description": "Step and stop simulation.",
+            "itemtype": "method",
+            "name": "step",
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 242,
+            "description": "Resert simulation.",
+            "itemtype": "method",
+            "name": "reset",
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 252,
+            "description": "Get simulation statistics.",
+            "itemtype": "method",
+            "name": "getStats",
+            "return": {
+                "description": "stats",
+                "type": "Object"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 272,
+            "description": "Cycle an entity detail level.",
+            "itemtype": "method",
+            "name": "cycleDetail",
+            "params": [
+                {
+                    "name": "entityType",
+                    "description": "",
+                    "type": "EntityTypes"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 282,
+            "description": "Get simulation engine time settings.",
+            "itemtype": "method",
+            "name": "getEngineSettings",
+            "return": {
+                "description": "[engine.options]",
+                "type": "Object"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 292,
+            "description": "Save current world.",
+            "itemtype": "method",
+            "name": "save",
+            "params": [
+                {
+                    "name": "save",
+                    "description": "true to save; false to return String",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "raw",
+                "type": "String"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 305,
+            "description": "Load an example world by its name.",
+            "itemtype": "method",
+            "name": "loadExample",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 317,
+            "description": "Get a list of example worlds.",
+            "itemtype": "method",
+            "name": "listExamples",
+            "return": {
+                "description": "world names",
+                "type": "Array"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 327,
+            "description": "Clear current world.",
+            "itemtype": "method",
+            "name": "clear",
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 341,
+            "description": "Load a world.",
+            "itemtype": "method",
+            "name": "load",
+            "params": [
+                {
+                    "name": "loader",
+                    "description": "JSON structure",
+                    "type": "String"
+                },
+                {
+                    "name": "loadDefault",
+                    "description": "true to load last snapshoot",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 363,
+            "description": "Callback on create agents.",
+            "itemtype": "method",
+            "name": "onCreateAgents",
+            "params": [
+                {
+                    "name": "agents",
+                    "description": "created.",
+                    "type": "Array"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 375,
+            "description": "Callback on destroy agents.",
+            "itemtype": "method",
+            "name": "onDestroyAgents",
+            "params": [
+                {
+                    "name": "agents",
+                    "description": "destroyed",
+                    "type": "Array"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 387,
+            "description": "Callback on create entity.",
+            "itemtype": "method",
+            "name": "onCreateEntity",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "created",
+                    "type": "Entity"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 399,
+            "description": "Callback on destroy entity.",
+            "itemtype": "method",
+            "name": "onDestroyEntity",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "destroyedn",
+                    "type": "Entity"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 414,
+            "description": "Request to create an entity at a give pos.",
+            "itemtype": "method",
+            "name": "createEntityStart",
+            "params": [
+                {
+                    "name": "entityType",
+                    "description": "",
+                    "type": "EntityTypes"
+                },
+                {
+                    "name": "pos",
+                    "description": "",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render.Entity"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 428,
+            "description": "Request current entity creation of null if finished",
+            "itemtype": "method",
+            "name": "getCreatingEntity",
+            "return": {
+                "description": "",
+                "type": "Render.Entity"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 438,
+            "description": "Request to end the creation of the current entity.",
+            "itemtype": "method",
+            "name": "createEntityEnd",
+            "return": {
+                "description": "null",
+                "type": "Object"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 450,
+            "description": "Destroy an entity.",
+            "itemtype": "method",
+            "name": "destroyEntity",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Render.Entity"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 463,
+            "description": "Edit an entity starting is creation mode.",
+            "itemtype": "method",
+            "name": "editEntity",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Render.Entity"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 482,
+            "description": "Add a existing entity.",
+            "itemtype": "method",
+            "name": "addEntity",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Entity"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 493,
+            "description": "Sets the current selected entitiy.",
+            "itemtype": "method",
+            "name": "selectEntity",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Render.Entity"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 517,
+            "description": "Gets the current selected entity.",
+            "itemtype": "method",
+            "name": "getSelectedEntity",
+            "return": {
+                "description": "",
+                "type": "Render.Entity"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 527,
+            "description": "Set the current selected entity by its id",
+            "itemtype": "method",
+            "name": "selectEntityById",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 543,
+            "description": "Entity mouse down event.",
+            "itemtype": "method",
+            "name": "mousedown",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 569,
+            "description": "Stage entity click event, creation of new entities.",
+            "itemtype": "method",
+            "name": "entityClick",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "newEntity",
+                    "description": "",
+                    "type": "Render.Entity"
+                },
+                {
+                    "name": "selected",
+                    "description": "",
+                    "type": "Render.Entity"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 617,
+            "description": "Stage mouse down event, creation of entities steps",
+            "itemtype": "method",
+            "name": "mousedown",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 645,
+            "description": "Entity mouse move event",
+            "itemtype": "method",
+            "name": "mousemove",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 668,
+            "description": "Stage mouse move event, helper lines.",
+            "itemtype": "method",
+            "name": "mousemove",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 684,
+            "description": "Stage mouse wheel event, zoom and radius change.",
+            "itemtype": "method",
+            "name": "mousewheel",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 709,
+            "description": "Entity mouse up evenp.",
+            "itemtype": "method",
+            "name": "mouseup",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 732,
+            "description": "Stage mouse up event.",
+            "itemtype": "method",
+            "name": "mouseup",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 746,
+            "description": "Entity mouse out event.",
+            "itemtype": "method",
+            "name": "mouseout",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 763,
+            "description": "Entity mouse over event.",
+            "itemtype": "method",
+            "name": "mouseover",
+            "params": [
+                {
+                    "name": "event",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "CrowdSimApp"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 5,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
             "line": 6,
-            "description": "My property description.  Like other pieces of your comment blocks,\nthis can span multiple lines.",
-            "itemtype": "property",
-            "name": "propertyName",
-            "type": "{Object}",
-            "default": "\"foo\"",
-            "class": ""
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 51,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 52,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 100,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 101,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 243,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 244,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 301,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 302,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 359,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 360,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 429,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 430,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 503,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 504,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 565,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 566,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 697,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 698,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 838,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 839,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1027,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1028,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1177,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1178,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1302,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1303,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1792,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1793,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1919,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 1920,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 2154,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 2155,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 2374,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 2375,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 2497,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 2498,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 2671,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 2672,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 3226,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 3227,
+            "description": "****************************************************************************************************************",
+            "itemtype": "method",
+            "name": "testFun",
+            "params": [
+                {
+                    "name": "world",
+                    "description": ""
+                },
+                {
+                    "name": "debug",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": ""
+            },
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 3300,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\app\\Worlds.js",
+            "line": 3301,
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\sim\\Behavior\\Behavior.js",
+            "line": 14,
+            "description": "Return the acceleration result for a agent going to its target.",
+            "itemtype": "method",
+            "name": "getAccel",
+            "params": [
+                {
+                    "name": "agent",
+                    "description": "",
+                    "type": "Agent"
+                },
+                {
+                    "name": "target",
+                    "description": "a destination with target.pos and target.in = function => path point, point, other agent",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "acceleration result of the model",
+                "type": "Vec2"
+            },
+            "class": "Behaviour"
+        },
+        {
+            "file": "src\\sim\\Behavior\\Panic.js",
+            "line": 99,
+            "description": "Calculate the social force between two agents i,j.",
+            "itemtype": "method",
+            "name": "calculateAgentForce",
+            "params": [
+                {
+                    "name": "i",
+                    "description": "",
+                    "type": "Agent"
+                },
+                {
+                    "name": "j",
+                    "description": "",
+                    "type": "Agent"
+                }
+            ],
+            "return": {
+                "description": "force",
+                "type": "Vec2"
+            },
+            "class": "Panic"
+        },
+        {
+            "file": "src\\sim\\Behavior\\Panic.js",
+            "line": 133,
+            "description": "Calculate the social force between an agent and a wall.",
+            "itemtype": "method",
+            "name": "calculateWallForce",
+            "params": [
+                {
+                    "name": "i",
+                    "description": "",
+                    "type": "Agent"
+                },
+                {
+                    "name": "projection",
+                    "description": "point the wall",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "width",
+                    "description": "of the wall",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "force",
+                "type": "Vec2"
+            },
+            "class": "Panic"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 17,
+            "description": "Insert entities in the hashmap.",
+            "itemtype": "method",
+            "name": "insert",
+            "params": [
+                {
+                    "name": "entities",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 35,
+            "description": "Insert one entity.",
+            "itemtype": "method",
+            "name": "insertOne",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Entity"
+                },
+                {
+                    "name": "x",
+                    "description": "coordinate, if null entity.pos[0] is used",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate, if null entity.pos[1] is used",
+                    "type": "Number"
+                }
+            ],
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 52,
+            "description": "Helper to update multiple contexts area points by sampling their area with the cell size.",
+            "itemtype": "method",
+            "name": "updateContextsHelper",
+            "params": [
+                {
+                    "name": "contexts",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 73,
+            "description": "Helper to update multiple walls area points by sampling their path with the cell size.",
+            "itemtype": "method",
+            "name": "updateWallsHelper",
+            "params": [
+                {
+                    "name": "walls",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 100,
+            "description": "Clear the hashamp and insert entities.",
+            "itemtype": "method",
+            "name": "updateAll",
+            "params": [
+                {
+                    "name": "entities",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 111,
+            "description": "Update given entities mapping.",
+            "itemtype": "method",
+            "name": "update",
+            "params": [
+                {
+                    "name": "entities",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 122,
+            "description": "Clear the hashmap.",
+            "itemtype": "method",
+            "name": "clear",
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 131,
+            "description": "Remove the given entities.",
+            "itemtype": "method",
+            "name": "remove",
+            "params": [
+                {
+                    "name": "entities",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 147,
+            "description": "Gets neighbours to (x,y) point or Entity.",
+            "itemtype": "method",
+            "name": "neighbours",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Entity"
+                },
+                {
+                    "name": "x",
+                    "description": "coordinate, if null entity.pos[0] is used",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate, if null entity.pos[1] is used",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "neighbours",
+                "type": "LazySequence"
+            },
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 167,
+            "description": "Gets neighbours to a context by sampling its position with the cell size.",
+            "itemtype": "method",
+            "name": "neighboursContext",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "return": {
+                "description": "neighbours",
+                "type": "LazySequence"
+            },
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 187,
+            "description": "Builds the keys of the neighbours of the position (x,y).",
+            "itemtype": "method",
+            "name": "_keyNeighbours",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "coordinate",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "neighbours keys",
+                "type": "Array"
+            },
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 205,
+            "description": "Build the key to map coordinates to the hashmap.",
+            "itemtype": "method",
+            "name": "_key",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Entity"
+                },
+                {
+                    "name": "x",
+                    "description": "coordinate, if null entity.pos[0] is used",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "coordinate, if null entity.pos[1] is used",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "key",
+                "type": "String"
+            },
+            "class": "Grid"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 34,
+            "description": "Sets the type of array used when creating new vectors and matrices",
+            "itemtype": "method",
+            "name": "setMatrixArrayType",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "Array type, such as Float32Array or Array",
+                    "type": "Type"
+                }
+            ],
+            "return": {
+                "description": ""
+            },
+            "class": "Common utilities"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 46,
+            "description": "Convert Degree To Radian",
+            "itemtype": "method",
+            "name": "toRadian",
+            "params": [
+                {
+                    "name": "a",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "BinaryExpression"
+            },
+            "class": "Common utilities"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 62,
+            "description": "Creates a new, empty vec2",
+            "itemtype": "method",
+            "name": "create",
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 74,
+            "description": "Creates a new vec2 initialized with values from an existing vector",
+            "itemtype": "method",
+            "name": "clone",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "vector to clone",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 87,
+            "description": "Creates a new vec2 initialized with the given values",
+            "itemtype": "method",
+            "name": "fromValues",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "X component",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "Y component",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 101,
+            "description": "Copy the values from one vec2 to another",
+            "itemtype": "method",
+            "name": "copy",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the source vector",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 114,
+            "description": "Set the components of a vec2 to the given values",
+            "itemtype": "method",
+            "name": "set",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "x",
+                    "description": "X component",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "Y component",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 128,
+            "description": "Adds two vec2's",
+            "itemtype": "method",
+            "name": "add",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 142,
+            "description": "Subtracts vector b from vector a",
+            "itemtype": "method",
+            "name": "subtract",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 156,
+            "description": "Alias for {@link vec2.subtract}",
+            "itemtype": "method",
+            "name": "",
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 162,
+            "description": "Multiplies two vec2's",
+            "itemtype": "method",
+            "name": "multiply",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 176,
+            "description": "Alias for {@link vec2.multiply}",
+            "itemtype": "method",
+            "name": "",
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 182,
+            "description": "Divides two vec2's",
+            "itemtype": "method",
+            "name": "divide",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 196,
+            "description": "Alias for {@link vec2.divide}",
+            "itemtype": "method",
+            "name": "",
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 202,
+            "description": "Returns the minimum of two vec2's",
+            "itemtype": "method",
+            "name": "min",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 216,
+            "description": "Returns the maximum of two vec2's",
+            "itemtype": "method",
+            "name": "max",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 230,
+            "description": "Scales a vec2 by a scalar number",
+            "itemtype": "method",
+            "name": "scale",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the vector to scale",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "amount to scale the vector by",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 244,
+            "description": "Adds two vec2's after scaling the second operand by a scalar value",
+            "itemtype": "method",
+            "name": "scaleAndAdd",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "scale",
+                    "description": "the amount to scale b by before adding",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 259,
+            "description": "Calculates the euclidian distance between two vec2's",
+            "itemtype": "method",
+            "name": "distance",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "CallExpression"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 272,
+            "description": "Alias for {@link vec2.distance}",
+            "itemtype": "method",
+            "name": "",
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 278,
+            "description": "Calculates the squared euclidian distance between two vec2's",
+            "itemtype": "method",
+            "name": "squaredDistance",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "BinaryExpression"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 291,
+            "description": "Alias for {@link vec2.squaredDistance}",
+            "itemtype": "method",
+            "name": "",
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 297,
+            "description": "Calculates the length of a vec2",
+            "itemtype": "method",
+            "name": "length",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "vector to calculate length of",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "CallExpression"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 309,
+            "description": "Alias for {@link vec2.length}",
+            "itemtype": "method",
+            "name": "",
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 315,
+            "description": "Calculates the squared length of a vec2",
+            "itemtype": "method",
+            "name": "squaredLength",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "vector to calculate squared length of",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "BinaryExpression"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 327,
+            "description": "Alias for {@link vec2.squaredLength}",
+            "itemtype": "method",
+            "name": "",
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 333,
+            "description": "Negates the components of a vec2",
+            "itemtype": "method",
+            "name": "negate",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "vector to negate",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 346,
+            "description": "Returns the inverse of the components of a vec2",
+            "itemtype": "method",
+            "name": "inverse",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "vector to invert",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 359,
+            "description": "Normalize a vec2",
+            "itemtype": "method",
+            "name": "normalize",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "vector to normalize",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 379,
+            "description": "Calculates the dot product of two vec2's",
+            "itemtype": "method",
+            "name": "dot",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "BinaryExpression"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 390,
+            "description": "Computes the cross product of two vec2's\nNote that the cross product must by definition produce a 3D vector",
+            "itemtype": "method",
+            "name": "cross",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec3"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 406,
+            "description": "Performs a linear interpolation between two vec2's",
+            "itemtype": "method",
+            "name": "lerp",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "t",
+                    "description": "interpolation amount between the two inputs",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 423,
+            "description": "Generates a random vector with the given scale",
+            "itemtype": "method",
+            "name": "random",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "scale",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 438,
+            "description": "Transforms the vec2 with a mat2",
+            "itemtype": "method",
+            "name": "transformMat2",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the vector to transform",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "m",
+                    "description": "matrix to transform with",
+                    "type": "Mat2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 454,
+            "description": "Transforms the vec2 with a mat2d",
+            "itemtype": "method",
+            "name": "transformMat2d",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the vector to transform",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "m",
+                    "description": "matrix to transform with",
+                    "type": "Mat2d"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 470,
+            "description": "Transforms the vec2 with a mat3\n3rd vector component is implicitly '1'",
+            "itemtype": "method",
+            "name": "transformMat3",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the vector to transform",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "m",
+                    "description": "matrix to transform with",
+                    "type": "Mat3"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 487,
+            "description": "Transforms the vec2 with a mat4\n3rd vector component is implicitly '0'\n4th vector component is implicitly '1'",
+            "itemtype": "method",
+            "name": "transformMat4",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the vector to transform",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "m",
+                    "description": "matrix to transform with",
+                    "type": "Mat4"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 505,
+            "description": "Perform some operation over an array of vec2s.",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "the array of vectors to iterate over",
+                    "type": "Array"
+                },
+                {
+                    "name": "stride",
+                    "description": "Number of elements between the start of each vec2. If 0 assumes tightly packed",
+                    "type": "Number"
+                },
+                {
+                    "name": "offset",
+                    "description": "Number of elements to skip at the beginning of the array",
+                    "type": "Number"
+                },
+                {
+                    "name": "count",
+                    "description": "Number of vec2s to iterate over. If 0 iterates over entire array",
+                    "type": "Number"
+                },
+                {
+                    "name": "fn",
+                    "description": "Function to call for each vector in the array",
+                    "type": "Function"
+                },
+                {
+                    "name": "arg",
+                    "description": "additional argument to pass to fn",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "a",
+                "type": "Array"
+            },
+            "itemtype": "method",
+            "name": "",
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 546,
+            "description": "Returns a string representation of a vector",
+            "itemtype": "method",
+            "name": "str",
+            "params": [
+                {
+                    "name": "a",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "BinaryExpression"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 558,
+            "description": "Adds three vec2's",
+            "itemtype": "method",
+            "name": "add3",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "c",
+                    "description": "the third operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 573,
+            "description": "Calculates the shortest projection between a point and a line defined by two vec2's",
+            "itemtype": "method",
+            "name": "projectionToSegment",
+            "params": [
+                {
+                    "name": "out",
+                    "description": ""
+                },
+                {
+                    "name": "p",
+                    "description": "the point",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "the first operand",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": "the second operand",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "CallExpression"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Common\\Vec2.js",
+            "line": 594,
+            "description": "Normalize a vec2",
+            "itemtype": "method",
+            "name": "normalizeAndScale",
+            "params": [
+                {
+                    "name": "out",
+                    "description": "the receiving vector",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "a",
+                    "description": "vector to normalize",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "b",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "out"
+            },
+            "class": "2 Dimensional Vector"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "line": 24,
+            "description": "Destroy the Joint",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Joint"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "line": 35,
+            "description": "Get radius",
+            "itemtype": "method",
+            "name": "getRadius",
+            "return": {
+                "description": "radius",
+                "type": "Number"
+            },
+            "class": "Joint"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "line": 45,
+            "description": "Checks if a point is inside a joint.",
+            "itemtype": "method",
+            "name": "in",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "true if inside; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "Joint"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "line": 57,
+            "description": "Set radius.",
+            "itemtype": "method",
+            "name": "setRadius",
+            "params": [
+                {
+                    "name": "radius",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "Joint"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "line": 69,
+            "description": "Increment radius.",
+            "itemtype": "method",
+            "name": "incrRadius",
+            "params": [
+                {
+                    "name": "dr",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "Joint"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 7,
+            "description": "Base class to extend Wall and Path entities with common functionalities.",
+            "itemtype": "method",
+            "name": "LinePrototype",
+            "params": [
+                {
+                    "name": "idPrefix",
+                    "description": "'W' for walls, 'P' for paths",
+                    "type": "String"
+                },
+                {
+                    "name": "type",
+                    "description": "'wall' for walls, 'path' for paths",
+                    "type": "String"
+                },
+                {
+                    "name": "defaults",
+                    "description": "options",
+                    "type": "Object"
+                },
+                {
+                    "name": "id",
+                    "description": "to use insted of autogenerate it, used when loading worlds",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Line"
+            },
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 41,
+            "description": "Destroy the line",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 55,
+            "description": "Request to add a children Joint entity.",
+            "itemtype": "method",
+            "name": "addEntity",
+            "params": [
+                {
+                    "name": "joint",
+                    "description": "",
+                    "type": "Joint"
+                },
+                {
+                    "name": "options",
+                    "description": "used for joint creation",
+                    "type": "Object"
+                }
+            ],
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 76,
+            "description": "Request to remove a children Joint entity.",
+            "itemtype": "method",
+            "name": "removeEntity",
+            "params": [
+                {
+                    "name": "joint",
+                    "description": "",
+                    "type": "Joint"
+                }
+            ],
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 100,
+            "description": "Request to add a list of  children Joint entities.",
+            "itemtype": "method",
+            "name": "addJoints",
+            "params": [
+                {
+                    "name": "joints",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 119,
+            "description": "Helper to create a new Joint.",
+            "itemtype": "method",
+            "name": "addJoint",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "id",
+                    "description": "to use insted of autogenerate it, used when loading worldsid",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "joint",
+                "type": "Joint"
+            },
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 136,
+            "description": "Gets the childen joints.",
+            "itemtype": "method",
+            "name": "getJoints",
+            "return": {
+                "description": "joints",
+                "type": "Array"
+            },
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 146,
+            "description": "Get a joint index in the path/wall",
+            "itemtype": "method",
+            "name": "getJointIdx",
+            "params": [
+                {
+                    "name": "joint",
+                    "description": "",
+                    "type": "Joint"
+                }
+            ],
+            "return": {
+                "description": "index or -1 if not found",
+                "type": "Number"
+            },
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 156,
+            "description": "Get a joint by index in the path.",
+            "itemtype": "method",
+            "name": "getJointByIdx",
+            "params": [
+                {
+                    "name": "idx",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "joint or null",
+                "type": "Joint"
+            },
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 167,
+            "description": "Get [options.width].",
+            "itemtype": "method",
+            "name": "getWidth",
+            "return": {
+                "description": "width",
+                "type": "Number"
+            },
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 177,
+            "description": "Reverse the internal joints lists.",
+            "itemtype": "method",
+            "name": "reverse",
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 186,
+            "description": "Get the projection from a point to a given segment.",
+            "itemtype": "method",
+            "name": "getProjection",
+            "params": [
+                {
+                    "name": "point",
+                    "description": "",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "segment",
+                    "description": "index",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "projection from point to segment",
+                "type": "Vec2"
+            },
+            "class": "Line"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Traits.js",
+            "line": 34,
+            "description": "Destroy Entity.",
+            "itemtype": "method",
+            "name": "destroy",
+            "return": {
+                "description": "previous destructor",
+                "type": "Object"
+            },
+            "class": "EntityPrototype"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Traits.js",
+            "line": 50,
+            "description": "Assing to group.",
+            "itemtype": "method",
+            "name": "assignToGroup",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "",
+                    "type": "Entity"
+                }
+            ],
+            "class": "EntityPrototype"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Traits.js",
+            "line": 65,
+            "description": "Unassing grom group.",
+            "itemtype": "method",
+            "name": "unassignFromGroup",
+            "params": [
+                {
+                    "name": "group",
+                    "description": "",
+                    "type": "Group"
+                }
+            ],
+            "class": "EntityPrototype"
+        },
+        {
+            "file": "src\\sim\\Entities\\Helpers\\Traits.js",
+            "line": 80,
+            "description": "Get assigned groups.",
+            "itemtype": "method",
+            "name": "getAssignedGroups",
+            "return": {
+                "description": "groups",
+                "type": "Array"
+            },
+            "class": "EntityPrototype"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 25,
+            "description": "Destroy the Context",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 34,
+            "description": "Sets the context size.",
+            "itemtype": "method",
+            "name": "setArea",
+            "params": [
+                {
+                    "name": "x",
+                    "description": "center",
+                    "type": "Number"
+                },
+                {
+                    "name": "y",
+                    "description": "center",
+                    "type": "Number"
+                }
+            ],
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 46,
+            "description": "Increment the context width and height.",
+            "itemtype": "method",
+            "name": "incrSize",
+            "params": [
+                {
+                    "name": "ds",
+                    "description": "increment in width and height",
+                    "type": "Number"
+                }
+            ],
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 57,
+            "description": "Gets width.",
+            "itemtype": "method",
+            "name": "getWidth",
+            "return": {
+                "description": "width",
+                "type": "Number"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 67,
+            "description": "Gets height.",
+            "itemtype": "method",
+            "name": "getHeight",
+            "return": {
+                "description": "height",
+                "type": "Number"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 77,
+            "description": "Gets the context minimum X,Y coordinate.",
+            "itemtype": "method",
+            "name": "getMinXY",
+            "return": {
+                "description": "point",
+                "type": "Vec2"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 89,
+            "description": "Gets the context maximun X,Y coordinate.",
+            "itemtype": "method",
+            "name": "getMaxXY",
+            "return": {
+                "description": "point",
+                "type": "Vec2"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 101,
+            "description": "Get a random point in the context.",
+            "itemtype": "method",
+            "name": "getRandomPoint",
+            "return": {
+                "description": "point",
+                "type": "Vec2"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 113,
+            "description": "Get the nearest point in the context to another.",
+            "itemtype": "method",
+            "name": "getNearestPoint",
+            "params": [
+                {
+                    "name": "point",
+                    "description": "",
+                    "type": "Vec2"
+                },
+                {
+                    "name": "border",
+                    "description": "margin inside the context",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "nearest point in the context to the given point",
+                "type": "Vec2"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 144,
+            "description": "Get context mobility factor.",
+            "itemtype": "method",
+            "name": "getMobility",
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 154,
+            "description": "Get context trigger option.",
+            "itemtype": "method",
+            "name": "getTrigger",
+            "return": {
+                "description": "true if contexts stops simulation on empty of agents",
+                "type": "Boolean"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 164,
+            "description": "Check if a point is inside the context.",
+            "itemtype": "method",
+            "name": "in",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "true if pos is inside",
+                "type": "Boolean"
+            },
+            "class": "Context"
+        },
+        {
+            "file": "src\\sim\\Entities\\Entity.js",
+            "line": 26,
+            "description": "Description",
+            "itemtype": "method",
+            "name": "calcNewId",
+            "params": [
+                {
+                    "name": "id",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "CallExpression"
+            },
+            "class": "Entity"
+        },
+        {
+            "file": "src\\sim\\Entities\\Entity.js",
+            "line": 36,
+            "description": "Description",
+            "itemtype": "method",
+            "name": "destroy",
+            "return": {
+                "description": ""
+            },
+            "class": "Entity"
+        },
+        {
+            "file": "src\\sim\\Entities\\Entity.js",
+            "line": 48,
+            "description": "Description",
+            "itemtype": "method",
+            "name": "updatePos",
+            "params": [
+                {
+                    "name": "x",
+                    "description": ""
+                },
+                {
+                    "name": "y",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": ""
+            },
+            "class": "Entity"
+        },
+        {
+            "file": "src\\sim\\Entities\\Entity.js",
+            "line": 61,
+            "description": "Description",
+            "itemtype": "method",
+            "name": "addEntity",
+            "params": [
+                {
+                    "name": "joint",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": ""
+            },
+            "class": "Entity"
+        },
+        {
+            "file": "src\\sim\\Entities\\Entity.js",
+            "line": 70,
+            "description": "Description",
+            "itemtype": "method",
+            "name": "removeEntity",
+            "params": [
+                {
+                    "name": "joint",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": ""
+            },
+            "class": "Entity"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 36,
+            "description": "Destroy the Group",
+            "itemtype": "method",
+            "name": "destroy",
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 53,
+            "description": "Get radius",
+            "itemtype": "method",
+            "name": "getRadius",
+            "return": {
+                "description": "radius",
+                "type": "Number"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 63,
+            "description": "Set radius",
+            "itemtype": "method",
+            "name": "setRadius",
+            "params": [
+                {
+                    "name": "radius",
+                    "description": "",
+                    "type": "Number"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 73,
+            "description": "Increment radius by dr.",
+            "itemtype": "method",
+            "name": "incrRadius",
+            "params": [
+                {
+                    "name": "dr",
+                    "description": "increment",
+                    "type": "Number"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 83,
+            "description": "Gets the end context where agents are destoyed optionally.",
+            "itemtype": "method",
+            "name": "getStartContext",
+            "return": {
+                "description": "end context",
+                "type": "Context"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 93,
+            "description": "Sets the start context where agents are created",
+            "itemtype": "method",
+            "name": "assignStartContext",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 109,
+            "description": "Gets the start context where agents are created",
+            "itemtype": "method",
+            "name": "getEndContext",
+            "return": {
+                "description": "end context",
+                "type": "Context"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 119,
+            "description": "Sets the end context where agents are destroyed.",
+            "itemtype": "method",
+            "name": "assignEndContext",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 135,
+            "description": "Gets the path asigned to the group that agents will follow.",
+            "itemtype": "method",
+            "name": "getPath",
+            "return": {
+                "description": "paths",
+                "type": "Array"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 145,
+            "description": "Assign a path to the group and its agents.",
+            "itemtype": "method",
+            "name": "assignPath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "Path"
+                },
+                {
+                    "name": "idx",
+                    "description": "start index",
+                    "type": "Number"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 166,
+            "description": "Gets the flag pathReverse from options.",
+            "itemtype": "method",
+            "name": "isPathReverse",
+            "return": {
+                "description": "true if path is reversed",
+                "type": "Boolean"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 176,
+            "description": "Gets the flag pathCircular from options.",
+            "itemtype": "method",
+            "name": "isPathCircular",
+            "return": {
+                "description": "true if path is circular",
+                "type": "Boolean"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 186,
+            "description": "Gets the start index of the agents in the group path.",
+            "itemtype": "method",
+            "name": "getPathStartIdx",
+            "return": {
+                "description": "start index",
+                "type": "Number"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 196,
+            "description": "Unassing a start, end contexts or a path from the group.",
+            "itemtype": "method",
+            "name": "unAssign",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": ", context or path.",
+                    "type": "Entity"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 220,
+            "description": "Assign a behavior model to the group.",
+            "itemtype": "method",
+            "name": "assignBehavior",
+            "params": [
+                {
+                    "name": "behavior",
+                    "description": "",
+                    "type": "Behavior"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 230,
+            "description": "Generate a number of agents in a context. Used internally by the group.",
+            "itemtype": "method",
+            "name": "generateAgents",
+            "params": [
+                {
+                    "name": "agentsCount",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "startContext",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "return": {
+                "description": "newAgents"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 249,
+            "description": "Generates a random init position in the group radius centered at pos.",
+            "itemtype": "method",
+            "name": "myInitPos",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "center position",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "point",
+                "type": "Vec2"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 262,
+            "description": "Generates a position within the group start context.",
+            "itemtype": "method",
+            "name": "myContextPos",
+            "return": {
+                "description": "point",
+                "type": "Vec2"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 301,
+            "description": "Add agents to the group.",
+            "itemtype": "method",
+            "name": "addAgents",
+            "params": [
+                {
+                    "name": "agentsCount",
+                    "description": "the number of agents",
+                    "type": "Number"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 313,
+            "description": "Removes all agents from the group.",
+            "itemtype": "method",
+            "name": "emptyAgents",
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 323,
+            "description": "Remove the given agents from the group.",
+            "itemtype": "method",
+            "name": "removeAgents",
+            "params": [
+                {
+                    "name": "agents",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 337,
+            "description": "Check if am agent is within a group area.",
+            "itemtype": "method",
+            "name": "in",
+            "params": [
+                {
+                    "name": "pos",
+                    "description": "",
+                    "type": "Vec2"
+                }
+            ],
+            "return": {
+                "description": "true if inside; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 348,
+            "description": "Adds a single agent to the group.",
+            "itemtype": "method",
+            "name": "addAgent",
+            "params": [
+                {
+                    "name": "agent",
+                    "description": "",
+                    "type": "Agent"
+                }
+            ],
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 358,
+            "description": "Gets the smaller rectangle area that contains the group agents",
+            "itemtype": "method",
+            "name": "getArea",
+            "return": {
+                "description": "array of two {Vec2} [[Xmin,Xmax][Ymin,YMax]]",
+                "type": "Array"
+            },
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 377,
+            "description": "Advances the simulation of the group by creating/destroying agents in its contexts.",
+            "itemtype": "method",
+            "name": "step",
+            "class": "Group"
+        },
+        {
+            "file": "src\\sim\\Agent.js",
+            "line": 38,
+            "description": "Sets as the agent target the nearest point of a Context.",
+            "itemtype": "method",
+            "name": "setTargetInContext",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "class": "Agent"
+        },
+        {
+            "file": "src\\sim\\Agent.js",
+            "line": 51,
+            "description": "Gets the aspect property. Used for color codes could be used for other purposes",
+            "itemtype": "method",
+            "name": "getAspect",
+            "return": {
+                "description": "aspect",
+                "type": "Number"
+            },
+            "class": "Agent"
+        },
+        {
+            "file": "src\\sim\\Agent.js",
+            "line": 61,
+            "description": "Get radius",
+            "itemtype": "method",
+            "name": "getRadius",
+            "return": {
+                "description": "radius",
+                "type": "Number"
+            },
+            "class": "Agent"
+        },
+        {
+            "file": "src\\sim\\Agent.js",
+            "line": 70,
+            "description": "Set mobility correction applied to the current velocity",
+            "itemtype": "method",
+            "name": "setCurrentMobility",
+            "params": [
+                {
+                    "name": "mobility",
+                    "description": "factor 0.0-1.0",
+                    "type": "Number"
+                }
+            ],
+            "class": "Agent"
+        },
+        {
+            "file": "src\\sim\\Agent.js",
+            "line": 80,
+            "description": "Set the agent to follow a give path starting at index.",
+            "itemtype": "method",
+            "name": "followPath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "Path"
+                },
+                {
+                    "name": "index",
+                    "description": "position in path",
+                    "type": "Number"
+                }
+            ],
+            "class": "Agent"
+        },
+        {
+            "file": "src\\sim\\Agent.js",
+            "line": 99,
+            "description": "Helper to set the path start that takes into account inverse paths.",
+            "itemtype": "method",
+            "name": "_startPath",
+            "class": "Agent"
+        },
+        {
+            "file": "src\\sim\\Agent.js",
+            "line": 115,
+            "description": "Advances the simulation of the agent one stepSize and moves the agent to its next possition defined by the group behavior mode.",
+            "itemtype": "method",
+            "name": "step",
+            "params": [
+                {
+                    "name": "stepSize",
+                    "description": "defined by the simulation step size",
+                    "type": "Number"
+                }
+            ],
+            "class": "Agent"
+        },
+        {
+            "file": "src\\sim\\Agent.js",
+            "line": 164,
+            "description": "Moves the agent with the given accel => speed => position",
+            "itemtype": "method",
+            "name": "move",
+            "params": [
+                {
+                    "name": "accel",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "stepSize",
+                    "description": "simulation",
+                    "type": "Number"
+                }
+            ],
+            "class": "Agent"
+        },
+        {
+            "file": "src\\sim\\CrowdSim.js",
+            "line": 20,
+            "description": "Restarts the generation of entities ids. Usefull when loading new worlds.",
+            "itemtype": "method",
+            "name": "restartIds",
+            "class": "CrowdSim"
+        },
+        {
+            "file": "src\\sim\\Engine.js",
+            "line": 23,
+            "description": "Get the engine settings, configured in constructor [options]",
+            "itemtype": "method",
+            "name": "getSettings",
+            "return": {
+                "description": "options",
+                "type": "Object"
+            },
+            "class": "Engine"
+        },
+        {
+            "file": "src\\sim\\Engine.js",
+            "line": 33,
+            "description": "Sets the simulation world",
+            "itemtype": "method",
+            "name": "setWorld",
+            "params": [
+                {
+                    "name": "world",
+                    "description": "",
+                    "type": "World"
+                }
+            ],
+            "class": "Engine"
+        },
+        {
+            "file": "src\\sim\\Engine.js",
+            "line": 43,
+            "description": "Gets the simulation world",
+            "itemtype": "method",
+            "name": "getWorld",
+            "return": {
+                "description": "",
+                "type": "World"
+            },
+            "class": "Engine"
+        },
+        {
+            "file": "src\\sim\\Engine.js",
+            "line": 53,
+            "description": "Starts the simulation",
+            "itemtype": "method",
+            "name": "run",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "to report in the onStart callback as trigger",
+                    "type": "Entity"
+                }
+            ],
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "Engine"
+        },
+        {
+            "file": "src\\sim\\Engine.js",
+            "line": 73,
+            "description": "Advance one step the simulation and stops.",
+            "itemtype": "method",
+            "name": "step",
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "Engine"
+        },
+        {
+            "file": "src\\sim\\Engine.js",
+            "line": 87,
+            "description": "Internal step of the simulation engine. Periodically called.",
+            "itemtype": "method",
+            "name": "_step",
+            "class": "Engine"
+        },
+        {
+            "file": "src\\sim\\Engine.js",
+            "line": 119,
+            "description": "Stops the simulation",
+            "itemtype": "method",
+            "name": "stop",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "to report in the onStart callback as trigger",
+                    "type": "Entity"
+                }
+            ],
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "Engine"
+        },
+        {
+            "file": "src\\sim\\Engine.js",
+            "line": 138,
+            "description": "Resets=Restarts the state of the simulation.",
+            "itemtype": "method",
+            "name": "reset",
+            "return": {
+                "description": "true if running; false otherwise",
+                "type": "Boolean"
+            },
+            "class": "Engine"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 35,
+            "description": "Gets and resets the number of steps executed since last call",
+            "itemtype": "method",
+            "name": "changesNumber",
+            "return": {
+                "description": "changes",
+                "type": "Number"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 46,
+            "description": "Get/set if the world is not running (Frozen). This is set from the Engine",
+            "itemtype": "method",
+            "name": "freeze",
+            "params": [
+                {
+                    "name": "freeze",
+                    "description": "",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "true if world is static",
+                "type": "Boolean"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 58,
+            "description": "Returns the first group created.",
+            "itemtype": "method",
+            "name": "getDefaultGroup",
+            "return": {
+                "description": "group",
+                "type": "Object"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 68,
+            "description": "Get the list of Agents.",
+            "itemtype": "method",
+            "name": "getAgents",
+            "return": {
+                "description": "agents",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 78,
+            "description": "Gets a iterator for all entities.",
+            "itemtype": "method",
+            "name": "getEntitiesIterator",
+            "return": {
+                "description": "Lazy iterator",
+                "type": "Object"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 88,
+            "description": "Get the list of contexts.",
+            "itemtype": "method",
+            "name": "getContexts",
+            "return": {
+                "description": "contexts",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 98,
+            "description": "Get the list of groups.",
+            "itemtype": "method",
+            "name": "getGroups",
+            "return": {
+                "description": "groups",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 108,
+            "description": "Get the list of paths.",
+            "itemtype": "method",
+            "name": "getPaths",
+            "return": {
+                "description": "paths",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 118,
+            "description": "Get the list of walls.",
+            "itemtype": "method",
+            "name": "getWalls",
+            "return": {
+                "description": "walls",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 128,
+            "description": "Add an array of Agents from the world.",
+            "itemtype": "method",
+            "name": "addAgents",
+            "params": [
+                {
+                    "name": "agents",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 142,
+            "description": "Remove an array of agents from the World.",
+            "itemtype": "method",
+            "name": "removeAgents",
+            "params": [
+                {
+                    "name": "agents",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 159,
+            "description": "Get the list of agents in a given Context",
+            "itemtype": "method",
+            "name": "agentsInContext",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "return": {
+                "description": "all entities",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 172,
+            "description": "Callback trigger when an entity is created",
+            "itemtype": "method",
+            "name": "_onCreate",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "Context, Group, Wall or Path",
+                    "type": "Entity"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 184,
+            "description": "Callback trigger when an entity is destroyed",
+            "itemtype": "method",
+            "name": "_onDestroy",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "Context, Group, Wall or Path",
+                    "type": "Entity"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 196,
+            "description": "Returns the property that holds the entity list, used internally.",
+            "itemtype": "method",
+            "name": "_getEntityList",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "Context, Group, Wall or Path",
+                    "type": "Entity"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 216,
+            "description": "Remove an entity from the world. Called by entities on destroy.",
+            "itemtype": "method",
+            "name": "removeEntity",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "Context, Group, Wall or Path",
+                    "type": "Entity"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 232,
+            "description": "Add an entity from the world. Called by entities on constructor.",
+            "itemtype": "method",
+            "name": "addEntity",
+            "params": [
+                {
+                    "name": "entity",
+                    "description": "Context, Group, Wall or Path",
+                    "type": "Entity"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 245,
+            "description": "Add a Context to the world.",
+            "itemtype": "method",
+            "name": "addContext",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Context"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 256,
+            "description": "Add a Group to the world.",
+            "itemtype": "method",
+            "name": "addGroup",
+            "params": [
+                {
+                    "name": "group",
+                    "description": "",
+                    "type": "Group"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 267,
+            "description": "Add a Path to the world.",
+            "itemtype": "method",
+            "name": "addPath",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "",
+                    "type": "Path"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 278,
+            "description": "Add a Wall to the world.",
+            "itemtype": "method",
+            "name": "addWall",
+            "params": [
+                {
+                    "name": "wall",
+                    "description": "",
+                    "type": "Wall"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 289,
+            "description": "Search an entity in the world by its id.",
+            "itemtype": "method",
+            "name": "getEntityById",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Entity"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 300,
+            "description": "Search an context in the world by its id.",
+            "itemtype": "method",
+            "name": "getContextById",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "contexts",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 311,
+            "description": "Search an path in the world by its id.",
+            "itemtype": "method",
+            "name": "getPathById",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "paths",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 322,
+            "description": "Returns the agents near to another.\nThe near property is given in the options constructor parameter",
+            "itemtype": "method",
+            "name": "getNearAgents",
+            "params": [
+                {
+                    "name": "agent",
+                    "description": "",
+                    "type": "Agent"
+                }
+            ],
+            "return": {
+                "description": "agents",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 334,
+            "description": "Returns the agents near to another.\n\nThe near property is given in the options constructor parameter",
+            "itemtype": "method",
+            "name": "getNearWalls",
+            "params": [
+                {
+                    "name": "agent",
+                    "description": "",
+                    "type": "Agent"
+                }
+            ],
+            "return": {
+                "description": "walls",
+                "type": "Array"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 347,
+            "description": "Save the world state without agents.",
+            "itemtype": "method",
+            "name": "save",
+            "params": [
+                {
+                    "name": "save",
+                    "description": "true to store internally; false to return the JSON data",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 363,
+            "description": "Load the world state from a loader.",
+            "itemtype": "method",
+            "name": "load",
+            "params": [
+                {
+                    "name": "loader",
+                    "description": "",
+                    "type": "String|Function"
+                },
+                {
+                    "name": "loadDefault",
+                    "description": "true to load the last snapshoot created with save(true)",
+                    "type": "Boolean"
+                }
+            ],
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 429,
+            "description": "Save helper to remove loops and agents from world data.",
+            "itemtype": "method",
+            "name": "_saveHelper",
+            "params": [
+                {
+                    "name": "o",
+                    "description": "the world.entities property",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "JSON data that represents the world.entities",
+                "type": "String"
+            },
+            "class": "World"
+        },
+        {
+            "file": "src\\sim\\World.js",
+            "line": 462,
+            "description": "Advances the simulation of the world entities one stepSize.\nIf one contexts configured to nofify when agentsIn === 0",
+            "itemtype": "method",
+            "name": "step",
+            "params": [
+                {
+                    "name": "stepSize",
+                    "description": "defined by the simulation step size",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "contextEmpty that triggers step",
+                "type": "Context|Null"
+            },
+            "class": "World"
         }
     ],
-    "warnings": []
+    "warnings": [
+        {
+            "message": "unknown tag: name",
+            "line": " src\\sim\\Common\\Vec2.js:21"
+        },
+        {
+            "message": "unknown tag: name",
+            "line": " src\\sim\\Common\\Vec2.js:56"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src\\sim\\Common\\Vec2.js:156"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src\\sim\\Common\\Vec2.js:176"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src\\sim\\Common\\Vec2.js:196"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src\\sim\\Common\\Vec2.js:272"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src\\sim\\Common\\Vec2.js:291"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src\\sim\\Common\\Vec2.js:309"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src\\sim\\Common\\Vec2.js:327"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src\\sim\\Common\\Vec2.js:505"
+        },
+        {
+            "message": "replacing incorrect tag: function with method",
+            "line": " src\\sim\\Common\\Vec2.js:505"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:5"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:6"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:51"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:52"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:100"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:101"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:243"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:244"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:301"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:302"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:359"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:360"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:429"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:430"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:503"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:504"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:565"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:566"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:697"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:698"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:838"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:839"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1027"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1028"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1177"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1178"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1302"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1303"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1792"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1793"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1919"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:1920"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:2154"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:2155"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:2374"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:2375"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:2497"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:2498"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:2671"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:2672"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:3226"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:3300"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src\\app\\Worlds.js:3301"
+        }
+    ]
 }

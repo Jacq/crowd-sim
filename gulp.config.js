@@ -35,6 +35,7 @@ module.exports = function() {
     dist: dist + '*.*'
   },
   bower: bowerrc,
+  doc: './doc',
   report: './report/',
   browserifySim: {
     opts: {

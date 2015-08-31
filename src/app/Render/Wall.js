@@ -10,15 +10,37 @@ var Fonts = Base.Fonts;
 
 var Wall = LinePrototype(Colors.Wall);
 
+/**
+ * Wall render view.
+ *
+ * @class Render.Wall
+ * @constructor
+ * @param {Wall} wall
+ * @return {Render.Wall}
+ */
 Wall.CreateFromModel = function(wall) {
   return new Wall(wall);
 };
 
+/**
+ * Description
+ * @method CreateFromPoint
+ * @param {} x
+ * @param {} y
+ * @param {} parent
+ * @param {} options
+ * @return NewExpression
+ */
 Wall.CreateFromPoint = function(x, y, parent, options) {
   var wall = new WallModel(x, y, parent, options);
   return new Wall(wall);
 };
 
+/**
+ * Description
+ * @method getPos
+ * @return CallExpression
+ */
 Wall.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };

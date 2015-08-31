@@ -6,8 +6,23 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Line rendering for paths and walls prototype.
+ *
+ * @class Render.Line
+ * @constructor
+ * @param {Number} color
+ * @return {LinePrototype} Line prototype
+ */
 var LinePrototype = function(color) {
 
+  /**
+   * Line rendering for paths and walls.
+   *
+   * @constructor
+   * @method Line
+   * @param {Wall|Path} line
+   */
   var Line = function(line) {
     if (!line) {
       throw 'Line object must be defined';
@@ -15,14 +30,12 @@ var LinePrototype = function(color) {
     Entity.call(this, line);
   };
 
-  Line.prototype.destroy = function() {
-    var that = this;
-    that.graphics.removeChild(that.label);
-    that.label.destroy();
-    Entity.prototype.destroyGraphics.call(that, Line.container, that.graphics);
-    Entity.prototype.destroy.call(that);
-  };
-
+  /**
+   * Create base graphics.
+   *
+   * @method createGraphics
+   * @param {Wall|Path} line
+   */
   Line.prototype.createGraphics = function(line) {
     this.graphics = Entity.prototype.createGraphics.call(this, Line.container);
     this.label = new PIXI.Text(line.id, Base.Fonts.default);
@@ -38,18 +51,53 @@ var LinePrototype = function(color) {
     }
   };
 
+  /**
+   * Destroy base graphics.
+   *
+   * @method destroy
+   */
+  Line.prototype.destroy = function() {
+    var that = this;
+    that.graphics.removeChild(that.label);
+    that.label.destroy();
+    Entity.prototype.destroyGraphics.call(that, Line.container, that.graphics);
+    Entity.prototype.destroy.call(that);
+  };
+
+  /**
+   * Add a render joint from a joint entity.
+   *
+   * @method addJointFromModel
+   * @param {Joint} joint
+   * @return {Render.Joint} render joint
+   */
   Line.prototype.addJointFromModel = function(joint) {
     var renderJoint = new Joint(joint, Line.texture);
     renderJoint.createGraphics(this.graphics);
     return renderJoint;
   };
 
+  /**
+   * Create a joint in a position.
+   *
+   * @method addJoint
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Options} options for creation
+   * @return {Render.Joint}
+   */
   Line.prototype.addJoint = function(x, y, options) {
     var line = this.entityModel;
     var jt = line.addJoint(x, y, options);
     return this.addJointFromModel(jt);
   };
 
+  /**
+   * Animate joint, position and radius.
+   *
+   * @method render
+   * @param {Object} options
+   */
   Line.prototype.render = function(options) {
     if (!Line.detail.level) {
       this.graphics.clear();

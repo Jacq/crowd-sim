@@ -6,6 +6,14 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Joint render view
+ *
+ * @class Render.Joint
+ * @constructor
+ * @param {Joint} joint
+ * @param {Pixi.Texture} texture
+ */
 var Joint = function(joint, texture) {
   if (!joint) {
     throw 'Joint object must be defined';
@@ -14,6 +22,12 @@ var Joint = function(joint, texture) {
   this.texture = texture;
 };
 
+/**
+ * Destroy base graphics.
+ *
+ * @method destroy
+ * @param {Pixi.Graphics} graphics
+ */
 Joint.prototype.destroy = function(graphics) {
   var line = this.entityModel.parent;
   this.graphics.removeChild(this.label);
@@ -22,6 +36,12 @@ Joint.prototype.destroy = function(graphics) {
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Create base graphics.
+ *
+ * @method createGraphics
+ * @param {Pixi.Graphics} graphics
+ */
 Joint.prototype.createGraphics = function(graphics) {
   this.graphics = graphics;
   var joint = this.entityModel;
@@ -37,6 +57,11 @@ Joint.prototype.createGraphics = function(graphics) {
   this.render();
 };
 
+/**
+ * Animate joint, update position and radius.
+ *
+ * @method render
+ */
 Joint.prototype.render = function() {
   this.sprite.visible = true;
   this.sprite.alpha = 0.5;
@@ -49,10 +74,23 @@ Joint.prototype.render = function() {
   //this.label.y = this.sprite.y - this.label.height / 2;
 };
 
-Joint.prototype.getAnchor = function(init) {
+/**
+ * Get joint anchor for dragging actions.
+ *
+ * @method getAnchor
+ * @return {Vec2} anchor
+ */
+Joint.prototype.getAnchor = function() {
   return {x: this.entityModel.pos[0], y: this.entityModel.pos[1]};
 };
 
+/**
+ * Draggin actino.
+ *
+ * @method dragTo
+ * @param {Vec2} pos
+ * @param {Vec2} anchor
+ */
 Joint.prototype.dragTo = function(pos, anchor) {
   var anchorV2 = Vec2.fromValues(anchor.x,anchor.y);
   var radius = Vec2.length(anchorV2);
@@ -66,14 +104,32 @@ Joint.prototype.dragTo = function(pos, anchor) {
   this.sprite.y = pos.y;
 };
 
+/**
+ * Get joint associated entity.
+ *
+ * @method getJoint
+ * @return {Joint} joint
+ */
 Joint.prototype.getJoint = function() {
   return this.entityModel;
 };
 
+/**
+ * Get joint position.
+ *
+ * @method getPos
+ * @return {Vec2} position
+ */
 Joint.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
 
+/**
+ * Shows or hides render joint.
+ *
+ * @method show
+ * @param {Boolean} show true for visible
+ */
 Joint.prototype.show = function(show) {
   this.sprite.visible = false;
   this.sprite.alpha = 0;

@@ -33,8 +33,9 @@ glMatrix.ENABLE_SIMD = false;
 
 /**
  * Sets the type of array used when creating new vectors and matrices
- *
+ * @method setMatrixArrayType
  * @param {Type} type Array type, such as Float32Array or Array
+ * @return 
  */
 glMatrix.setMatrixArrayType = function(type) {
     glMatrix.ARRAY_TYPE = type;
@@ -43,10 +44,11 @@ glMatrix.setMatrixArrayType = function(type) {
 var degree = Math.PI / 180;
 
 /**
-* Convert Degree To Radian
-*
-* @param {Number} Angle in Degrees
-*/
+ * Convert Degree To Radian
+ * @method toRadian
+ * @param {} a
+ * @return BinaryExpression
+ */
 glMatrix.toRadian = function(a){
      return a * degree;
 }
@@ -59,8 +61,8 @@ var vec2 = {};
 
 /**
  * Creates a new, empty vec2
- *
- * @returns {vec2} a new 2D vector
+ * @method create
+ * @return out
  */
 vec2.create = function() {
     var out = new glMatrix.ARRAY_TYPE(2);
@@ -71,9 +73,9 @@ vec2.create = function() {
 
 /**
  * Creates a new vec2 initialized with values from an existing vector
- *
+ * @method clone
  * @param {vec2} a vector to clone
- * @returns {vec2} a new 2D vector
+ * @return out
  */
 vec2.clone = function(a) {
     var out = new glMatrix.ARRAY_TYPE(2);
@@ -84,10 +86,10 @@ vec2.clone = function(a) {
 
 /**
  * Creates a new vec2 initialized with the given values
- *
+ * @method fromValues
  * @param {Number} x X component
  * @param {Number} y Y component
- * @returns {vec2} a new 2D vector
+ * @return out
  */
 vec2.fromValues = function(x, y) {
     var out = new glMatrix.ARRAY_TYPE(2);
@@ -98,10 +100,10 @@ vec2.fromValues = function(x, y) {
 
 /**
  * Copy the values from one vec2 to another
- *
+ * @method copy
  * @param {vec2} out the receiving vector
  * @param {vec2} a the source vector
- * @returns {vec2} out
+ * @return out
  */
 vec2.copy = function(out, a) {
     out[0] = a[0];
@@ -111,11 +113,11 @@ vec2.copy = function(out, a) {
 
 /**
  * Set the components of a vec2 to the given values
- *
+ * @method set
  * @param {vec2} out the receiving vector
  * @param {Number} x X component
  * @param {Number} y Y component
- * @returns {vec2} out
+ * @return out
  */
 vec2.set = function(out, x, y) {
     out[0] = x;
@@ -125,11 +127,11 @@ vec2.set = function(out, x, y) {
 
 /**
  * Adds two vec2's
- *
+ * @method add
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.add = function(out, a, b) {
     out[0] = a[0] + b[0];
@@ -139,11 +141,11 @@ vec2.add = function(out, a, b) {
 
 /**
  * Subtracts vector b from vector a
- *
+ * @method subtract
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.subtract = function(out, a, b) {
     out[0] = a[0] - b[0];
@@ -159,11 +161,11 @@ vec2.sub = vec2.subtract;
 
 /**
  * Multiplies two vec2's
- *
+ * @method multiply
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.multiply = function(out, a, b) {
     out[0] = a[0] * b[0];
@@ -179,11 +181,11 @@ vec2.mul = vec2.multiply;
 
 /**
  * Divides two vec2's
- *
+ * @method divide
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.divide = function(out, a, b) {
     out[0] = a[0] / b[0];
@@ -199,11 +201,11 @@ vec2.div = vec2.divide;
 
 /**
  * Returns the minimum of two vec2's
- *
+ * @method min
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.min = function(out, a, b) {
     out[0] = Math.min(a[0], b[0]);
@@ -213,11 +215,11 @@ vec2.min = function(out, a, b) {
 
 /**
  * Returns the maximum of two vec2's
- *
+ * @method max
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.max = function(out, a, b) {
     out[0] = Math.max(a[0], b[0]);
@@ -227,11 +229,11 @@ vec2.max = function(out, a, b) {
 
 /**
  * Scales a vec2 by a scalar number
- *
+ * @method scale
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to scale
  * @param {Number} b amount to scale the vector by
- * @returns {vec2} out
+ * @return out
  */
 vec2.scale = function(out, a, b) {
     out[0] = a[0] * b;
@@ -241,12 +243,12 @@ vec2.scale = function(out, a, b) {
 
 /**
  * Adds two vec2's after scaling the second operand by a scalar value
- *
+ * @method scaleAndAdd
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
  * @param {Number} scale the amount to scale b by before adding
- * @returns {vec2} out
+ * @return out
  */
 vec2.scaleAndAdd = function(out, a, b, scale) {
     out[0] = a[0] + (b[0] * scale);
@@ -256,10 +258,10 @@ vec2.scaleAndAdd = function(out, a, b, scale) {
 
 /**
  * Calculates the euclidian distance between two vec2's
- *
+ * @method distance
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {Number} distance between a and b
+ * @return CallExpression
  */
 vec2.distance = function(a, b) {
     var x = b[0] - a[0],
@@ -275,10 +277,10 @@ vec2.dist = vec2.distance;
 
 /**
  * Calculates the squared euclidian distance between two vec2's
- *
+ * @method squaredDistance
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {Number} squared distance between a and b
+ * @return BinaryExpression
  */
 vec2.squaredDistance = function(a, b) {
     var x = b[0] - a[0],
@@ -294,9 +296,9 @@ vec2.sqrDist = vec2.squaredDistance;
 
 /**
  * Calculates the length of a vec2
- *
+ * @method length
  * @param {vec2} a vector to calculate length of
- * @returns {Number} length of a
+ * @return CallExpression
  */
 vec2.length = function (a) {
     var x = a[0],
@@ -312,9 +314,9 @@ vec2.len = vec2.length;
 
 /**
  * Calculates the squared length of a vec2
- *
+ * @method squaredLength
  * @param {vec2} a vector to calculate squared length of
- * @returns {Number} squared length of a
+ * @return BinaryExpression
  */
 vec2.squaredLength = function (a) {
     var x = a[0],
@@ -330,10 +332,10 @@ vec2.sqrLen = vec2.squaredLength;
 
 /**
  * Negates the components of a vec2
- *
+ * @method negate
  * @param {vec2} out the receiving vector
  * @param {vec2} a vector to negate
- * @returns {vec2} out
+ * @return out
  */
 vec2.negate = function(out, a) {
     out[0] = -a[0];
@@ -343,10 +345,10 @@ vec2.negate = function(out, a) {
 
 /**
  * Returns the inverse of the components of a vec2
- *
+ * @method inverse
  * @param {vec2} out the receiving vector
  * @param {vec2} a vector to invert
- * @returns {vec2} out
+ * @return out
  */
 vec2.inverse = function(out, a) {
   out[0] = 1.0 / a[0];
@@ -356,10 +358,10 @@ vec2.inverse = function(out, a) {
 
 /**
  * Normalize a vec2
- *
+ * @method normalize
  * @param {vec2} out the receiving vector
  * @param {vec2} a vector to normalize
- * @returns {vec2} out
+ * @return out
  */
 vec2.normalize = function(out, a) {
     var x = a[0],
@@ -376,10 +378,10 @@ vec2.normalize = function(out, a) {
 
 /**
  * Calculates the dot product of two vec2's
- *
+ * @method dot
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {Number} dot product of a and b
+ * @return BinaryExpression
  */
 vec2.dot = function (a, b) {
     return a[0] * b[0] + a[1] * b[1];
@@ -388,11 +390,11 @@ vec2.dot = function (a, b) {
 /**
  * Computes the cross product of two vec2's
  * Note that the cross product must by definition produce a 3D vector
- *
+ * @method cross
  * @param {vec3} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec3} out
+ * @return out
  */
 vec2.cross = function(out, a, b) {
     var z = a[0] * b[1] - a[1] * b[0];
@@ -403,12 +405,12 @@ vec2.cross = function(out, a, b) {
 
 /**
  * Performs a linear interpolation between two vec2's
- *
+ * @method lerp
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
  * @param {Number} t interpolation amount between the two inputs
- * @returns {vec2} out
+ * @return out
  */
 vec2.lerp = function (out, a, b, t) {
     var ax = a[0],
@@ -420,10 +422,10 @@ vec2.lerp = function (out, a, b, t) {
 
 /**
  * Generates a random vector with the given scale
- *
+ * @method random
  * @param {vec2} out the receiving vector
- * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
- * @returns {vec2} out
+ * @param {} scale
+ * @return out
  */
 vec2.random = function (out, scale) {
     scale = scale || 1.0;
@@ -435,11 +437,11 @@ vec2.random = function (out, scale) {
 
 /**
  * Transforms the vec2 with a mat2
- *
+ * @method transformMat2
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to transform
  * @param {mat2} m matrix to transform with
- * @returns {vec2} out
+ * @return out
  */
 vec2.transformMat2 = function(out, a, m) {
     var x = a[0],
@@ -451,11 +453,11 @@ vec2.transformMat2 = function(out, a, m) {
 
 /**
  * Transforms the vec2 with a mat2d
- *
+ * @method transformMat2d
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to transform
  * @param {mat2d} m matrix to transform with
- * @returns {vec2} out
+ * @return out
  */
 vec2.transformMat2d = function(out, a, m) {
     var x = a[0],
@@ -468,11 +470,11 @@ vec2.transformMat2d = function(out, a, m) {
 /**
  * Transforms the vec2 with a mat3
  * 3rd vector component is implicitly '1'
- *
+ * @method transformMat3
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to transform
  * @param {mat3} m matrix to transform with
- * @returns {vec2} out
+ * @return out
  */
 vec2.transformMat3 = function(out, a, m) {
     var x = a[0],
@@ -486,11 +488,11 @@ vec2.transformMat3 = function(out, a, m) {
  * Transforms the vec2 with a mat4
  * 3rd vector component is implicitly '0'
  * 4th vector component is implicitly '1'
- *
+ * @method transformMat4
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to transform
  * @param {mat4} m matrix to transform with
- * @returns {vec2} out
+ * @return out
  */
 vec2.transformMat4 = function(out, a, m) {
     var x = a[0],
@@ -543,9 +545,9 @@ vec2.forEach = (function() {
 
 /**
  * Returns a string representation of a vector
- *
- * @param {vec2} vec vector to represent as a string
- * @returns {String} string representation of the vector
+ * @method str
+ * @param {} a
+ * @return BinaryExpression
  */
 vec2.str = function (a) {
     return 'vec2(' + a[0] + ', ' + a[1] + ')';
@@ -555,12 +557,12 @@ module.exports = vec2;
 
 /**
  * Adds three vec2's
- *
+ * @method add3
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
  * @param {vec2} c the third operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.add3 = function(out, a, b, c) {
     out[0] = a[0] + b[0] + c[0];
@@ -570,11 +572,12 @@ vec2.add3 = function(out, a, b, c) {
 
 /**
  * Calculates the shortest projection between a point and a line defined by two vec2's
- *
+ * @method projectionToSegment
+ * @param {} out
  * @param {vec2} p the point
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {Number} projection between p and the line defined a and b
+ * @return CallExpression
  */
 vec2.projectionToSegment = function(out, p, a, b) {
   var l2 = vec2.squaredDistance(a, b);
@@ -590,11 +593,11 @@ vec2.projectionToSegment = function(out, p, a, b) {
 
 /**
  * Normalize a vec2
- *
+ * @method normalizeAndScale
  * @param {vec2} out the receiving vector
  * @param {vec2} a vector to normalize
- * @param {Number} scale the amount to scale a by after normalize
- * @returns {vec2} out
+ * @param {} b
+ * @return out
  */
 vec2.normalizeAndScale = function(out, a, b) {
     var x = a[0],

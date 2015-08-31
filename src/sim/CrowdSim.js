@@ -1,5 +1,9 @@
 /* global window,module, exports : true, define */
 
+/**
+ * @class CrowdSim
+ * @type {Object}
+ */
 var CrowdSim = {
   Agent: require('./Agent'),
   Entity: require('./Entities/Entity'),
@@ -13,6 +17,11 @@ var CrowdSim = {
   Vec2: require('./Common/Vec2')
 };
 
+/**
+ * Restarts the generation of entities ids. Usefull when loading new worlds.
+ *
+ * @method restartIds
+ */
 CrowdSim.restartIds = function() {
   CrowdSim.Agent.id = 0;
   CrowdSim.Context.id = 0;

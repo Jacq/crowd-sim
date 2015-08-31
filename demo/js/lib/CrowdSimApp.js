@@ -13,9 +13,9 @@ App.defaultOptions = {
   snapToGrid: false, // snaps the mouse position to a grid of integers
   logEvents: false,
   renderer: {
-    backgroundColor: 0xffffff,
+    backgroundColor: 0x000000,
     scale: 10,
-    useParticle: false,
+    useParticle: true,
     MaxAgents: 1000, // to init particle container
     debug: true,
   },
@@ -25,6 +25,12 @@ App.defaultOptions = {
     callbacks: {
       onStart: null,
       onStep: null,
+      /**
+       * Callback on simulation stop.
+       *
+       * @method onStop
+       * @param {Entity} entity that triggered the stop
+       */
       onStop: function(entity) {
         App.selectEntity(entity ? entity.view : null); // highlight entity that causes stop
         if (App.callbacks.onStop) {
@@ -63,15 +69,13 @@ App.EntityCreationMapping = {
   'wall': Render.Wall
 };
 
-App.resize = function(window, width, height) {
-  // to wait for fullscreen state
-  setTimeout(function() {
-    var w = width || window.innerWidth;
-    var h = height || window.innerHeight;
-    App._renderer.resize(w, h);
-  }, 200);
-};
-
+/**
+ * Inicialization of application.
+ *
+ * @method init
+ * @param {Canvas} canvas to render scene.
+ * @param {Object} options
+ */
 App.init = function(canvas, options) {
   App.options = Lazy(options).defaults(App.defaultOptions).toObject();
   App.callbacks = Lazy(options.callbacks).defaults(App.defaultOptions.callbacks).toObject();
@@ -115,22 +119,213 @@ App.init = function(canvas, options) {
   var world = App._world = new CrowdSim.World(this, optionsWorld);
 };
 
+/**
+ * Resizes the scene.
+ *
+ * @method resize
+ * @param {Window} window to use the current width or height
+ * @param {Number} width
+ * @param {Number} height
+ */
+App.resize = function(window, width, height) {
+  // to wait for fullscreen state
+  setTimeout(function() {
+    var w = width || window.innerWidth;
+    var h = height || window.innerHeight;
+    App._renderer.resize(w, h);
+  }, 200);
+};
+
+/**
+ * Zoom in a position.
+ *
+ * @method zoom
+ * @param {Number} scale
+ * @param {Number} x
+ * @param {Number} y
+ */
+App.zoom = function(scale, x, y) {
+  App._renderer.zoom(scale, x, y);
+};
+
+/**
+ * Displace scene view.
+ *
+ * @method pan
+ * @param {Number} dx
+ * @param {Number} dy
+ */
+App.pan = function(dx, dy) {
+  App._renderer.pan(dx, dy);
+};
+
+/**
+ * Convert screen to world coordinates.
+ *
+ * @method screenToWorld
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Vec2} world coordinates
+ */
+App.screenToWorld = function(x, y) {
+  return App._renderer.screenToWorld(x, y);
+};
+/**
+ * Convert world toscreen coordinates.
+ *
+ * @method worldToScreen
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Vec2} screen coordinates
+ */
+App.worldToScreen = function(x, y) {
+  return App._renderer.worldToScreen(x, y);
+};
+
+/**
+ * Start/stop simulation.
+ *
+ * @method toggleRun
+ * @return {Boolean} true if running; false otherwise
+ */
+App.toggleRun = function() {
+  if (App.isRunning()) {
+    return App.stop();
+  } else {
+    return App.run();
+  }
+};
+
+/**
+ * Gets engine running state.
+ *
+ * @method isRunning
+ * @return {Boolean} true if running; false otherwise
+ */
+App.isRunning = function() {
+  return App._engine.running;
+};
+
+/**
+ * Start simulation.
+ *
+ * @method run
+ * @return {Boolean} true if running; false otherwise
+ */
+App.run = function() {
+  return App._engine.run();
+};
+
+/**
+ * Stop simulation.
+ *
+ * @method stop
+ * @return {Boolean} true if running; false otherwise
+ */
+App.stop = function() {
+  return App._engine.stop();
+};
+
+/**
+ * Step and stop simulation.
+ *
+ * @method step
+ * @return {Boolean} true if running; false otherwise
+ */
+App.step = function() {
+  return App._engine.step();
+};
+
+/**
+ * Resert simulation.
+ *
+ * @method reset
+ * @return {Boolean} true if running; false otherwise
+ */
+App.reset = function() {
+  return App._engine.reset();
+};
+
+/**
+ * Get simulation statistics.
+ *
+ * @method getStats
+ * @return {Object} stats
+ */
+App.getStats = function() {
+  var entities = App._world.entities;
+  return {
+    running: App._engine.running,
+    iterations: App._engine.iterations,
+    groups: App._world.getGroups().length,
+    agents: App._world.getAgents().length,
+    contexts: entities.contexts.length,
+    walls: entities.walls.length,
+    paths: entities.paths.length,
+    agent: App._world.agentSelected ? App._world.agentSelected.id : ''
+  };
+};
+
+/**
+ * Cycle an entity detail level.
+ *
+ * @method cycleDetail
+ * @param {EntityTypes} entityType
+ */
+App.cycleDetail = function(entityType) {
+  entityType.detail.cycleDetail();
+};
+
+/**
+ * Get simulation engine time settings.
+ *
+ * @method getEngineSettings
+ * @return {Object} [engine.options]
+ */
+App.getEngineSettings = function() {
+  return App._engine.getSettings();
+};
+
+/**
+ * Save current world.
+ *
+ * @method save
+ * @param {Boolean} save true to save; false to return String
+ * @return {String} raw
+ */
 App.save = function(save) {
   var raw = App._world.save(save);
   App.callbacks.onSave(App._world);
   return raw;
 };
 
+/**
+ * Load an example world by its name.
+ *
+ * @method loadExample
+ * @param {String} name
+ */
 App.loadExample = function(name) {
   App._renderer.stop();
-  App.load(Worlds[name],false);
+  App.load(Worlds[name], false);
   App._renderer.start();
 };
 
+/**
+ * Get a list of example worlds.
+ *
+ * @method listExamples
+ * @return {Array} world names
+ */
 App.listExamples = function() {
   return Lazy(Worlds).keys().toArray();
 };
 
+/**
+ * Clear current world.
+ *
+ * @method clear
+ */
 App.clear = function() {
   CrowdSim.restartIds();
   // remove current entities
@@ -140,11 +335,18 @@ App.clear = function() {
   });
 };
 
+/**
+ * Load a world.
+ *
+ * @method load
+ * @param {String} loader JSON structure
+ * @param {Boolean} loadDefault true to load last snapshoot
+ */
 App.load = function(loader, loadDefault) {
   this.clear();
   App.selectEntity(null);
   App.createEntityEnd();
-  App._world.load(loader,loadDefault);
+  App._world.load(loader, loadDefault);
   App._engine.setWorld(App._world);
   App._renderer.setWorld(App._world);
   // loads all entities creating render objects
@@ -155,24 +357,48 @@ App.load = function(loader, loadDefault) {
   App.callbacks.onLoad(App._world);
 };
 
+/**
+ * Callback on create agents.
+ *
+ * @method onCreateAgents
+ * @param {Array} agents created.
+ */
 App.onCreateAgents = function(agents) {
   Lazy(agents).each(function(a) {
     new Render.Agent(a);
   });
 };
 
+/**
+ * Callback on destroy agents.
+ *
+ * @method onDestroyAgents
+ * @param {Array} agents destroyed
+ */
 App.onDestroyAgents = function(agents) {
   Lazy(agents).each(function(a) {
     a.view.destroy();
   });
 };
 
+/**
+ * Callback on create entity.
+ *
+ * @method onCreateEntity
+ * @param {Entity} entity created
+ */
 App.onCreateEntity = function(entity) {
   if (App.callbacks.onCreateEntity) {
     App.callbacks.onCreateEntity(entity);
   }
 };
 
+/**
+ * Callback on destroy entity.
+ *
+ * @method onDestroyEntity
+ * @param {Entity} entity destroyedn
+ */
 App.onDestroyEntity = function(entity) {
   if (entity.view) {
     entity.view.destroy();
@@ -182,23 +408,48 @@ App.onDestroyEntity = function(entity) {
   }
 };
 
+/**
+ * Request to create an entity at a give pos.
+ *
+ * @method createEntityStart
+ * @param {EntityTypes} entityType
+ * @param {Vec2} pos
+ * @return {Render.Entity}
+ */
 App.createEntityStart = function(entityType, pos) {
   var entity = entityType.CreateFromPoint(pos.x, pos.y, App._world);
   App._newRenderEntity = entity;
   return App._newRenderEntity;
 };
 
-// returns current entity creation of null if finished
+/**
+ * Request current entity creation of null if finished
+ *
+ * @method getCreatingEntity
+ * @return {Render.Entity}
+ */
 App.getCreatingEntity = function() {
   return App._newRenderEntity;
 };
 
+/**
+ * Request to end the creation of the current entity.
+ *
+ * @method createEntityEnd
+ * @return {Object} null
+ */
 App.createEntityEnd = function() {
   App._renderer.drawHelperLine(null);
   App._newRenderEntity = null;
   return null;
 };
 
+/**
+ * Destroy an entity.
+ *
+ * @method destroyEntity
+ * @param {Render.Entity} entity
+ */
 App.destroyEntity = function(entity) {
   entity.destroy();
   if (App._entitySelected === entity) {
@@ -206,6 +457,12 @@ App.destroyEntity = function(entity) {
   }
 };
 
+/**
+ * Edit an entity starting is creation mode.
+ *
+ * @method editEntity
+ * @param {Render.Entity} entity
+ */
 App.editEntity = function(entity) {
   if (!App._newRenderEntity) { // stops from editing one entity if not finished with Previous
     App._editingEntity = App._entitySelected;
@@ -219,23 +476,23 @@ App.editEntity = function(entity) {
   }
 };
 
+/**
+ * Add a existing entity.
+ *
+ * @method addEntity
+ * @param {Entity} entity
+ */
 App.addEntity = function(entity) {
   var renderEntityProto = App.EntityCreationMapping[entity.constructor.type];
   var renderEntity = renderEntityProto.CreateFromModel(entity, App._world);
 };
 
-App.getEngineSettings = function() {
-  return App._engine.getSettings();
-};
-
-App.zoom = function(scale, x, y) {
-  App._renderer.zoom(scale, x, y);
-};
-
-App.pan = function(dx, dy) {
-  App._renderer.pan(dx, dy);
-};
-
+/**
+ * Sets the current selected entitiy.
+ *
+ * @method selectEntity
+ * @param {Render.Entity} entity
+ */
 App.selectEntity = function(entity) {
   if (App._entitySelected) {
     // hack to hide in stage
@@ -254,10 +511,22 @@ App.selectEntity = function(entity) {
   }
 };
 
+/**
+ * Gets the current selected entity.
+ *
+ * @method getSelectedEntity
+ * @return {Render.Entity}
+ */
 App.getSelectedEntity = function() {
   return App._entitySelected;
 };
 
+/**
+ * Set the current selected entity by its id
+ *
+ * @method selectEntityById
+ * @param {String} id
+ */
 App.selectEntityById = function(id) {
   var entity = App._world.getEntityById(id);
   if (entity) {
@@ -265,9 +534,17 @@ App.selectEntityById = function(id) {
   }
 };
 
-/* Stagen a render entities mouse events */
+/******************************************************************************/
+/******************* Stage render entities mouse events ***********************/
 App.entity = {};
 
+/**
+ * Entity mouse down event.
+ *
+ * @method mousedown
+ * @param {Object} event
+ * @return {Boolean}
+ */
 App.entity.mousedown = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -287,6 +564,14 @@ App.entity.mousedown = function(event) {
   return false;
 };
 
+/**
+ * Stage entity click event, creation of new entities.
+ *
+ * @method entityClick
+ * @param {Vec2} pos
+ * @param {Render.Entity} newEntity
+ * @param {Render.Entity} selected
+ */
 App.entityClick = function(pos, newEntity, selected) {
   if (newEntity instanceof Render.Joint) { // add joint to joint
     var existingJoint = newEntity.getJoint();
@@ -327,7 +612,12 @@ App.entityClick = function(pos, newEntity, selected) {
   }
 };
 
-// stage mousedown creation of entities steps
+/**
+ * Stage mouse down event, creation of entities steps
+ *
+ * @method mousedown
+ * @param {Object} event
+ */
 App.mousedown = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -350,6 +640,12 @@ App.mousedown = function(event) {
   App._entityHit = false;
 };
 
+/**
+ * Entity mouse move event
+ *
+ * @method mousemove
+ * @param {Object} event
+ */
 App.entity.mousemove = function(event) {
   // this points to the render entity
   if (this.entity) {
@@ -367,7 +663,12 @@ App.entity.mousemove = function(event) {
   }
 };
 
-// stage mousemove
+/**
+ * Stage mouse move event, helper lines.
+ *
+ * @method mousemove
+ * @param {Object} event
+ */
 App.mousemove = function(event) {
   // this points to the graphics/sprite
   if (App._newRenderEntity) {
@@ -378,6 +679,12 @@ App.mousemove = function(event) {
   }
 };
 
+/**
+ * Stage mouse wheel event, zoom and radius change.
+ *
+ * @method mousewheel
+ * @param {Object} event
+ */
 App.mousewheel = function(event) {
   var entity = App._entitySelected;
   if (entity && App._globalMousePressed) {
@@ -397,6 +704,13 @@ App.mousewheel = function(event) {
   }
 };
 
+/**
+ * Entity mouse up evenp.
+ *
+ * @method mouseup
+ * @param {Object} event
+ * @return {Boolean}
+ */
 App.entity.mouseup = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -413,6 +727,12 @@ App.entity.mouseup = function(event) {
   return false;
 };
 
+/**
+ * Stage mouse up event.
+ *
+ * @method mouseup
+ * @param {Object} event
+ */
 App.mouseup = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -421,6 +741,12 @@ App.mouseup = function(event) {
   App._globalMousePressed = false;
 };
 
+/**
+ * Entity mouse out event.
+ *
+ * @method mouseout
+ * @param {Object} event
+ */
 App.entity.mouseout = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -432,6 +758,12 @@ App.entity.mouseout = function(event) {
   }
 };
 
+/**
+ * Entity mouse over event.
+ *
+ * @method mouseover
+ * @param {Object} event
+ */
 App.entity.mouseover = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -439,59 +771,6 @@ App.entity.mouseover = function(event) {
   // this points to the graphics/sprite
   this.entity.hover = true;
   this.entity.tint = 0xFFFFFF;
-};
-
-App.screenToWorld = function(x, y) {
-  return App._renderer.screenToWorld(x, y);
-};
-App.worldToScreen = function(x, y) {
-  return App._renderer.worldToScreen(x, y);
-};
-
-App.toggleRun = function() {
-  if (App.isRunning()) {
-    return App.stop();
-  } else {
-    return App.run();
-  }
-};
-
-App.isRunning = function() {
-  return App._engine.running;
-};
-
-App.run = function() {
-  return App._engine.run();
-};
-
-App.stop = function() {
-  return App._engine.stop();
-};
-
-App.step = function() {
-  return App._engine.step();
-};
-
-App.reset = function() {
-  return App._engine.reset();
-};
-
-App.getStats = function() {
-  var entities = App._world.entities;
-  return {
-    running: App._engine.running,
-    iterations: App._engine.iterations,
-    groups: App._world.getGroups().length,
-    agents: App._world.getAgents().length,
-    contexts: entities.contexts.length,
-    walls: entities.walls.length,
-    paths: entities.paths.length,
-    agent: App._world.agentSelected ? App._world.agentSelected.id : ''
-  };
-};
-
-App.cycleDetail = function(entityType) {
-  entityType.detail.cycleDetail();
 };
 
 module.exports = App;
@@ -509,6 +788,12 @@ var Base = require('./Base');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Agent render view.
+ *
+ * @method Agent
+ * @param {Agent} agent
+ */
 var Agent = function(agent) {
   if (!agent) {
     throw 'Agent object must be defined';
@@ -527,6 +812,11 @@ var Agent = function(agent) {
   this.sprite.position.y = agent.pos[1];
 };
 
+/**
+ * Destroy agent.
+ *
+ * @method destroy
+ */
 Agent.prototype.destroy = function() {
   this.sprite.destroy();
   Agent.container.removeChild(this.sprite);
@@ -536,6 +826,11 @@ Agent.prototype.destroy = function() {
   }
 };
 
+/**
+ * Animate agent.
+ *
+ * @method render
+ */
 Agent.prototype.render = function() {
   if (!Agent.detail.level) {
     this.sprite.visible = false;
@@ -593,7 +888,7 @@ Agent.prototype.render = function() {
 
 Agent.texture = null; // agents texture
 Agent.debugContainer = null; // special container use to render all agents, e.g particleContainer
-Agent.detail = new Detail(5);
+Agent.detail = new Detail(4);
 
 module.exports = Agent;
 
@@ -634,6 +929,13 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Context render view.
+ *
+ * @return
+ * @method Context
+ * @param {Context} context
+ */
 var Context = function(context) {
   if (!context) {
     throw 'Context object must be defined';
@@ -641,20 +943,48 @@ var Context = function(context) {
   Entity.call(this, context);
 };
 
+/**
+ * Create context view from context entity.
+ *
+ * @method CreateFromModel
+ * @param {Context} context
+ * @return {Render.Context}
+ */
 Context.CreateFromModel = function(context) {
   return new Context(context);
 };
 
+/**
+ * Create context view and context entity.
+ *
+ * @method CreateFromPoint
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Entity} parent
+ * @param {Object} options
+ * @return {Render.Context}
+ */
 Context.CreateFromPoint = function(x, y, parent, options) {
   var context = new ContextModel(x, y, parent, options);
   return new Context(context);
 };
 
+/**
+ * Destroy Context.
+ *
+ * @method destroy
+ */
 Context.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Context.container, this.graphics);
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Create graphics.
+ *
+ * @method createGraphics
+ * @param {Context} context
+ */
 Context.prototype.createGraphics = function(context) {
   this.graphics = Entity.prototype.createGraphics.call(this,Context.container);
   this.label = new PIXI.Text(context.id, Base.Fonts.default);
@@ -665,17 +995,37 @@ Context.prototype.createGraphics = function(context) {
   this.graphics.entity = this;
 };
 
-Context.prototype.getAnchor = function(init) {
+/**
+ * Get context center for dragging actions.
+ *
+ * @method getAnchor
+ * @return {Vec2} anchor
+ */
+Context.prototype.getAnchor = function() {
   var context = this.entityModel;
   return {x: context.pos[0], y: context.pos[1]};
 };
 
+/**
+ * Drag render context.
+ *
+ * @method dragTo
+ * @param {Vec2} pos
+ * @param {Vec2} anchor
+ * @return
+ */
 Context.prototype.dragTo = function(pos, anchor) {
   var context = this.entityModel;
   context.pos[0] = pos.x;
   context.pos[1] = pos.y;
 };
 
+/**
+ * Animate context, update position and size.
+ *
+ * @method render
+ * @param {Object} options
+ */
 Context.prototype.render = function(options) {
   if (!Context.detail.level) {
     this.graphics.clear();
@@ -705,14 +1055,33 @@ Context.prototype.render = function(options) {
   }
 };
 
+/**
+ * Set context area, from its center.
+ *
+ * @method setArea
+ * @param {Number} x
+ * @param {Number} y
+ */
 Context.prototype.setArea = function(x, y) {
   this.entityModel.setArea(x, y);
 };
 
+/**
+ * Get context entity.
+ *
+ * @method getContext
+ * @return {Context} context
+ */
 Context.prototype.getContext = function() {
   return this.entityModel;
 };
 
+/**
+ * Get context center.
+ *
+ * @method getPos
+ * @return {Vec2} position
+ */
 Context.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
@@ -724,11 +1093,23 @@ module.exports = Context;
 },{"./Base":3,"./Detail":5,"./Entity":6,"CrowdSim":"CrowdSim"}],5:[function(require,module,exports){
 'use strict';
 
+/**
+ * Detail manager
+ * @constructor
+ * @param {Number} maxDetail
+ * @param {Number} detail
+ */
 var Detail = function(maxDetail, detail) {
   this.maxDetail = maxDetail;
   this.level = detail || 1;
 };
 
+/**
+ * Cycle detail levels.
+ *
+ * @method cycleDetail
+ * @param {Number} detail to set, optional.
+ */
 Detail.prototype.cycleDetail = function(detail) {
   if (detail) {
     this.level = detail;
@@ -747,9 +1128,12 @@ module.exports = Detail;
 
 var Base = require('./Base');
 
-/*
-* Base render prototype
-*/
+/**
+ * Base render prototype
+ *
+ * @constructor
+ * @param {Entity} entity
+ */
 var Entity = function(entity) {
   if (!entity) {
     throw 'Entity undefined';
@@ -759,6 +1143,11 @@ var Entity = function(entity) {
   this.selected = false;
 };
 
+/**
+ * Destroy entity.
+ *
+ * @method destroy
+ */
 Entity.prototype.destroy = function() {
   if (this.entityModel) {
     this.entityModel.view = null;
@@ -767,6 +1156,14 @@ Entity.prototype.destroy = function() {
   }
 };
 
+/**
+ * Create base grahpics.
+ *
+ * @method createGraphics
+ * @param {Pixi.Container} container
+ * @param {Pixi.Graphics} graphics , optional created otherwise
+ * @return {Pixi.Graphics} graphics
+ */
 Entity.prototype.createGraphics = function(container, graphics) {
   if (!graphics) {
     graphics = new PIXI.Graphics();
@@ -778,6 +1175,13 @@ Entity.prototype.createGraphics = function(container, graphics) {
   return graphics;
 };
 
+/**
+ * Destroy base graphics.
+ *
+ * @method destroyGraphics
+ * @param {Pixi.Container} container
+ * @param {Pixi.Graphics} graphics
+ */
 Entity.prototype.destroyGraphics = function(container, graphics) {
   if (graphics) {
     container.removeChild(graphics);
@@ -787,6 +1191,12 @@ Entity.prototype.destroyGraphics = function(container, graphics) {
   }
 };
 
+/**
+ * Set render entity as interactive.
+ *
+ * @method setInteractive
+ * @param {Pixi.DisplayObject} displayObject
+ */
 Entity.setInteractive = function(displayObject) {
   displayObject.interactive = true;
   displayObject.buttonMode = true;
@@ -797,10 +1207,22 @@ Entity.setInteractive = function(displayObject) {
   displayObject.mousemove = Entity.mousemove;
 };
 
+/**
+ * Animate entity.
+ *
+ * @method render
+ * @param {Pixi.Graphics} graphics
+ */
 Entity.prototype.render = function(graphics) {
   //this.display.clear();
 };
 
+/**
+ * Get entity position.
+ *
+ * @method getPos
+ * @return {Vec2} position.
+ */
 Entity.prototype.getPos = function() {
   return this.entityModel.pos;
 };
@@ -822,6 +1244,12 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Create a group render view from a group entity.
+ *
+ * @constructor
+ * @param {Group} group
+ */
 var Group = function(group) {
   if (!group) {
     throw 'Group object must be defined';
@@ -829,20 +1257,47 @@ var Group = function(group) {
   Entity.call(this, group);
 };
 
+/**
+ * Create a group render view from a group entity.
+ * @method CreateFromModel
+ * @param {Group} group
+ * @return {Render.Group}
+ */
 Group.CreateFromModel = function(group) {
   return new Group(group);
 };
 
+/**
+ * Create a group render and entity in a point.
+ *
+ * @method CreateFromPoint
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Entity} parent
+ * @param {Object} options
+ * @return {Render.Group}
+ */
 Group.CreateFromPoint = function(x, y, parent, options) {
   var group = new GroupModel(x, y, parent, options);
   return new Group(group);
 };
 
+/**
+ * Destroy render group.
+ *
+ * @method destroy
+ */
 Group.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Group.container, this.graphics);
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Create base graphics for group.
+ *
+ * @method createGraphics
+ * @param {Group} group
+ */
 Group.prototype.createGraphics = function(group) {
   this.graphics = Entity.prototype.createGraphics.call(this,Group.container);
   this.label = new PIXI.Text(group.id, Base.Fonts.default);
@@ -853,6 +1308,13 @@ Group.prototype.createGraphics = function(group) {
   this.graphics.entity = this;
 };
 
+/**
+ * Animate group, update position and radius.
+ *
+ * @method render
+ * @param {Object} options of the group
+ * @return
+ */
 Group.prototype.render = function(options) {
   if (!Group.detail.level) {
     this.graphics.clear();
@@ -900,21 +1362,46 @@ Group.prototype.render = function(options) {
   }
 };
 
-Group.prototype.getAnchor = function(init) {
+/**
+ * Get render group anchor.
+ *
+ * @method getAnchor
+ * @return {Vec2} anchor
+ */
+Group.prototype.getAnchor = function() {
   var group = this.entityModel;
   return {x: group.pos[0], y: group.pos[1]};
 };
 
+/**
+ * Drag action in groups.
+ *
+ * @method dragTo
+ * @param {Vec2} pos
+ * @param {Vec2} anchor
+ */
 Group.prototype.dragTo = function(pos, anchor) {
   var group = this.entityModel;
   group.pos[0] = pos.x;
   group.pos[1] = pos.y;
 };
 
+/**
+ * Get group position.
+ *
+ * @method getPos
+ * @return {Vec2} position
+ */
 Group.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
 
+/**
+ * Get associated group entity.
+ * 
+ * @method getGroup
+ * @return {Group}
+ */
 Group.prototype.getGroup = function() {
   return this.entityModel;
 };
@@ -932,6 +1419,13 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Joint render view
+ *
+ * @constructor
+ * @param {Joint} joint
+ * @param {Pixi.Texture} texture
+ */
 var Joint = function(joint, texture) {
   if (!joint) {
     throw 'Joint object must be defined';
@@ -940,6 +1434,12 @@ var Joint = function(joint, texture) {
   this.texture = texture;
 };
 
+/**
+ * Destroy base graphics.
+ *
+ * @method destroy
+ * @param {Pixi.Graphics} graphics
+ */
 Joint.prototype.destroy = function(graphics) {
   var line = this.entityModel.parent;
   this.graphics.removeChild(this.label);
@@ -948,6 +1448,12 @@ Joint.prototype.destroy = function(graphics) {
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Create base graphics.
+ *
+ * @method createGraphics
+ * @param {Pixi.Graphics} graphics
+ */
 Joint.prototype.createGraphics = function(graphics) {
   this.graphics = graphics;
   var joint = this.entityModel;
@@ -963,6 +1469,11 @@ Joint.prototype.createGraphics = function(graphics) {
   this.render();
 };
 
+/**
+ * Animate joint, update position and radius.
+ *
+ * @method render
+ */
 Joint.prototype.render = function() {
   this.sprite.visible = true;
   this.sprite.alpha = 0.5;
@@ -975,10 +1486,23 @@ Joint.prototype.render = function() {
   //this.label.y = this.sprite.y - this.label.height / 2;
 };
 
-Joint.prototype.getAnchor = function(init) {
+/**
+ * Get joint anchor for dragging actions.
+ *
+ * @method getAnchor
+ * @return {Vec2} anchor
+ */
+Joint.prototype.getAnchor = function() {
   return {x: this.entityModel.pos[0], y: this.entityModel.pos[1]};
 };
 
+/**
+ * Draggin actino.
+ *
+ * @method dragTo
+ * @param {Vec2} pos
+ * @param {Vec2} anchor
+ */
 Joint.prototype.dragTo = function(pos, anchor) {
   var anchorV2 = Vec2.fromValues(anchor.x,anchor.y);
   var radius = Vec2.length(anchorV2);
@@ -992,14 +1516,32 @@ Joint.prototype.dragTo = function(pos, anchor) {
   this.sprite.y = pos.y;
 };
 
+/**
+ * Get joint associated entity.
+ *
+ * @method getJoint
+ * @return {Joint} joint
+ */
 Joint.prototype.getJoint = function() {
   return this.entityModel;
 };
 
+/**
+ * Get joint position.
+ *
+ * @method getPos
+ * @return {Vec2} position
+ */
 Joint.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
 
+/**
+ * Shows or hides render joint.
+ *
+ * @method show
+ * @param {Boolean} show true for visible
+ */
 Joint.prototype.show = function(show) {
   this.sprite.visible = false;
   this.sprite.alpha = 0;
@@ -1016,8 +1558,22 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Line rendering for paths and walls prototype.
+ *
+ * @constructor
+ * @param {Number} color
+ * @return {LinePrototype} Line prototype
+ */
 var LinePrototype = function(color) {
 
+  /**
+   * Line rendering for paths and walls.
+   *
+   * @constructor
+   * @method Line
+   * @param {Wall|Path} line
+   */
   var Line = function(line) {
     if (!line) {
       throw 'Line object must be defined';
@@ -1025,14 +1581,12 @@ var LinePrototype = function(color) {
     Entity.call(this, line);
   };
 
-  Line.prototype.destroy = function() {
-    var that = this;
-    that.graphics.removeChild(that.label);
-    that.label.destroy();
-    Entity.prototype.destroyGraphics.call(that, Line.container, that.graphics);
-    Entity.prototype.destroy.call(that);
-  };
-
+  /**
+   * Create base graphics.
+   *
+   * @method createGraphics
+   * @param {Wall|Path} line
+   */
   Line.prototype.createGraphics = function(line) {
     this.graphics = Entity.prototype.createGraphics.call(this, Line.container);
     this.label = new PIXI.Text(line.id, Base.Fonts.default);
@@ -1048,18 +1602,53 @@ var LinePrototype = function(color) {
     }
   };
 
+  /**
+   * Destroy base graphics.
+   *
+   * @method destroy
+   */
+  Line.prototype.destroy = function() {
+    var that = this;
+    that.graphics.removeChild(that.label);
+    that.label.destroy();
+    Entity.prototype.destroyGraphics.call(that, Line.container, that.graphics);
+    Entity.prototype.destroy.call(that);
+  };
+
+  /**
+   * Add a render joint from a joint entity.
+   *
+   * @method addJointFromModel
+   * @param {Joint} joint
+   * @return {Render.Joint} render joint
+   */
   Line.prototype.addJointFromModel = function(joint) {
     var renderJoint = new Joint(joint, Line.texture);
     renderJoint.createGraphics(this.graphics);
     return renderJoint;
   };
 
+  /**
+   * Create a joint in a position.
+   *
+   * @method addJoint
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Options} options for creation
+   * @return {Render.Joint}
+   */
   Line.prototype.addJoint = function(x, y, options) {
     var line = this.entityModel;
     var jt = line.addJoint(x, y, options);
     return this.addJointFromModel(jt);
   };
 
+  /**
+   * Animate joint, position and radius.
+   *
+   * @method render
+   * @param {Object} options
+   */
   Line.prototype.render = function(options) {
     if (!Line.detail.level) {
       this.graphics.clear();
@@ -1112,15 +1701,38 @@ var Colors = Base.Colors;
 
 var Path = LinePrototype(Colors.Path);
 
+/**
+ * Create a Path render view from an Entity.
+ *
+ * @method CreateFromModel
+ * @param {particleh} path
+ * @return {Path} render path
+ */
 Path.CreateFromModel = function(path) {
   return new Path(path);
 };
 
+/**
+ * Create a Path at a position.
+ *
+ * @method CreateFromPoint
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Entity} parent
+ * @param {Object} options for creation of the path
+ * @return {Path} render path
+ */
 Path.CreateFromPoint = function(x, y, parent, options) {
   var path = new PathModel(x, y, parent, options);
   return new Path(path);
 };
 
+/**
+ * Get the path position, last joint added.
+ *
+ * @method getPos
+ * @return {Vec2} position
+ */
 Path.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
@@ -1136,6 +1748,15 @@ module.exports = Path;
 var Base = require('./Base');
 var Colors = Base.Colors;
 
+/**
+ * Initialices rendering and animate entities.
+ *
+ * @constructor
+ * @param {Canvas} canvas
+ * @param {Number} w width
+ * @param {Number} h height
+ * @param {Object} options
+ */
 var Render = function(canvas, w, h, options) {
   this.options = Lazy(options).defaults(Render.defaults).toObject();
   // create a renderer instance.
@@ -1172,6 +1793,13 @@ var Render = function(canvas, w, h, options) {
 
 };
 
+/**
+ * Initialice render.
+ *
+ * @method init
+ * @param {Array} textures coordinates for create Pixi.Textures.
+ * @param {Array} events to receive world callbacks
+ */
 Render.prototype.init = function(textures, events) {
   var baseTextures = PIXI.Texture.fromImage(textures.file),
       a = textures.agent,
@@ -1230,11 +1858,21 @@ Render.prototype.init = function(textures, events) {
   this.animate();
 };
 
+/**
+ * Start rendering loop.
+ *
+ * @method start
+ */
 Render.prototype.start = function() {
   this._stop = false;
   this.animate();
 };
 
+/**
+ * Rendering loop.
+ *
+ * @method animate
+ */
 Render.prototype.animate = function() {
   if (this.onPreRender) {
     this.onPreRender();
@@ -1267,18 +1905,45 @@ Render.prototype.animate = function() {
 
 };
 
+/**
+ * Stop rendering loop.
+ *
+ * @method stop
+ */
 Render.prototype.stop = function() {
   this._stop = true;
 };
 
+/**
+ * Set current rendered world.
+ *
+ * @method setWorld
+ * @param {World} world
+ */
 Render.prototype.setWorld = function(world) {
   this.world = world;
 };
 
+/**
+ * Resize rendering stage.
+ *
+ * @method resize
+ * @param {Number} w
+ * @param {Number} h
+ */
 Render.prototype.resize = function(w, h) {
   this._renderer.resize(w,h);
 };
 
+/**
+ * Draw a helper line from 0 to 1.
+ *
+ * @method drawHelperLine
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ */
 Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
   this._graphicsHelper.clear();
   if (x0) {
@@ -1289,6 +1954,14 @@ Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
   }
 };
 
+/**
+ * Zoom-in, zoom-out stage.
+ *
+ * @method zoom
+ * @param {Number} scale
+ * @param {Number} x center of zoom
+ * @param {Number} y center of zoom
+ */
 Render.prototype.zoom = function(scale, x, y) {
   scale = scale > 0 ? 1.1 : 0.9;
   var currentWorldPos = this.screenToWorld(x, y);
@@ -1299,23 +1972,59 @@ Render.prototype.zoom = function(scale, x, y) {
   this._stage.y -= (newScreenPos.y - y) ;
 };
 
+/**
+ * Pan view of stage.
+ *
+ * @method pan
+ * @param {Number} dx displacement x
+ * @param {Number} dy displacement y
+ */
 Render.prototype.pan = function(dx, dy) {
   this._stage.x += dx;
   this._stage.y += dy;
 };
 
+/**
+ * Get stage width.
+ *
+ * @method getWidth
+ * @return {Number} width
+ */
 Render.prototype.getWidth = function() {
   return this._stage.width;
 };
 
+/**
+ * Get stage height.
+ *
+ * @method getHeight
+ * @return {Number} height
+ */
 Render.prototype.getHeight = function() {
   return this._stage.height;
 };
 
+/**
+ * Convert screen coordinates to world coordinates.
+ *
+ * @method screenToWorld
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} world coordinate {x:x,y:y}
+ */
 Render.prototype.screenToWorld = function(x, y) {
   return {x: (x - this._stage.x) / this._stage.scale.x,
           y: (y - this._stage.y) / this._stage.scale.y};
 };
+
+/**
+ * Convert world coordinates to screen coordinates.
+ *
+ * @method worldToScreen
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} screen coordinate {x:x,y:y}
+ */
 Render.prototype.worldToScreen = function(x, y) {
   return {x: x * this._stage.scale.x + this._stage.x,
           y: y * this._stage.scale.y + this._stage.y};
@@ -1352,15 +2061,36 @@ var Fonts = Base.Fonts;
 
 var Wall = LinePrototype(Colors.Wall);
 
+/**
+ * Wall render view.
+ * 
+ * @constructor
+ * @param {Wall} wall
+ * @return {Render.Wall}
+ */
 Wall.CreateFromModel = function(wall) {
   return new Wall(wall);
 };
 
+/**
+ * Description
+ * @method CreateFromPoint
+ * @param {} x
+ * @param {} y
+ * @param {} parent
+ * @param {} options
+ * @return NewExpression
+ */
 Wall.CreateFromPoint = function(x, y, parent, options) {
   var wall = new WallModel(x, y, parent, options);
   return new Wall(wall);
 };
 
+/**
+ * Description
+ * @method getPos
+ * @return CallExpression
+ */
 Wall.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
@@ -4597,7 +5327,13 @@ var Worlds = {
     }]
   },
   /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /**
+   * ****************************************************************************************************************
+   * @method testFun
+   * @param {} world
+   * @param {} debug
+   * @return 
+   */
   testFun: function(world, debug) {
     // wire world events and adding entities functions
     var sizeR = 20;

@@ -4,7 +4,29 @@ var Vec2 = require('../../Common/Vec2');
 var Entity = require('../Entity');
 var Joint = require('./Joint');
 
+/**
+ * Base class to extend Wall and Path entities with common functionalities.
+ *
+ * @method LinePrototype
+ * @param {String} idPrefix 'W' for walls, 'P' for paths
+ * @param {String} type 'wall' for walls, 'path' for paths
+ * @param {Object} defaults options
+ * @param {String} id to use insted of autogenerate it, used when loading worlds
+ * @return Line
+ */
 var LinePrototype = function(idPrefix, type, defaults, id) {
+  /**
+   * Line Base
+   *
+   * @class Line
+   * @constructor
+   * @param {Number} x coordinate
+   * @param {Number} y coordinate
+   * @param {World} parent world
+   * @param {Object} [options]
+   * @param {String} id to use insted of autogenerate it, used when loading world
+   * @extends Entity
+   */
   var Line = function(x, y, parent, options, id) {
     this.options = Lazy(options).defaults(defaults).toObject();
     this.id = id || idPrefix + Line.id++;
@@ -16,6 +38,11 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  /**
+   * Destroy the line
+   *
+   * @method destroy
+   */
   Line.prototype.destroy = function() {
     for (var j in this.children.joints) {
       this.children.joints[j].parent = null;
@@ -25,6 +52,13 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     Entity.prototype.destroy.call(this);
   };
 
+  /**
+   * Request to add a children Joint entity.
+   *
+   * @method addEntity
+   * @param {Joint} joint
+   * @param {Object} options used for joint creation
+   */
   Line.prototype.addEntity = function(joint, options) {
     // add a joint to the end or a given position by options.idx
     if (!options || options.previousJoint === null) {
@@ -39,6 +73,12 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  /**
+   * Request to remove a children Joint entity.
+   *
+   * @method removeEntity
+   * @param {Joint} joint
+   */
   Line.prototype.removeEntity = function(joint) {
     var idx = this.children.joints.indexOf(joint);
     if (idx !== -1) {
@@ -57,6 +97,12 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  /**
+   * Request to add a list of  children Joint entities.
+   *
+   * @method addJoints
+   * @param {Array} joints
+   */
   Line.prototype.addJoints = function(joints) {
     // n joints, n-1 sections
     for (var i in joints) {
@@ -70,6 +116,16 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  /**
+   * Helper to create a new Joint.
+   *
+   * @method addJoint
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Object} options
+   * @param {String} id to use insted of autogenerate it, used when loading worldsid
+   * @return {Joint} joint
+   */
   Line.prototype.addJoint = function(x, y, options, id) {
     Entity.prototype.updatePos.call(this,x,y);
     options = Lazy(options).defaults(defaults).toObject();
@@ -77,26 +133,64 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     return joint;
   };
 
+  /**
+   * Gets the childen joints.
+   *
+   * @method getJoints
+   * @return {Array} joints
+   */
   Line.prototype.getJoints = function() {
     return this.children.joints;
   };
 
+  /**
+   * Get a joint index in the path/wall
+   * @method getJointIdx
+   * @param {Joint} joint
+   * @return {Number} index or -1 if not found
+   */
   Line.prototype.getJointIdx = function(joint) {
     return this.children.joints.indexOf(joint);
   };
 
+  /**
+   * Get a joint by index in the path.
+   *
+   * @method getJointByIdx
+   * @param {Number} idx
+   * @return {Joint} joint or null
+   */
   Line.prototype.getJointByIdx = function(idx) {
     return this.children.joints[idx];
   };
 
+  /**
+   * Get [options.width].
+   *
+   * @method getWidth
+   * @return {Number} width
+   */
   Line.prototype.getWidth = function() {
     return this.options.width;
   };
 
+  /**
+   * Reverse the internal joints lists.
+   *
+   * @method reverse
+   */
   Line.prototype.reverse = function() {
     this.children.joints = Lazy(this.children.joints).reverse().toArray();
   };
 
+  /**
+   * Get the projection from a point to a given segment.
+   *
+   * @method getProjection
+   * @param {Vec2} point
+   * @param {Number} segment index
+   * @return {Vec2} projection from point to segment
+   */
   Line.prototype.getProjection = function(point, segment) {
     if (segment < 0 || segment >= this.children.joints.length - 1) {
       throw 'Segment out of bounds';

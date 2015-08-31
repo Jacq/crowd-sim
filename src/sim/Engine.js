@@ -2,6 +2,14 @@
 
 //var $ = jQuery =
 
+/**
+ * The simulation engine. Manages the state running of the simulation
+ *
+ * @class Engine
+ * @constructor
+ * @param {World} world
+ * @param {Object} options
+ */
 var Engine = function(world, options) {
   this.running = false;
   this.iterations = 0;
@@ -12,18 +20,43 @@ var Engine = function(world, options) {
   delete this.settings.callbacks;
 };
 
+/**
+ * Get the engine settings, configured in constructor [options]
+ *
+ * @method getSettings
+ * @return {Object} options
+ */
 Engine.prototype.getSettings = function() {
   return this.settings;
 };
 
+/**
+ * Sets the simulation world
+ *
+ * @method setWorld
+ * @param {World} world
+ */
 Engine.prototype.setWorld = function(world) {
   this.world = world;
 };
 
+/**
+ * Gets the simulation world
+ *
+ * @method getWorld
+ * @return {World}
+ */
 Engine.prototype.getWorld = function() {
   return this.world;
 };
 
+/**
+ * Starts the simulation
+ *
+ * @method run
+ * @param {Entity} entity to report in the onStart callback as trigger
+ * @return {Boolean} true if running; false otherwise
+ */
 Engine.prototype.run = function(entity) {
   if (this.running) {
     return;
@@ -37,6 +70,12 @@ Engine.prototype.run = function(entity) {
   return this.running;
 };
 
+/**
+ * Advance one step the simulation and stops.
+ *
+ * @method step
+ * @return {Boolean} true if running; false otherwise
+ */
 Engine.prototype.step = function() {
   if (this.running) {
     this.stop();
@@ -45,6 +84,10 @@ Engine.prototype.step = function() {
   return this.running;
 };
 
+/**
+ * Internal step of the simulation engine. Periodically called.
+ * @method _step
+ */
 Engine.prototype._step = function() {
   // calculate next execution
   var startTime = new Date();
@@ -73,6 +116,13 @@ Engine.prototype._step = function() {
   }
 };
 
+/**
+ * Stops the simulation
+ *
+ * @method stop
+ * @param {Entity} entity to report in the onStart callback as trigger
+ * @return {Boolean} true if running; false otherwise
+ */
 Engine.prototype.stop = function(entity) {
   if (!this.running) {
     return;
@@ -85,6 +135,12 @@ Engine.prototype.stop = function(entity) {
   return this.running;
 };
 
+/**
+ * Resets=Restarts the state of the simulation.
+ *
+ * @method reset
+ * @return {Boolean} true if running; false otherwise
+ */
 Engine.prototype.reset = function() {
   var groups = this.world.getGroups();
   Lazy(groups).each(function(g) {

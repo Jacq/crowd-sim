@@ -2,9 +2,13 @@
 
 var Base = require('./Base');
 
-/*
-* Base render prototype
-*/
+/**
+ * Base render prototype
+ *
+ * @class Render.Entity
+ * @constructor
+ * @param {Entity} entity
+ */
 var Entity = function(entity) {
   if (!entity) {
     throw 'Entity undefined';
@@ -14,6 +18,11 @@ var Entity = function(entity) {
   this.selected = false;
 };
 
+/**
+ * Destroy entity.
+ *
+ * @method destroy
+ */
 Entity.prototype.destroy = function() {
   if (this.entityModel) {
     this.entityModel.view = null;
@@ -22,6 +31,14 @@ Entity.prototype.destroy = function() {
   }
 };
 
+/**
+ * Create base grahpics.
+ *
+ * @method createGraphics
+ * @param {Pixi.Container} container
+ * @param {Pixi.Graphics} graphics , optional created otherwise
+ * @return {Pixi.Graphics} graphics
+ */
 Entity.prototype.createGraphics = function(container, graphics) {
   if (!graphics) {
     graphics = new PIXI.Graphics();
@@ -33,6 +50,13 @@ Entity.prototype.createGraphics = function(container, graphics) {
   return graphics;
 };
 
+/**
+ * Destroy base graphics.
+ *
+ * @method destroyGraphics
+ * @param {Pixi.Container} container
+ * @param {Pixi.Graphics} graphics
+ */
 Entity.prototype.destroyGraphics = function(container, graphics) {
   if (graphics) {
     container.removeChild(graphics);
@@ -42,6 +66,12 @@ Entity.prototype.destroyGraphics = function(container, graphics) {
   }
 };
 
+/**
+ * Set render entity as interactive.
+ *
+ * @method setInteractive
+ * @param {Pixi.DisplayObject} displayObject
+ */
 Entity.setInteractive = function(displayObject) {
   displayObject.interactive = true;
   displayObject.buttonMode = true;
@@ -52,10 +82,22 @@ Entity.setInteractive = function(displayObject) {
   displayObject.mousemove = Entity.mousemove;
 };
 
+/**
+ * Animate entity.
+ *
+ * @method render
+ * @param {Pixi.Graphics} graphics
+ */
 Entity.prototype.render = function(graphics) {
   //this.display.clear();
 };
 
+/**
+ * Get entity position.
+ *
+ * @method getPos
+ * @return {Vec2} position.
+ */
 Entity.prototype.getPos = function() {
   return this.entityModel.pos;
 };

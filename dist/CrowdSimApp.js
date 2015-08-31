@@ -13,7 +13,7 @@ App.defaultOptions = {
   snapToGrid: false, // snaps the mouse position to a grid of integers
   logEvents: false,
   renderer: {
-    backgroundColor: 0xffffff,
+    backgroundColor: 0x000000,
     scale: 10,
     useParticle: true,
     MaxAgents: 1000, // to init particle container
@@ -25,6 +25,12 @@ App.defaultOptions = {
     callbacks: {
       onStart: null,
       onStep: null,
+      /**
+       * Description
+       * @method onStop
+       * @param {} entity
+       * @return
+       */
       onStop: function(entity) {
         App.selectEntity(entity ? entity.view : null); // highlight entity that causes stop
         if (App.callbacks.onStop) {
@@ -63,15 +69,13 @@ App.EntityCreationMapping = {
   'wall': Render.Wall
 };
 
-App.resize = function(window, width, height) {
-  // to wait for fullscreen state
-  setTimeout(function() {
-    var w = width || window.innerWidth;
-    var h = height || window.innerHeight;
-    App._renderer.resize(w, h);
-  }, 200);
-};
-
+/**
+ * Description
+ * @method init
+ * @param {} canvas
+ * @param {} options
+ * @return
+ */
 App.init = function(canvas, options) {
   App.options = Lazy(options).defaults(App.defaultOptions).toObject();
   App.callbacks = Lazy(options.callbacks).defaults(App.defaultOptions.callbacks).toObject();
@@ -115,22 +119,201 @@ App.init = function(canvas, options) {
   var world = App._world = new CrowdSim.World(this, optionsWorld);
 };
 
+/**
+ * Description
+ * @method resize
+ * @param {} window
+ * @param {} width
+ * @param {} height
+ * @return
+ */
+App.resize = function(window, width, height) {
+  // to wait for fullscreen state
+  setTimeout(function() {
+    var w = width || window.innerWidth;
+    var h = height || window.innerHeight;
+    App._renderer.resize(w, h);
+  }, 200);
+};
+
+/**
+ * Description
+ * @method zoom
+ * @param {} scale
+ * @param {} x
+ * @param {} y
+ * @return
+ */
+App.zoom = function(scale, x, y) {
+  App._renderer.zoom(scale, x, y);
+};
+
+/**
+ * Description
+ * @method pan
+ * @param {} dx
+ * @param {} dy
+ * @return
+ */
+App.pan = function(dx, dy) {
+  App._renderer.pan(dx, dy);
+};
+
+/**
+ * Description
+ * @method screenToWorld
+ * @param {} x
+ * @param {} y
+ * @return CallExpression
+ */
+App.screenToWorld = function(x, y) {
+  return App._renderer.screenToWorld(x, y);
+};
+/**
+ * Description
+ * @method worldToScreen
+ * @param {} x
+ * @param {} y
+ * @return CallExpression
+ */
+App.worldToScreen = function(x, y) {
+  return App._renderer.worldToScreen(x, y);
+};
+
+/**
+ * Description
+ * @method toggleRun
+ * @return
+ */
+App.toggleRun = function() {
+  if (App.isRunning()) {
+    return App.stop();
+  } else {
+    return App.run();
+  }
+};
+
+/**
+ * Description
+ * @method isRunning
+ * @return MemberExpression
+ */
+App.isRunning = function() {
+  return App._engine.running;
+};
+
+/**
+ * Description
+ * @method run
+ * @return CallExpression
+ */
+App.run = function() {
+  return App._engine.run();
+};
+
+/**
+ * Description
+ * @method stop
+ * @return CallExpression
+ */
+App.stop = function() {
+  return App._engine.stop();
+};
+
+/**
+ * Description
+ * @method step
+ * @return CallExpression
+ */
+App.step = function() {
+  return App._engine.step();
+};
+
+/**
+ * Description
+ * @method reset
+ * @return CallExpression
+ */
+App.reset = function() {
+  return App._engine.reset();
+};
+
+/**
+ * Description
+ * @method getStats
+ * @return ObjectExpression
+ */
+App.getStats = function() {
+  var entities = App._world.entities;
+  return {
+    running: App._engine.running,
+    iterations: App._engine.iterations,
+    groups: App._world.getGroups().length,
+    agents: App._world.getAgents().length,
+    contexts: entities.contexts.length,
+    walls: entities.walls.length,
+    paths: entities.paths.length,
+    agent: App._world.agentSelected ? App._world.agentSelected.id : ''
+  };
+};
+
+/**
+ * Description
+ * @method cycleDetail
+ * @param {} entityType
+ * @return
+ */
+App.cycleDetail = function(entityType) {
+  entityType.detail.cycleDetail();
+};
+
+/**
+ * Description
+ * @method getEngineSettings
+ * @return CallExpression
+ */
+App.getEngineSettings = function() {
+  return App._engine.getSettings();
+};
+
+/**
+ * Description
+ * @method save
+ * @param {} save
+ * @return raw
+ */
 App.save = function(save) {
   var raw = App._world.save(save);
   App.callbacks.onSave(App._world);
   return raw;
 };
 
+/**
+ * Description
+ * @method loadExample
+ * @param {} name
+ * @return
+ */
 App.loadExample = function(name) {
   App._renderer.stop();
   App.load(Worlds[name],false);
   App._renderer.start();
 };
 
+/**
+ * Description
+ * @method listExamples
+ * @return CallExpression
+ */
 App.listExamples = function() {
   return Lazy(Worlds).keys().toArray();
 };
 
+/**
+ * Description
+ * @method clear
+ * @return
+ */
 App.clear = function() {
   CrowdSim.restartIds();
   // remove current entities
@@ -140,6 +323,13 @@ App.clear = function() {
   });
 };
 
+/**
+ * Description
+ * @method load
+ * @param {} loader
+ * @param {} loadDefault
+ * @return
+ */
 App.load = function(loader, loadDefault) {
   this.clear();
   App.selectEntity(null);
@@ -155,24 +345,48 @@ App.load = function(loader, loadDefault) {
   App.callbacks.onLoad(App._world);
 };
 
+/**
+ * Description
+ * @method onCreateAgents
+ * @param {} agents
+ * @return
+ */
 App.onCreateAgents = function(agents) {
   Lazy(agents).each(function(a) {
     new Render.Agent(a);
   });
 };
 
+/**
+ * Description
+ * @method onDestroyAgents
+ * @param {} agents
+ * @return
+ */
 App.onDestroyAgents = function(agents) {
   Lazy(agents).each(function(a) {
     a.view.destroy();
   });
 };
 
+/**
+ * Description
+ * @method onCreateEntity
+ * @param {} entity
+ * @return
+ */
 App.onCreateEntity = function(entity) {
   if (App.callbacks.onCreateEntity) {
     App.callbacks.onCreateEntity(entity);
   }
 };
 
+/**
+ * Description
+ * @method onDestroyEntity
+ * @param {} entity
+ * @return
+ */
 App.onDestroyEntity = function(entity) {
   if (entity.view) {
     entity.view.destroy();
@@ -182,6 +396,13 @@ App.onDestroyEntity = function(entity) {
   }
 };
 
+/**
+ * Description
+ * @method createEntityStart
+ * @param {} entityType
+ * @param {} pos
+ * @return MemberExpression
+ */
 App.createEntityStart = function(entityType, pos) {
   var entity = entityType.CreateFromPoint(pos.x, pos.y, App._world);
   App._newRenderEntity = entity;
@@ -189,16 +410,32 @@ App.createEntityStart = function(entityType, pos) {
 };
 
 // returns current entity creation of null if finished
+/**
+ * Description
+ * @method getCreatingEntity
+ * @return MemberExpression
+ */
 App.getCreatingEntity = function() {
   return App._newRenderEntity;
 };
 
+/**
+ * Description
+ * @method createEntityEnd
+ * @return Literal
+ */
 App.createEntityEnd = function() {
   App._renderer.drawHelperLine(null);
   App._newRenderEntity = null;
   return null;
 };
 
+/**
+ * Description
+ * @method destroyEntity
+ * @param {} entity
+ * @return
+ */
 App.destroyEntity = function(entity) {
   entity.destroy();
   if (App._entitySelected === entity) {
@@ -206,6 +443,12 @@ App.destroyEntity = function(entity) {
   }
 };
 
+/**
+ * Description
+ * @method editEntity
+ * @param {} entity
+ * @return
+ */
 App.editEntity = function(entity) {
   if (!App._newRenderEntity) { // stops from editing one entity if not finished with Previous
     App._editingEntity = App._entitySelected;
@@ -219,23 +462,23 @@ App.editEntity = function(entity) {
   }
 };
 
+/**
+ * Description
+ * @method addEntity
+ * @param {} entity
+ * @return
+ */
 App.addEntity = function(entity) {
   var renderEntityProto = App.EntityCreationMapping[entity.constructor.type];
   var renderEntity = renderEntityProto.CreateFromModel(entity, App._world);
 };
 
-App.getEngineSettings = function() {
-  return App._engine.getSettings();
-};
-
-App.zoom = function(scale, x, y) {
-  App._renderer.zoom(scale, x, y);
-};
-
-App.pan = function(dx, dy) {
-  App._renderer.pan(dx, dy);
-};
-
+/**
+ * Description
+ * @method selectEntity
+ * @param {} entity
+ * @return
+ */
 App.selectEntity = function(entity) {
   if (App._entitySelected) {
     // hack to hide in stage
@@ -254,10 +497,21 @@ App.selectEntity = function(entity) {
   }
 };
 
+/**
+ * Description
+ * @method getSelectedEntity
+ * @return MemberExpression
+ */
 App.getSelectedEntity = function() {
   return App._entitySelected;
 };
 
+/**
+ * Description
+ * @method selectEntityById
+ * @param {} id
+ * @return
+ */
 App.selectEntityById = function(id) {
   var entity = App._world.getEntityById(id);
   if (entity) {
@@ -268,6 +522,12 @@ App.selectEntityById = function(id) {
 /* Stagen a render entities mouse events */
 App.entity = {};
 
+/**
+ * Description
+ * @method mousedown
+ * @param {} event
+ * @return Literal
+ */
 App.entity.mousedown = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -287,6 +547,14 @@ App.entity.mousedown = function(event) {
   return false;
 };
 
+/**
+ * Description
+ * @method entityClick
+ * @param {} pos
+ * @param {} newEntity
+ * @param {} selected
+ * @return
+ */
 App.entityClick = function(pos, newEntity, selected) {
   if (newEntity instanceof Render.Joint) { // add joint to joint
     var existingJoint = newEntity.getJoint();
@@ -328,6 +596,12 @@ App.entityClick = function(pos, newEntity, selected) {
 };
 
 // stage mousedown creation of entities steps
+/**
+ * Description
+ * @method mousedown
+ * @param {} event
+ * @return
+ */
 App.mousedown = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -350,6 +624,12 @@ App.mousedown = function(event) {
   App._entityHit = false;
 };
 
+/**
+ * Description
+ * @method mousemove
+ * @param {} event
+ * @return
+ */
 App.entity.mousemove = function(event) {
   // this points to the render entity
   if (this.entity) {
@@ -368,6 +648,12 @@ App.entity.mousemove = function(event) {
 };
 
 // stage mousemove
+/**
+ * Description
+ * @method mousemove
+ * @param {} event
+ * @return
+ */
 App.mousemove = function(event) {
   // this points to the graphics/sprite
   if (App._newRenderEntity) {
@@ -378,6 +664,12 @@ App.mousemove = function(event) {
   }
 };
 
+/**
+ * Description
+ * @method mousewheel
+ * @param {} event
+ * @return
+ */
 App.mousewheel = function(event) {
   var entity = App._entitySelected;
   if (entity && App._globalMousePressed) {
@@ -397,6 +689,12 @@ App.mousewheel = function(event) {
   }
 };
 
+/**
+ * Description
+ * @method mouseup
+ * @param {} event
+ * @return Literal
+ */
 App.entity.mouseup = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -413,6 +711,12 @@ App.entity.mouseup = function(event) {
   return false;
 };
 
+/**
+ * Description
+ * @method mouseup
+ * @param {} event
+ * @return
+ */
 App.mouseup = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -421,6 +725,12 @@ App.mouseup = function(event) {
   App._globalMousePressed = false;
 };
 
+/**
+ * Description
+ * @method mouseout
+ * @param {} event
+ * @return
+ */
 App.entity.mouseout = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -432,6 +742,12 @@ App.entity.mouseout = function(event) {
   }
 };
 
+/**
+ * Description
+ * @method mouseover
+ * @param {} event
+ * @return
+ */
 App.entity.mouseover = function(event) {
   if (App.options.logEvents) {
     console.log(event);
@@ -439,59 +755,6 @@ App.entity.mouseover = function(event) {
   // this points to the graphics/sprite
   this.entity.hover = true;
   this.entity.tint = 0xFFFFFF;
-};
-
-App.screenToWorld = function(x, y) {
-  return App._renderer.screenToWorld(x, y);
-};
-App.worldToScreen = function(x, y) {
-  return App._renderer.worldToScreen(x, y);
-};
-
-App.toggleRun = function() {
-  if (App.isRunning()) {
-    return App.stop();
-  } else {
-    return App.run();
-  }
-};
-
-App.isRunning = function() {
-  return App._engine.running;
-};
-
-App.run = function() {
-  return App._engine.run();
-};
-
-App.stop = function() {
-  return App._engine.stop();
-};
-
-App.step = function() {
-  return App._engine.step();
-};
-
-App.reset = function() {
-  return App._engine.reset();
-};
-
-App.getStats = function() {
-  var entities = App._world.entities;
-  return {
-    running: App._engine.running,
-    iterations: App._engine.iterations,
-    groups: App._world.getGroups().length,
-    agents: App._world.getAgents().length,
-    contexts: entities.contexts.length,
-    walls: entities.walls.length,
-    paths: entities.paths.length,
-    agent: App._world.agentSelected ? App._world.agentSelected.id : ''
-  };
-};
-
-App.cycleDetail = function(entityType) {
-  entityType.detail.cycleDetail();
 };
 
 module.exports = App;
@@ -509,6 +772,12 @@ var Base = require('./Base');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Description
+ * @method Agent
+ * @param {} agent
+ * @return 
+ */
 var Agent = function(agent) {
   if (!agent) {
     throw 'Agent object must be defined';
@@ -527,6 +796,11 @@ var Agent = function(agent) {
   this.sprite.position.y = agent.pos[1];
 };
 
+/**
+ * Description
+ * @method destroy
+ * @return 
+ */
 Agent.prototype.destroy = function() {
   this.sprite.destroy();
   Agent.container.removeChild(this.sprite);
@@ -536,6 +810,11 @@ Agent.prototype.destroy = function() {
   }
 };
 
+/**
+ * Description
+ * @method render
+ * @return 
+ */
 Agent.prototype.render = function() {
   if (!Agent.detail.level) {
     this.sprite.visible = false;
@@ -634,6 +913,12 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Description
+ * @method Context
+ * @param {} context
+ * @return
+ */
 var Context = function(context) {
   if (!context) {
     throw 'Context object must be defined';
@@ -641,20 +926,46 @@ var Context = function(context) {
   Entity.call(this, context);
 };
 
+/**
+ * Description
+ * @method CreateFromModel
+ * @param {} context
+ * @return NewExpression
+ */
 Context.CreateFromModel = function(context) {
   return new Context(context);
 };
 
+/**
+ * Description
+ * @method CreateFromPoint
+ * @param {} x
+ * @param {} y
+ * @param {} parent
+ * @param {} options
+ * @return NewExpression
+ */
 Context.CreateFromPoint = function(x, y, parent, options) {
   var context = new ContextModel(x, y, parent, options);
   return new Context(context);
 };
 
+/**
+ * Description
+ * @method destroy
+ * @return
+ */
 Context.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Context.container, this.graphics);
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Description
+ * @method createGraphics
+ * @param {} context
+ * @return
+ */
 Context.prototype.createGraphics = function(context) {
   this.graphics = Entity.prototype.createGraphics.call(this,Context.container);
   this.label = new PIXI.Text(context.id, Base.Fonts.default);
@@ -665,17 +976,36 @@ Context.prototype.createGraphics = function(context) {
   this.graphics.entity = this;
 };
 
+/**
+ * Description
+ * @method getAnchor
+ * @param {} init
+ * @return ObjectExpression
+ */
 Context.prototype.getAnchor = function(init) {
   var context = this.entityModel;
   return {x: context.pos[0], y: context.pos[1]};
 };
 
+/**
+ * Description
+ * @method dragTo
+ * @param {} pos
+ * @param {} anchor
+ * @return
+ */
 Context.prototype.dragTo = function(pos, anchor) {
   var context = this.entityModel;
   context.pos[0] = pos.x;
   context.pos[1] = pos.y;
 };
 
+/**
+ * Description
+ * @method render
+ * @param {} options
+ * @return
+ */
 Context.prototype.render = function(options) {
   if (!Context.detail.level) {
     this.graphics.clear();
@@ -705,14 +1035,31 @@ Context.prototype.render = function(options) {
   }
 };
 
+/**
+ * Description
+ * @method setArea
+ * @param {} x
+ * @param {} y
+ * @return
+ */
 Context.prototype.setArea = function(x, y) {
   this.entityModel.setArea(x, y);
 };
 
+/**
+ * Description
+ * @method getContext
+ * @return MemberExpression
+ */
 Context.prototype.getContext = function() {
   return this.entityModel;
 };
 
+/**
+ * Description
+ * @method getPos
+ * @return CallExpression
+ */
 Context.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
@@ -724,11 +1071,24 @@ module.exports = Context;
 },{"./Base":3,"./Detail":5,"./Entity":6,"CrowdSim":"CrowdSim"}],5:[function(require,module,exports){
 'use strict';
 
+/**
+ * Description
+ * @method Detail
+ * @param {} maxDetail
+ * @param {} detail
+ * @return 
+ */
 var Detail = function(maxDetail, detail) {
   this.maxDetail = maxDetail;
   this.level = detail || 1;
 };
 
+/**
+ * Description
+ * @method cycleDetail
+ * @param {} detail
+ * @return 
+ */
 Detail.prototype.cycleDetail = function(detail) {
   if (detail) {
     this.level = detail;
@@ -747,9 +1107,12 @@ module.exports = Detail;
 
 var Base = require('./Base');
 
-/*
-* Base render prototype
-*/
+/**
+ * Base render prototype
+ * @method Entity
+ * @param {} entity
+ * @return 
+ */
 var Entity = function(entity) {
   if (!entity) {
     throw 'Entity undefined';
@@ -759,6 +1122,11 @@ var Entity = function(entity) {
   this.selected = false;
 };
 
+/**
+ * Description
+ * @method destroy
+ * @return 
+ */
 Entity.prototype.destroy = function() {
   if (this.entityModel) {
     this.entityModel.view = null;
@@ -767,6 +1135,13 @@ Entity.prototype.destroy = function() {
   }
 };
 
+/**
+ * Description
+ * @method createGraphics
+ * @param {} container
+ * @param {} graphics
+ * @return graphics
+ */
 Entity.prototype.createGraphics = function(container, graphics) {
   if (!graphics) {
     graphics = new PIXI.Graphics();
@@ -778,6 +1153,13 @@ Entity.prototype.createGraphics = function(container, graphics) {
   return graphics;
 };
 
+/**
+ * Description
+ * @method destroyGraphics
+ * @param {} container
+ * @param {} graphics
+ * @return 
+ */
 Entity.prototype.destroyGraphics = function(container, graphics) {
   if (graphics) {
     container.removeChild(graphics);
@@ -787,6 +1169,12 @@ Entity.prototype.destroyGraphics = function(container, graphics) {
   }
 };
 
+/**
+ * Description
+ * @method setInteractive
+ * @param {} displayObject
+ * @return 
+ */
 Entity.setInteractive = function(displayObject) {
   displayObject.interactive = true;
   displayObject.buttonMode = true;
@@ -797,10 +1185,21 @@ Entity.setInteractive = function(displayObject) {
   displayObject.mousemove = Entity.mousemove;
 };
 
+/**
+ * Description
+ * @method render
+ * @param {} graphics
+ * @return 
+ */
 Entity.prototype.render = function(graphics) {
   //this.display.clear();
 };
 
+/**
+ * Description
+ * @method getPos
+ * @return MemberExpression
+ */
 Entity.prototype.getPos = function() {
   return this.entityModel.pos;
 };
@@ -822,6 +1221,12 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Description
+ * @method Group
+ * @param {} group
+ * @return 
+ */
 var Group = function(group) {
   if (!group) {
     throw 'Group object must be defined';
@@ -829,20 +1234,46 @@ var Group = function(group) {
   Entity.call(this, group);
 };
 
+/**
+ * Description
+ * @method CreateFromModel
+ * @param {} group
+ * @return NewExpression
+ */
 Group.CreateFromModel = function(group) {
   return new Group(group);
 };
 
+/**
+ * Description
+ * @method CreateFromPoint
+ * @param {} x
+ * @param {} y
+ * @param {} parent
+ * @param {} options
+ * @return NewExpression
+ */
 Group.CreateFromPoint = function(x, y, parent, options) {
   var group = new GroupModel(x, y, parent, options);
   return new Group(group);
 };
 
+/**
+ * Description
+ * @method destroy
+ * @return 
+ */
 Group.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Group.container, this.graphics);
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Description
+ * @method createGraphics
+ * @param {} group
+ * @return 
+ */
 Group.prototype.createGraphics = function(group) {
   this.graphics = Entity.prototype.createGraphics.call(this,Group.container);
   this.label = new PIXI.Text(group.id, Base.Fonts.default);
@@ -853,6 +1284,12 @@ Group.prototype.createGraphics = function(group) {
   this.graphics.entity = this;
 };
 
+/**
+ * Description
+ * @method render
+ * @param {} options
+ * @return 
+ */
 Group.prototype.render = function(options) {
   if (!Group.detail.level) {
     this.graphics.clear();
@@ -900,21 +1337,44 @@ Group.prototype.render = function(options) {
   }
 };
 
+/**
+ * Description
+ * @method getAnchor
+ * @param {} init
+ * @return ObjectExpression
+ */
 Group.prototype.getAnchor = function(init) {
   var group = this.entityModel;
   return {x: group.pos[0], y: group.pos[1]};
 };
 
+/**
+ * Description
+ * @method dragTo
+ * @param {} pos
+ * @param {} anchor
+ * @return 
+ */
 Group.prototype.dragTo = function(pos, anchor) {
   var group = this.entityModel;
   group.pos[0] = pos.x;
   group.pos[1] = pos.y;
 };
 
+/**
+ * Description
+ * @method getPos
+ * @return CallExpression
+ */
 Group.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
 
+/**
+ * Description
+ * @method getGroup
+ * @return MemberExpression
+ */
 Group.prototype.getGroup = function() {
   return this.entityModel;
 };
@@ -932,6 +1392,13 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Description
+ * @method Joint
+ * @param {} joint
+ * @param {} texture
+ * @return 
+ */
 var Joint = function(joint, texture) {
   if (!joint) {
     throw 'Joint object must be defined';
@@ -940,6 +1407,12 @@ var Joint = function(joint, texture) {
   this.texture = texture;
 };
 
+/**
+ * Description
+ * @method destroy
+ * @param {} graphics
+ * @return 
+ */
 Joint.prototype.destroy = function(graphics) {
   var line = this.entityModel.parent;
   this.graphics.removeChild(this.label);
@@ -948,6 +1421,12 @@ Joint.prototype.destroy = function(graphics) {
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Description
+ * @method createGraphics
+ * @param {} graphics
+ * @return 
+ */
 Joint.prototype.createGraphics = function(graphics) {
   this.graphics = graphics;
   var joint = this.entityModel;
@@ -963,6 +1442,11 @@ Joint.prototype.createGraphics = function(graphics) {
   this.render();
 };
 
+/**
+ * Description
+ * @method render
+ * @return 
+ */
 Joint.prototype.render = function() {
   this.sprite.visible = true;
   this.sprite.alpha = 0.5;
@@ -975,10 +1459,23 @@ Joint.prototype.render = function() {
   //this.label.y = this.sprite.y - this.label.height / 2;
 };
 
+/**
+ * Description
+ * @method getAnchor
+ * @param {} init
+ * @return ObjectExpression
+ */
 Joint.prototype.getAnchor = function(init) {
   return {x: this.entityModel.pos[0], y: this.entityModel.pos[1]};
 };
 
+/**
+ * Description
+ * @method dragTo
+ * @param {} pos
+ * @param {} anchor
+ * @return 
+ */
 Joint.prototype.dragTo = function(pos, anchor) {
   var anchorV2 = Vec2.fromValues(anchor.x,anchor.y);
   var radius = Vec2.length(anchorV2);
@@ -992,14 +1489,30 @@ Joint.prototype.dragTo = function(pos, anchor) {
   this.sprite.y = pos.y;
 };
 
+/**
+ * Description
+ * @method getJoint
+ * @return MemberExpression
+ */
 Joint.prototype.getJoint = function() {
   return this.entityModel;
 };
 
+/**
+ * Description
+ * @method getPos
+ * @return CallExpression
+ */
 Joint.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
 
+/**
+ * Description
+ * @method show
+ * @param {} show
+ * @return 
+ */
 Joint.prototype.show = function(show) {
   this.sprite.visible = false;
   this.sprite.alpha = 0;
@@ -1016,8 +1529,20 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Description
+ * @method LinePrototype
+ * @param {} color
+ * @return Line
+ */
 var LinePrototype = function(color) {
 
+  /**
+   * Description
+   * @method Line
+   * @param {} line
+   * @return 
+   */
   var Line = function(line) {
     if (!line) {
       throw 'Line object must be defined';
@@ -1025,6 +1550,11 @@ var LinePrototype = function(color) {
     Entity.call(this, line);
   };
 
+  /**
+   * Description
+   * @method destroy
+   * @return 
+   */
   Line.prototype.destroy = function() {
     var that = this;
     that.graphics.removeChild(that.label);
@@ -1033,6 +1563,12 @@ var LinePrototype = function(color) {
     Entity.prototype.destroy.call(that);
   };
 
+  /**
+   * Description
+   * @method createGraphics
+   * @param {} line
+   * @return 
+   */
   Line.prototype.createGraphics = function(line) {
     this.graphics = Entity.prototype.createGraphics.call(this, Line.container);
     this.label = new PIXI.Text(line.id, Base.Fonts.default);
@@ -1048,18 +1584,38 @@ var LinePrototype = function(color) {
     }
   };
 
+  /**
+   * Description
+   * @method addJointFromModel
+   * @param {} joint
+   * @return renderJoint
+   */
   Line.prototype.addJointFromModel = function(joint) {
     var renderJoint = new Joint(joint, Line.texture);
     renderJoint.createGraphics(this.graphics);
     return renderJoint;
   };
 
+  /**
+   * Description
+   * @method addJoint
+   * @param {} x
+   * @param {} y
+   * @param {} options
+   * @return CallExpression
+   */
   Line.prototype.addJoint = function(x, y, options) {
     var line = this.entityModel;
     var jt = line.addJoint(x, y, options);
     return this.addJointFromModel(jt);
   };
 
+  /**
+   * Description
+   * @method render
+   * @param {} options
+   * @return 
+   */
   Line.prototype.render = function(options) {
     if (!Line.detail.level) {
       this.graphics.clear();
@@ -1112,15 +1668,35 @@ var Colors = Base.Colors;
 
 var Path = LinePrototype(Colors.Path);
 
+/**
+ * Description
+ * @method CreateFromModel
+ * @param {} path
+ * @return NewExpression
+ */
 Path.CreateFromModel = function(path) {
   return new Path(path);
 };
 
+/**
+ * Description
+ * @method CreateFromPoint
+ * @param {} x
+ * @param {} y
+ * @param {} parent
+ * @param {} options
+ * @return NewExpression
+ */
 Path.CreateFromPoint = function(x, y, parent, options) {
   var path = new PathModel(x, y, parent, options);
   return new Path(path);
 };
 
+/**
+ * Description
+ * @method getPos
+ * @return CallExpression
+ */
 Path.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
@@ -1136,6 +1712,15 @@ module.exports = Path;
 var Base = require('./Base');
 var Colors = Base.Colors;
 
+/**
+ * Description
+ * @method Render
+ * @param {} canvas
+ * @param {} w
+ * @param {} h
+ * @param {} options
+ * @return 
+ */
 var Render = function(canvas, w, h, options) {
   this.options = Lazy(options).defaults(Render.defaults).toObject();
   // create a renderer instance.
@@ -1172,6 +1757,13 @@ var Render = function(canvas, w, h, options) {
 
 };
 
+/**
+ * Description
+ * @method init
+ * @param {} textures
+ * @param {} events
+ * @return 
+ */
 Render.prototype.init = function(textures, events) {
   var baseTextures = PIXI.Texture.fromImage(textures.file),
       a = textures.agent,
@@ -1230,11 +1822,21 @@ Render.prototype.init = function(textures, events) {
   this.animate();
 };
 
+/**
+ * Description
+ * @method start
+ * @return 
+ */
 Render.prototype.start = function() {
   this._stop = false;
   this.animate();
 };
 
+/**
+ * Description
+ * @method animate
+ * @return 
+ */
 Render.prototype.animate = function() {
   if (this.onPreRender) {
     this.onPreRender();
@@ -1267,18 +1869,45 @@ Render.prototype.animate = function() {
 
 };
 
+/**
+ * Description
+ * @method stop
+ * @return 
+ */
 Render.prototype.stop = function() {
   this._stop = true;
 };
 
+/**
+ * Description
+ * @method setWorld
+ * @param {} world
+ * @return 
+ */
 Render.prototype.setWorld = function(world) {
   this.world = world;
 };
 
+/**
+ * Description
+ * @method resize
+ * @param {} w
+ * @param {} h
+ * @return 
+ */
 Render.prototype.resize = function(w, h) {
   this._renderer.resize(w,h);
 };
 
+/**
+ * Description
+ * @method drawHelperLine
+ * @param {} x0
+ * @param {} y0
+ * @param {} x1
+ * @param {} y1
+ * @return 
+ */
 Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
   this._graphicsHelper.clear();
   if (x0) {
@@ -1289,6 +1918,14 @@ Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
   }
 };
 
+/**
+ * Description
+ * @method zoom
+ * @param {} scale
+ * @param {} x
+ * @param {} y
+ * @return 
+ */
 Render.prototype.zoom = function(scale, x, y) {
   scale = scale > 0 ? 1.1 : 0.9;
   var currentWorldPos = this.screenToWorld(x, y);
@@ -1299,23 +1936,54 @@ Render.prototype.zoom = function(scale, x, y) {
   this._stage.y -= (newScreenPos.y - y) ;
 };
 
+/**
+ * Description
+ * @method pan
+ * @param {} dx
+ * @param {} dy
+ * @return 
+ */
 Render.prototype.pan = function(dx, dy) {
   this._stage.x += dx;
   this._stage.y += dy;
 };
 
+/**
+ * Description
+ * @method getWidth
+ * @return MemberExpression
+ */
 Render.prototype.getWidth = function() {
   return this._stage.width;
 };
 
+/**
+ * Description
+ * @method getHeight
+ * @return MemberExpression
+ */
 Render.prototype.getHeight = function() {
   return this._stage.height;
 };
 
+/**
+ * Description
+ * @method screenToWorld
+ * @param {} x
+ * @param {} y
+ * @return ObjectExpression
+ */
 Render.prototype.screenToWorld = function(x, y) {
   return {x: (x - this._stage.x) / this._stage.scale.x,
           y: (y - this._stage.y) / this._stage.scale.y};
 };
+/**
+ * Description
+ * @method worldToScreen
+ * @param {} x
+ * @param {} y
+ * @return ObjectExpression
+ */
 Render.prototype.worldToScreen = function(x, y) {
   return {x: x * this._stage.scale.x + this._stage.x,
           y: y * this._stage.scale.y + this._stage.y};
@@ -1352,15 +2020,35 @@ var Fonts = Base.Fonts;
 
 var Wall = LinePrototype(Colors.Wall);
 
+/**
+ * Description
+ * @method CreateFromModel
+ * @param {} wall
+ * @return NewExpression
+ */
 Wall.CreateFromModel = function(wall) {
   return new Wall(wall);
 };
 
+/**
+ * Description
+ * @method CreateFromPoint
+ * @param {} x
+ * @param {} y
+ * @param {} parent
+ * @param {} options
+ * @return NewExpression
+ */
 Wall.CreateFromPoint = function(x, y, parent, options) {
   var wall = new WallModel(x, y, parent, options);
   return new Wall(wall);
 };
 
+/**
+ * Description
+ * @method getPos
+ * @return CallExpression
+ */
 Wall.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
@@ -3778,7 +4466,7 @@ var Worlds = {
         "agentsSizeMin": 0.5,
         "agentsSizeMax": 0.5,
         "agentsCount": 10,
-        "agentsMax": 1000,
+        "agentsMax": 500,
         "debug": false,
         "pathStart": 0,
         "pathReverse": false,
@@ -4597,7 +5285,13 @@ var Worlds = {
     }]
   },
   /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /**
+   * ****************************************************************************************************************
+   * @method testFun
+   * @param {} world
+   * @param {} debug
+   * @return 
+   */
   testFun: function(world, debug) {
     // wire world events and adding entities functions
     var sizeR = 20;

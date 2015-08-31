@@ -3,6 +3,16 @@
 var Base = require('./Base');
 var Colors = Base.Colors;
 
+/**
+ * Initialices rendering and animate entities.
+ *
+ * @constructor
+ * @class Render
+ * @param {Canvas} canvas
+ * @param {Number} w width
+ * @param {Number} h height
+ * @param {Object} options
+ */
 var Render = function(canvas, w, h, options) {
   this.options = Lazy(options).defaults(Render.defaults).toObject();
   // create a renderer instance.
@@ -39,6 +49,13 @@ var Render = function(canvas, w, h, options) {
 
 };
 
+/**
+ * Initialice render.
+ *
+ * @method init
+ * @param {Array} textures coordinates for create Pixi.Textures.
+ * @param {Array} events to receive world callbacks
+ */
 Render.prototype.init = function(textures, events) {
   var baseTextures = PIXI.Texture.fromImage(textures.file),
       a = textures.agent,
@@ -97,11 +114,21 @@ Render.prototype.init = function(textures, events) {
   this.animate();
 };
 
+/**
+ * Start rendering loop.
+ *
+ * @method start
+ */
 Render.prototype.start = function() {
   this._stop = false;
   this.animate();
 };
 
+/**
+ * Rendering loop.
+ *
+ * @method animate
+ */
 Render.prototype.animate = function() {
   if (this.onPreRender) {
     this.onPreRender();
@@ -134,18 +161,45 @@ Render.prototype.animate = function() {
 
 };
 
+/**
+ * Stop rendering loop.
+ *
+ * @method stop
+ */
 Render.prototype.stop = function() {
   this._stop = true;
 };
 
+/**
+ * Set current rendered world.
+ *
+ * @method setWorld
+ * @param {World} world
+ */
 Render.prototype.setWorld = function(world) {
   this.world = world;
 };
 
+/**
+ * Resize rendering stage.
+ *
+ * @method resize
+ * @param {Number} w
+ * @param {Number} h
+ */
 Render.prototype.resize = function(w, h) {
   this._renderer.resize(w,h);
 };
 
+/**
+ * Draw a helper line from 0 to 1.
+ *
+ * @method drawHelperLine
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ */
 Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
   this._graphicsHelper.clear();
   if (x0) {
@@ -156,6 +210,14 @@ Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
   }
 };
 
+/**
+ * Zoom-in, zoom-out stage.
+ *
+ * @method zoom
+ * @param {Number} scale
+ * @param {Number} x center of zoom
+ * @param {Number} y center of zoom
+ */
 Render.prototype.zoom = function(scale, x, y) {
   scale = scale > 0 ? 1.1 : 0.9;
   var currentWorldPos = this.screenToWorld(x, y);
@@ -166,23 +228,59 @@ Render.prototype.zoom = function(scale, x, y) {
   this._stage.y -= (newScreenPos.y - y) ;
 };
 
+/**
+ * Pan view of stage.
+ *
+ * @method pan
+ * @param {Number} dx displacement x
+ * @param {Number} dy displacement y
+ */
 Render.prototype.pan = function(dx, dy) {
   this._stage.x += dx;
   this._stage.y += dy;
 };
 
+/**
+ * Get stage width.
+ *
+ * @method getWidth
+ * @return {Number} width
+ */
 Render.prototype.getWidth = function() {
   return this._stage.width;
 };
 
+/**
+ * Get stage height.
+ *
+ * @method getHeight
+ * @return {Number} height
+ */
 Render.prototype.getHeight = function() {
   return this._stage.height;
 };
 
+/**
+ * Convert screen coordinates to world coordinates.
+ *
+ * @method screenToWorld
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} world coordinate {x:x,y:y}
+ */
 Render.prototype.screenToWorld = function(x, y) {
   return {x: (x - this._stage.x) / this._stage.scale.x,
           y: (y - this._stage.y) / this._stage.scale.y};
 };
+
+/**
+ * Convert world coordinates to screen coordinates.
+ *
+ * @method worldToScreen
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} screen coordinate {x:x,y:y}
+ */
 Render.prototype.worldToScreen = function(x, y) {
   return {x: x * this._stage.scale.x + this._stage.x,
           y: y * this._stage.scale.y + this._stage.y};

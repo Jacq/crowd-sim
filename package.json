@@ -1,6 +1,6 @@
 {
   "name": "CrowdSim",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Crowd Simulator and Demo App",
   "main": "./dist/CrowdSim.min.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "gulp-useref": "^1.2.0",
     "gulp-util": "^3.0.6",
     "gulp-watch": "^4.0.0",
-    "gulp-yuidoc": "^0.1.0",
+    "gulp-yuidoc": "^0.1.2",
     "jshint-stylish": "^2.0.1",
     "karma": "^0.12.24",
     "karma-brackets": "^0.2.1",

@@ -6,16 +6,25 @@ var Behavior = require('./Behavior');
 /**
  * Helbing-Farkas,Vicsek Simulating dynamical features of escape panic
  *
- * @param  {World} world [description]
- * @param  {Object} options [description]
- * {Vec2}       [description]
+ * @class Panic
+ * @constructor
+ * @param {World} world parent
+ * @param {Object} options
+ * @extends Behavior
  */
 var Panic = function(world, options) {
   Behavior.call(this, world);
   this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
-// path point, point, other agent {point , with in. function}
+/*
+ * Return the acceleration result for a agent going to its target.
+ *
+ * @method getAccel
+ * @param {Agent} agent
+ * @param {Object} target a destination with target.pos and target.in = function => path point, point, other agent
+ * @return {Vec2} acceleration result of the model
+ */
 Panic.prototype.getAccel = function(agent, target) {
   Behavior.prototype.getAccel.call(this, agent, target);
   var desiredForce = Vec2.create();
@@ -87,6 +96,14 @@ Panic.prototype.getAccel = function(agent, target) {
   return accel;
 };
 
+/**
+ * Calculate the social force between two agents i,j.
+ *
+ * @method calculateAgentForce
+ * @param {Agent} i
+ * @param {Agent} j
+ * @return {Vec2} force
+ */
 Panic.prototype.calculateAgentForce = function(i, j) {
   var interactionForce = Vec2.create();
   var rij = i.size + j.size;
@@ -113,6 +130,15 @@ Panic.prototype.calculateAgentForce = function(i, j) {
   return interactionForce;
 };
 
+/**
+ * Calculate the social force between an agent and a wall.
+ *
+ * @method calculateWallForce
+ * @param {Agent} i
+ * @param {Vec2} projection point the wall
+ * @param {Number} width of the wall
+ * @return {Vec2} force
+ */
 Panic.prototype.calculateWallForce = function(i, projection, width) {
   var interactionForce = Vec2.create();
   var rij = i.size + width;

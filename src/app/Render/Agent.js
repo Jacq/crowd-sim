@@ -5,6 +5,13 @@ var Base = require('./Base');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Agent render view.
+ *
+ * @class Render.Agent
+ * @method Agent
+ * @param {Agent} agent
+ */
 var Agent = function(agent) {
   if (!agent) {
     throw 'Agent object must be defined';
@@ -23,6 +30,11 @@ var Agent = function(agent) {
   this.sprite.position.y = agent.pos[1];
 };
 
+/**
+ * Destroy agent.
+ *
+ * @method destroy
+ */
 Agent.prototype.destroy = function() {
   this.sprite.destroy();
   Agent.container.removeChild(this.sprite);
@@ -32,6 +44,11 @@ Agent.prototype.destroy = function() {
   }
 };
 
+/**
+ * Animate agent.
+ *
+ * @method render
+ */
 Agent.prototype.render = function() {
   if (!Agent.detail.level) {
     this.sprite.visible = false;

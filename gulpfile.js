@@ -161,6 +161,16 @@ gulp.task('bundle-app', function(done) {
 });
 
 /**
+ * @description Generate documentation with YuiDoc
+ * other option: yuidoc -o doc -x bower_components,node_modules  ./src /demo/js/lib/Editor.js
+ */
+gulp.task('doc', function(done) {
+  gulp.src(config.js.src)
+  .pipe($.yuidoc.parser())
+  .pipe(gulp.dest(config.doc));
+});
+
+/**
  * @description Bundle sim src code into the demo folder, for use during dev
  */
 gulp.task('bundle-sim', function(done) {

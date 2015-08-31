@@ -2,11 +2,24 @@
 
 var Vec2 = require('./Vec2');
 
+/**
+ * Grid hashmap to store entities indexed by their position.
+ *
+ * @class Grid
+ * @constructor
+ * @param {Number} near is the cell size for the hashmap. Also the maximum distance to be consider "neighbours"
+ */
 var Grid = function(near) {
   this.near = near;
   this.grid = {};
 };
 
+/**
+ * Insert entities in the hashmap.
+ *
+ * @method insert
+ * @param {Array} entities
+ */
 Grid.prototype.insert = function(entities) {
   for (var i in entities) {
     var entity = entities[i];
@@ -19,6 +32,14 @@ Grid.prototype.insert = function(entities) {
   }
 };
 
+/**
+ * Insert one entity.
+ *
+ * @method insertOne
+ * @param {Entity} entity
+ * @param {Number} x coordinate, if null entity.pos[0] is used
+ * @param {Number} y coordinate, if null entity.pos[1] is used
+ */
 Grid.prototype.insertOne = function(entity, x, y) {
   var key = this._key(entity, x, y);
   if (this.grid.hasOwnProperty(key)) {
@@ -28,6 +49,12 @@ Grid.prototype.insertOne = function(entity, x, y) {
   }
 };
 
+/**
+ * Helper to update multiple contexts area points by sampling their area with the cell size.
+ *
+ * @method updateContextsHelper
+ * @param {Array} contexts
+ */
 Grid.prototype.updateContextsHelper = function(contexts) {
   this.grid = {};
   for (var i in contexts) {
@@ -43,6 +70,12 @@ Grid.prototype.updateContextsHelper = function(contexts) {
   }
 };
 
+/**
+ * Helper to update multiple walls area points by sampling their path with the cell size.
+ *
+ * @method updateWallsHelper
+ * @param {Array} walls
+ */
 Grid.prototype.updateWallsHelper = function(walls) {
   this.grid = {};
   for (var w in walls) {
@@ -64,6 +97,43 @@ Grid.prototype.updateWallsHelper = function(walls) {
   }
 };
 
+/**
+ * Clear the hashamp and insert entities.
+ *
+ * @method updateAll
+ * @param {Array} entities
+ */
+Grid.prototype.updateAll = function(entities) {
+  this.clear();
+  this.insert(entities);
+};
+
+/**
+ * Update given entities mapping.
+ *
+ * @method update
+ * @param {Array} entities
+ */
+Grid.prototype.update = function(entities) {
+  this.remove(entities);
+  this.insert(entities);
+};
+
+/**
+ * Clear the hashmap.
+ *
+ * @method clear
+ */
+Grid.prototype.clear = function() {
+  this.grid = {};
+};
+
+/**
+ * Remove the given entities.
+ *
+ * @method remove
+ * @param {Array} entities
+ */
 Grid.prototype.remove = function(entities) {
   for (var i in entity) {
     var entity = entities[i];
@@ -74,20 +144,14 @@ Grid.prototype.remove = function(entities) {
   }
 };
 
-Grid.prototype.updateAll = function(entities) {
-  this.clear();
-  this.insert(entities);
-};
-
-Grid.prototype.update = function(entities) {
-  this.remove(entities);
-  this.insert(entities);
-};
-
-Grid.prototype.clear = function() {
-  this.grid = {};
-};
-
+/**
+ * Gets neighbours to (x,y) point or Entity.
+ * @method neighbours
+ * @param {Entity} entity
+ * @param {Number} x coordinate, if null entity.pos[0] is used
+ * @param {Number} y coordinate, if null entity.pos[1] is used
+ * @return {LazySequence} neighbours
+ */
 Grid.prototype.neighbours = function(entity, x, y) {
   var that = this;
   var o = this.near / 2;
@@ -100,6 +164,13 @@ Grid.prototype.neighbours = function(entity, x, y) {
   }).flatten().filter(function(e) { return e;});
 };
 
+/**
+ * Gets neighbours to a context by sampling its position with the cell size.
+ *
+ * @method neighboursContext
+ * @param {Context} context
+ * @return {LazySequence} neighbours
+ */
 Grid.prototype.neighboursContext = function(context) {
   // generate sampling and find entities near
   var init = context.getMinXY();
@@ -113,6 +184,14 @@ Grid.prototype.neighboursContext = function(context) {
   return neighbours.flatten();
 };
 
+/**
+ * Builds the keys of the neighbours of the position (x,y).
+ *
+ * @method _keyNeighbours
+ * @param  {Number} x coordinate
+ * @param  {Number} y coordinate
+ * @return {Array} neighbours keys
+ */
 Grid.prototype._keyNeighbours = function(x, y) {
   x = Math.floor(x / this.near);
   y = Math.floor(y / this.near);
@@ -123,6 +202,15 @@ Grid.prototype._keyNeighbours = function(x, y) {
   ];
 };
 
+/**
+ * Build the key to map coordinates to the hashmap.
+ *
+ * @method _key
+ * @param  {Entity} entity
+ * @param  {Number} x coordinate, if null entity.pos[0] is used
+ * @param  {Number} y coordinate, if null entity.pos[1] is used
+ * @return {String} key
+ */
 Grid.prototype._key = function(entity, x, y) {
   // use x,y if available if not just entity position
   x = x || entity.pos[0];

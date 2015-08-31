@@ -3,6 +3,15 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 var Vec2 = require('./Common/Vec2');
 
+/**
+ * The agents that live in the simulation engine.
+ *
+ * @constructor
+ * @param {Number} x coordinate
+ * @param {Number} y coordinate
+ * @param {Group} group parent
+ * @param {Object} options
+ */
 var Agent = function(x, y, group, options) {
   var that = this;
   this.id = Agent.id++;
@@ -26,6 +35,12 @@ var Agent = function(x, y, group, options) {
   }
 };
 
+/**
+ * Sets as the agent target the nearest point of a Context.
+ *
+ * @method setTargetInContext
+ * @param {Context} context
+ */
 Agent.prototype.setTargetInContext = function(context) {
   // go to nearest point in contexts
   var point = context.getNearestPoint(this.pos);
@@ -33,18 +48,42 @@ Agent.prototype.setTargetInContext = function(context) {
   this.target = {pos: point, in: context.in.bind(context)};
 };
 
+/**
+ * Gets the aspect property. Used for color codes could be used for other purposes
+ *
+ * @method getAspect
+ * @return {Number} aspect
+ */
 Agent.prototype.getAspect = function() {
   return this.aspect;
 };
 
+/**
+ * Get radius
+ * @method getRadius
+ * @return {Number} radius
+ */
 Agent.prototype.getRadius = function() {
   return this.radius;
 };
 
+/**
+ * Set mobility correction applied to the current velocity
+ *
+ * @method setCurrentMobility
+ * @param {Number} mobility factor 0.0-1.0
+ */
 Agent.prototype.setCurrentMobility = function(mobility) {
   this.currentMobility = mobility;
 };
 
+/**
+ * Set the agent to follow a give path starting at index.
+ *
+ * @method followPath
+ * @param {Path} path
+ * @param {Number} index position in path
+ */
 Agent.prototype.followPath = function(path, index) {
   index = index || 0;
   this.path = path;
@@ -57,6 +96,9 @@ Agent.prototype.followPath = function(path, index) {
   }
 };
 
+/**
+ * Helper to set the path start that takes into account inverse paths
+ */
 Agent.prototype._startPath = function() {
   this.joints = this.path.getJoints();
   if (this.group.isPathReverse()) {
@@ -68,6 +110,12 @@ Agent.prototype._startPath = function() {
   }
 };
 
+/**
+ * Advances the simulation of the agent one stepSize and moves the agent to its next possition defined by the group behavior mode.
+ *
+ * @method step
+ * @param {Number} stepSize defined by the simulation step size
+ */
 Agent.prototype.step = function(stepSize) {
   var accel = this.group.behavior.getAccel(this, this.target);
 
@@ -111,6 +159,13 @@ Agent.prototype.step = function(stepSize) {
   }
 };
 
+/**
+ * Moves the agent with the given accel => speed => position
+ *
+ * @method move
+ * @param {Number} accel
+ * @param {Number} stepSize simulation
+ */
 Agent.prototype.move = function(accel, stepSize) {
   Vec2.scaleAndAdd(this.vel, this.vel, accel, stepSize);
   if (Vec2.length(this.vel) > this.maxVel) {
@@ -139,17 +194,23 @@ module.exports = Agent;
 'use strict';
 
 /**
+ * Base behavior.
  *
- *
- * @param  {World} world [description]
- * @param  {Object} options [description]
- * {Vec2}       [description]
+ * @constructor
+ * @param {World} world parent
  */
 var Behavior = function(world) {
   this.world = world;
 };
 
-// path point, point, other agent {point , radius}
+/**
+ * Return the acceleration result for a agent going to its target.
+ *
+ * @method getAccel
+ * @param {Agent} agent
+ * @param {Object} target a destination with target.pos and target.in = function => path point, point, other agent
+ * @return {Vec2} acceleration result of the model
+ */
 Behavior.prototype.getAccel = function(agent, target) {};
 
 module.exports = Behavior;
@@ -163,16 +224,24 @@ var Behavior = require('./Behavior');
 /**
  * Helbing-Farkas,Vicsek Simulating dynamical features of escape panic
  *
- * @param  {World} world [description]
- * @param  {Object} options [description]
- * {Vec2}       [description]
+ * @constructor
+ * @param {World} world parent
+ * @param {Object} options
+ * @extends Behavior
  */
 var Panic = function(world, options) {
   Behavior.call(this, world);
   this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
-// path point, point, other agent {point , with in. function}
+/*
+ * Return the acceleration result for a agent going to its target.
+ *
+ * @method getAccel
+ * @param {Agent} agent
+ * @param {Object} target a destination with target.pos and target.in = function => path point, point, other agent
+ * @return {Vec2} acceleration result of the model
+ */
 Panic.prototype.getAccel = function(agent, target) {
   Behavior.prototype.getAccel.call(this, agent, target);
   var desiredForce = Vec2.create();
@@ -244,6 +313,14 @@ Panic.prototype.getAccel = function(agent, target) {
   return accel;
 };
 
+/**
+ * Calculate the social force between two agents i,j.
+ *
+ * @method calculateAgentForce
+ * @param {Agent} i
+ * @param {Agent} j
+ * @return {Vec2} force
+ */
 Panic.prototype.calculateAgentForce = function(i, j) {
   var interactionForce = Vec2.create();
   var rij = i.size + j.size;
@@ -270,6 +347,15 @@ Panic.prototype.calculateAgentForce = function(i, j) {
   return interactionForce;
 };
 
+/**
+ * Calculate the social force between an agent and a wall.
+ *
+ * @method calculateWallForce
+ * @param {Agent} i
+ * @param {Vec2} projection point the wall
+ * @param {Number} width of the wall
+ * @return {Vec2} force
+ */
 Panic.prototype.calculateWallForce = function(i, projection, width) {
   var interactionForce = Vec2.create();
   var rij = i.size + width;
@@ -306,11 +392,23 @@ module.exports = Panic;
 
 var Vec2 = require('./Vec2');
 
+/**
+ * Grid hashmap to store entities indexed by their position.
+ *
+ * @constructor
+ * @param {Number} near is the cell size for the hashmap. Also the maximum distance to be consider "neighbours"
+ */
 var Grid = function(near) {
   this.near = near;
   this.grid = {};
 };
 
+/**
+ * Insert entities in the hashmap.
+ *
+ * @method insert
+ * @param {Array} entities
+ */
 Grid.prototype.insert = function(entities) {
   for (var i in entities) {
     var entity = entities[i];
@@ -323,6 +421,14 @@ Grid.prototype.insert = function(entities) {
   }
 };
 
+/**
+ * Insert one entity.
+ *
+ * @method insertOne
+ * @param {Entity} entity
+ * @param {Number} x coordinate, if null entity.pos[0] is used
+ * @param {Number} y coordinate, if null entity.pos[1] is used
+ */
 Grid.prototype.insertOne = function(entity, x, y) {
   var key = this._key(entity, x, y);
   if (this.grid.hasOwnProperty(key)) {
@@ -332,6 +438,12 @@ Grid.prototype.insertOne = function(entity, x, y) {
   }
 };
 
+/**
+ * Helper to update multiple contexts area points by sampling their area with the cell size.
+ *
+ * @method updateContextsHelper
+ * @param {Array} contexts
+ */
 Grid.prototype.updateContextsHelper = function(contexts) {
   this.grid = {};
   for (var i in contexts) {
@@ -347,6 +459,12 @@ Grid.prototype.updateContextsHelper = function(contexts) {
   }
 };
 
+/**
+ * Helper to update multiple walls area points by sampling their path with the cell size.
+ *
+ * @method updateWallsHelper
+ * @param {Array} walls
+ */
 Grid.prototype.updateWallsHelper = function(walls) {
   this.grid = {};
   for (var w in walls) {
@@ -368,6 +486,43 @@ Grid.prototype.updateWallsHelper = function(walls) {
   }
 };
 
+/**
+ * Clear the hashamp and insert entities.
+ *
+ * @method updateAll
+ * @param {Array} entities
+ */
+Grid.prototype.updateAll = function(entities) {
+  this.clear();
+  this.insert(entities);
+};
+
+/**
+ * Update given entities mapping.
+ *
+ * @method update
+ * @param {Array} entities
+ */
+Grid.prototype.update = function(entities) {
+  this.remove(entities);
+  this.insert(entities);
+};
+
+/**
+ * Clear the hashmap.
+ *
+ * @method clear
+ */
+Grid.prototype.clear = function() {
+  this.grid = {};
+};
+
+/**
+ * Remove the given entities.
+ *
+ * @method remove
+ * @param {Array} entities
+ */
 Grid.prototype.remove = function(entities) {
   for (var i in entity) {
     var entity = entities[i];
@@ -378,20 +533,14 @@ Grid.prototype.remove = function(entities) {
   }
 };
 
-Grid.prototype.updateAll = function(entities) {
-  this.clear();
-  this.insert(entities);
-};
-
-Grid.prototype.update = function(entities) {
-  this.remove(entities);
-  this.insert(entities);
-};
-
-Grid.prototype.clear = function() {
-  this.grid = {};
-};
-
+/**
+ * Gets neighbours to (x,y) point or Entity.
+ * @method neighbours
+ * @param {Entity} entity
+ * @param {Number} x coordinate, if null entity.pos[0] is used
+ * @param {Number} y coordinate, if null entity.pos[1] is used
+ * @return {LazySequence} neighbours
+ */
 Grid.prototype.neighbours = function(entity, x, y) {
   var that = this;
   var o = this.near / 2;
@@ -404,6 +553,13 @@ Grid.prototype.neighbours = function(entity, x, y) {
   }).flatten().filter(function(e) { return e;});
 };
 
+/**
+ * Gets neighbours to a context by sampling its position with the cell size.
+ *
+ * @method neighboursContext
+ * @param {Context} context
+ * @return {LazySequence} neighbours
+ */
 Grid.prototype.neighboursContext = function(context) {
   // generate sampling and find entities near
   var init = context.getMinXY();
@@ -417,6 +573,12 @@ Grid.prototype.neighboursContext = function(context) {
   return neighbours.flatten();
 };
 
+/**
+ * Builds the keys of the neighbours of the position (x,y)
+ * @param  {Number} x coordinate
+ * @param  {Number} y coordinate
+ * @return {Array} neighbours keys
+ */
 Grid.prototype._keyNeighbours = function(x, y) {
   x = Math.floor(x / this.near);
   y = Math.floor(y / this.near);
@@ -427,6 +589,14 @@ Grid.prototype._keyNeighbours = function(x, y) {
   ];
 };
 
+/**
+ * Build the key to map coordinates to the hashmap.
+ * 
+ * @param  {Entity} entity
+ * @param  {Number} x coordinate, if null entity.pos[0] is used
+ * @param  {Number} y coordinate, if null entity.pos[1] is used
+ * @return {String} key
+ */
 Grid.prototype._key = function(entity, x, y) {
   // use x,y if available if not just entity position
   x = x || entity.pos[0];
@@ -474,8 +644,9 @@ glMatrix.ENABLE_SIMD = false;
 
 /**
  * Sets the type of array used when creating new vectors and matrices
- *
+ * @method setMatrixArrayType
  * @param {Type} type Array type, such as Float32Array or Array
+ * @return 
  */
 glMatrix.setMatrixArrayType = function(type) {
     glMatrix.ARRAY_TYPE = type;
@@ -484,10 +655,11 @@ glMatrix.setMatrixArrayType = function(type) {
 var degree = Math.PI / 180;
 
 /**
-* Convert Degree To Radian
-*
-* @param {Number} Angle in Degrees
-*/
+ * Convert Degree To Radian
+ * @method toRadian
+ * @param {} a
+ * @return BinaryExpression
+ */
 glMatrix.toRadian = function(a){
      return a * degree;
 }
@@ -500,8 +672,8 @@ var vec2 = {};
 
 /**
  * Creates a new, empty vec2
- *
- * @returns {vec2} a new 2D vector
+ * @method create
+ * @return out
  */
 vec2.create = function() {
     var out = new glMatrix.ARRAY_TYPE(2);
@@ -512,9 +684,9 @@ vec2.create = function() {
 
 /**
  * Creates a new vec2 initialized with values from an existing vector
- *
+ * @method clone
  * @param {vec2} a vector to clone
- * @returns {vec2} a new 2D vector
+ * @return out
  */
 vec2.clone = function(a) {
     var out = new glMatrix.ARRAY_TYPE(2);
@@ -525,10 +697,10 @@ vec2.clone = function(a) {
 
 /**
  * Creates a new vec2 initialized with the given values
- *
+ * @method fromValues
  * @param {Number} x X component
  * @param {Number} y Y component
- * @returns {vec2} a new 2D vector
+ * @return out
  */
 vec2.fromValues = function(x, y) {
     var out = new glMatrix.ARRAY_TYPE(2);
@@ -539,10 +711,10 @@ vec2.fromValues = function(x, y) {
 
 /**
  * Copy the values from one vec2 to another
- *
+ * @method copy
  * @param {vec2} out the receiving vector
  * @param {vec2} a the source vector
- * @returns {vec2} out
+ * @return out
  */
 vec2.copy = function(out, a) {
     out[0] = a[0];
@@ -552,11 +724,11 @@ vec2.copy = function(out, a) {
 
 /**
  * Set the components of a vec2 to the given values
- *
+ * @method set
  * @param {vec2} out the receiving vector
  * @param {Number} x X component
  * @param {Number} y Y component
- * @returns {vec2} out
+ * @return out
  */
 vec2.set = function(out, x, y) {
     out[0] = x;
@@ -566,11 +738,11 @@ vec2.set = function(out, x, y) {
 
 /**
  * Adds two vec2's
- *
+ * @method add
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.add = function(out, a, b) {
     out[0] = a[0] + b[0];
@@ -580,11 +752,11 @@ vec2.add = function(out, a, b) {
 
 /**
  * Subtracts vector b from vector a
- *
+ * @method subtract
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.subtract = function(out, a, b) {
     out[0] = a[0] - b[0];
@@ -600,11 +772,11 @@ vec2.sub = vec2.subtract;
 
 /**
  * Multiplies two vec2's
- *
+ * @method multiply
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.multiply = function(out, a, b) {
     out[0] = a[0] * b[0];
@@ -620,11 +792,11 @@ vec2.mul = vec2.multiply;
 
 /**
  * Divides two vec2's
- *
+ * @method divide
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.divide = function(out, a, b) {
     out[0] = a[0] / b[0];
@@ -640,11 +812,11 @@ vec2.div = vec2.divide;
 
 /**
  * Returns the minimum of two vec2's
- *
+ * @method min
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.min = function(out, a, b) {
     out[0] = Math.min(a[0], b[0]);
@@ -654,11 +826,11 @@ vec2.min = function(out, a, b) {
 
 /**
  * Returns the maximum of two vec2's
- *
+ * @method max
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.max = function(out, a, b) {
     out[0] = Math.max(a[0], b[0]);
@@ -668,11 +840,11 @@ vec2.max = function(out, a, b) {
 
 /**
  * Scales a vec2 by a scalar number
- *
+ * @method scale
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to scale
  * @param {Number} b amount to scale the vector by
- * @returns {vec2} out
+ * @return out
  */
 vec2.scale = function(out, a, b) {
     out[0] = a[0] * b;
@@ -682,12 +854,12 @@ vec2.scale = function(out, a, b) {
 
 /**
  * Adds two vec2's after scaling the second operand by a scalar value
- *
+ * @method scaleAndAdd
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
  * @param {Number} scale the amount to scale b by before adding
- * @returns {vec2} out
+ * @return out
  */
 vec2.scaleAndAdd = function(out, a, b, scale) {
     out[0] = a[0] + (b[0] * scale);
@@ -697,10 +869,10 @@ vec2.scaleAndAdd = function(out, a, b, scale) {
 
 /**
  * Calculates the euclidian distance between two vec2's
- *
+ * @method distance
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {Number} distance between a and b
+ * @return CallExpression
  */
 vec2.distance = function(a, b) {
     var x = b[0] - a[0],
@@ -716,10 +888,10 @@ vec2.dist = vec2.distance;
 
 /**
  * Calculates the squared euclidian distance between two vec2's
- *
+ * @method squaredDistance
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {Number} squared distance between a and b
+ * @return BinaryExpression
  */
 vec2.squaredDistance = function(a, b) {
     var x = b[0] - a[0],
@@ -735,9 +907,9 @@ vec2.sqrDist = vec2.squaredDistance;
 
 /**
  * Calculates the length of a vec2
- *
+ * @method length
  * @param {vec2} a vector to calculate length of
- * @returns {Number} length of a
+ * @return CallExpression
  */
 vec2.length = function (a) {
     var x = a[0],
@@ -753,9 +925,9 @@ vec2.len = vec2.length;
 
 /**
  * Calculates the squared length of a vec2
- *
+ * @method squaredLength
  * @param {vec2} a vector to calculate squared length of
- * @returns {Number} squared length of a
+ * @return BinaryExpression
  */
 vec2.squaredLength = function (a) {
     var x = a[0],
@@ -771,10 +943,10 @@ vec2.sqrLen = vec2.squaredLength;
 
 /**
  * Negates the components of a vec2
- *
+ * @method negate
  * @param {vec2} out the receiving vector
  * @param {vec2} a vector to negate
- * @returns {vec2} out
+ * @return out
  */
 vec2.negate = function(out, a) {
     out[0] = -a[0];
@@ -784,10 +956,10 @@ vec2.negate = function(out, a) {
 
 /**
  * Returns the inverse of the components of a vec2
- *
+ * @method inverse
  * @param {vec2} out the receiving vector
  * @param {vec2} a vector to invert
- * @returns {vec2} out
+ * @return out
  */
 vec2.inverse = function(out, a) {
   out[0] = 1.0 / a[0];
@@ -797,10 +969,10 @@ vec2.inverse = function(out, a) {
 
 /**
  * Normalize a vec2
- *
+ * @method normalize
  * @param {vec2} out the receiving vector
  * @param {vec2} a vector to normalize
- * @returns {vec2} out
+ * @return out
  */
 vec2.normalize = function(out, a) {
     var x = a[0],
@@ -817,10 +989,10 @@ vec2.normalize = function(out, a) {
 
 /**
  * Calculates the dot product of two vec2's
- *
+ * @method dot
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {Number} dot product of a and b
+ * @return BinaryExpression
  */
 vec2.dot = function (a, b) {
     return a[0] * b[0] + a[1] * b[1];
@@ -829,11 +1001,11 @@ vec2.dot = function (a, b) {
 /**
  * Computes the cross product of two vec2's
  * Note that the cross product must by definition produce a 3D vector
- *
+ * @method cross
  * @param {vec3} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {vec3} out
+ * @return out
  */
 vec2.cross = function(out, a, b) {
     var z = a[0] * b[1] - a[1] * b[0];
@@ -844,12 +1016,12 @@ vec2.cross = function(out, a, b) {
 
 /**
  * Performs a linear interpolation between two vec2's
- *
+ * @method lerp
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
  * @param {Number} t interpolation amount between the two inputs
- * @returns {vec2} out
+ * @return out
  */
 vec2.lerp = function (out, a, b, t) {
     var ax = a[0],
@@ -861,10 +1033,10 @@ vec2.lerp = function (out, a, b, t) {
 
 /**
  * Generates a random vector with the given scale
- *
+ * @method random
  * @param {vec2} out the receiving vector
- * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
- * @returns {vec2} out
+ * @param {} scale
+ * @return out
  */
 vec2.random = function (out, scale) {
     scale = scale || 1.0;
@@ -876,11 +1048,11 @@ vec2.random = function (out, scale) {
 
 /**
  * Transforms the vec2 with a mat2
- *
+ * @method transformMat2
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to transform
  * @param {mat2} m matrix to transform with
- * @returns {vec2} out
+ * @return out
  */
 vec2.transformMat2 = function(out, a, m) {
     var x = a[0],
@@ -892,11 +1064,11 @@ vec2.transformMat2 = function(out, a, m) {
 
 /**
  * Transforms the vec2 with a mat2d
- *
+ * @method transformMat2d
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to transform
  * @param {mat2d} m matrix to transform with
- * @returns {vec2} out
+ * @return out
  */
 vec2.transformMat2d = function(out, a, m) {
     var x = a[0],
@@ -909,11 +1081,11 @@ vec2.transformMat2d = function(out, a, m) {
 /**
  * Transforms the vec2 with a mat3
  * 3rd vector component is implicitly '1'
- *
+ * @method transformMat3
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to transform
  * @param {mat3} m matrix to transform with
- * @returns {vec2} out
+ * @return out
  */
 vec2.transformMat3 = function(out, a, m) {
     var x = a[0],
@@ -927,11 +1099,11 @@ vec2.transformMat3 = function(out, a, m) {
  * Transforms the vec2 with a mat4
  * 3rd vector component is implicitly '0'
  * 4th vector component is implicitly '1'
- *
+ * @method transformMat4
  * @param {vec2} out the receiving vector
  * @param {vec2} a the vector to transform
  * @param {mat4} m matrix to transform with
- * @returns {vec2} out
+ * @return out
  */
 vec2.transformMat4 = function(out, a, m) {
     var x = a[0],
@@ -984,9 +1156,9 @@ vec2.forEach = (function() {
 
 /**
  * Returns a string representation of a vector
- *
- * @param {vec2} vec vector to represent as a string
- * @returns {String} string representation of the vector
+ * @method str
+ * @param {} a
+ * @return BinaryExpression
  */
 vec2.str = function (a) {
     return 'vec2(' + a[0] + ', ' + a[1] + ')';
@@ -996,12 +1168,12 @@ module.exports = vec2;
 
 /**
  * Adds three vec2's
- *
+ * @method add3
  * @param {vec2} out the receiving vector
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
  * @param {vec2} c the third operand
- * @returns {vec2} out
+ * @return out
  */
 vec2.add3 = function(out, a, b, c) {
     out[0] = a[0] + b[0] + c[0];
@@ -1011,11 +1183,12 @@ vec2.add3 = function(out, a, b, c) {
 
 /**
  * Calculates the shortest projection between a point and a line defined by two vec2's
- *
+ * @method projectionToSegment
+ * @param {} out
  * @param {vec2} p the point
  * @param {vec2} a the first operand
  * @param {vec2} b the second operand
- * @returns {Number} projection between p and the line defined a and b
+ * @return CallExpression
  */
 vec2.projectionToSegment = function(out, p, a, b) {
   var l2 = vec2.squaredDistance(a, b);
@@ -1031,11 +1204,11 @@ vec2.projectionToSegment = function(out, p, a, b) {
 
 /**
  * Normalize a vec2
- *
+ * @method normalizeAndScale
  * @param {vec2} out the receiving vector
  * @param {vec2} a vector to normalize
- * @param {Number} scale the amount to scale a by after normalize
- * @returns {vec2} out
+ * @param {} b
+ * @return out
  */
 vec2.normalizeAndScale = function(out, a, b) {
     var x = a[0],
@@ -1055,6 +1228,13 @@ vec2.normalizeAndScale = function(out, a, b) {
 
 //var $ = jQuery =
 
+/**
+ * The simulation engine. Manages the state running of the simulation
+ *
+ * @constructor
+ * @param {World} world
+ * @param {Object} options
+ */
 var Engine = function(world, options) {
   this.running = false;
   this.iterations = 0;
@@ -1065,18 +1245,43 @@ var Engine = function(world, options) {
   delete this.settings.callbacks;
 };
 
+/**
+ * Get the engine settings, configured in constructor [options]
+ *
+ * @method getSettings
+ * @return {Object} options
+ */
 Engine.prototype.getSettings = function() {
   return this.settings;
 };
 
+/**
+ * Sets the simulation world
+ *
+ * @method setWorld
+ * @param {World} world
+ */
 Engine.prototype.setWorld = function(world) {
   this.world = world;
 };
 
+/**
+ * Gets the simulation world
+ *
+ * @method getWorld
+ * @return {World}
+ */
 Engine.prototype.getWorld = function() {
   return this.world;
 };
 
+/**
+ * Starts the simulation
+ *
+ * @method run
+ * @param {Entity} entity to report in the onStart callback as trigger
+ * @return {Boolean} true if running; false otherwise
+ */
 Engine.prototype.run = function(entity) {
   if (this.running) {
     return;
@@ -1090,6 +1295,12 @@ Engine.prototype.run = function(entity) {
   return this.running;
 };
 
+/**
+ * Advance one step the simulation and stops.
+ *
+ * @method step
+ * @return {Boolean} true if running; false otherwise
+ */
 Engine.prototype.step = function() {
   if (this.running) {
     this.stop();
@@ -1098,6 +1309,9 @@ Engine.prototype.step = function() {
   return this.running;
 };
 
+/**
+ * Internal step of the simulation engine. Periodically called.
+ */
 Engine.prototype._step = function() {
   // calculate next execution
   var startTime = new Date();
@@ -1126,6 +1340,13 @@ Engine.prototype._step = function() {
   }
 };
 
+/**
+ * Stops the simulation
+ *
+ * @method stop
+ * @param {Entity} entity to report in the onStart callback as trigger
+ * @return {Boolean} true if running; false otherwise
+ */
 Engine.prototype.stop = function(entity) {
   if (!this.running) {
     return;
@@ -1138,6 +1359,12 @@ Engine.prototype.stop = function(entity) {
   return this.running;
 };
 
+/**
+ * Resets=Restarts the state of the simulation.
+ *
+ * @method reset
+ * @return {Boolean} true if running; false otherwise
+ */
 Engine.prototype.reset = function() {
   var groups = this.world.getGroups();
   Lazy(groups).each(function(g) {
@@ -1166,6 +1393,17 @@ var Entity = require('./Entity');
 var Vec2 = require('../Common/Vec2');
 var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
+/**
+ * Context entity
+ *
+ * @constructor
+ * @param {Number} x coordinate
+ * @param {Number} y coordinate
+ * @param {World} parent world
+ * @param {Object} [options]
+ * @param {String} id to use insted of autogenerate it, used when loading worlds
+ * @extends Entity
+ */
 var Context = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Context.defaults).toObject();
   this.id = id || 'C' + Context.id++;
@@ -1173,46 +1411,102 @@ var Context = function(x, y, parent, options, id) {
   Entity.call(this, x, y, parent, this.options);
 };
 
+/**
+ * Destroy the Context
+ *
+ * @method destroy
+ */
 Context.prototype.destroy = function() {
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Sets the context size.
+ *
+ * @method setArea
+ * @param {Number} x center
+ * @param {Number} y center
+ */
 Context.prototype.setArea = function(x, y) {
   this.options.width = Math.abs(this.pos[0] - x) * 2;
   this.options.height = Math.abs(this.pos[1] - y) * 2;
 };
 
+/**
+ * Increment the context width and height.
+ *
+ * @method incrSize
+ * @param {Number} ds increment in width and height
+ */
 Context.prototype.incrSize = function(ds) {
   this.options.width += ds;
   this.options.height += ds;
 };
 
+/**
+ * Gets width.
+ *
+ * @method getWidth
+ * @return {Number} width
+ */
 Context.prototype.getWidth = function() {
   return this.options.width;
 };
 
+/**
+ * Gets height.
+ *
+ * @method getHeight
+ * @return {Number} height
+ */
 Context.prototype.getHeight = function() {
   return this.options.height;
 };
 
+/**
+ * Gets the context minimum X,Y coordinate.
+ *
+ * @method getMinXY
+ * @return {Vec2} point
+ */
 Context.prototype.getMinXY = function() {
   var point = Vec2.create();
   var halfSize = Vec2.fromValues(this.options.width / 2, this.options.height / 2);
   return Vec2.subtract(point, this.pos, halfSize);
 };
 
+/**
+ * Gets the context maximun X,Y coordinate.
+ *
+ * @method getMaxXY
+ * @return {Vec2} point
+ */
 Context.prototype.getMaxXY = function() {
   var point = Vec2.create();
   var halfSize = Vec2.fromValues(this.options.width / 2, this.options.height / 2);
   return Vec2.add(point, this.pos, halfSize);
 };
 
+/**
+ * Get a random point in the context.
+ *
+ * @method getRandomPoint
+ * @return {Vec2} point
+ */
 Context.prototype.getRandomPoint = function() {
   var x = this.pos[0] + (Math.random() - 0.5) * this.options.width;
   var y = this.pos[1] + (Math.random() - 0.5) * this.options.height;
   return Vec2.fromValues(x, y);
 };
 
+/**
+ * Get the nearest point in the context to another.
+ *
+ * @method getNearestPoint
+ * @param {Vec2} point
+ * @param {Number} border margin inside the context
+ * @return {Vec2} nearest point in the context to the given point
+ */
 Context.prototype.getNearestPoint = function(point, border) {
   var w2 = this.options.width / 2 - this.options.width / 10; // half-width + 10% margin to avoid borders errors
   var h2 = this.options.height / 2 - this.options.height / 10;
@@ -1236,14 +1530,33 @@ Context.prototype.getNearestPoint = function(point, border) {
   return Vec2.subtract(shortestProjection,point,shortestProjection);
 };
 
+/**
+ * Get context mobility factor.
+ *
+ * @method getMobility
+ * @return {Number}
+ */
 Context.prototype.getMobility = function() {
   return this.options.mobility;
 };
 
+/**
+ * Get context trigger option.
+ *
+ * @method getTrigger
+ * @return {Boolean} true if contexts stops simulation on empty of agents
+ */
 Context.prototype.getTrigger = function() {
   return this.options.triggerOnEmpty;
 };
 
+/**
+ * Check if a point is inside the context.
+ *
+ * @method in
+ * @param {Vec2} pos
+ * @return {Boolean} true if pos is inside
+ */
 Context.prototype.in = function(pos) {
   var w2 = this.options.width / 2;
   var h2 = this.options.height / 2;
@@ -1267,6 +1580,15 @@ module.exports = Context;
 },{"../Common/Vec2":5,"./Entity":8,"./Helpers/Traits":12}],8:[function(require,module,exports){
 var Vec2 = require('../Common/Vec2');
 
+/**
+ * Base entity
+ *
+ * @constructor
+ * @param {Number} x coordinate
+ * @param {Number} y coordinate
+ * @param {Entity} parent
+ * @param {Object} options
+ */
 var Entity = function(x, y, parent, options) {
   this.extra = {}; // for extra information, e.g. render object
   this.pos = Vec2.fromValues(x, y);
@@ -1280,10 +1602,21 @@ var Entity = function(x, y, parent, options) {
   }
 };
 
+/**
+ * Description
+ * @method calcNewId
+ * @param {} id
+ * @return CallExpression
+ */
 Entity.prototype.calcNewId = function(id) {
   return Math.max(id + 1, Number(this.id.substring(1)) + 1);
 };
 
+/**
+ * Description
+ * @method destroy
+ * @return
+ */
 Entity.prototype.destroy = function() {
   if (this.parent) {
     // request to parent removal of entity
@@ -1291,15 +1624,34 @@ Entity.prototype.destroy = function() {
   }
 };
 
+/**
+ * Description
+ * @method updatePos
+ * @param {} x
+ * @param {} y
+ * @return
+ */
 Entity.prototype.updatePos = function(x, y) {
   this.pos[0] = x;
   this.pos[1] = y;
 };
 
 // To add a children entity
+/**
+ * Description
+ * @method addEntity
+ * @param {} joint
+ * @return
+ */
 Entity.prototype.addEntity = function(joint) {};
 
 // To request remove of a children entity
+/**
+ * Description
+ * @method removeEntity
+ * @param {} joint
+ * @return
+ */
 Entity.prototype.removeEntity = function(joint) {};
 
 module.exports = Entity;
@@ -1315,6 +1667,17 @@ var Vec2 = require('../Common/Vec2');
 var Grid = require('../Common/Grid');
 var Panic = require('../Behavior/Panic');
 
+/**
+ * Group Entity where agents belong.
+ *
+ * @constructor
+ * @param {Number} x coordinate
+ * @param {Number} y coordinate
+ * @param {World} parent world
+ * @param {Object} [options]
+ * @param {String} id to use insted of autogenerate it, used when loading worlds
+ * @extends Entity
+ */
 var Group = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Group.defaults).toObject();
   this.id = id || 'G' + Group.id;
@@ -1328,6 +1691,11 @@ var Group = function(x, y, parent, options, id) {
   this.entities.endContext = null;
 };
 
+/**
+ * Destroy the Group
+ *
+ * @method destroy
+ */
 Group.prototype.destroy = function() {
   this.emptyAgents();
   this.behavior = null;
@@ -1340,20 +1708,52 @@ Group.prototype.destroy = function() {
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Get radius
+ *
+ * @method getRadius
+ * @return {Number} radius
+ */
 Group.prototype.getRadius = function() {
   return this.options.radius;
 };
+
+/**
+ * Set radius
+ *
+ * @method setRadius
+ * @param {Number} radius
+ */
 Group.prototype.setRadius = function(radius) {
   this.options.radius = radius;
 };
+
+/**
+ * Increment radius by dr.
+ *
+ * @method incrRadius
+ * @param {Number} dr increment
+ */
 Group.prototype.incrRadius = function(dr) {
   this.options.radius = Math.abs(this.options.radius + dr);
 };
 
+/**
+ * Gets the end context where agents are destoyed optionally.
+ *
+ * @method getStartContext
+ * @return {Context} end context
+ */
 Group.prototype.getStartContext = function() {
   return this.entities.startContext;
 };
 
+/**
+ * Sets the start context where agents are created
+ *
+ * @method assignStartContext
+ * @param {Context} context
+ */
 Group.prototype.assignStartContext = function(context) {
   if (this.entities.startContext) {
     this.entities.startContext.unassignFromGroup(this);
@@ -1364,10 +1764,22 @@ Group.prototype.assignStartContext = function(context) {
   this.entities.startContext = context;
 };
 
+/**
+ * Gets the start context where agents are created
+ *
+ * @method getEndContext
+ * @return {Context} end context
+ */
 Group.prototype.getEndContext = function() {
   return this.entities.endContext;
 };
 
+/**
+ * Sets the end context where agents are destroyed.
+ *
+ * @method assignEndContext
+ * @param {Context} context
+ */
 Group.prototype.assignEndContext = function(context) {
   if (this.entities.endContext) {
     this.entities.endContext.unassignFromGroup(this);
@@ -1378,6 +1790,23 @@ Group.prototype.assignEndContext = function(context) {
   this.entities.endContext = context;
 };
 
+/**
+ * Gets the path asigned to the group that agents will follow.
+ *
+ * @method getPath
+ * @return {Array} paths
+ */
+Group.prototype.getPath = function() {
+  return this.entities.path;
+};
+
+/**
+ * Assign a path to the group and its agents.
+ *
+ * @method assignPath
+ * @param {Path} path
+ * @param {Number} idx start index
+ */
 Group.prototype.assignPath = function(path, idx) {
   if (this.entities.path) {
     this.entities.path.unassignFromGroup(this);
@@ -1392,18 +1821,42 @@ Group.prototype.assignPath = function(path, idx) {
   }
 };
 
+/**
+ * Gets the flag pathReverse from options.
+ *
+ * @method isPathReverse
+ * @return {Boolean} true if path is reversed
+ */
 Group.prototype.isPathReverse = function() {
   return this.options.pathReverse;
 };
 
+/**
+ * Gets the flag pathCircular from options.
+ *
+ * @method isPathCircular
+ * @return {Boolean} true if path is circular
+ */
 Group.prototype.isPathCircular = function() {
   return this.options.pathCircular;
 };
 
+/**
+ * Gets the start index of the agents in the group path.
+ *
+ * @method getPathStartIdx
+ * @return {Number} start index
+ */
 Group.prototype.getPathStartIdx = function() {
   return this.options.pathStart;
 };
 
+/**
+ * Unassing a start, end contexts or a path from the group.
+ *
+ * @method unAssign
+ * @param {Entity} entity , context or path.
+ */
 Group.prototype.unAssign = function(entity) {
   if (entity instanceof Context) {
     if (this.entities.startContext === entity) {
@@ -1422,10 +1875,23 @@ Group.prototype.unAssign = function(entity) {
   }
 };
 
+/**
+ * Assign a behavior model to the group.
+ *
+ * @param {Behavior} behavior
+ */
 Group.prototype.assignBehavior = function(behavior) {
   this.behavior = behavior;
 };
 
+/**
+ * Generate a number of agents in a context. Used internally by the group.
+ *
+ * @method generateAgents
+ * @param {Number} agentsCount
+ * @param {Context} startContext
+ * @return newAgents
+ */
 Group.prototype.generateAgents = function(agentsCount, startContext) {
   if (!startContext) {
     startContext = this.entities.startContext;
@@ -1436,12 +1902,26 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   var pos = Vec2.create();
   var radius = this.options.radius;
   var initPos = this.pos;
+
+  /**
+   * Generates a random init position in the group radius centered at pos.
+   *
+   * @method myInitPos
+   * @param {Vec2} pos center position
+   * @return {Vec2} point
+   */
   function myInitPos(pos) {
     var r = Math.random() * radius;
     Vec2.random(pos, r);
     Vec2.add(pos, pos, initPos);
     return pos;
   }
+  /**
+   * Generates a position within the group start context.
+   *
+   * @method myContextPos
+   * @return {Vec2} point
+   */
   function myContextPos() {
     return startContext.getRandomPoint();
   }
@@ -1475,17 +1955,34 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   return newAgents;
 };
 
+/**
+ * Add agents to the group.
+ *
+ * @method addAgents
+ * @param {Number} agentsCount the number of agents
+ */
 Group.prototype.addAgents = function(agentsCount) {
   var newAgents = this.generateAgents(agentsCount);
   this.agents = this.agents.concat(newAgents);
   this.parent.addAgents(newAgents);
 };
 
+/**
+ * Removes all agents from the group.
+ *
+ * @method emptyAgents
+ */
 Group.prototype.emptyAgents = function() {
   this.parent.removeAgents(this.agents);
   this.agents.length = 0;
 };
 
+/**
+ * Remove the given agents from the group.
+ *
+ * @method removeAgents
+ * @param {Array} agents
+ */
 Group.prototype.removeAgents = function(agents) {
   for (var i in agents) {
     var j = this.agents.indexOf(agents[i]);
@@ -1494,10 +1991,33 @@ Group.prototype.removeAgents = function(agents) {
   this.parent.removeAgents(agents);
 };
 
-Group.prototype.getPath = function() {
-  return this.entities.path;
+/**
+ * Check if am agent is within a group area.
+ *
+ * @method in
+ * @param {Vec2} pos
+ * @return {Boolean} true if inside; false otherwise
+ */
+Group.prototype.in = function(pos) {
+  return Vec2.squaredDistance(pos, this) < this.options.radius * this.options.radius;
 };
 
+/**
+ * Adds a single agent to the group.
+ *
+ * @method addAgent
+ * @param {Agent} agent
+ */
+Group.prototype.addAgent = function(agent) {
+  this.agents.push(agent);
+};
+
+/**
+ * Gets the smaller rectangle area that contains the group agents
+ *
+ * @method getArea
+ * @return {Array} array of two {Vec2} [[Xmin,Xmax][Ymin,YMax]]
+ */
 Group.prototype.getArea = function() {
   return [
     Vec2.fromValues(
@@ -1511,14 +2031,11 @@ Group.prototype.getArea = function() {
   ];
 };
 
-Group.prototype.in = function(pos) {
-  return Vec2.squaredDistance(pos, this) < this.options.radius * this.options.radius;
-};
-
-Group.prototype.addAgent = function(agent) {
-  this.agents.push(agent);
-};
-
+/**
+ * Advances the simulation of the group by creating/destroying agents in its contexts.
+ *
+ * @method step
+ */
 Group.prototype.step = function() {
   if (this.agents.length === 0) {
     this.addAgents(this.options.agentsCount);
@@ -1577,6 +2094,17 @@ module.exports = Group;
 var Entity = require('../Entity');
 var Vec2 = require('../../Common/Vec2');
 
+/**
+ * Joint helper entity children of Wall and Path
+ *
+ * @constructor
+ * @param {Number} x coordinate
+ * @param {Number} y coordinate
+ * @param {World} parent world
+ * @param {Object} [options]
+ * @param {String} id to use insted of autogenerate it, used when loading worlds
+ * @extends Entity
+ */
 var Joint = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Joint.defaults).toObject();
   Entity.call(this, x, y, parent, this.options);
@@ -1585,27 +2113,57 @@ var Joint = function(x, y, parent, options, id) {
   Joint.id = Entity.prototype.calcNewId.call(this, Joint.id);
 };
 
+/**
+ * Destroy the Joint
+ *
+ * @method destroy
+ */
 Joint.prototype.destroy = function() {
   if (this.parent) {
     this.parent.removeEntity(this);
   }
 };
 
+/**
+ * Get radius
+ *
+ * @method getRadius
+ * @return {Number} radius
+ */
 Joint.prototype.getRadius = function() {
   return this.options.radius;
 };
 
+/**
+ * Checks if a point is inside a joint.
+ *
+ * @method in
+ * @param {Vec2} pos
+ * @return {Boolean} true if inside; false otherwise
+ */
 Joint.prototype.in = function(pos) {
   var dist = Vec2.distance(pos, this.pos);
   return dist < this.options.radius;
 };
 
+/**
+ * Set radius.
+ *
+ * @method setRadius
+ * @param {Number} radius
+ */
 Joint.prototype.setRadius = function(radius) {
   if (this.options.scalable) {
     this.options.radius = radius;
   }
 };
 
+/**
+ * Increment radius.
+ *
+ * @method incrRadius
+ * @param {Number} dr
+ */
 Joint.prototype.incrRadius = function(dr) {
   if (this.options.scalable) {
     this.options.radius = Math.abs(this.options.radius + dr);
@@ -1629,7 +2187,28 @@ var Vec2 = require('../../Common/Vec2');
 var Entity = require('../Entity');
 var Joint = require('./Joint');
 
+/**
+ * Base class to extend Wall and Path entities with common functionalities.
+ *
+ * @method LinePrototype
+ * @param {String} idPrefix 'W' for walls, 'P' for paths
+ * @param {String} type 'wall' for walls, 'path' for paths
+ * @param {Object} defaults options
+ * @param {String} id to use insted of autogenerate it, used when loading worlds
+ * @return Line
+ */
 var LinePrototype = function(idPrefix, type, defaults, id) {
+  /**
+   * Line Base
+   *
+   * @constructor
+   * @param {Number} x coordinate
+   * @param {Number} y coordinate
+   * @param {World} parent world
+   * @param {Object} [options]
+   * @param {String} id to use insted of autogenerate it, used when loading world
+   * @extends Entity
+   */
   var Line = function(x, y, parent, options, id) {
     this.options = Lazy(options).defaults(defaults).toObject();
     this.id = id || idPrefix + Line.id++;
@@ -1641,6 +2220,11 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  /**
+   * Destroy the line
+   *
+   * @method destroy
+   */
   Line.prototype.destroy = function() {
     for (var j in this.children.joints) {
       this.children.joints[j].parent = null;
@@ -1650,6 +2234,13 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     Entity.prototype.destroy.call(this);
   };
 
+  /**
+   * Request to add a children Joint entity.
+   *
+   * @method addEntity
+   * @param {Joint} joint
+   * @param {Object} options used for joint creation
+   */
   Line.prototype.addEntity = function(joint, options) {
     // add a joint to the end or a given position by options.idx
     if (!options || options.previousJoint === null) {
@@ -1664,6 +2255,12 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  /**
+   * Request to remove a children Joint entity.
+   *
+   * @method removeEntity
+   * @param {Joint} joint
+   */
   Line.prototype.removeEntity = function(joint) {
     var idx = this.children.joints.indexOf(joint);
     if (idx !== -1) {
@@ -1682,6 +2279,12 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  /**
+   * Request to add a list of  children Joint entities.
+   *
+   * @method addJoints
+   * @param {Array} joints
+   */
   Line.prototype.addJoints = function(joints) {
     // n joints, n-1 sections
     for (var i in joints) {
@@ -1695,6 +2298,16 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     }
   };
 
+  /**
+   * Helper to create a new Joint.
+   *
+   * @method addJoint
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Object} options
+   * @param {String} id to use insted of autogenerate it, used when loading worldsid
+   * @return {Joint} joint
+   */
   Line.prototype.addJoint = function(x, y, options, id) {
     Entity.prototype.updatePos.call(this,x,y);
     options = Lazy(options).defaults(defaults).toObject();
@@ -1702,26 +2315,64 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
     return joint;
   };
 
+  /**
+   * Gets the childen joints.
+   *
+   * @method getJoints
+   * @return {Array} joints
+   */
   Line.prototype.getJoints = function() {
     return this.children.joints;
   };
 
+  /**
+   * Get a joint index in the path/wall
+   * @method getJointIdx
+   * @param {Joint} joint
+   * @return {Number} index or -1 if not found
+   */
   Line.prototype.getJointIdx = function(joint) {
     return this.children.joints.indexOf(joint);
   };
 
+  /**
+   * Get a joint by index in the path.
+   *
+   * @method getJointByIdx
+   * @param {Number} idx
+   * @return {Joint} joint or null
+   */
   Line.prototype.getJointByIdx = function(idx) {
     return this.children.joints[idx];
   };
 
+  /**
+   * Get [options.width].
+   *
+   * @method getWidth
+   * @return {Number} width
+   */
   Line.prototype.getWidth = function() {
     return this.options.width;
   };
 
+  /**
+   * Reverse the internal joints lists.
+   *
+   * @method reverse
+   */
   Line.prototype.reverse = function() {
     this.children.joints = Lazy(this.children.joints).reverse().toArray();
   };
 
+  /**
+   * Get the projection from a point to a given segment.
+   *
+   * @method getProjection
+   * @param {Vec2} point
+   * @param {Number} segment index
+   * @return {Vec2} projection from point to segment
+   */
   Line.prototype.getProjection = function(point, segment) {
     if (segment < 0 || segment >= this.children.joints.length - 1) {
       throw 'Segment out of bounds';
@@ -1740,17 +2391,37 @@ module.exports = LinePrototype;
 },{"../../Common/Vec2":5,"../Entity":8,"./Joint":10}],12:[function(require,module,exports){
 
 
+/**
+ * Description
+ * @method AssignableToGroup
+ * @param {} EntityPrototype
+ * @return EntityPrototype
+ */
 var AssignableToGroup = function(EntityPrototype) {
 
   var oldConstruct = EntityPrototype.prototype;
   var oldDestroy = EntityPrototype.prototype.destroy;
 
+  /**
+   * Description
+   * @param {} x
+   * @param {} y
+   * @param {} parent
+   * @param {} options
+   * @param {} id
+   * @return 
+   */
   EntityPrototype = function(x, y, parent, options, id) {
     oldConstruct.constructor.call(this,x, y, parent, options, id);
     this.entities.groups = [];
   };
   EntityPrototype.prototype = oldConstruct;
 
+  /**
+   * Description
+   * @method destroy
+   * @return CallExpression
+   */
   EntityPrototype.prototype.destroy = function() {
     // additionally unAssignFromGroup
     for (var g in this.entities.groups) {
@@ -1761,6 +2432,12 @@ var AssignableToGroup = function(EntityPrototype) {
     return oldDestroy.call(this);
   };
 
+  /**
+   * Description
+   * @method assignToGroup
+   * @param {} entity
+   * @return 
+   */
   EntityPrototype.prototype.assignToGroup = function(entity) {
     var idx = this.entities.groups.indexOf(entity);
     if (idx > -1) {
@@ -1770,6 +2447,12 @@ var AssignableToGroup = function(EntityPrototype) {
     }
   };
 
+  /**
+   * Description
+   * @method unassignFromGroup
+   * @param {} group
+   * @return 
+   */
   EntityPrototype.prototype.unassignFromGroup = function(group) {
     var idx = this.entities.groups.indexOf(group);
     if (idx > -1) {
@@ -1779,6 +2462,11 @@ var AssignableToGroup = function(EntityPrototype) {
     }
   };
 
+  /**
+   * Description
+   * @method getAssignedGroups
+   * @return MemberExpression
+   */
   EntityPrototype.prototype.getAssignedGroups = function() {
     return this.entities.groups;
   };
@@ -1830,6 +2518,13 @@ var Path = require('./Entities/Path');
 var Wall = require('./Entities/Wall');
 var Grid = require('./Common/Grid');
 
+/**
+ * The world where al entities live
+ *
+ * @constructor
+ * @param {Object} parent entity
+ * @param {Object} options
+ */
 var World = function(parent, options) {
   this.options = Lazy(options).defaults(World.defaults).toObject();
   var that = this;
@@ -1848,34 +2543,105 @@ var World = function(parent, options) {
   this.isFrozen = true;
 };
 
+/**
+ * Gets and resets the number of steps executed since last call
+ *
+ * @method changesNumber
+ * @return {Number} changes
+ */
+World.prototype.changesNumber = function() {
+  var changes = this.changes;
+  this.changes = 0;
+  return changes;
+};
+/**
+ * Get/set if the world is not running (Frozen). This is set from the Engine
+ *
+ * @method freeze
+ * @param {Boolean} freeze
+ * @return {Boolean} true if world is static
+ */
+World.prototype.freeze = function(freeze) {
+  this.isFrozen = freeze || this.isFrozen;
+  return this.isFrozen;
+};
+
+/**
+ * Returns the first group created.
+ *
+ * @method getDefaultGroup
+ * @return {Object} group
+ */
 World.prototype.getDefaultGroup = function() {
   return this.entities.groups[0];
 };
 
+/**
+ * Get the list of Agents.
+ *
+ * @method getAgents
+ * @return {Array} agents
+ */
 World.prototype.getAgents = function() {
   return this.agents;
 };
 
+/**
+ * Gets a iterator for all entities.
+ *
+ * @method getEntitiesIterator
+ * @return {Object} Lazy iterator
+ */
 World.prototype.getEntitiesIterator = function() {
   return Lazy(this.entities).values().flatten();
 };
 
+/**
+ * Get the list of contexts.
+ *
+ * @method getContexts
+ * @return {Array} contexts
+ */
 World.prototype.getContexts = function() {
   return this.entities.contexts;
 };
 
+/**
+ * Get the list of groups.
+ *
+ * @method getGroups
+ * @return {Array} groups
+ */
 World.prototype.getGroups = function() {
   return this.entities.groups;
 };
 
+/**
+ * Get the list of paths.
+ *
+ * @method getPaths
+ * @return {Array} paths
+ */
 World.prototype.getPaths = function() {
   return this.entities.paths;
 };
 
+/**
+ * Get the list of walls.
+ *
+ * @method getWalls
+ * @return {Array} walls
+ */
 World.prototype.getWalls = function() {
   return this.entities.walls;
 };
 
+/**
+ * Add an array of Agents from the world.
+ *
+ * @method addAgents
+ * @param {Array} agents
+ */
 World.prototype.addAgents = function(agents) {
   this.agents = this.agents.concat(agents);
   this.grid.insert(agents);
@@ -1884,6 +2650,12 @@ World.prototype.addAgents = function(agents) {
   }
 };
 
+/**
+ * Remove an array of agents from the World.
+ *
+ * @method removeAgents
+ * @param {Array} agents
+ */
 World.prototype.removeAgents = function(agents) {
   for (var i in agents) {
     var j = this.agents.indexOf(agents[i]);
@@ -1895,18 +2667,46 @@ World.prototype.removeAgents = function(agents) {
   }
 };
 
+/**
+ * Get the list of agents in a given Context
+ *
+ * @method agentsInContext
+ * @param {Context} context
+ * @return {Array} all entities
+ */
+World.prototype.agentsInContext = function(context) {
+  return this.grid.neighboursContext(context).filter(function(agent) {
+    return context.in(agent.pos);
+  }).toArray();
+};
+
+/**
+ * Callback trigger when an entity is created
+ *
+ * @param  {Entity} entity Context, Group, Wall or Path
+ */
 World.prototype._onCreate = function(entity) {
   if (this.options.onCreateEntity) {
     this.options.onCreateEntity(entity);
   }
 };
 
+/**
+ * Callback trigger when an entity is destroyed
+ *
+ * @param  {Entity} entity Context, Group, Wall or Path
+ */
 World.prototype._onDestroy = function(entity) {
   if (this.options.onDestroyEntity) {
     this.options.onDestroyEntity(entity);
   }
 };
 
+/**
+ * Returns the property that holds the entity list, used internally.
+ *
+ * @param  {Entity} entity Context, Group, Wall or Path
+ */
 World.prototype._getEntityList = function(entity) {
   if (entity instanceof Context) { // is context
     return this.entities.contexts;
@@ -1921,6 +2721,12 @@ World.prototype._getEntityList = function(entity) {
   }
 };
 
+/**
+ * Remove an entity from the world. Called by entities on destroy.
+ *
+ * @method removeEntity
+ * @param {Entity} entity Context, Group, Wall or Path
+ */
 World.prototype.removeEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   var idx = entityList.indexOf(entity);
@@ -1931,6 +2737,12 @@ World.prototype.removeEntity = function(entity) {
   }
 };
 
+/**
+ * Add an entity from the world. Called by entities on constructor.
+ *
+ * @method addEntity
+ * @param {Entity} entity Context, Group, Wall or Path
+ */
 World.prototype.addEntity = function(entity) {
   var entityList = this._getEntityList(entity);
   entityList.push(entity);
@@ -1938,78 +2750,114 @@ World.prototype.addEntity = function(entity) {
   this.changes++;
 };
 
+/**
+ * Add a Context to the world.
+ *
+ * @method addContext
+ * @param {Context} context
+ */
 World.prototype.addContext = function(context) {
   this.entities.contexts.push(context);
   this._onCreate(context);
 };
 
+/**
+ * Add a Group to the world.
+ *
+ * @method addGroup
+ * @param {Group} group
+ */
 World.prototype.addGroup = function(group) {
   this.entities.groups.push(group);
   this._onCreate(group);
 };
 
+/**
+ * Add a Path to the world.
+ *
+ * @method addPath
+ * @param {Path} path
+ */
 World.prototype.addPath = function(path) {
   this.entities.paths.push(path);
   this._onCreate(path);
 };
 
+/**
+ * Add a Wall to the world.
+ *
+ * @method addWall
+ * @param {Wall} wall
+ */
 World.prototype.addWall = function(wall) {
   this.entities.walls.push(wall);
   this._onCreate(wall);
 };
 
+/**
+ * Search an entity in the world by its id.
+ *
+ * @method getEntityById
+ * @param {String} id
+ * @return {Entity}
+ */
 World.prototype.getEntityById = function(id) {
   return Lazy(this.entities).values().flatten().findWhere({id: id});
 };
 
+/**
+ * Search an context in the world by its id.
+ *
+ * @method getContextById
+ * @param {String} id
+ * @return {Array} contexts
+ */
 World.prototype.getContextById = function(id) {
   return Lazy(this.entities.contexts).findWhere({id: id});
 };
 
+/**
+ * Search an path in the world by its id.
+ *
+ * @method getPathById
+ * @param {String} id
+ * @return {Array} paths
+ */
 World.prototype.getPathById = function(id) {
   return Lazy(this.entities.paths).findWhere({id: id});
 };
 
+/**
+ * Returns the agents near to another.
+ * The near property is given in the options constructor parameter
+ *
+ * @method getNearAgents
+ * @param {Agent} agent
+ * @return {Array} agents
+ */
 World.prototype.getNearAgents = function(agent) {
   return this.grid.neighbours(agent).toArray();
 };
 
+/**
+ * Returns the agents near to another.
+ *
+ * The near property is given in the options constructor parameter
+ *
+ * @method getNearWalls
+ * @param {Agent} agent
+ * @return {Array} walls
+ */
 World.prototype.getNearWalls = function(agent) {
   return this.gridWalls.neighbours(agent).uniq().toArray();
 };
 
-World.prototype.agentsInContext = function(context) {
-  return this.grid.neighboursContext(context).filter(function(agent) {
-    return context.in(agent.pos);
-  }).toArray();
-};
-
-World.prototype._saveHelper = function(o) {
-  var ignore = ['view', 'extra', 'agents', 'parent', 'world'];
-  var cache = [];
-  var result = JSON.stringify(o, function(key, value) {
-    if (ignore.indexOf(key) !== -1) { return; }
-    if (key === 'entities') {
-      var entities = {};
-      // map entities to array of ids
-      for (var prop in value) {
-        entities[prop] = value[prop] ? value[prop].id : null;
-      }
-      return entities;
-    }
-    if (typeof value === 'object' && value !== null) {
-      if (cache.indexOf(value) !== -1) {
-        // Circular reference found, discard key
-        throw 'Circular reference found!';
-      }
-      // Store value in our collection
-      cache.push(value);
-    }
-    return value;
-  }, 2);
-  return result;
-};
-
+/**
+ * Save the world state without agents.
+ *
+ * @method save
+ * @param {Boolean} save true to store internally; false to return the JSON data
+ */
 World.prototype.save = function(save) {
   var raw = this._saveHelper(this.entities);
   if (save) {
@@ -2020,6 +2868,13 @@ World.prototype.save = function(save) {
   }
 };
 
+/**
+ * Load the world state from a loader.
+ *
+ * @method load
+ * @param {String|Function} loader
+ * @param {Boolean} loadDefault true to load the last snapshoot created with save(true)
+ */
 World.prototype.load = function(loader, loadDefault) {
   if (!loader) {
     // snapshoot load
@@ -2029,7 +2884,6 @@ World.prototype.load = function(loader, loadDefault) {
       return;
     }
   }
-
   if (typeof(loader) === 'function') {
     // try function loader
     loader(this);
@@ -2080,6 +2934,46 @@ World.prototype.load = function(loader, loadDefault) {
   this.changes++;
 };
 
+/**
+ * Save helper to remove loops and agents from world data.
+ *
+ * @param  {Object} o the world.entities property
+ * @return {String} JSON data that represents the world.entities
+ */
+World.prototype._saveHelper = function(o) {
+    var ignore = ['view', 'extra', 'agents', 'parent', 'world'];
+    var cache = [];
+    var result = JSON.stringify(o, function(key, value) {
+      if (ignore.indexOf(key) !== -1) { return; }
+      if (key === 'entities') {
+        var entities = {};
+        // map entities to array of ids
+        for (var prop in value) {
+          entities[prop] = value[prop] ? value[prop].id : null;
+        }
+        return entities;
+      }
+      if (typeof value === 'object' && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          throw 'Circular reference found!';
+        }
+        // Store value in our collection
+        cache.push(value);
+      }
+      return value;
+    }, 2);
+    return result;
+  };
+
+/**
+ * Advances the simulation of the world entities one stepSize.
+ * If one contexts configured to nofify when agentsIn === 0
+ *
+ * @method step
+ * @param {Number} stepSize defined by the simulation step size
+ * @return {Context|Null} contextEmpty that triggers step
+ */
 World.prototype.step = function(stepSize) {
   var that = this;
   this.grid.updateAll(this.agents);
@@ -2115,16 +3009,6 @@ World.prototype.step = function(stepSize) {
   return contextEmpty;
 };
 
-World.prototype.changesNumber = function() {
-  var changes = this.changes;
-  this.changes = 0;
-  return changes;
-};
-World.prototype.freeze = function(freeze) {
-  this.isFrozen = freeze || this.isFrozen;
-  return this.isFrozen;
-};
-
 World.defaults = {
   near: 8, // grid of 3x3 squares of 3 meters
   width: null,
@@ -2152,6 +3036,11 @@ var CrowdSim = {
   Vec2: require('./Common/Vec2')
 };
 
+/**
+ * Restarts the generation of entities ids. Usefull when loading new worlds.
+ *
+ * @method restartIds
+ */
 CrowdSim.restartIds = function() {
   CrowdSim.Agent.id = 0;
   CrowdSim.Context.id = 0;

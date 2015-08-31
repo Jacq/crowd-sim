@@ -6,6 +6,13 @@ var Entity = require('./Entity');
 var Detail = require('./Detail');
 var Colors = Base.Colors;
 
+/**
+ * Create a group render view from a group entity.
+ *
+ * @class Render.Group
+ * @constructor
+ * @param {Group} group
+ */
 var Group = function(group) {
   if (!group) {
     throw 'Group object must be defined';
@@ -13,20 +20,47 @@ var Group = function(group) {
   Entity.call(this, group);
 };
 
+/**
+ * Create a group render view from a group entity.
+ * @method CreateFromModel
+ * @param {Group} group
+ * @return {Render.Group}
+ */
 Group.CreateFromModel = function(group) {
   return new Group(group);
 };
 
+/**
+ * Create a group render and entity in a point.
+ *
+ * @method CreateFromPoint
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Entity} parent
+ * @param {Object} options
+ * @return {Render.Group}
+ */
 Group.CreateFromPoint = function(x, y, parent, options) {
   var group = new GroupModel(x, y, parent, options);
   return new Group(group);
 };
 
+/**
+ * Destroy render group.
+ *
+ * @method destroy
+ */
 Group.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Group.container, this.graphics);
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Create base graphics for group.
+ *
+ * @method createGraphics
+ * @param {Group} group
+ */
 Group.prototype.createGraphics = function(group) {
   this.graphics = Entity.prototype.createGraphics.call(this,Group.container);
   this.label = new PIXI.Text(group.id, Base.Fonts.default);
@@ -37,6 +71,13 @@ Group.prototype.createGraphics = function(group) {
   this.graphics.entity = this;
 };
 
+/**
+ * Animate group, update position and radius.
+ *
+ * @method render
+ * @param {Object} options of the group
+ * @return
+ */
 Group.prototype.render = function(options) {
   if (!Group.detail.level) {
     this.graphics.clear();
@@ -84,21 +125,46 @@ Group.prototype.render = function(options) {
   }
 };
 
-Group.prototype.getAnchor = function(init) {
+/**
+ * Get render group anchor.
+ *
+ * @method getAnchor
+ * @return {Vec2} anchor
+ */
+Group.prototype.getAnchor = function() {
   var group = this.entityModel;
   return {x: group.pos[0], y: group.pos[1]};
 };
 
+/**
+ * Drag action in groups.
+ *
+ * @method dragTo
+ * @param {Vec2} pos
+ * @param {Vec2} anchor
+ */
 Group.prototype.dragTo = function(pos, anchor) {
   var group = this.entityModel;
   group.pos[0] = pos.x;
   group.pos[1] = pos.y;
 };
 
+/**
+ * Get group position.
+ *
+ * @method getPos
+ * @return {Vec2} position
+ */
 Group.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
 
+/**
+ * Get associated group entity.
+ *
+ * @method getGroup
+ * @return {Group}
+ */
 Group.prototype.getGroup = function() {
   return this.entityModel;
 };

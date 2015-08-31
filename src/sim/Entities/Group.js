@@ -8,6 +8,18 @@ var Vec2 = require('../Common/Vec2');
 var Grid = require('../Common/Grid');
 var Panic = require('../Behavior/Panic');
 
+/**
+ * Group Entity where agents belong.
+ *
+ * @class Group
+ * @constructor
+ * @param {Number} x coordinate
+ * @param {Number} y coordinate
+ * @param {World} parent world
+ * @param {Object} [options]
+ * @param {String} id to use insted of autogenerate it, used when loading worlds
+ * @extends Entity
+ */
 var Group = function(x, y, parent, options, id) {
   this.options = Lazy(options).defaults(Group.defaults).toObject();
   this.id = id || 'G' + Group.id;
@@ -21,6 +33,11 @@ var Group = function(x, y, parent, options, id) {
   this.entities.endContext = null;
 };
 
+/**
+ * Destroy the Group
+ *
+ * @method destroy
+ */
 Group.prototype.destroy = function() {
   this.emptyAgents();
   this.behavior = null;
@@ -33,20 +50,52 @@ Group.prototype.destroy = function() {
   Entity.prototype.destroy.call(this);
 };
 
+/**
+ * Get radius
+ *
+ * @method getRadius
+ * @return {Number} radius
+ */
 Group.prototype.getRadius = function() {
   return this.options.radius;
 };
+
+/**
+ * Set radius
+ *
+ * @method setRadius
+ * @param {Number} radius
+ */
 Group.prototype.setRadius = function(radius) {
   this.options.radius = radius;
 };
+
+/**
+ * Increment radius by dr.
+ *
+ * @method incrRadius
+ * @param {Number} dr increment
+ */
 Group.prototype.incrRadius = function(dr) {
   this.options.radius = Math.abs(this.options.radius + dr);
 };
 
+/**
+ * Gets the end context where agents are destoyed optionally.
+ *
+ * @method getStartContext
+ * @return {Context} end context
+ */
 Group.prototype.getStartContext = function() {
   return this.entities.startContext;
 };
 
+/**
+ * Sets the start context where agents are created
+ *
+ * @method assignStartContext
+ * @param {Context} context
+ */
 Group.prototype.assignStartContext = function(context) {
   if (this.entities.startContext) {
     this.entities.startContext.unassignFromGroup(this);
@@ -57,10 +106,22 @@ Group.prototype.assignStartContext = function(context) {
   this.entities.startContext = context;
 };
 
+/**
+ * Gets the start context where agents are created
+ *
+ * @method getEndContext
+ * @return {Context} end context
+ */
 Group.prototype.getEndContext = function() {
   return this.entities.endContext;
 };
 
+/**
+ * Sets the end context where agents are destroyed.
+ *
+ * @method assignEndContext
+ * @param {Context} context
+ */
 Group.prototype.assignEndContext = function(context) {
   if (this.entities.endContext) {
     this.entities.endContext.unassignFromGroup(this);
@@ -71,6 +132,23 @@ Group.prototype.assignEndContext = function(context) {
   this.entities.endContext = context;
 };
 
+/**
+ * Gets the path asigned to the group that agents will follow.
+ *
+ * @method getPath
+ * @return {Array} paths
+ */
+Group.prototype.getPath = function() {
+  return this.entities.path;
+};
+
+/**
+ * Assign a path to the group and its agents.
+ *
+ * @method assignPath
+ * @param {Path} path
+ * @param {Number} idx start index
+ */
 Group.prototype.assignPath = function(path, idx) {
   if (this.entities.path) {
     this.entities.path.unassignFromGroup(this);
@@ -85,18 +163,42 @@ Group.prototype.assignPath = function(path, idx) {
   }
 };
 
+/**
+ * Gets the flag pathReverse from options.
+ *
+ * @method isPathReverse
+ * @return {Boolean} true if path is reversed
+ */
 Group.prototype.isPathReverse = function() {
   return this.options.pathReverse;
 };
 
+/**
+ * Gets the flag pathCircular from options.
+ *
+ * @method isPathCircular
+ * @return {Boolean} true if path is circular
+ */
 Group.prototype.isPathCircular = function() {
   return this.options.pathCircular;
 };
 
+/**
+ * Gets the start index of the agents in the group path.
+ *
+ * @method getPathStartIdx
+ * @return {Number} start index
+ */
 Group.prototype.getPathStartIdx = function() {
   return this.options.pathStart;
 };
 
+/**
+ * Unassing a start, end contexts or a path from the group.
+ *
+ * @method unAssign
+ * @param {Entity} entity , context or path.
+ */
 Group.prototype.unAssign = function(entity) {
   if (entity instanceof Context) {
     if (this.entities.startContext === entity) {
@@ -115,10 +217,24 @@ Group.prototype.unAssign = function(entity) {
   }
 };
 
+/**
+ * Assign a behavior model to the group.
+ *
+ * @method assignBehavior
+ * @param {Behavior} behavior
+ */
 Group.prototype.assignBehavior = function(behavior) {
   this.behavior = behavior;
 };
 
+/**
+ * Generate a number of agents in a context. Used internally by the group.
+ *
+ * @method generateAgents
+ * @param {Number} agentsCount
+ * @param {Context} startContext
+ * @return newAgents
+ */
 Group.prototype.generateAgents = function(agentsCount, startContext) {
   if (!startContext) {
     startContext = this.entities.startContext;
@@ -129,12 +245,26 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   var pos = Vec2.create();
   var radius = this.options.radius;
   var initPos = this.pos;
+
+  /**
+   * Generates a random init position in the group radius centered at pos.
+   *
+   * @method myInitPos
+   * @param {Vec2} pos center position
+   * @return {Vec2} point
+   */
   function myInitPos(pos) {
     var r = Math.random() * radius;
     Vec2.random(pos, r);
     Vec2.add(pos, pos, initPos);
     return pos;
   }
+  /**
+   * Generates a position within the group start context.
+   *
+   * @method myContextPos
+   * @return {Vec2} point
+   */
   function myContextPos() {
     return startContext.getRandomPoint();
   }
@@ -168,17 +298,34 @@ Group.prototype.generateAgents = function(agentsCount, startContext) {
   return newAgents;
 };
 
+/**
+ * Add agents to the group.
+ *
+ * @method addAgents
+ * @param {Number} agentsCount the number of agents
+ */
 Group.prototype.addAgents = function(agentsCount) {
   var newAgents = this.generateAgents(agentsCount);
   this.agents = this.agents.concat(newAgents);
   this.parent.addAgents(newAgents);
 };
 
+/**
+ * Removes all agents from the group.
+ *
+ * @method emptyAgents
+ */
 Group.prototype.emptyAgents = function() {
   this.parent.removeAgents(this.agents);
   this.agents.length = 0;
 };
 
+/**
+ * Remove the given agents from the group.
+ *
+ * @method removeAgents
+ * @param {Array} agents
+ */
 Group.prototype.removeAgents = function(agents) {
   for (var i in agents) {
     var j = this.agents.indexOf(agents[i]);
@@ -187,10 +334,33 @@ Group.prototype.removeAgents = function(agents) {
   this.parent.removeAgents(agents);
 };
 
-Group.prototype.getPath = function() {
-  return this.entities.path;
+/**
+ * Check if am agent is within a group area.
+ *
+ * @method in
+ * @param {Vec2} pos
+ * @return {Boolean} true if inside; false otherwise
+ */
+Group.prototype.in = function(pos) {
+  return Vec2.squaredDistance(pos, this) < this.options.radius * this.options.radius;
 };
 
+/**
+ * Adds a single agent to the group.
+ *
+ * @method addAgent
+ * @param {Agent} agent
+ */
+Group.prototype.addAgent = function(agent) {
+  this.agents.push(agent);
+};
+
+/**
+ * Gets the smaller rectangle area that contains the group agents
+ *
+ * @method getArea
+ * @return {Array} array of two {Vec2} [[Xmin,Xmax][Ymin,YMax]]
+ */
 Group.prototype.getArea = function() {
   return [
     Vec2.fromValues(
@@ -204,14 +374,11 @@ Group.prototype.getArea = function() {
   ];
 };
 
-Group.prototype.in = function(pos) {
-  return Vec2.squaredDistance(pos, this) < this.options.radius * this.options.radius;
-};
-
-Group.prototype.addAgent = function(agent) {
-  this.agents.push(agent);
-};
-
+/**
+ * Advances the simulation of the group by creating/destroying agents in its contexts.
+ *
+ * @method step
+ */
 Group.prototype.step = function() {
   if (this.agents.length === 0) {
     this.addAgents(this.options.agentsCount);

@@ -2,6 +2,16 @@
 
 var Vec2 = require('./Common/Vec2');
 
+/**
+ * The agents that live in the simulation engine.
+ *
+ * @class Agent
+ * @constructor
+ * @param {Number} x coordinate
+ * @param {Number} y coordinate
+ * @param {Group} group parent
+ * @param {Object} options
+ */
 var Agent = function(x, y, group, options) {
   var that = this;
   this.id = Agent.id++;
@@ -25,6 +35,12 @@ var Agent = function(x, y, group, options) {
   }
 };
 
+/**
+ * Sets as the agent target the nearest point of a Context.
+ *
+ * @method setTargetInContext
+ * @param {Context} context
+ */
 Agent.prototype.setTargetInContext = function(context) {
   // go to nearest point in contexts
   var point = context.getNearestPoint(this.pos);
@@ -32,18 +48,42 @@ Agent.prototype.setTargetInContext = function(context) {
   this.target = {pos: point, in: context.in.bind(context)};
 };
 
+/**
+ * Gets the aspect property. Used for color codes could be used for other purposes
+ *
+ * @method getAspect
+ * @return {Number} aspect
+ */
 Agent.prototype.getAspect = function() {
   return this.aspect;
 };
 
+/**
+ * Get radius
+ * @method getRadius
+ * @return {Number} radius
+ */
 Agent.prototype.getRadius = function() {
   return this.radius;
 };
 
+/**
+ * Set mobility correction applied to the current velocity
+ *
+ * @method setCurrentMobility
+ * @param {Number} mobility factor 0.0-1.0
+ */
 Agent.prototype.setCurrentMobility = function(mobility) {
   this.currentMobility = mobility;
 };
 
+/**
+ * Set the agent to follow a give path starting at index.
+ *
+ * @method followPath
+ * @param {Path} path
+ * @param {Number} index position in path
+ */
 Agent.prototype.followPath = function(path, index) {
   index = index || 0;
   this.path = path;
@@ -56,6 +96,11 @@ Agent.prototype.followPath = function(path, index) {
   }
 };
 
+/**
+ * Helper to set the path start that takes into account inverse paths.
+ * 
+ * @method _startPath
+ */
 Agent.prototype._startPath = function() {
   this.joints = this.path.getJoints();
   if (this.group.isPathReverse()) {
@@ -67,6 +112,12 @@ Agent.prototype._startPath = function() {
   }
 };
 
+/**
+ * Advances the simulation of the agent one stepSize and moves the agent to its next possition defined by the group behavior mode.
+ *
+ * @method step
+ * @param {Number} stepSize defined by the simulation step size
+ */
 Agent.prototype.step = function(stepSize) {
   var accel = this.group.behavior.getAccel(this, this.target);
 
@@ -110,6 +161,13 @@ Agent.prototype.step = function(stepSize) {
   }
 };
 
+/**
+ * Moves the agent with the given accel => speed => position
+ *
+ * @method move
+ * @param {Number} accel
+ * @param {Number} stepSize simulation
+ */
 Agent.prototype.move = function(accel, stepSize) {
   Vec2.scaleAndAdd(this.vel, this.vel, accel, stepSize);
   if (Vec2.length(this.vel) > this.maxVel) {
