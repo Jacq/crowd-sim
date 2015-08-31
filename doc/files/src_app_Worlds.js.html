@@ -1,0 +1,3716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src\app\Worlds.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/2 Dimensional Vector.html">2 Dimensional Vector</a></li>
+                                <li><a href="../classes/Agent.html">Agent</a></li>
+                                <li><a href="../classes/AssignableToGroup.html">AssignableToGroup</a></li>
+                                <li><a href="../classes/Behaviour.html">Behaviour</a></li>
+                                <li><a href="../classes/Common utilities.html">Common utilities</a></li>
+                                <li><a href="../classes/Context.html">Context</a></li>
+                                <li><a href="../classes/CrowdSim.html">CrowdSim</a></li>
+                                <li><a href="../classes/CrowdSimApp.html">CrowdSimApp</a></li>
+                                <li><a href="../classes/Detail.html">Detail</a></li>
+                                <li><a href="../classes/Engine.html">Engine</a></li>
+                                <li><a href="../classes/Entity.html">Entity</a></li>
+                                <li><a href="../classes/EntityPrototype.html">EntityPrototype</a></li>
+                                <li><a href="../classes/Grid.html">Grid</a></li>
+                                <li><a href="../classes/Group.html">Group</a></li>
+                                <li><a href="../classes/Joint.html">Joint</a></li>
+                                <li><a href="../classes/Line.html">Line</a></li>
+                                <li><a href="../classes/Panic.html">Panic</a></li>
+                                <li><a href="../classes/Render.html">Render</a></li>
+                                <li><a href="../classes/Render.Agent.html">Render.Agent</a></li>
+                                <li><a href="../classes/Render.Context.html">Render.Context</a></li>
+                                <li><a href="../classes/Render.Entity.html">Render.Entity</a></li>
+                                <li><a href="../classes/Render.Group.html">Render.Group</a></li>
+                                <li><a href="../classes/Render.Joint.html">Render.Joint</a></li>
+                                <li><a href="../classes/Render.Line.html">Render.Line</a></li>
+                                <li><a href="../classes/Render.Path.html">Render.Path</a></li>
+                                <li><a href="../classes/Render.Wall.html">Render.Wall</a></li>
+                                <li><a href="../classes/World.html">World</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: src\app\Worlds.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
+var CrowdSim = require(&#x27;CrowdSim&#x27;);
+
+var Worlds = {
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  groupSimple: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 100,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 4,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 78.9000015258789,
+        &quot;1&quot;: 41.70000076293945
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  groupSizes: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsMaxVel&quot;: 2,
+        &quot;agentsMaxAccel&quot;: 0.5,
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.3,
+        &quot;agentsSizeMax&quot;: 0.9,
+        &quot;agentsCount&quot;: 200,
+        &quot;agentsMax&quot;: 200,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0,
+        &quot;near&quot;: 10
+      },
+      &quot;id&quot;: &quot;G1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 51,
+        &quot;1&quot;: 43
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  groupSizeVel: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsMaxVel&quot;: 2,
+        &quot;agentsMaxAccel&quot;: 0.5,
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.4,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 100,
+        &quot;agentsMax&quot;: 300,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 8,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0,
+        &quot;near&quot;: 10
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 28.899999618530273,
+        &quot;1&quot;: 39.900001525878906
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P0&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsMaxVel&quot;: 0.9,
+        &quot;agentsMaxAccel&quot;: 0.5,
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.8,
+        &quot;agentsCount&quot;: 100,
+        &quot;agentsMax&quot;: 300,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 2,
+        &quot;pathReverse&quot;: true,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 8,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0,
+        &quot;near&quot;: 10
+      },
+      &quot;id&quot;: &quot;G1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 115.5,
+        &quot;1&quot;: 40.29999923706055
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P0&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 98.5,
+        &quot;1&quot;: 40.20000076293945
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 7,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 46.900001525878906,
+            &quot;1&quot;: 39.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 8,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 83.30000305175781,
+            &quot;1&quot;: 40.29999923706055
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 7,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 99.5999984741211,
+            &quot;1&quot;: 40.20000076293945
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J4&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  contextIn: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 39,
+        &quot;height&quot;: 17.000001525878908
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 75.5999984741211,
+        &quot;1&quot;: 23.100000381469727
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0.2,
+        &quot;startRate&quot;: 5,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 75.5999984741211,
+        &quot;1&quot;: 61.599998474121094
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  contextOut: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 11.999996948242199,
+        &quot;height&quot;: 44.599999999999994
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 82,
+        &quot;1&quot;: 48.29999923706055
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 100,
+        &quot;agentsMax&quot;: 1000,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 30,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0.2,
+        &quot;endRate&quot;: 5
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 41.099998474121094,
+        &quot;1&quot;: 48.400001525878906
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: &quot;C0&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  contextInOut: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 18.60000305175781,
+        &quot;height&quot;: 61.39999847412109
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 44.29999923706055,
+        &quot;1&quot;: 45.70000076293945
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 15.199996948242188,
+        &quot;height&quot;: 72.4000015258789
+      },
+      &quot;id&quot;: &quot;C4&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 108.69999694824219,
+        &quot;1&quot;: 49
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 200,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0.5,
+        &quot;startRate&quot;: 10,
+        &quot;endProb&quot;: 0.5,
+        &quot;endRate&quot;: 5
+      },
+      &quot;id&quot;: &quot;G2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 81.30000305175781,
+        &quot;1&quot;: 83
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: &quot;C4&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  contextMobility: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 39,
+        &quot;height&quot;: 17.000001525878908,
+        &quot;mobility&quot;: 1,
+        &quot;hazardLevel&quot;: 0
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 75.5999984741211,
+        &quot;1&quot;: 23.100000381469727
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;mobility&quot;: 0.5,
+        &quot;hazardLevel&quot;: 0,
+        &quot;width&quot;: 10,
+        &quot;height&quot;: 10
+      },
+      &quot;id&quot;: &quot;C1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 76.5999984741211,
+        &quot;1&quot;: 44.20000076293945
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0.2,
+        &quot;startRate&quot;: 5,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 75.5999984741211,
+        &quot;1&quot;: 61.599998474121094
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  contextTrigger: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 24,
+        &quot;height&quot;: 2.0000015258789077,
+        &quot;mobility&quot;: 1,
+        &quot;hazardLevel&quot;: 0,
+        &quot;triggerOnEmpty&quot;: true
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 75.1729736328125,
+        &quot;1&quot;: 46.50312423706055
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 5,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0,
+        &quot;near&quot;: 10
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 75.47578430175781,
+        &quot;1&quot;: 61.03791427612305
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  contextRate: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 9.799996948242182,
+        &quot;height&quot;: 10.599999999999994
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 41.400001525878906,
+        &quot;1&quot;: 31.700000762939453
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 16.9999969482422,
+        &quot;height&quot;: 19.00000076293945
+      },
+      &quot;id&quot;: &quot;C1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 95.4000015258789,
+        &quot;1&quot;: 31
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 16.200001525878903,
+        &quot;height&quot;: 14.800001525878912
+      },
+      &quot;id&quot;: &quot;C2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 42.5,
+        &quot;1&quot;: 59
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 13.600003051757824,
+        &quot;height&quot;: 13.799996948242182
+      },
+      &quot;id&quot;: &quot;C3&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 94.30000305175781,
+        &quot;1&quot;: 57.900001525878906
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 200,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0.5,
+        &quot;startRate&quot;: 1,
+        &quot;endProb&quot;: 0.1,
+        &quot;endRate&quot;: 2
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 62.79999923706055,
+        &quot;1&quot;: 17.5
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: &quot;C1&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 2,
+        &quot;startProb&quot;: 0.1,
+        &quot;startRate&quot;: 1,
+        &quot;endProb&quot;: 0.15,
+        &quot;endRate&quot;: 1
+      },
+      &quot;id&quot;: &quot;G1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 68,
+        &quot;1&quot;: 72.9000015258789
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: null,
+        &quot;startContext&quot;: &quot;C3&quot;,
+        &quot;endContext&quot;: &quot;C2&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathCtxMobility: {
+  &quot;contexts&quot;: [
+    {
+      &quot;options&quot;: {
+        &quot;mobility&quot;: 3,
+        &quot;triggerOnEmpty&quot;: false,
+        &quot;width&quot;: 44.72726912064988,
+        &quot;height&quot;: 19.8181811246005
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 82.34545135498047,
+        &quot;1&quot;: 26.045454025268555
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    },
+    {
+      &quot;options&quot;: {
+        &quot;mobility&quot;: 0.5,
+        &quot;triggerOnEmpty&quot;: false,
+        &quot;width&quot;: 42.36364246715199,
+        &quot;height&quot;: 16.545458013361156
+      },
+      &quot;id&quot;: &quot;C2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 81.61817932128906,
+        &quot;1&quot;: 55.40909194946289
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }
+  ],
+  &quot;groups&quot;: [
+    {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 13,
+        &quot;startProb&quot;: 0.2,
+        &quot;startRate&quot;: 5,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0,
+        &quot;agentsMaxVel&quot;: 1,
+        &quot;agentsMaxAccel&quot;: 0.5,
+        &quot;near&quot;: 10
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 55.79999923706055,
+        &quot;1&quot;: 25.200000762939453
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }
+  ],
+  &quot;paths&quot;: [
+    {
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 55.16363525390625,
+        &quot;1&quot;: 54.95454406738281
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [
+          {
+            &quot;options&quot;: {
+              &quot;width&quot;: 0.2,
+              &quot;radius&quot;: 4,
+              &quot;scalable&quot;: true
+            },
+            &quot;pos&quot;: {
+              &quot;0&quot;: 110.34545135498047,
+              &quot;1&quot;: 26.68181800842285
+            },
+            &quot;entities&quot;: {},
+            &quot;children&quot;: {},
+            &quot;id&quot;: &quot;J3&quot;
+          },
+          {
+            &quot;options&quot;: {
+              &quot;width&quot;: 0.2,
+              &quot;radius&quot;: 4,
+              &quot;scalable&quot;: true
+            },
+            &quot;pos&quot;: {
+              &quot;0&quot;: 110.25454711914062,
+              &quot;1&quot;: 54.95454406738281
+            },
+            &quot;entities&quot;: {},
+            &quot;children&quot;: {},
+            &quot;id&quot;: &quot;J4&quot;
+          },
+          {
+            &quot;options&quot;: {
+              &quot;width&quot;: 0.2,
+              &quot;radius&quot;: 4,
+              &quot;scalable&quot;: true
+            },
+            &quot;pos&quot;: {
+              &quot;0&quot;: 55.16363525390625,
+              &quot;1&quot;: 54.95454406738281
+            },
+            &quot;entities&quot;: {},
+            &quot;children&quot;: {},
+            &quot;id&quot;: &quot;J7&quot;
+          }
+        ]
+      }
+    }
+  ],
+  &quot;walls&quot;: []
+},
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathLoop: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 6,
+        &quot;pathReverse&quot;: true,
+        &quot;pathCircular&quot;: true,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 43.099998474121094,
+        &quot;1&quot;: 28.799999237060547
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: true,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 103.30000305175781,
+        &quot;1&quot;: 28.200000762939453
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 62.5,
+        &quot;1&quot;: 43.70000076293945
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 91,
+            &quot;1&quot;: 43.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 115.30000305175781,
+            &quot;1&quot;: 48.400001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 107,
+            &quot;1&quot;: 74.9000015258789
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 68,
+            &quot;1&quot;: 77.9000015258789
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 41.900001525878906,
+            &quot;1&quot;: 72.4000015258789
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J4&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 44.5,
+            &quot;1&quot;: 45.400001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J5&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 62.5,
+            &quot;1&quot;: 43.70000076293945
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J6&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathGroup: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 32255,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 50,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 1,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: true,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 67,
+        &quot;1&quot;: 28.200000762939453
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 261637,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 50,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 2,
+        &quot;pathReverse&quot;: true,
+        &quot;pathCircular&quot;: true,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 96.4000015258789,
+        &quot;1&quot;: 72.9000015258789
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 126.0999984741211,
+        &quot;1&quot;: 47.5
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 36.599998474121094,
+            &quot;1&quot;: 46.29999923706055
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 67.30000305175781,
+            &quot;1&quot;: 46.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 95.69999694824219,
+            &quot;1&quot;: 47.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 126.0999984741211,
+            &quot;1&quot;: 47.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathSize: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 500,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: true,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 35.425113677978516,
+        &quot;1&quot;: 50.41111373901367
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 126.98758697509766,
+        &quot;1&quot;: 51.00733184814453
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 2,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 47.26435470581055,
+            &quot;1&quot;: 50.581459045410156
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 8,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 68.132080078125,
+            &quot;1&quot;: 39.423614501953125
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 2,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 88.7442855834961,
+            &quot;1&quot;: 63.01692199707031
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 7,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 106.54573059082031,
+            &quot;1&quot;: 36.357337951660156
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 2,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 129.20211791992188,
+            &quot;1&quot;: 50.581459045410156
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J4&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  paths: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: true,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 81.80000305175781,
+        &quot;1&quot;: 44
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P6&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: true,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 52.599998474121094,
+        &quot;1&quot;: 22.700000762939453
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P5&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: true,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 17.799999237060547,
+        &quot;1&quot;: 22.700000762939453
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 26.899999618530273,
+        &quot;1&quot;: 59.5
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 26,
+            &quot;1&quot;: 43.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 27.600000381469727,
+            &quot;1&quot;: 22.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 42.400001525878906,
+            &quot;1&quot;: 12.600000381469727
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 73,
+            &quot;1&quot;: 12.300000190734863
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 99.4000015258789,
+            &quot;1&quot;: 13.199999809265137
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J4&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 120,
+            &quot;1&quot;: 12.100000381469727
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J5&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 133.10000610351562,
+            &quot;1&quot;: 16.299999237060547
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J6&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 139.6999969482422,
+            &quot;1&quot;: 36.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J7&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 139.10000610351562,
+            &quot;1&quot;: 62.79999923706055
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J8&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 134.10000610351562,
+            &quot;1&quot;: 81.9000015258789
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J9&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 104.30000305175781,
+            &quot;1&quot;: 88.5999984741211
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J10&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 63.5,
+            &quot;1&quot;: 87.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J11&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 45.099998474121094,
+            &quot;1&quot;: 84.69999694824219
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J12&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 26.899999618530273,
+            &quot;1&quot;: 70.80000305175781
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J13&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 26.899999618530273,
+            &quot;1&quot;: 59.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J14&quot;
+        }]
+      }
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P5&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 47.5,
+        &quot;1&quot;: 56.900001525878906
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 48.79999923706055,
+            &quot;1&quot;: 41
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J39&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 77.5999984741211,
+            &quot;1&quot;: 32.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J40&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 96.30000305175781,
+            &quot;1&quot;: 32.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J41&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 122.80000305175781,
+            &quot;1&quot;: 47.29999923706055
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J42&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 122.4000015258789,
+            &quot;1&quot;: 65
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J43&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 97.30000305175781,
+            &quot;1&quot;: 72
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J44&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 62.900001525878906,
+            &quot;1&quot;: 71.5999984741211
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J45&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 47.5,
+            &quot;1&quot;: 56.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J46&quot;
+        }]
+      }
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P6&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 101.30000305175781,
+        &quot;1&quot;: 51
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 67.5999984741211,
+            &quot;1&quot;: 51.70000076293945
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J47&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 101.30000305175781,
+            &quot;1&quot;: 51
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J48&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: []
+  },
+
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  wall: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 68.80000305175781,
+        &quot;1&quot;: 65.5
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 48,
+        &quot;1&quot;: 40.900001525878906
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 90.0999984741211,
+            &quot;1&quot;: 40.79999923706055
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 48,
+            &quot;1&quot;: 40.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 1,
+        &quot;scalable&quot;: false
+      },
+      &quot;id&quot;: &quot;W0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 67.30000305175781,
+        &quot;1&quot;: 53.20000076293945
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 67.4000015258789,
+            &quot;1&quot;: 32
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 67.30000305175781,
+            &quot;1&quot;: 53.20000076293945
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }]
+      }
+    }]
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  wallPass: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;mobility&quot;: 1,
+        &quot;triggerOnEmpty&quot;: false,
+        &quot;width&quot;: 11.423812252927874,
+        &quot;height&quot;: 24.94855936539136
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 38.53074645996094,
+        &quot;1&quot;: 44.29106140136719
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.8,
+        &quot;agentsCount&quot;: 100,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 2,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0,
+        &quot;near&quot;: 10
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 28.354360580444336,
+        &quot;1&quot;: 44.29106140136719
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P2&quot;,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 52.597679138183594,
+        &quot;1&quot;: 44.46891784667969
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 0.5,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 53.67130661010742,
+            &quot;1&quot;: 43.89921951293945
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J16&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 67.78925323486328,
+            &quot;1&quot;: 43.67342758178711
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J18&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 1,
+        &quot;scalable&quot;: false
+      },
+      &quot;id&quot;: &quot;W0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 54.961639404296875,
+        &quot;1&quot;: 27.42833137512207
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 52.41826248168945,
+            &quot;1&quot;: 25.48590850830078
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 0.1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 53.86460876464844,
+            &quot;1&quot;: 42.5235710144043
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 0.1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 54.79446792602539,
+            &quot;1&quot;: 42.49207305908203
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J4&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 54.73858642578125,
+            &quot;1&quot;: 25.48590850830078
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J6&quot;
+        }]
+      }
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 1,
+        &quot;scalable&quot;: false
+      },
+      &quot;id&quot;: &quot;W2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 54.961639404296875,
+        &quot;1&quot;: 56.580596923828125
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 52.9486198425293,
+            &quot;1&quot;: 61.61668395996094
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J8&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 0.1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 54.020259857177734,
+            &quot;1&quot;: 44.71683883666992
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J10&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 0.1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 54.90620803833008,
+            &quot;1&quot;: 44.72572326660156
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J12&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 55.26894760131836,
+            &quot;1&quot;: 61.55038833618164
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J14&quot;
+        }]
+      }
+    }]
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  wallsPathGr: {
+    &quot;contexts&quot;: [],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 200,
+        &quot;agentsMax&quot;: 200,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 12,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 47.6134147644043,
+        &quot;1&quot;: 47.2495002746582
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: null,
+        &quot;endContext&quot;: null
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 200
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 86.5999984741211,
+        &quot;1&quot;: 45.400001525878906
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 86.5999984741211,
+            &quot;1&quot;: 45.400001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 10,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 116.0999984741211,
+            &quot;1&quot;: 45.29999923706055
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 1,
+        &quot;scalable&quot;: false
+      },
+      &quot;id&quot;: &quot;W0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 118.80000305175781,
+        &quot;1&quot;: 22.700000762939453
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 53.099998474121094,
+            &quot;1&quot;: 22.399999618530273
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 80.21202087402344,
+            &quot;1&quot;: 42.68868637084961
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J5&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 92.69818115234375,
+            &quot;1&quot;: 43.51112747192383
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J6&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 118.80000305175781,
+            &quot;1&quot;: 22.700000762939453
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J8&quot;
+        }]
+      }
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 1,
+        &quot;scalable&quot;: false
+      },
+      &quot;id&quot;: &quot;W1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 115.30000305175781,
+        &quot;1&quot;: 70.69999694824219
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 52.599998474121094,
+            &quot;1&quot;: 70.9000015258789
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J9&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 80.36155700683594,
+            &quot;1&quot;: 48.14670944213867
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J11&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 93.072021484375,
+            &quot;1&quot;: 46.72612762451172
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J12&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 115.30000305175781,
+            &quot;1&quot;: 70.69999694824219
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J13&quot;
+        }]
+      }
+    }]
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathContexts: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 10.800003051757812,
+        &quot;height&quot;: 28.400001525878906
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 34.400001525878906,
+        &quot;1&quot;: 45
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 9.600000000000023,
+        &quot;height&quot;: 31.400001525878906
+      },
+      &quot;id&quot;: &quot;C1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 130.8000030517578,
+        &quot;1&quot;: 45.20000076293945
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 500,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0.1,
+        &quot;startRate&quot;: 10,
+        &quot;endProb&quot;: 0.2,
+        &quot;endRate&quot;: 5
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 83.80000305175781,
+        &quot;1&quot;: 72
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: &quot;C1&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 117.5,
+        &quot;1&quot;: 45.400001525878906
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 48.79999923706055,
+            &quot;1&quot;: 45.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 82.4000015258789,
+            &quot;1&quot;: 45.70000076293945
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 117.5,
+            &quot;1&quot;: 45.400001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  pathCtxGro: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 14.399999237060541,
+        &quot;height&quot;: 37.400000000000006
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 30,
+        &quot;1&quot;: 43.20000076293945
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 8.600003051757824,
+        &quot;height&quot;: 53.79999923706055
+      },
+      &quot;id&quot;: &quot;C1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 127.5999984741211,
+        &quot;1&quot;: 48.29999923706055
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 6,
+        &quot;startProb&quot;: 0.05,
+        &quot;startRate&quot;: 2,
+        &quot;endProb&quot;: 0.1,
+        &quot;endRate&quot;: 2
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 80.0999984741211,
+        &quot;1&quot;: 19.899999618530273
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: &quot;C1&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 0,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 3,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 6,
+        &quot;startProb&quot;: 0.05,
+        &quot;startRate&quot;: 2,
+        &quot;endProb&quot;: 0.1,
+        &quot;endRate&quot;: 2
+      },
+      &quot;id&quot;: &quot;G1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 80.5,
+        &quot;1&quot;: 68.5
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: &quot;C1&quot;,
+        &quot;endContext&quot;: &quot;C0&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 115.80000305175781,
+        &quot;1&quot;: 46.599998474121094
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 46.099998474121094,
+            &quot;1&quot;: 46.70000076293945
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 8,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 67.9000015258789,
+            &quot;1&quot;: 46.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 8,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 95.0999984741211,
+            &quot;1&quot;: 46.29999923706055
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 115.80000305175781,
+            &quot;1&quot;: 46.599998474121094
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: []
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  rooms: {
+    &quot;contexts&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 17.263547386260512,
+        &quot;height&quot;: 10.835629013243675
+      },
+      &quot;id&quot;: &quot;C0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 58,
+        &quot;1&quot;: 13
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 12.00000076293945,
+        &quot;height&quot;: 21.599999999999994
+      },
+      &quot;id&quot;: &quot;C1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 20.299999237060547,
+        &quot;1&quot;: 45.5
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 14.399996948242176,
+        &quot;height&quot;: 13.20000610351562
+      },
+      &quot;id&quot;: &quot;C2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 114,
+        &quot;1&quot;: 74
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {}
+    }],
+    &quot;groups&quot;: [{
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 16711680,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0.01,
+        &quot;startRate&quot;: 5,
+        &quot;endProb&quot;: 0.8,
+        &quot;endRate&quot;: 1
+      },
+      &quot;id&quot;: &quot;G0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 81,
+        &quot;1&quot;: 9
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P2&quot;,
+        &quot;startContext&quot;: &quot;C0&quot;,
+        &quot;endContext&quot;: &quot;C2&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 65280,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 2,
+        &quot;pathReverse&quot;: true,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0.05,
+        &quot;startRate&quot;: 2,
+        &quot;endProb&quot;: 0.1,
+        &quot;endRate&quot;: 3
+      },
+      &quot;id&quot;: &quot;G2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 110,
+        &quot;1&quot;: 16
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P2&quot;,
+        &quot;startContext&quot;: &quot;C2&quot;,
+        &quot;endContext&quot;: &quot;C0&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 11184810,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 0,
+        &quot;pathReverse&quot;: false,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0,
+        &quot;startRate&quot;: 0,
+        &quot;endProb&quot;: 0,
+        &quot;endRate&quot;: 0
+      },
+      &quot;id&quot;: &quot;G3&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 38.79999923706055,
+        &quot;1&quot;: 79.19999694824219
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: &quot;C1&quot;,
+        &quot;endContext&quot;: &quot;C2&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }, {
+      &quot;options&quot;: {
+        &quot;agentsAspect&quot;: 255,
+        &quot;agentsSizeMin&quot;: 0.5,
+        &quot;agentsSizeMax&quot;: 0.5,
+        &quot;agentsCount&quot;: 10,
+        &quot;agentsMax&quot;: 100,
+        &quot;debug&quot;: false,
+        &quot;pathStart&quot;: 3,
+        &quot;pathReverse&quot;: true,
+        &quot;pathCircular&quot;: false,
+        &quot;radius&quot;: 3,
+        &quot;startProb&quot;: 0.5,
+        &quot;startRate&quot;: 1,
+        &quot;endProb&quot;: 0.5,
+        &quot;endRate&quot;: 2
+      },
+      &quot;id&quot;: &quot;G4&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 73,
+        &quot;1&quot;: 82.80000305175781
+      },
+      &quot;entities&quot;: {
+        &quot;path&quot;: &quot;P1&quot;,
+        &quot;startContext&quot;: &quot;C2&quot;,
+        &quot;endContext&quot;: &quot;C1&quot;
+      },
+      &quot;children&quot;: {},
+      &quot;behavior&quot;: {
+        &quot;options&quot;: {
+          &quot;A&quot;: 2000,
+          &quot;B&quot;: 0.08,
+          &quot;kn&quot;: 120000,
+          &quot;Kv&quot;: 240000,
+          &quot;relaxationTime&quot;: 0.3
+        }
+      },
+      &quot;agentsCount&quot;: 10
+    }],
+    &quot;paths&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 102,
+        &quot;1&quot;: 60
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 3,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 29.700000762939453,
+            &quot;1&quot;: 45.599998474121094
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 3,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 51.79999923706055,
+            &quot;1&quot;: 47
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 3,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 84.5,
+            &quot;1&quot;: 47.70000076293945
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 100.0999984741211,
+            &quot;1&quot;: 59.5
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }]
+      }
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 4
+      },
+      &quot;id&quot;: &quot;P2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 111,
+        &quot;1&quot;: 57
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 58,
+            &quot;1&quot;: 24
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J4&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 3,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 69.5,
+            &quot;1&quot;: 43.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J5&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 4,
+            &quot;scalable&quot;: true
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 111,
+            &quot;1&quot;: 57
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J6&quot;
+        }]
+      }
+    }],
+    &quot;walls&quot;: [{
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 1,
+        &quot;scalable&quot;: false
+      },
+      &quot;id&quot;: &quot;W0&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 31,
+        &quot;1&quot;: 41
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 29.600000381469727,
+            &quot;1&quot;: 20
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J0&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 48,
+            &quot;1&quot;: 20
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J1&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 48,
+            &quot;1&quot;: 35
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J2&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 31,
+            &quot;1&quot;: 35
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J3&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 31,
+            &quot;1&quot;: 41
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J4&quot;
+        }]
+      }
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 1,
+        &quot;scalable&quot;: false
+      },
+      &quot;id&quot;: &quot;W1&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 99,
+        &quot;1&quot;: 67
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 32,
+            &quot;1&quot;: 53
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J5&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 60,
+            &quot;1&quot;: 53
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J6&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 77,
+            &quot;1&quot;: 54
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J7&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 81,
+            &quot;1&quot;: 67
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J8&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 99,
+            &quot;1&quot;: 67
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J9&quot;
+        }]
+      }
+    }, {
+      &quot;options&quot;: {
+        &quot;width&quot;: 0.2,
+        &quot;radius&quot;: 1,
+        &quot;scalable&quot;: false
+      },
+      &quot;id&quot;: &quot;W2&quot;,
+      &quot;pos&quot;: {
+        &quot;0&quot;: 124,
+        &quot;1&quot;: 66
+      },
+      &quot;entities&quot;: {},
+      &quot;children&quot;: {
+        &quot;joints&quot;: [{
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 70,
+            &quot;1&quot;: 22
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J10&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 70,
+            &quot;1&quot;: 37
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J11&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 97,
+            &quot;1&quot;: 37
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J12&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 123.5999984741211,
+            &quot;1&quot;: 37.900001525878906
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J13&quot;
+        }, {
+          &quot;options&quot;: {
+            &quot;width&quot;: 0.2,
+            &quot;radius&quot;: 1,
+            &quot;scalable&quot;: false
+          },
+          &quot;pos&quot;: {
+            &quot;0&quot;: 124,
+            &quot;1&quot;: 66
+          },
+          &quot;entities&quot;: {},
+          &quot;children&quot;: {},
+          &quot;id&quot;: &quot;J14&quot;
+        }]
+      }
+    }]
+  },
+  /*******************************************************************************************************************/
+  /**
+   * ****************************************************************************************************************
+   * @method testFun
+   * @param {} world
+   * @param {} debug
+   * @return 
+   */
+  testFun: function(world, debug) {
+    // wire world events and adding entities functions
+    var sizeR = 20;
+    var sizeC = 10;
+    var door = sizeR / 8;
+    var cx = 55,
+      cy = 45;
+    var gx = 65,
+      gy = 50;
+    var radius = 4;
+    var waypoints = [
+      [10, 10],
+      [20, 21],
+      [31, 30],
+      [41, 41],
+      [41, 75],
+      [55, 80],
+      [65, 70],
+      [65, 60]
+    ];
+    var path = new CrowdSim.Path(null, null, world);
+    path.addJoints(waypoints);
+    path.reverse();
+
+    //var path = new CrowdSim.Path([{pos: [65, 60], radius: radius / 2}, {pos: [65, 70], radius: radius / 2}, {pos: [55, 80], radius: 2 * radius}]);
+
+    var startContext = new CrowdSim.Context(gx, gy, world, {
+      width: sizeC,
+      height: sizeC
+    });
+    //var endContext = new CrowdSim.Context(55  , 80 - sizeC , sizeC, sizeC);
+    var endContext = new CrowdSim.Context(10, 10, world, {
+      width: sizeC,
+      height: sizeC
+    });
+    var opts = {
+      debug: debug,
+      agentsCount: 10,
+      agentsMax: 1000,
+      agentsSizeMin: 0.5,
+      agentsSizeMax: 0.6,
+      startProb: 0.1,
+      startRate: 1,
+      endProb: 0.1,
+      endRate: 1
+    };
+    var group = new CrowdSim.Group(60, 30, world, opts);
+    group.assignStartContext(startContext);
+    group.assignEndContext(endContext);
+    group.assignPath(path);
+    var room1 = [
+      [cx + sizeR / 2 - door, cy + sizeR],
+      [cx, cy + sizeR],
+      [cx, cy],
+      [cx + sizeR, cy],
+      [cx + sizeR, cy + sizeR],
+      [cx + sizeR / 2 + door, cy + sizeR]
+    ];
+    var room = [
+      [cx + sizeR / 2 - door, cy + sizeR],
+      [cx, cy + sizeR]
+    ];
+    //var wall = new CrowdSim.Wall(room);
+    var wall = new CrowdSim.Wall(null, null, world);
+    wall.addJoints(room1);
+  },
+  /*******************************************************************************************************************/
+  /*******************************************************************************************************************/
+  testJson: {
+    &#x27;contexts&#x27;: [{
+      &#x27;options&#x27;: {
+        &#x27;width&#x27;: 10,
+        &#x27;height&#x27;: 10
+      },
+      &#x27;pos&#x27;: {
+        &#x27;0&#x27;: 65,
+        &#x27;1&#x27;: 50
+      },
+      &#x27;entities&#x27;: {},
+      &#x27;children&#x27;: {},
+      &#x27;id&#x27;: &#x27;C0&#x27;
+    }, {
+      &#x27;options&#x27;: {
+        &#x27;width&#x27;: 10,
+        &#x27;height&#x27;: 10
+      },
+      &#x27;pos&#x27;: {
+        &#x27;0&#x27;: 10,
+        &#x27;1&#x27;: 10
+      },
+      &#x27;entities&#x27;: {},
+      &#x27;children&#x27;: {},
+      &#x27;id&#x27;: &#x27;C1&#x27;
+    }],
+    &#x27;groups&#x27;: [{
+      &#x27;options&#x27;: {
+        &#x27;debug&#x27;: false,
+        &#x27;agentsCount&#x27;: 10,
+        &#x27;agentsMax&#x27;: 1000,
+        &#x27;agentsSizeMin&#x27;: 0.5,
+        &#x27;agentsSizeMax&#x27;: 0.6,
+        &#x27;startProb&#x27;: 0.1,
+        &#x27;startRate&#x27;: 1,
+        &#x27;endProb&#x27;: 0.1,
+        &#x27;endRate&#x27;: 1,
+        &#x27;pathStart&#x27;: 0,
+        &#x27;pathReverse&#x27;: false,
+        &#x27;pathCircular&#x27;: false,
+        &#x27;radius&#x27;: 3
+      },
+      &#x27;pos&#x27;: {
+        &#x27;0&#x27;: 60,
+        &#x27;1&#x27;: 30
+      },
+      &#x27;entities&#x27;: {
+        &#x27;path&#x27;: &#x27;P0&#x27;,
+        &#x27;startContext&#x27;: &#x27;C0&#x27;,
+        &#x27;endContext&#x27;: &#x27;C1&#x27;
+      },
+      &#x27;children&#x27;: {},
+      &#x27;id&#x27;: &#x27;G0&#x27;,
+      &#x27;behavior&#x27;: {
+        &#x27;world&#x27;: {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 64,
+            &#x27;height&#x27;: 64
+          },
+          &#x27;entities&#x27;: {}
+        },
+        &#x27;options&#x27;: {
+          &#x27;A&#x27;: 2000,
+          &#x27;B&#x27;: 0.08,
+          &#x27;kn&#x27;: 120000,
+          &#x27;Kv&#x27;: 240000,
+          &#x27;relaxationTime&#x27;: 0.3
+        }
+      },
+      &#x27;agentsCount&#x27;: 10
+    }],
+    &#x27;paths&#x27;: [{
+      &#x27;options&#x27;: {
+        &#x27;width&#x27;: 0.2,
+        &#x27;radius&#x27;: 4
+      },
+      &#x27;pos&#x27;: {
+        &#x27;0&#x27;: 65,
+        &#x27;1&#x27;: 60
+      },
+      &#x27;entities&#x27;: {},
+      &#x27;children&#x27;: {
+        &#x27;joints&#x27;: [{
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 4,
+            &#x27;scalable&#x27;: true
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 65,
+            &#x27;1&#x27;: 60
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J7&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 4,
+            &#x27;scalable&#x27;: true
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 65,
+            &#x27;1&#x27;: 70
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J6&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 4,
+            &#x27;scalable&#x27;: true
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 55,
+            &#x27;1&#x27;: 80
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J5&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 4,
+            &#x27;scalable&#x27;: true
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 41,
+            &#x27;1&#x27;: 75
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J4&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 4,
+            &#x27;scalable&#x27;: true
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 41,
+            &#x27;1&#x27;: 41
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J3&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 4,
+            &#x27;scalable&#x27;: true
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 31,
+            &#x27;1&#x27;: 30
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J2&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 4,
+            &#x27;scalable&#x27;: true
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 20,
+            &#x27;1&#x27;: 21
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J1&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 4,
+            &#x27;scalable&#x27;: true
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 10,
+            &#x27;1&#x27;: 10
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J0&#x27;
+        }]
+      },
+      &#x27;id&#x27;: &#x27;P0&#x27;
+    }],
+    &#x27;walls&#x27;: [{
+      &#x27;options&#x27;: {
+        &#x27;width&#x27;: 0.2,
+        &#x27;radius&#x27;: 1,
+        &#x27;scalable&#x27;: false
+      },
+      &#x27;pos&#x27;: {
+        &#x27;0&#x27;: 67.5,
+        &#x27;1&#x27;: 65
+      },
+      &#x27;entities&#x27;: {},
+      &#x27;children&#x27;: {
+        &#x27;joints&#x27;: [{
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 1,
+            &#x27;scalable&#x27;: false
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 62.5,
+            &#x27;1&#x27;: 65
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J8&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 1,
+            &#x27;scalable&#x27;: false
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 55,
+            &#x27;1&#x27;: 65
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J9&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 1,
+            &#x27;scalable&#x27;: false
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 55,
+            &#x27;1&#x27;: 45
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J10&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 1,
+            &#x27;scalable&#x27;: false
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 75,
+            &#x27;1&#x27;: 45
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J11&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 1,
+            &#x27;scalable&#x27;: false
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 75,
+            &#x27;1&#x27;: 65
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J12&#x27;
+        }, {
+          &#x27;options&#x27;: {
+            &#x27;width&#x27;: 0.2,
+            &#x27;radius&#x27;: 1,
+            &#x27;scalable&#x27;: false
+          },
+          &#x27;pos&#x27;: {
+            &#x27;0&#x27;: 67.5,
+            &#x27;1&#x27;: 65
+          },
+          &#x27;entities&#x27;: {},
+          &#x27;children&#x27;: {},
+          &#x27;id&#x27;: &#x27;J13&#x27;
+        }]
+      },
+      &#x27;id&#x27;: &#x27;W0&#x27;
+    }]
+  }
+};
+
+module.exports = Worlds;
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

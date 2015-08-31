@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src\sim\Entities\Context.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/2 Dimensional Vector.html">2 Dimensional Vector</a></li>
+                                <li><a href="../classes/Agent.html">Agent</a></li>
+                                <li><a href="../classes/AssignableToGroup.html">AssignableToGroup</a></li>
+                                <li><a href="../classes/Behaviour.html">Behaviour</a></li>
+                                <li><a href="../classes/Common utilities.html">Common utilities</a></li>
+                                <li><a href="../classes/Context.html">Context</a></li>
+                                <li><a href="../classes/CrowdSim.html">CrowdSim</a></li>
+                                <li><a href="../classes/CrowdSimApp.html">CrowdSimApp</a></li>
+                                <li><a href="../classes/Detail.html">Detail</a></li>
+                                <li><a href="../classes/Engine.html">Engine</a></li>
+                                <li><a href="../classes/Entity.html">Entity</a></li>
+                                <li><a href="../classes/EntityPrototype.html">EntityPrototype</a></li>
+                                <li><a href="../classes/Grid.html">Grid</a></li>
+                                <li><a href="../classes/Group.html">Group</a></li>
+                                <li><a href="../classes/Joint.html">Joint</a></li>
+                                <li><a href="../classes/Line.html">Line</a></li>
+                                <li><a href="../classes/Panic.html">Panic</a></li>
+                                <li><a href="../classes/Render.html">Render</a></li>
+                                <li><a href="../classes/Render.Agent.html">Render.Agent</a></li>
+                                <li><a href="../classes/Render.Context.html">Render.Context</a></li>
+                                <li><a href="../classes/Render.Entity.html">Render.Entity</a></li>
+                                <li><a href="../classes/Render.Group.html">Render.Group</a></li>
+                                <li><a href="../classes/Render.Joint.html">Render.Joint</a></li>
+                                <li><a href="../classes/Render.Line.html">Render.Line</a></li>
+                                <li><a href="../classes/Render.Path.html">Render.Path</a></li>
+                                <li><a href="../classes/Render.Wall.html">Render.Wall</a></li>
+                                <li><a href="../classes/World.html">World</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: src\sim\Entities\Context.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+
+var Entity = require(&#x27;./Entity&#x27;);
+var Vec2 = require(&#x27;../Common/Vec2&#x27;);
+var AssignableToGroup = require(&#x27;./Helpers/Traits&#x27;).AssignableToGroup;
+
+/**
+ * Context entity
+ *
+ * @class Context
+ * @constructor
+ * @param {Number} x coordinate
+ * @param {Number} y coordinate
+ * @param {World} parent world
+ * @param {Object} [options]
+ * @param {String} id to use insted of autogenerate it, used when loading worlds
+ * @extends Entity
+ */
+var Context = function(x, y, parent, options, id) {
+  this.options = Lazy(options).defaults(Context.defaults).toObject();
+  this.id = id || &#x27;C&#x27; + Context.id++;
+  Context.id = Entity.prototype.calcNewId.call(this, Context.id);
+  Entity.call(this, x, y, parent, this.options);
+};
+
+/**
+ * Destroy the Context
+ *
+ * @method destroy
+ */
+Context.prototype.destroy = function() {
+  Entity.prototype.destroy.call(this);
+};
+
+/**
+ * Sets the context size.
+ *
+ * @method setArea
+ * @param {Number} x center
+ * @param {Number} y center
+ */
+Context.prototype.setArea = function(x, y) {
+  this.options.width = Math.abs(this.pos[0] - x) * 2;
+  this.options.height = Math.abs(this.pos[1] - y) * 2;
+};
+
+/**
+ * Increment the context width and height.
+ *
+ * @method incrSize
+ * @param {Number} ds increment in width and height
+ */
+Context.prototype.incrSize = function(ds) {
+  this.options.width += ds;
+  this.options.height += ds;
+};
+
+/**
+ * Gets width.
+ *
+ * @method getWidth
+ * @return {Number} width
+ */
+Context.prototype.getWidth = function() {
+  return this.options.width;
+};
+
+/**
+ * Gets height.
+ *
+ * @method getHeight
+ * @return {Number} height
+ */
+Context.prototype.getHeight = function() {
+  return this.options.height;
+};
+
+/**
+ * Gets the context minimum X,Y coordinate.
+ *
+ * @method getMinXY
+ * @return {Vec2} point
+ */
+Context.prototype.getMinXY = function() {
+  var point = Vec2.create();
+  var halfSize = Vec2.fromValues(this.options.width / 2, this.options.height / 2);
+  return Vec2.subtract(point, this.pos, halfSize);
+};
+
+/**
+ * Gets the context maximun X,Y coordinate.
+ *
+ * @method getMaxXY
+ * @return {Vec2} point
+ */
+Context.prototype.getMaxXY = function() {
+  var point = Vec2.create();
+  var halfSize = Vec2.fromValues(this.options.width / 2, this.options.height / 2);
+  return Vec2.add(point, this.pos, halfSize);
+};
+
+/**
+ * Get a random point in the context.
+ *
+ * @method getRandomPoint
+ * @return {Vec2} point
+ */
+Context.prototype.getRandomPoint = function() {
+  var x = this.pos[0] + (Math.random() - 0.5) * this.options.width;
+  var y = this.pos[1] + (Math.random() - 0.5) * this.options.height;
+  return Vec2.fromValues(x, y);
+};
+
+/**
+ * Get the nearest point in the context to another.
+ *
+ * @method getNearestPoint
+ * @param {Vec2} point
+ * @param {Number} border margin inside the context
+ * @return {Vec2} nearest point in the context to the given point
+ */
+Context.prototype.getNearestPoint = function(point, border) {
+  var w2 = this.options.width / 2 - this.options.width / 10; // half-width + 10% margin to avoid borders errors
+  var h2 = this.options.height / 2 - this.options.height / 10;
+  // all segments
+  var corners = [[this.pos[0] - w2, this.pos[1] - h2], [this.pos[0] + w2, this.pos[1] - h2],
+                 [this.pos[0] + w2, this.pos[1] + h2], [this.pos[0] - w2, this.pos[1] + h2],
+                 [this.pos[0] - w2, this.pos[1] - h2]];
+  var nearestPoint = this.pos;
+  var projection = Vec2.create();
+  // find shortest linear path
+  var shortestProjection = Vec2.fromValues(point[0] - this.pos[0], point[1] - this.pos[1]);
+  var shortestProjectionDistance = Vec2.squaredLength(shortestProjection);
+  for (var c = 1; c &lt; corners.length; c++) {
+    projection = Vec2.projectionToSegment(projection, point, corners[c - 1], corners[c]);
+    var distance = Vec2.squaredLength(projection);
+    if (distance &lt; shortestProjectionDistance) {
+      shortestProjection = projection;
+      shortestProjectionDistance = distance;
+    }
+  }
+  return Vec2.subtract(shortestProjection,point,shortestProjection);
+};
+
+/**
+ * Get context mobility factor.
+ *
+ * @method getMobility
+ * @return {Number}
+ */
+Context.prototype.getMobility = function() {
+  return this.options.mobility;
+};
+
+/**
+ * Get context trigger option.
+ *
+ * @method getTrigger
+ * @return {Boolean} true if contexts stops simulation on empty of agents
+ */
+Context.prototype.getTrigger = function() {
+  return this.options.triggerOnEmpty;
+};
+
+/**
+ * Check if a point is inside the context.
+ *
+ * @method in
+ * @param {Vec2} pos
+ * @return {Boolean} true if pos is inside
+ */
+Context.prototype.in = function(pos) {
+  var w2 = this.options.width / 2;
+  var h2 = this.options.height / 2;
+  var isIn = (this.pos[0] - w2 &lt; pos[0] &amp;&amp; pos[0] &lt; this.pos[0] + w2) &amp;&amp;
+             (this.pos[1] - h2 &lt; pos[1] &amp;&amp; pos[1] &lt; this.pos[1] + h2);
+  return isIn;
+};
+
+Context.type = &#x27;context&#x27;;
+Context = AssignableToGroup(Context);
+
+Context.defaults = {
+  mobility: 1,
+  triggerOnEmpty: false,
+  width: 10,
+  height: 10
+};
+Context.id = 0;
+module.exports = Context;
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

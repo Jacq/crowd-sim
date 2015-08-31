@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src\sim\Common\Grid.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/2 Dimensional Vector.html">2 Dimensional Vector</a></li>
+                                <li><a href="../classes/Agent.html">Agent</a></li>
+                                <li><a href="../classes/AssignableToGroup.html">AssignableToGroup</a></li>
+                                <li><a href="../classes/Behaviour.html">Behaviour</a></li>
+                                <li><a href="../classes/Common utilities.html">Common utilities</a></li>
+                                <li><a href="../classes/Context.html">Context</a></li>
+                                <li><a href="../classes/CrowdSim.html">CrowdSim</a></li>
+                                <li><a href="../classes/CrowdSimApp.html">CrowdSimApp</a></li>
+                                <li><a href="../classes/Detail.html">Detail</a></li>
+                                <li><a href="../classes/Engine.html">Engine</a></li>
+                                <li><a href="../classes/Entity.html">Entity</a></li>
+                                <li><a href="../classes/EntityPrototype.html">EntityPrototype</a></li>
+                                <li><a href="../classes/Grid.html">Grid</a></li>
+                                <li><a href="../classes/Group.html">Group</a></li>
+                                <li><a href="../classes/Joint.html">Joint</a></li>
+                                <li><a href="../classes/Line.html">Line</a></li>
+                                <li><a href="../classes/Panic.html">Panic</a></li>
+                                <li><a href="../classes/Render.html">Render</a></li>
+                                <li><a href="../classes/Render.Agent.html">Render.Agent</a></li>
+                                <li><a href="../classes/Render.Context.html">Render.Context</a></li>
+                                <li><a href="../classes/Render.Entity.html">Render.Entity</a></li>
+                                <li><a href="../classes/Render.Group.html">Render.Group</a></li>
+                                <li><a href="../classes/Render.Joint.html">Render.Joint</a></li>
+                                <li><a href="../classes/Render.Line.html">Render.Line</a></li>
+                                <li><a href="../classes/Render.Path.html">Render.Path</a></li>
+                                <li><a href="../classes/Render.Wall.html">Render.Wall</a></li>
+                                <li><a href="../classes/World.html">World</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: src\sim\Common\Grid.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
+
+var Vec2 = require(&#x27;./Vec2&#x27;);
+
+/**
+ * Grid hashmap to store entities indexed by their position.
+ *
+ * @class Grid
+ * @constructor
+ * @param {Number} near is the cell size for the hashmap. Also the maximum distance to be consider &quot;neighbours&quot;
+ */
+var Grid = function(near) {
+  this.near = near;
+  this.grid = {};
+};
+
+/**
+ * Insert entities in the hashmap.
+ *
+ * @method insert
+ * @param {Array} entities
+ */
+Grid.prototype.insert = function(entities) {
+  for (var i in entities) {
+    var entity = entities[i];
+    var key = this._key(entity);
+    if (this.grid.hasOwnProperty(key)) {
+      this.grid[key].push(entity);
+    } else {
+      this.grid[key] = [entity];
+    }
+  }
+};
+
+/**
+ * Insert one entity.
+ *
+ * @method insertOne
+ * @param {Entity} entity
+ * @param {Number} x coordinate, if null entity.pos[0] is used
+ * @param {Number} y coordinate, if null entity.pos[1] is used
+ */
+Grid.prototype.insertOne = function(entity, x, y) {
+  var key = this._key(entity, x, y);
+  if (this.grid.hasOwnProperty(key)) {
+    this.grid[key].push(entity);
+  } else {
+    this.grid[key] = [entity];
+  }
+};
+
+/**
+ * Helper to update multiple contexts area points by sampling their area with the cell size.
+ *
+ * @method updateContextsHelper
+ * @param {Array} contexts
+ */
+Grid.prototype.updateContextsHelper = function(contexts) {
+  this.grid = {};
+  for (var i in contexts) {
+    var context = contexts[i];
+    var init = context.getMinXY();
+    var end = context.getMaxXY();
+    // generate samples from context to insert into grid
+    for (var x = init[0]; x &lt;= end[0]; x += this.near) {
+      for (var y = init[1]; y &lt;= end[1]; y += this.near) {
+        this.insertOne(context, x, y);
+      }
+    }
+  }
+};
+
+/**
+ * Helper to update multiple walls area points by sampling their path with the cell size.
+ *
+ * @method updateWallsHelper
+ * @param {Array} walls
+ */
+Grid.prototype.updateWallsHelper = function(walls) {
+  this.grid = {};
+  for (var w in walls) {
+    var wall = walls[w];
+    var joints = wall.getJoints();
+    if (joints.length &gt; 0) {
+      var point = Vec2.create();
+      var squareStep = 2 * this.near * this.near; // sample step to ensure that line cross region at least half square
+      for (var j = 1; j &lt; joints.length; j++) {
+        var squaredDistance = Vec2.squaredDistance(joints[j - 1].pos, joints[j].pos);
+        var samples = Math.floor(squaredDistance / squareStep);
+        for (var s = 0; s &lt; samples; s++) {
+          // generate sample of segment
+          Vec2.lerp(point, joints[j - 1].pos, joints[j].pos, s / samples);
+          this.insertOne(wall, point[0], point[1]);
+        }
+      }
+    }
+  }
+};
+
+/**
+ * Clear the hashamp and insert entities.
+ *
+ * @method updateAll
+ * @param {Array} entities
+ */
+Grid.prototype.updateAll = function(entities) {
+  this.clear();
+  this.insert(entities);
+};
+
+/**
+ * Update given entities mapping.
+ *
+ * @method update
+ * @param {Array} entities
+ */
+Grid.prototype.update = function(entities) {
+  this.remove(entities);
+  this.insert(entities);
+};
+
+/**
+ * Clear the hashmap.
+ *
+ * @method clear
+ */
+Grid.prototype.clear = function() {
+  this.grid = {};
+};
+
+/**
+ * Remove the given entities.
+ *
+ * @method remove
+ * @param {Array} entities
+ */
+Grid.prototype.remove = function(entities) {
+  for (var i in entity) {
+    var entity = entities[i];
+    var key = this._key(entity);
+    var bucket = this.grid[key];
+    var j = bucket.indexOf(entity);
+    this.grid[key].splice(j, 1);
+  }
+};
+
+/**
+ * Gets neighbours to (x,y) point or Entity.
+ * @method neighbours
+ * @param {Entity} entity
+ * @param {Number} x coordinate, if null entity.pos[0] is used
+ * @param {Number} y coordinate, if null entity.pos[1] is used
+ * @return {LazySequence} neighbours
+ */
+Grid.prototype.neighbours = function(entity, x, y) {
+  var that = this;
+  var o = this.near / 2;
+  x = x || entity.pos[0];
+  y = y || entity.pos[1];
+  var keys = this._keyNeighbours(x, y);
+  // find neighbours in hashmap looking in all buckets and filtering empty or duplicates
+  return Lazy(keys).map(function(key) {
+    return that.grid[key];
+  }).flatten().filter(function(e) { return e;});
+};
+
+/**
+ * Gets neighbours to a context by sampling its position with the cell size.
+ *
+ * @method neighboursContext
+ * @param {Context} context
+ * @return {LazySequence} neighbours
+ */
+Grid.prototype.neighboursContext = function(context) {
+  // generate sampling and find entities near
+  var init = context.getMinXY();
+  var end = context.getMaxXY();
+  var neighbours = Lazy([]);
+  for (var x = init[0]; x &lt; end[0] + this.near; x += this.near) {
+    for (var y = init[1]; y &lt; end[1] + this.near; y += this.near) {
+      neighbours = neighbours.concat(this.neighbours(null, x, y));
+    }
+  }
+  return neighbours.flatten();
+};
+
+/**
+ * Builds the keys of the neighbours of the position (x,y).
+ *
+ * @method _keyNeighbours
+ * @param  {Number} x coordinate
+ * @param  {Number} y coordinate
+ * @return {Array} neighbours keys
+ */
+Grid.prototype._keyNeighbours = function(x, y) {
+  x = Math.floor(x / this.near);
+  y = Math.floor(y / this.near);
+  return [
+    (x - 1) + &#x27;:&#x27; + (y + 1), x + &#x27;:&#x27; + (y + 1), (x + 1) + &#x27;:&#x27; + (y + 1),
+    (x - 1) + &#x27;:&#x27; + y      , x + &#x27;:&#x27; + y      , (x + 1) + &#x27;:&#x27; + y,
+    (x - 1) + &#x27;:&#x27; + (y - 1), x + &#x27;:&#x27; + (y - 1), (x + 1) + &#x27;:&#x27; + (y - 1)
+  ];
+};
+
+/**
+ * Build the key to map coordinates to the hashmap.
+ *
+ * @method _key
+ * @param  {Entity} entity
+ * @param  {Number} x coordinate, if null entity.pos[0] is used
+ * @param  {Number} y coordinate, if null entity.pos[1] is used
+ * @return {String} key
+ */
+Grid.prototype._key = function(entity, x, y) {
+  // use x,y if available if not just entity position
+  x = x || entity.pos[0];
+  x = Math.floor(x / this.near);
+  y = y || entity.pos[1];
+  y = Math.floor(y / this.near);
+  return x + &#x27;:&#x27; + y;
+};
+
+module.exports = Grid;
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

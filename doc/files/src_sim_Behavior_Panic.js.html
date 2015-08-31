@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src\sim\Behavior\Panic.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/2 Dimensional Vector.html">2 Dimensional Vector</a></li>
+                                <li><a href="../classes/Agent.html">Agent</a></li>
+                                <li><a href="../classes/AssignableToGroup.html">AssignableToGroup</a></li>
+                                <li><a href="../classes/Behaviour.html">Behaviour</a></li>
+                                <li><a href="../classes/Common utilities.html">Common utilities</a></li>
+                                <li><a href="../classes/Context.html">Context</a></li>
+                                <li><a href="../classes/CrowdSim.html">CrowdSim</a></li>
+                                <li><a href="../classes/CrowdSimApp.html">CrowdSimApp</a></li>
+                                <li><a href="../classes/Detail.html">Detail</a></li>
+                                <li><a href="../classes/Engine.html">Engine</a></li>
+                                <li><a href="../classes/Entity.html">Entity</a></li>
+                                <li><a href="../classes/EntityPrototype.html">EntityPrototype</a></li>
+                                <li><a href="../classes/Grid.html">Grid</a></li>
+                                <li><a href="../classes/Group.html">Group</a></li>
+                                <li><a href="../classes/Joint.html">Joint</a></li>
+                                <li><a href="../classes/Line.html">Line</a></li>
+                                <li><a href="../classes/Panic.html">Panic</a></li>
+                                <li><a href="../classes/Render.html">Render</a></li>
+                                <li><a href="../classes/Render.Agent.html">Render.Agent</a></li>
+                                <li><a href="../classes/Render.Context.html">Render.Context</a></li>
+                                <li><a href="../classes/Render.Entity.html">Render.Entity</a></li>
+                                <li><a href="../classes/Render.Group.html">Render.Group</a></li>
+                                <li><a href="../classes/Render.Joint.html">Render.Joint</a></li>
+                                <li><a href="../classes/Render.Line.html">Render.Line</a></li>
+                                <li><a href="../classes/Render.Path.html">Render.Path</a></li>
+                                <li><a href="../classes/Render.Wall.html">Render.Wall</a></li>
+                                <li><a href="../classes/World.html">World</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: src\sim\Behavior\Panic.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
+
+var Vec2 = require(&#x27;../Common/Vec2&#x27;);
+var Behavior = require(&#x27;./Behavior&#x27;);
+
+/**
+ * Helbing-Farkas,Vicsek Simulating dynamical features of escape panic
+ *
+ * @class Panic
+ * @constructor
+ * @param {World} world parent
+ * @param {Object} options
+ * @extends Behavior
+ */
+var Panic = function(world, options) {
+  Behavior.call(this, world);
+  this.options = Lazy(options).defaults(Panic.defaults).toObject();
+};
+
+/*
+ * Return the acceleration result for a agent going to its target.
+ *
+ * @method getAccel
+ * @param {Agent} agent
+ * @param {Object} target a destination with target.pos and target.in = function =&gt; path point, point, other agent
+ * @return {Vec2} acceleration result of the model
+ */
+Panic.prototype.getAccel = function(agent, target) {
+  Behavior.prototype.getAccel.call(this, agent, target);
+  var desiredForce = Vec2.create();
+  var agentsForce = Vec2.create();
+  var wallsForce = Vec2.create();
+  var accel = Vec2.create();
+  var arrived;
+
+  // check agent desired force
+  Vec2.add(accel, agentsForce, wallsForce);
+  if (target) { // agent is going somewhere?
+    arrived = target.in(agent.pos);
+    if (!arrived) {
+      Vec2.subtract(desiredForce, target.pos, agent.pos);
+      if (Vec2.length(desiredForce) &gt; agent.maxAccel) {
+        Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxAccel * agent.mass);
+      }
+    }
+  }
+
+  // check other agents interaction
+  var neighbours = this.world.getNearAgents(agent);
+  if (neighbours.length) {
+    for (var n in neighbours) {
+      var neighbour = neighbours[n];
+      if (neighbour !== agent) {
+        var neighbourToAgentForce = this.calculateAgentForce(agent, neighbour);
+        Vec2.add(agentsForce, agentsForce, neighbourToAgentForce);
+      }
+    }
+  }
+
+  // check walls interaction
+  var walls = this.world.getNearWalls(agent);
+  if (walls.length &gt; 0) {
+    for (var w in walls) { // check all walls
+      var wall = walls[w];
+      for (var s = 0; s &lt; wall.getJoints().length - 1; s++) { // check each segment of wall
+        var projection = wall.getProjection(agent.pos, s);
+        var wallsToAgentForce = this.calculateWallForce(agent, projection, wall.getWidth());
+        Vec2.add(wallsForce, wallsForce, wallsToAgentForce);
+      }
+    }
+  }
+
+  // fix to stay in place if no target is selected or already at target
+  if (!target || arrived) {
+    Vec2.negate(desiredForce, agent.vel);
+    Vec2.scale(desiredForce, desiredForce, this.options.relaxationTime);
+    if (Vec2.length(desiredForce) &gt; agent.maxAccel) {
+      Vec2.normalizeAndScale(desiredForce, desiredForce, agent.maxAccel);
+    }
+  }
+
+  Vec2.add3(accel, desiredForce, agentsForce, wallsForce);
+  // return desiredForce + agentsForce + wallsForce;
+  if (agent.debug) {
+    if (isNaN(desiredForce[0]) || isNaN(agentsForce[0]) || isNaN(wallsForce[0]) ||
+        isNaN(desiredForce[1]) || isNaN(agentsForce[1]) || isNaN(wallsForce[1])) {
+      throw &#x27;One of the forces is a NaN!&#x27;;
+    }
+    agent.debug.forces = {
+      desired: desiredForce,
+      agents: agentsForce,
+      walls: wallsForce
+    };
+  }
+  //console.log(Vec2.str(desiredForce) + &#x27;|&#x27; + Vec2.str(agentsForce) + &#x27;|&#x27; + Vec2.str(wallsForce));
+  return accel;
+};
+
+/**
+ * Calculate the social force between two agents i,j.
+ *
+ * @method calculateAgentForce
+ * @param {Agent} i
+ * @param {Agent} j
+ * @return {Vec2} force
+ */
+Panic.prototype.calculateAgentForce = function(i, j) {
+  var interactionForce = Vec2.create();
+  var rij = i.size + j.size;
+  var dij = Vec2.distance(i.pos, j.pos);
+  // ij direction
+  var nijV2 = Vec2.create();
+  Vec2.subtract(nijV2, i.pos, j.pos);
+  Vec2.scale(nijV2, nijV2, 1 / dij);
+  // ij tangencial direction
+  var tijV2 = Vec2.fromValues(-nijV2[1], nijV2[0]);
+
+  var rdij = rij - dij;
+  Vec2.scale(interactionForce, nijV2, this.options.A * Math.exp(rdij / this.options.B));
+
+  if (rdij &gt; 0) { // agents touch each other
+    // ij tangencial velocity
+    Vec2.scaleAndAdd(interactionForce, interactionForce, nijV2, this.options.kn * rdij); // body force
+    // sliding friction
+    var vjiV2 = Vec2.create();
+    Vec2.subtract(vjiV2, j.vel, i.vel);
+    var deltaVji = Vec2.dot(vjiV2, tijV2);
+    Vec2.scaleAndAdd(interactionForce, interactionForce, tijV2, this.options.Kv * rdij * deltaVji);
+  }
+  return interactionForce;
+};
+
+/**
+ * Calculate the social force between an agent and a wall.
+ *
+ * @method calculateWallForce
+ * @param {Agent} i
+ * @param {Vec2} projection point the wall
+ * @param {Number} width of the wall
+ * @return {Vec2} force
+ */
+Panic.prototype.calculateWallForce = function(i, projection, width) {
+  var interactionForce = Vec2.create();
+  var rij = i.size + width;
+  // ij direction
+  var nijV2 = projection;
+  var dij = Vec2.length(projection);
+  Vec2.scale(nijV2, nijV2, 1 / dij);
+  // ij tangencial direction
+  var tijV2 = Vec2.fromValues(-nijV2[1], nijV2[0]);
+
+  var rdij = rij - dij;
+  Vec2.scale(interactionForce, nijV2, this.options.A * Math.exp(rdij / this.options.B));
+  if (rdij &gt; 0) { // agents touch each other
+    // ij tangencial velocity
+    var vjiV2 = Vec2.create();
+    var dotViT = Vec2.dot(i.vel, tijV2);
+    Vec2.scaleAndAdd(interactionForce, interactionForce, nijV2, this.options.kn * rdij); // body force
+    Vec2.scaleAndAdd(interactionForce, interactionForce, tijV2, -this.options.Kv * rdij * dotViT);
+  }
+  return interactionForce;
+};
+
+Panic.defaults = {
+  A: 2e3, // N
+  B: 0.08, // m
+  kn: 1.2e5, // kg s-2
+  Kv: 2.4e5, //kg m-1 s-1
+  relaxationTime: 0.3
+};
+module.exports = Panic;
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

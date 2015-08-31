@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src\app\Render\Render.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/2 Dimensional Vector.html">2 Dimensional Vector</a></li>
+                                <li><a href="../classes/Agent.html">Agent</a></li>
+                                <li><a href="../classes/AssignableToGroup.html">AssignableToGroup</a></li>
+                                <li><a href="../classes/Behaviour.html">Behaviour</a></li>
+                                <li><a href="../classes/Common utilities.html">Common utilities</a></li>
+                                <li><a href="../classes/Context.html">Context</a></li>
+                                <li><a href="../classes/CrowdSim.html">CrowdSim</a></li>
+                                <li><a href="../classes/CrowdSimApp.html">CrowdSimApp</a></li>
+                                <li><a href="../classes/Detail.html">Detail</a></li>
+                                <li><a href="../classes/Engine.html">Engine</a></li>
+                                <li><a href="../classes/Entity.html">Entity</a></li>
+                                <li><a href="../classes/EntityPrototype.html">EntityPrototype</a></li>
+                                <li><a href="../classes/Grid.html">Grid</a></li>
+                                <li><a href="../classes/Group.html">Group</a></li>
+                                <li><a href="../classes/Joint.html">Joint</a></li>
+                                <li><a href="../classes/Line.html">Line</a></li>
+                                <li><a href="../classes/Panic.html">Panic</a></li>
+                                <li><a href="../classes/Render.html">Render</a></li>
+                                <li><a href="../classes/Render.Agent.html">Render.Agent</a></li>
+                                <li><a href="../classes/Render.Context.html">Render.Context</a></li>
+                                <li><a href="../classes/Render.Entity.html">Render.Entity</a></li>
+                                <li><a href="../classes/Render.Group.html">Render.Group</a></li>
+                                <li><a href="../classes/Render.Joint.html">Render.Joint</a></li>
+                                <li><a href="../classes/Render.Line.html">Render.Line</a></li>
+                                <li><a href="../classes/Render.Path.html">Render.Path</a></li>
+                                <li><a href="../classes/Render.Wall.html">Render.Wall</a></li>
+                                <li><a href="../classes/World.html">World</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: src\app\Render\Render.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
+
+var Base = require(&#x27;./Base&#x27;);
+var Colors = Base.Colors;
+
+/**
+ * Initialices rendering and animate entities.
+ *
+ * @constructor
+ * @class Render
+ * @param {Canvas} canvas
+ * @param {Number} w width
+ * @param {Number} h height
+ * @param {Object} options
+ */
+var Render = function(canvas, w, h, options) {
+  this.options = Lazy(options).defaults(Render.defaults).toObject();
+  // create a renderer instance.
+  this._renderer = PIXI.autoDetectRenderer(w, h);
+  this._renderer.backgroundColor = this.options.backgroundColor;
+  this._renderer.autoResize = true;
+  // add the renderer view element to the DOM
+  canvas.appendChild(this._renderer.view);
+
+  // create root container
+  this._stage = new PIXI.Container();
+  this._stage.scale.x = this.options.scale;
+  this._stage.scale.y = this.options.scale; // 10pix ~ 1m
+  // create agents container
+  this._worldContainer = new PIXI.Container();
+  if (this.options.useParticle) {
+    this._agentsContainer = new PIXI.ParticleContainer(this.options.maxAgents, {
+      scale: true,
+      position: true,
+      rotation: true,
+      uvs: true,
+      alpha: true
+    });
+  } else {
+    this._agentsContainer = new PIXI.Container();
+  }
+  this._stage.addChild(this._agentsContainer);
+  this._stage.addChild(this._worldContainer);
+
+  if (this.options.debug) {
+    this._debugContainer = new PIXI.Container();
+    this._stage.addChild(this._debugContainer);
+  }
+
+};
+
+/**
+ * Initialice render.
+ *
+ * @method init
+ * @param {Array} textures coordinates for create Pixi.Textures.
+ * @param {Array} events to receive world callbacks
+ */
+Render.prototype.init = function(textures, events) {
+  var baseTextures = PIXI.Texture.fromImage(textures.file),
+      a = textures.agent,
+      w = textures.wall,
+      p = textures.path;
+  Render.Agent.texture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(a[0], a[1], a[2], a[3]));
+  Render.Wall.texture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(w[0], w[1], w[2], w[3]));
+  Render.Path.texture = new PIXI.Texture(baseTextures, new PIXI.Rectangle(p[0], p[1], p[2], p[3]));
+
+  this._worldContainer.removeChildren();
+  this._agentsContainer.removeChildren();
+  // init default containers
+
+  Render.Agent.container = this._agentsContainer;
+  Render.Agent.debugContainer = this._debugContainer;
+  Render.Context.container = this._worldContainer;
+  Render.Group.container = this._worldContainer;
+  Render.Wall.container = this._worldContainer;
+  Render.Path.container = this._worldContainer;
+
+  // to draw everything
+  //App._renderOnce();
+
+  this.onPreRender = events.onPreRender;
+  this.onPostRender = events.onPostRender;
+  // wire Entity events
+  Render.Entity.mouseover = events.mouseover;
+  Render.Entity.mouseout = events.mouseout;
+  Render.Entity.mousedown = events.mousedown;
+  Render.Entity.mouseup = events.mouseup;
+  Render.Entity.mousemove = events.mousemove;
+
+  // axis
+  var graphicsAux = new PIXI.Graphics();
+  graphicsAux.lineStyle(0.2, Colors.Helpers);
+  // x
+  var length = 5;
+  graphicsAux.moveTo(0, 0);
+  graphicsAux.lineTo(length, 0);
+  graphicsAux.moveTo(length - 1, -1);
+  graphicsAux.lineTo(length, 0);
+  graphicsAux.lineTo(length - 1, 1);
+  // y
+  graphicsAux.moveTo(0, 0);
+  graphicsAux.lineTo(0, length);
+  graphicsAux.moveTo(-1, length - 1);
+  graphicsAux.lineTo(0, length);
+  graphicsAux.lineTo(1, length - 1);
+
+  // for temporary graphics
+  this._graphicsHelper = new PIXI.Graphics();
+
+  this._worldContainer.addChild(this._graphicsHelper);
+  this._worldContainer.addChild(graphicsAux);
+  this._stop = false;
+  this.animate();
+};
+
+/**
+ * Start rendering loop.
+ *
+ * @method start
+ */
+Render.prototype.start = function() {
+  this._stop = false;
+  this.animate();
+};
+
+/**
+ * Rendering loop.
+ *
+ * @method animate
+ */
+Render.prototype.animate = function() {
+  if (this.onPreRender) {
+    this.onPreRender();
+  }
+  if (this.world) {
+    if (this.world.changesNumber() &gt; 0 || this.world.freeze()) {
+      // jump renders when no changes happened yet
+
+      var entities = this.world.entities;
+      // render/refresh entities
+      for (var prop in entities) {
+        Lazy(entities[prop]).each(function(a) {
+          if (a.view) { a.view.render(); }
+        });
+      }
+      var agents = this.world.getAgents();
+      for (var i in agents) {
+        agents[i].view.render();
+      }
+    }
+  }
+  // render the stage
+  this._renderer.render(this._stage);
+  if (!this._stop) {
+    requestAnimationFrame(this.animate.bind(this));
+  }
+  if (this.onPostRender) {
+    this.onPostRender();
+  }
+
+};
+
+/**
+ * Stop rendering loop.
+ *
+ * @method stop
+ */
+Render.prototype.stop = function() {
+  this._stop = true;
+};
+
+/**
+ * Set current rendered world.
+ *
+ * @method setWorld
+ * @param {World} world
+ */
+Render.prototype.setWorld = function(world) {
+  this.world = world;
+};
+
+/**
+ * Resize rendering stage.
+ *
+ * @method resize
+ * @param {Number} w
+ * @param {Number} h
+ */
+Render.prototype.resize = function(w, h) {
+  this._renderer.resize(w,h);
+};
+
+/**
+ * Draw a helper line from 0 to 1.
+ *
+ * @method drawHelperLine
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ */
+Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
+  this._graphicsHelper.clear();
+  if (x0) {
+    this._graphicsHelper.clear();
+    this._graphicsHelper.lineStyle(0.2, Colors.Helpers);
+    this._graphicsHelper.moveTo(x0, y0);
+    this._graphicsHelper.lineTo(x1, y1);
+  }
+};
+
+/**
+ * Zoom-in, zoom-out stage.
+ *
+ * @method zoom
+ * @param {Number} scale
+ * @param {Number} x center of zoom
+ * @param {Number} y center of zoom
+ */
+Render.prototype.zoom = function(scale, x, y) {
+  scale = scale &gt; 0 ? 1.1 : 0.9;
+  var currentWorldPos = this.screenToWorld(x, y);
+  this._stage.scale.x = this._stage.scale.x * scale;
+  this._stage.scale.y = this._stage.scale.y * scale;
+  var newScreenPos = this.worldToScreen(currentWorldPos.x, currentWorldPos.y);
+  this._stage.x -= (newScreenPos.x - x) ;
+  this._stage.y -= (newScreenPos.y - y) ;
+};
+
+/**
+ * Pan view of stage.
+ *
+ * @method pan
+ * @param {Number} dx displacement x
+ * @param {Number} dy displacement y
+ */
+Render.prototype.pan = function(dx, dy) {
+  this._stage.x += dx;
+  this._stage.y += dy;
+};
+
+/**
+ * Get stage width.
+ *
+ * @method getWidth
+ * @return {Number} width
+ */
+Render.prototype.getWidth = function() {
+  return this._stage.width;
+};
+
+/**
+ * Get stage height.
+ *
+ * @method getHeight
+ * @return {Number} height
+ */
+Render.prototype.getHeight = function() {
+  return this._stage.height;
+};
+
+/**
+ * Convert screen coordinates to world coordinates.
+ *
+ * @method screenToWorld
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} world coordinate {x:x,y:y}
+ */
+Render.prototype.screenToWorld = function(x, y) {
+  return {x: (x - this._stage.x) / this._stage.scale.x,
+          y: (y - this._stage.y) / this._stage.scale.y};
+};
+
+/**
+ * Convert world coordinates to screen coordinates.
+ *
+ * @method worldToScreen
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} screen coordinate {x:x,y:y}
+ */
+Render.prototype.worldToScreen = function(x, y) {
+  return {x: x * this._stage.scale.x + this._stage.x,
+          y: y * this._stage.scale.y + this._stage.y};
+};
+
+Render.Agent = require(&#x27;./Agent&#x27;);
+Render.Entity = require(&#x27;./Entity&#x27;);
+Render.Group = require(&#x27;./Group&#x27;);
+Render.Context = require(&#x27;./Context&#x27;);
+Render.Path = require(&#x27;./Path&#x27;);
+Render.Wall = require(&#x27;./Wall&#x27;);
+Render.Joint = require(&#x27;./Joint&#x27;);
+
+Render.defaults = {
+  backgroundColor: 0,
+  useParticle: true,
+  scale: 10,
+  mxAgents: 5000, // to init particle container
+  debug: false,
+};
+
+module.exports = Render;
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

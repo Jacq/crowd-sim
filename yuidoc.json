@@ -1,0 +1,16 @@
+{
+  "name": "CrowdSim",
+  "description": "YUIDoc documentation for CrowdSim",
+  "version": "0.3",
+  "url": "https://github.com/Jacq/crowd-sim",
+  "options": {
+    "linkNatives": "true",
+    "attributesEmit": "true",
+    "ignorePaths": [ "bower_components" , "node_modules"],
+    "paths": [
+      "./src"
+      "./demo/js/lib/Editor.js"
+    ],
+    "outdir": "./doc"
+  }
+}
