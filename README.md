@@ -28,11 +28,13 @@ CrowdSim is a 2D crowd simulator implemented in JavaScript. It is implemented as
 
 # Demo #
 Select different examples from left panel "Examples" select box in:
-
 **https://rawgit.com/Jacq/crowd-sim/master/demo/index.html**
 
 # Screenshot #
-<img src="editor.png">[Screenshot]
+<img src="editor.png">
+
+# API Reference #
+**https://rawgit.com/Jacq/crowd-sim/master/doc/index.html**
 
 ## References
 
