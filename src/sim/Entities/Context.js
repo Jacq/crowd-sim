@@ -7,6 +7,8 @@ var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
  * Context entity
  *
  * @class Context
+ * @module Entities
+ * @submodule Context
  * @constructor
  * @param {Number} x coordinate
  * @param {Number} y coordinate

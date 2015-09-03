@@ -6,6 +6,8 @@ var Vec2 = require('./Common/Vec2');
  * The agents that live in the simulation engine.
  *
  * @class Agent
+ * @module CrowdSim
+ * @submodule Agent
  * @constructor
  * @param {Number} x coordinate
  * @param {Number} y coordinate
@@ -98,7 +100,7 @@ Agent.prototype.followPath = function(path, index) {
 
 /**
  * Helper to set the path start that takes into account inverse paths.
- * 
+ *
  * @method _startPath
  */
 Agent.prototype._startPath = function() {

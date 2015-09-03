@@ -5,6 +5,13 @@ var CrowdSim = require('CrowdSim');
 var Render = require('./Render/Render');
 var Worlds = require('./Worlds');
 
+/**
+ * @class CrowdSimApp
+ * @main CrowdSimApp
+ * @static
+ * @module CrowdSimApp
+ * @type {Object}
+ */
 var App = {};
 
 App.defaultOptions = {
@@ -26,10 +33,10 @@ App.defaultOptions = {
       onStart: null,
       onStep: null,
       /**
-       * Description
+       * Callback on simulation stop.
+       *
        * @method onStop
-       * @param {} entity
-       * @return
+       * @param {Entity} entity that triggered the stop
        */
       onStop: function(entity) {
         App.selectEntity(entity ? entity.view : null); // highlight entity that causes stop
@@ -70,11 +77,11 @@ App.EntityCreationMapping = {
 };
 
 /**
- * Description
+ * Inicialization of application.
+ *
  * @method init
- * @param {} canvas
- * @param {} options
- * @return
+ * @param {Canvas} canvas to render scene.
+ * @param {Object} options
  */
 App.init = function(canvas, options) {
   App.options = Lazy(options).defaults(App.defaultOptions).toObject();
@@ -120,12 +127,12 @@ App.init = function(canvas, options) {
 };
 
 /**
- * Description
+ * Resizes the scene.
+ *
  * @method resize
- * @param {} window
- * @param {} width
- * @param {} height
- * @return
+ * @param {Window} window to use the current width or height
+ * @param {Number} width
+ * @param {Number} height
  */
 App.resize = function(window, width, height) {
   // to wait for fullscreen state
@@ -137,53 +144,56 @@ App.resize = function(window, width, height) {
 };
 
 /**
- * Description
+ * Zoom in a position.
+ *
  * @method zoom
- * @param {} scale
- * @param {} x
- * @param {} y
- * @return
+ * @param {Number} scale
+ * @param {Number} x
+ * @param {Number} y
  */
 App.zoom = function(scale, x, y) {
   App._renderer.zoom(scale, x, y);
 };
 
 /**
- * Description
+ * Displace scene view.
+ *
  * @method pan
- * @param {} dx
- * @param {} dy
- * @return
+ * @param {Number} dx
+ * @param {Number} dy
  */
 App.pan = function(dx, dy) {
   App._renderer.pan(dx, dy);
 };
 
 /**
- * Description
+ * Convert screen to world coordinates.
+ *
  * @method screenToWorld
- * @param {} x
- * @param {} y
- * @return CallExpression
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Vec2} world coordinates
  */
 App.screenToWorld = function(x, y) {
   return App._renderer.screenToWorld(x, y);
 };
 /**
- * Description
+ * Convert world toscreen coordinates.
+ *
  * @method worldToScreen
- * @param {} x
- * @param {} y
- * @return CallExpression
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Vec2} screen coordinates
  */
 App.worldToScreen = function(x, y) {
   return App._renderer.worldToScreen(x, y);
 };
 
 /**
- * Description
+ * Start/stop simulation.
+ *
  * @method toggleRun
- * @return
+ * @return {Boolean} true if running; false otherwise
  */
 App.toggleRun = function() {
   if (App.isRunning()) {
@@ -194,54 +204,60 @@ App.toggleRun = function() {
 };
 
 /**
- * Description
+ * Gets engine running state.
+ *
  * @method isRunning
- * @return MemberExpression
+ * @return {Boolean} true if running; false otherwise
  */
 App.isRunning = function() {
   return App._engine.running;
 };
 
 /**
- * Description
+ * Start simulation.
+ *
  * @method run
- * @return CallExpression
+ * @return {Boolean} true if running; false otherwise
  */
 App.run = function() {
   return App._engine.run();
 };
 
 /**
- * Description
+ * Stop simulation.
+ *
  * @method stop
- * @return CallExpression
+ * @return {Boolean} true if running; false otherwise
  */
 App.stop = function() {
   return App._engine.stop();
 };
 
 /**
- * Description
+ * Step and stop simulation.
+ *
  * @method step
- * @return CallExpression
+ * @return {Boolean} true if running; false otherwise
  */
 App.step = function() {
   return App._engine.step();
 };
 
 /**
- * Description
+ * Resert simulation.
+ *
  * @method reset
- * @return CallExpression
+ * @return {Boolean} true if running; false otherwise
  */
 App.reset = function() {
   return App._engine.reset();
 };
 
 /**
- * Description
+ * Get simulation statistics.
+ *
  * @method getStats
- * @return ObjectExpression
+ * @return {Object} stats
  */
 App.getStats = function() {
   var entities = App._world.entities;
@@ -258,29 +274,31 @@ App.getStats = function() {
 };
 
 /**
- * Description
+ * Cycle an entity detail level.
+ *
  * @method cycleDetail
- * @param {} entityType
- * @return
+ * @param {EntityTypes} entityType
  */
 App.cycleDetail = function(entityType) {
   entityType.detail.cycleDetail();
 };
 
 /**
- * Description
+ * Get simulation engine time settings.
+ *
  * @method getEngineSettings
- * @return CallExpression
+ * @return {Object} [engine.options]
  */
 App.getEngineSettings = function() {
   return App._engine.getSettings();
 };
 
 /**
- * Description
+ * Save current world.
+ *
  * @method save
- * @param {} save
- * @return raw
+ * @param {Boolean} save true to save; false to return String
+ * @return {String} raw
  */
 App.save = function(save) {
   var raw = App._world.save(save);
@@ -289,30 +307,31 @@ App.save = function(save) {
 };
 
 /**
- * Description
+ * Load an example world by its name.
+ *
  * @method loadExample
- * @param {} name
- * @return
+ * @param {String} name
  */
 App.loadExample = function(name) {
   App._renderer.stop();
-  App.load(Worlds[name],false);
+  App.load(Worlds[name], false);
   App._renderer.start();
 };
 
 /**
- * Description
+ * Get a list of example worlds.
+ *
  * @method listExamples
- * @return CallExpression
+ * @return {Array} world names
  */
 App.listExamples = function() {
   return Lazy(Worlds).keys().toArray();
 };
 
 /**
- * Description
+ * Clear current world.
+ *
  * @method clear
- * @return
  */
 App.clear = function() {
   CrowdSim.restartIds();
@@ -324,17 +343,17 @@ App.clear = function() {
 };
 
 /**
- * Description
+ * Load a world.
+ *
  * @method load
- * @param {} loader
- * @param {} loadDefault
- * @return
+ * @param {String} loader JSON structure
+ * @param {Boolean} loadDefault true to load last snapshoot
  */
 App.load = function(loader, loadDefault) {
   this.clear();
   App.selectEntity(null);
   App.createEntityEnd();
-  App._world.load(loader,loadDefault);
+  App._world.load(loader, loadDefault);
   App._engine.setWorld(App._world);
   App._renderer.setWorld(App._world);
   // loads all entities creating render objects
@@ -346,10 +365,10 @@ App.load = function(loader, loadDefault) {
 };
 
 /**
- * Description
+ * Callback on create agents.
+ *
  * @method onCreateAgents
- * @param {} agents
- * @return
+ * @param {Array} agents created.
  */
 App.onCreateAgents = function(agents) {
   Lazy(agents).each(function(a) {
@@ -358,10 +377,10 @@ App.onCreateAgents = function(agents) {
 };
 
 /**
- * Description
+ * Callback on destroy agents.
+ *
  * @method onDestroyAgents
- * @param {} agents
- * @return
+ * @param {Array} agents destroyed
  */
 App.onDestroyAgents = function(agents) {
   Lazy(agents).each(function(a) {
@@ -370,10 +389,10 @@ App.onDestroyAgents = function(agents) {
 };
 
 /**
- * Description
+ * Callback on create entity.
+ *
  * @method onCreateEntity
- * @param {} entity
- * @return
+ * @param {Entity} entity created
  */
 App.onCreateEntity = function(entity) {
   if (App.callbacks.onCreateEntity) {
@@ -382,10 +401,10 @@ App.onCreateEntity = function(entity) {
 };
 
 /**
- * Description
+ * Callback on destroy entity.
+ *
  * @method onDestroyEntity
- * @param {} entity
- * @return
+ * @param {Entity} entity destroyedn
  */
 App.onDestroyEntity = function(entity) {
   if (entity.view) {
@@ -397,11 +416,12 @@ App.onDestroyEntity = function(entity) {
 };
 
 /**
- * Description
+ * Request to create an entity at a give pos.
+ *
  * @method createEntityStart
- * @param {} entityType
- * @param {} pos
- * @return MemberExpression
+ * @param {EntityTypes} entityType
+ * @param {Vec2} pos
+ * @return {Render.Entity}
  */
 App.createEntityStart = function(entityType, pos) {
   var entity = entityType.CreateFromPoint(pos.x, pos.y, App._world);
@@ -409,20 +429,21 @@ App.createEntityStart = function(entityType, pos) {
   return App._newRenderEntity;
 };
 
-// returns current entity creation of null if finished
 /**
- * Description
+ * Request current entity creation of null if finished
+ *
  * @method getCreatingEntity
- * @return MemberExpression
+ * @return {Render.Entity}
  */
 App.getCreatingEntity = function() {
   return App._newRenderEntity;
 };
 
 /**
- * Description
+ * Request to end the creation of the current entity.
+ *
  * @method createEntityEnd
- * @return Literal
+ * @return {Object} null
  */
 App.createEntityEnd = function() {
   App._renderer.drawHelperLine(null);
@@ -431,10 +452,10 @@ App.createEntityEnd = function() {
 };
 
 /**
- * Description
+ * Destroy an entity.
+ *
  * @method destroyEntity
- * @param {} entity
- * @return
+ * @param {Render.Entity} entity
  */
 App.destroyEntity = function(entity) {
   entity.destroy();
@@ -444,10 +465,10 @@ App.destroyEntity = function(entity) {
 };
 
 /**
- * Description
+ * Edit an entity starting is creation mode.
+ *
  * @method editEntity
- * @param {} entity
- * @return
+ * @param {Render.Entity} entity
  */
 App.editEntity = function(entity) {
   if (!App._newRenderEntity) { // stops from editing one entity if not finished with Previous
@@ -463,10 +484,10 @@ App.editEntity = function(entity) {
 };
 
 /**
- * Description
+ * Add a existing entity.
+ *
  * @method addEntity
- * @param {} entity
- * @return
+ * @param {Entity} entity
  */
 App.addEntity = function(entity) {
   var renderEntityProto = App.EntityCreationMapping[entity.constructor.type];
@@ -474,10 +495,10 @@ App.addEntity = function(entity) {
 };
 
 /**
- * Description
+ * Sets the current selected entitiy.
+ *
  * @method selectEntity
- * @param {} entity
- * @return
+ * @param {Render.Entity} entity
  */
 App.selectEntity = function(entity) {
   if (App._entitySelected) {
@@ -498,19 +519,20 @@ App.selectEntity = function(entity) {
 };
 
 /**
- * Description
+ * Gets the current selected entity.
+ *
  * @method getSelectedEntity
- * @return MemberExpression
+ * @return {Render.Entity}
  */
 App.getSelectedEntity = function() {
   return App._entitySelected;
 };
 
 /**
- * Description
+ * Set the current selected entity by its id
+ *
  * @method selectEntityById
- * @param {} id
- * @return
+ * @param {String} id
  */
 App.selectEntityById = function(id) {
   var entity = App._world.getEntityById(id);
@@ -519,14 +541,15 @@ App.selectEntityById = function(id) {
   }
 };
 
-/* Stagen a render entities mouse events */
+////////////////// Stage render entities mouse events ///////////////
 App.entity = {};
 
 /**
- * Description
+ * Entity mouse down event.
+ *
  * @method mousedown
- * @param {} event
- * @return Literal
+ * @param {Object} event
+ * @return {Boolean}
  */
 App.entity.mousedown = function(event) {
   if (App.options.logEvents) {
@@ -548,12 +571,12 @@ App.entity.mousedown = function(event) {
 };
 
 /**
- * Description
+ * Stage entity click event, creation of new entities.
+ *
  * @method entityClick
- * @param {} pos
- * @param {} newEntity
- * @param {} selected
- * @return
+ * @param {Vec2} pos
+ * @param {Render.Entity} newEntity
+ * @param {Render.Entity} selected
  */
 App.entityClick = function(pos, newEntity, selected) {
   if (newEntity instanceof Render.Joint) { // add joint to joint
@@ -595,12 +618,11 @@ App.entityClick = function(pos, newEntity, selected) {
   }
 };
 
-// stage mousedown creation of entities steps
 /**
- * Description
+ * Stage mouse down event, creation of entities steps
+ *
  * @method mousedown
- * @param {} event
- * @return
+ * @param {Object} event
  */
 App.mousedown = function(event) {
   if (App.options.logEvents) {
@@ -625,10 +647,10 @@ App.mousedown = function(event) {
 };
 
 /**
- * Description
+ * Entity mouse move event
+ *
  * @method mousemove
- * @param {} event
- * @return
+ * @param {Object} event
  */
 App.entity.mousemove = function(event) {
   // this points to the render entity
@@ -647,12 +669,11 @@ App.entity.mousemove = function(event) {
   }
 };
 
-// stage mousemove
 /**
- * Description
+ * Stage mouse move event, helper lines.
+ *
  * @method mousemove
- * @param {} event
- * @return
+ * @param {Object} event
  */
 App.mousemove = function(event) {
   // this points to the graphics/sprite
@@ -665,10 +686,10 @@ App.mousemove = function(event) {
 };
 
 /**
- * Description
+ * Stage mouse wheel event, zoom and radius change.
+ *
  * @method mousewheel
- * @param {} event
- * @return
+ * @param {Object} event
  */
 App.mousewheel = function(event) {
   var entity = App._entitySelected;
@@ -690,10 +711,11 @@ App.mousewheel = function(event) {
 };
 
 /**
- * Description
+ * Entity mouse up evenp.
+ *
  * @method mouseup
- * @param {} event
- * @return Literal
+ * @param {Object} event
+ * @return {Boolean}
  */
 App.entity.mouseup = function(event) {
   if (App.options.logEvents) {
@@ -712,10 +734,10 @@ App.entity.mouseup = function(event) {
 };
 
 /**
- * Description
+ * Stage mouse up event.
+ *
  * @method mouseup
- * @param {} event
- * @return
+ * @param {Object} event
  */
 App.mouseup = function(event) {
   if (App.options.logEvents) {
@@ -726,10 +748,10 @@ App.mouseup = function(event) {
 };
 
 /**
- * Description
+ * Entity mouse out event.
+ *
  * @method mouseout
- * @param {} event
- * @return
+ * @param {Object} event
  */
 App.entity.mouseout = function(event) {
   if (App.options.logEvents) {
@@ -743,10 +765,10 @@ App.entity.mouseout = function(event) {
 };
 
 /**
- * Description
+ * Entity mouse over event.
+ *
  * @method mouseover
- * @param {} event
- * @return
+ * @param {Object} event
  */
 App.entity.mouseover = function(event) {
   if (App.options.logEvents) {
@@ -773,10 +795,13 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 /**
- * Description
+ * Agent render view.
+ *
+ * @class Agent
+ * @module Render
+ * @submodule Agent
  * @method Agent
- * @param {} agent
- * @return 
+ * @param {Agent} agent
  */
 var Agent = function(agent) {
   if (!agent) {
@@ -797,9 +822,9 @@ var Agent = function(agent) {
 };
 
 /**
- * Description
+ * Destroy agent.
+ *
  * @method destroy
- * @return 
  */
 Agent.prototype.destroy = function() {
   this.sprite.destroy();
@@ -811,9 +836,9 @@ Agent.prototype.destroy = function() {
 };
 
 /**
- * Description
+ * Animate agent.
+ *
  * @method render
- * @return 
  */
 Agent.prototype.render = function() {
   if (!Agent.detail.level) {
@@ -879,6 +904,11 @@ module.exports = Agent;
 },{"./Base":3,"./Detail":5,"CrowdSim":"CrowdSim"}],3:[function(require,module,exports){
 'use strict';
 
+/**
+ * @module Render
+ * @submodule Base
+ * @class Colors
+ */
 var Colors = {
   Hover: 0xebff00,
   Context: 0x646729,
@@ -895,6 +925,11 @@ var Colors = {
   Helpers: 0xFFFFFF
 };
 
+/**
+ * @module Render
+ * @submodule Base
+ * @class Fonts
+ */
 var Fonts = {
   default: {font: '2px Mono monospace', fill: 0xFFFFFF,
   align: 'center'},
@@ -914,10 +949,13 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 /**
- * Description
+ * Context render view.
+ *
+ * @class Context
+ * @module Render
+ * @submodule Context
  * @method Context
- * @param {} context
- * @return
+ * @param {Context} context
  */
 var Context = function(context) {
   if (!context) {
@@ -927,23 +965,25 @@ var Context = function(context) {
 };
 
 /**
- * Description
+ * Create context view from context entity.
+ *
  * @method CreateFromModel
- * @param {} context
- * @return NewExpression
+ * @param {Context} context
+ * @return {Render.Context}
  */
 Context.CreateFromModel = function(context) {
   return new Context(context);
 };
 
 /**
- * Description
+ * Create context view and context entity.
+ *
  * @method CreateFromPoint
- * @param {} x
- * @param {} y
- * @param {} parent
- * @param {} options
- * @return NewExpression
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Entity} parent
+ * @param {Object} options
+ * @return {Render.Context}
  */
 Context.CreateFromPoint = function(x, y, parent, options) {
   var context = new ContextModel(x, y, parent, options);
@@ -951,9 +991,9 @@ Context.CreateFromPoint = function(x, y, parent, options) {
 };
 
 /**
- * Description
+ * Destroy Context.
+ *
  * @method destroy
- * @return
  */
 Context.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Context.container, this.graphics);
@@ -961,10 +1001,10 @@ Context.prototype.destroy = function() {
 };
 
 /**
- * Description
+ * Create graphics.
+ *
  * @method createGraphics
- * @param {} context
- * @return
+ * @param {Context} context
  */
 Context.prototype.createGraphics = function(context) {
   this.graphics = Entity.prototype.createGraphics.call(this,Context.container);
@@ -977,21 +1017,22 @@ Context.prototype.createGraphics = function(context) {
 };
 
 /**
- * Description
+ * Get context center for dragging actions.
+ *
  * @method getAnchor
- * @param {} init
- * @return ObjectExpression
+ * @return {Vec2} anchor
  */
-Context.prototype.getAnchor = function(init) {
+Context.prototype.getAnchor = function() {
   var context = this.entityModel;
   return {x: context.pos[0], y: context.pos[1]};
 };
 
 /**
- * Description
+ * Drag render context.
+ *
  * @method dragTo
- * @param {} pos
- * @param {} anchor
+ * @param {Vec2} pos
+ * @param {Vec2} anchor
  * @return
  */
 Context.prototype.dragTo = function(pos, anchor) {
@@ -1001,10 +1042,10 @@ Context.prototype.dragTo = function(pos, anchor) {
 };
 
 /**
- * Description
+ * Animate context, update position and size.
+ *
  * @method render
- * @param {} options
- * @return
+ * @param {Object} options
  */
 Context.prototype.render = function(options) {
   if (!Context.detail.level) {
@@ -1036,29 +1077,31 @@ Context.prototype.render = function(options) {
 };
 
 /**
- * Description
+ * Set context area, from its center.
+ *
  * @method setArea
- * @param {} x
- * @param {} y
- * @return
+ * @param {Number} x
+ * @param {Number} y
  */
 Context.prototype.setArea = function(x, y) {
   this.entityModel.setArea(x, y);
 };
 
 /**
- * Description
+ * Get context entity.
+ *
  * @method getContext
- * @return MemberExpression
+ * @return {Context} context
  */
 Context.prototype.getContext = function() {
   return this.entityModel;
 };
 
 /**
- * Description
+ * Get context center.
+ *
  * @method getPos
- * @return CallExpression
+ * @return {Vec2} position
  */
 Context.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
@@ -1072,11 +1115,14 @@ module.exports = Context;
 'use strict';
 
 /**
- * Description
- * @method Detail
- * @param {} maxDetail
- * @param {} detail
- * @return 
+ * Detail manager.
+ *
+ * @class Detail
+ * @constructor
+ * @module Render
+ * @submodule Detail
+ * @param {Number} maxDetail
+ * @param {Number} detail
  */
 var Detail = function(maxDetail, detail) {
   this.maxDetail = maxDetail;
@@ -1084,10 +1130,10 @@ var Detail = function(maxDetail, detail) {
 };
 
 /**
- * Description
+ * Cycle detail levels.
+ *
  * @method cycleDetail
- * @param {} detail
- * @return 
+ * @param {Number} detail to set, optional.
  */
 Detail.prototype.cycleDetail = function(detail) {
   if (detail) {
@@ -1109,9 +1155,12 @@ var Base = require('./Base');
 
 /**
  * Base render prototype
- * @method Entity
- * @param {} entity
- * @return 
+ *
+ * @class Entity
+ * @module Render
+ * @submodule Entity
+ * @constructor
+ * @param {Entity} entity
  */
 var Entity = function(entity) {
   if (!entity) {
@@ -1123,9 +1172,9 @@ var Entity = function(entity) {
 };
 
 /**
- * Description
+ * Destroy entity.
+ *
  * @method destroy
- * @return 
  */
 Entity.prototype.destroy = function() {
   if (this.entityModel) {
@@ -1136,11 +1185,12 @@ Entity.prototype.destroy = function() {
 };
 
 /**
- * Description
+ * Create base grahpics.
+ *
  * @method createGraphics
- * @param {} container
- * @param {} graphics
- * @return graphics
+ * @param {Pixi.Container} container
+ * @param {Pixi.Graphics} graphics , optional created otherwise
+ * @return {Pixi.Graphics} graphics
  */
 Entity.prototype.createGraphics = function(container, graphics) {
   if (!graphics) {
@@ -1154,11 +1204,11 @@ Entity.prototype.createGraphics = function(container, graphics) {
 };
 
 /**
- * Description
+ * Destroy base graphics.
+ *
  * @method destroyGraphics
- * @param {} container
- * @param {} graphics
- * @return 
+ * @param {Pixi.Container} container
+ * @param {Pixi.Graphics} graphics
  */
 Entity.prototype.destroyGraphics = function(container, graphics) {
   if (graphics) {
@@ -1170,10 +1220,10 @@ Entity.prototype.destroyGraphics = function(container, graphics) {
 };
 
 /**
- * Description
+ * Set render entity as interactive.
+ *
  * @method setInteractive
- * @param {} displayObject
- * @return 
+ * @param {Pixi.DisplayObject} displayObject
  */
 Entity.setInteractive = function(displayObject) {
   displayObject.interactive = true;
@@ -1186,19 +1236,20 @@ Entity.setInteractive = function(displayObject) {
 };
 
 /**
- * Description
+ * Animate entity.
+ *
  * @method render
- * @param {} graphics
- * @return 
+ * @param {Pixi.Graphics} graphics
  */
 Entity.prototype.render = function(graphics) {
   //this.display.clear();
 };
 
 /**
- * Description
+ * Get entity position.
+ *
  * @method getPos
- * @return MemberExpression
+ * @return {Vec2} position.
  */
 Entity.prototype.getPos = function() {
   return this.entityModel.pos;
@@ -1222,10 +1273,13 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 /**
- * Description
- * @method Group
- * @param {} group
- * @return 
+ * Create a group render view from a group entity.
+ *
+ * @class Group
+ * @module Render
+ * @submodule Group
+ * @constructor
+ * @param {Group} group
  */
 var Group = function(group) {
   if (!group) {
@@ -1235,23 +1289,24 @@ var Group = function(group) {
 };
 
 /**
- * Description
+ * Create a group render view from a group entity.
  * @method CreateFromModel
- * @param {} group
- * @return NewExpression
+ * @param {Group} group
+ * @return {Render.Group}
  */
 Group.CreateFromModel = function(group) {
   return new Group(group);
 };
 
 /**
- * Description
+ * Create a group render and entity in a point.
+ *
  * @method CreateFromPoint
- * @param {} x
- * @param {} y
- * @param {} parent
- * @param {} options
- * @return NewExpression
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Entity} parent
+ * @param {Object} options
+ * @return {Render.Group}
  */
 Group.CreateFromPoint = function(x, y, parent, options) {
   var group = new GroupModel(x, y, parent, options);
@@ -1259,9 +1314,9 @@ Group.CreateFromPoint = function(x, y, parent, options) {
 };
 
 /**
- * Description
+ * Destroy render group.
+ *
  * @method destroy
- * @return 
  */
 Group.prototype.destroy = function() {
   Entity.prototype.destroyGraphics.call(this,Group.container, this.graphics);
@@ -1269,10 +1324,10 @@ Group.prototype.destroy = function() {
 };
 
 /**
- * Description
+ * Create base graphics for group.
+ *
  * @method createGraphics
- * @param {} group
- * @return 
+ * @param {Group} group
  */
 Group.prototype.createGraphics = function(group) {
   this.graphics = Entity.prototype.createGraphics.call(this,Group.container);
@@ -1285,10 +1340,11 @@ Group.prototype.createGraphics = function(group) {
 };
 
 /**
- * Description
+ * Animate group, update position and radius.
+ *
  * @method render
- * @param {} options
- * @return 
+ * @param {Object} options of the group
+ * @return
  */
 Group.prototype.render = function(options) {
   if (!Group.detail.level) {
@@ -1338,22 +1394,22 @@ Group.prototype.render = function(options) {
 };
 
 /**
- * Description
+ * Get render group anchor.
+ *
  * @method getAnchor
- * @param {} init
- * @return ObjectExpression
+ * @return {Vec2} anchor
  */
-Group.prototype.getAnchor = function(init) {
+Group.prototype.getAnchor = function() {
   var group = this.entityModel;
   return {x: group.pos[0], y: group.pos[1]};
 };
 
 /**
- * Description
+ * Drag action in groups.
+ *
  * @method dragTo
- * @param {} pos
- * @param {} anchor
- * @return 
+ * @param {Vec2} pos
+ * @param {Vec2} anchor
  */
 Group.prototype.dragTo = function(pos, anchor) {
   var group = this.entityModel;
@@ -1362,18 +1418,20 @@ Group.prototype.dragTo = function(pos, anchor) {
 };
 
 /**
- * Description
+ * Get group position.
+ *
  * @method getPos
- * @return CallExpression
+ * @return {Vec2} position
  */
 Group.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
 
 /**
- * Description
+ * Get associated group entity.
+ *
  * @method getGroup
- * @return MemberExpression
+ * @return {Group}
  */
 Group.prototype.getGroup = function() {
   return this.entityModel;
@@ -1393,11 +1451,14 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 /**
- * Description
- * @method Joint
- * @param {} joint
- * @param {} texture
- * @return 
+ * Joint render view
+ *
+ * @class Joint
+ * @constructor
+ * @module Render
+ * @submodule Joint
+ * @param {Joint} joint
+ * @param {Pixi.Texture} texture
  */
 var Joint = function(joint, texture) {
   if (!joint) {
@@ -1408,10 +1469,10 @@ var Joint = function(joint, texture) {
 };
 
 /**
- * Description
+ * Destroy base graphics.
+ *
  * @method destroy
- * @param {} graphics
- * @return 
+ * @param {Pixi.Graphics} graphics
  */
 Joint.prototype.destroy = function(graphics) {
   var line = this.entityModel.parent;
@@ -1422,10 +1483,10 @@ Joint.prototype.destroy = function(graphics) {
 };
 
 /**
- * Description
+ * Create base graphics.
+ *
  * @method createGraphics
- * @param {} graphics
- * @return 
+ * @param {Pixi.Graphics} graphics
  */
 Joint.prototype.createGraphics = function(graphics) {
   this.graphics = graphics;
@@ -1443,9 +1504,9 @@ Joint.prototype.createGraphics = function(graphics) {
 };
 
 /**
- * Description
+ * Animate joint, update position and radius.
+ *
  * @method render
- * @return 
  */
 Joint.prototype.render = function() {
   this.sprite.visible = true;
@@ -1460,21 +1521,21 @@ Joint.prototype.render = function() {
 };
 
 /**
- * Description
+ * Get joint anchor for dragging actions.
+ *
  * @method getAnchor
- * @param {} init
- * @return ObjectExpression
+ * @return {Vec2} anchor
  */
-Joint.prototype.getAnchor = function(init) {
+Joint.prototype.getAnchor = function() {
   return {x: this.entityModel.pos[0], y: this.entityModel.pos[1]};
 };
 
 /**
- * Description
+ * Draggin actino.
+ *
  * @method dragTo
- * @param {} pos
- * @param {} anchor
- * @return 
+ * @param {Vec2} pos
+ * @param {Vec2} anchor
  */
 Joint.prototype.dragTo = function(pos, anchor) {
   var anchorV2 = Vec2.fromValues(anchor.x,anchor.y);
@@ -1490,28 +1551,30 @@ Joint.prototype.dragTo = function(pos, anchor) {
 };
 
 /**
- * Description
+ * Get joint associated entity.
+ *
  * @method getJoint
- * @return MemberExpression
+ * @return {Joint} joint
  */
 Joint.prototype.getJoint = function() {
   return this.entityModel;
 };
 
 /**
- * Description
+ * Get joint position.
+ *
  * @method getPos
- * @return CallExpression
+ * @return {Vec2} position
  */
 Joint.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
 };
 
 /**
- * Description
+ * Shows or hides render joint.
+ *
  * @method show
- * @param {} show
- * @return 
+ * @param {Boolean} show true for visible
  */
 Joint.prototype.show = function(show) {
   this.sprite.visible = false;
@@ -1530,18 +1593,23 @@ var Detail = require('./Detail');
 var Colors = Base.Colors;
 
 /**
- * Description
- * @method LinePrototype
- * @param {} color
- * @return Line
+ * Line rendering for paths and walls prototype.
+ *
+ * @class LinePrototype
+ * @constructor
+ * @module Render
+ * @submodule LinePrototype
+ * @param {Number} color
+ * @return {LinePrototype} Line prototype
  */
 var LinePrototype = function(color) {
 
   /**
-   * Description
+   * Line rendering for paths and walls.
+   *
+   * @constructor
    * @method Line
-   * @param {} line
-   * @return 
+   * @param {Wall|Path} line
    */
   var Line = function(line) {
     if (!line) {
@@ -1551,23 +1619,10 @@ var LinePrototype = function(color) {
   };
 
   /**
-   * Description
-   * @method destroy
-   * @return 
-   */
-  Line.prototype.destroy = function() {
-    var that = this;
-    that.graphics.removeChild(that.label);
-    that.label.destroy();
-    Entity.prototype.destroyGraphics.call(that, Line.container, that.graphics);
-    Entity.prototype.destroy.call(that);
-  };
-
-  /**
-   * Description
+   * Create base graphics.
+   *
    * @method createGraphics
-   * @param {} line
-   * @return 
+   * @param {Wall|Path} line
    */
   Line.prototype.createGraphics = function(line) {
     this.graphics = Entity.prototype.createGraphics.call(this, Line.container);
@@ -1585,10 +1640,24 @@ var LinePrototype = function(color) {
   };
 
   /**
-   * Description
+   * Destroy base graphics.
+   *
+   * @method destroy
+   */
+  Line.prototype.destroy = function() {
+    var that = this;
+    that.graphics.removeChild(that.label);
+    that.label.destroy();
+    Entity.prototype.destroyGraphics.call(that, Line.container, that.graphics);
+    Entity.prototype.destroy.call(that);
+  };
+
+  /**
+   * Add a render joint from a joint entity.
+   *
    * @method addJointFromModel
-   * @param {} joint
-   * @return renderJoint
+   * @param {Joint} joint
+   * @return {Render.Joint} render joint
    */
   Line.prototype.addJointFromModel = function(joint) {
     var renderJoint = new Joint(joint, Line.texture);
@@ -1597,12 +1666,13 @@ var LinePrototype = function(color) {
   };
 
   /**
-   * Description
+   * Create a joint in a position.
+   *
    * @method addJoint
-   * @param {} x
-   * @param {} y
-   * @param {} options
-   * @return CallExpression
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Options} options for creation
+   * @return {Render.Joint}
    */
   Line.prototype.addJoint = function(x, y, options) {
     var line = this.entityModel;
@@ -1611,10 +1681,10 @@ var LinePrototype = function(color) {
   };
 
   /**
-   * Description
+   * Animate joint, position and radius.
+   *
    * @method render
-   * @param {} options
-   * @return 
+   * @param {Object} options
    */
   Line.prototype.render = function(options) {
     if (!Line.detail.level) {
@@ -1669,23 +1739,28 @@ var Colors = Base.Colors;
 var Path = LinePrototype(Colors.Path);
 
 /**
- * Description
+ * Create a Path render view from an Entity.
+ *
+ * @class Path
+ * @module Render
+ * @submodule Path
  * @method CreateFromModel
- * @param {} path
- * @return NewExpression
+ * @param {Path} path
+ * @return {Path} render path
  */
 Path.CreateFromModel = function(path) {
   return new Path(path);
 };
 
 /**
- * Description
+ * Create a Path at a position.
+ *
  * @method CreateFromPoint
- * @param {} x
- * @param {} y
- * @param {} parent
- * @param {} options
- * @return NewExpression
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Entity} parent
+ * @param {Object} options for creation of the path
+ * @return {Path} render path
  */
 Path.CreateFromPoint = function(x, y, parent, options) {
   var path = new PathModel(x, y, parent, options);
@@ -1693,9 +1768,10 @@ Path.CreateFromPoint = function(x, y, parent, options) {
 };
 
 /**
- * Description
+ * Get the path position, last joint added.
+ *
  * @method getPos
- * @return CallExpression
+ * @return {Vec2} position
  */
 Path.prototype.getPos = function() {
   return Entity.prototype.getPos.call(this);
@@ -1713,13 +1789,16 @@ var Base = require('./Base');
 var Colors = Base.Colors;
 
 /**
- * Description
- * @method Render
- * @param {} canvas
- * @param {} w
- * @param {} h
- * @param {} options
- * @return 
+ * Initialices rendering and animate entities.
+ *
+ * @class Render
+ * @constructor
+ * @module CrowdSimApp
+ * @submodule Render
+ * @param {Canvas} canvas
+ * @param {Number} w width
+ * @param {Number} h height
+ * @param {Object} options
  */
 var Render = function(canvas, w, h, options) {
   this.options = Lazy(options).defaults(Render.defaults).toObject();
@@ -1758,11 +1837,11 @@ var Render = function(canvas, w, h, options) {
 };
 
 /**
- * Description
+ * Initialice render.
+ *
  * @method init
- * @param {} textures
- * @param {} events
- * @return 
+ * @param {Array} textures coordinates for create Pixi.Textures.
+ * @param {Array} events to receive world callbacks
  */
 Render.prototype.init = function(textures, events) {
   var baseTextures = PIXI.Texture.fromImage(textures.file),
@@ -1823,9 +1902,9 @@ Render.prototype.init = function(textures, events) {
 };
 
 /**
- * Description
+ * Start rendering loop.
+ *
  * @method start
- * @return 
  */
 Render.prototype.start = function() {
   this._stop = false;
@@ -1833,9 +1912,9 @@ Render.prototype.start = function() {
 };
 
 /**
- * Description
+ * Rendering loop.
+ *
  * @method animate
- * @return 
  */
 Render.prototype.animate = function() {
   if (this.onPreRender) {
@@ -1870,43 +1949,43 @@ Render.prototype.animate = function() {
 };
 
 /**
- * Description
+ * Stop rendering loop.
+ *
  * @method stop
- * @return 
  */
 Render.prototype.stop = function() {
   this._stop = true;
 };
 
 /**
- * Description
+ * Set current rendered world.
+ *
  * @method setWorld
- * @param {} world
- * @return 
+ * @param {World} world
  */
 Render.prototype.setWorld = function(world) {
   this.world = world;
 };
 
 /**
- * Description
+ * Resize rendering stage.
+ *
  * @method resize
- * @param {} w
- * @param {} h
- * @return 
+ * @param {Number} w
+ * @param {Number} h
  */
 Render.prototype.resize = function(w, h) {
   this._renderer.resize(w,h);
 };
 
 /**
- * Description
+ * Draw a helper line from 0 to 1.
+ *
  * @method drawHelperLine
- * @param {} x0
- * @param {} y0
- * @param {} x1
- * @param {} y1
- * @return 
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
  */
 Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
   this._graphicsHelper.clear();
@@ -1919,12 +1998,12 @@ Render.prototype.drawHelperLine = function(x0, y0, x1, y1) {
 };
 
 /**
- * Description
+ * Zoom-in, zoom-out stage.
+ *
  * @method zoom
- * @param {} scale
- * @param {} x
- * @param {} y
- * @return 
+ * @param {Number} scale
+ * @param {Number} x center of zoom
+ * @param {Number} y center of zoom
  */
 Render.prototype.zoom = function(scale, x, y) {
   scale = scale > 0 ? 1.1 : 0.9;
@@ -1937,11 +2016,11 @@ Render.prototype.zoom = function(scale, x, y) {
 };
 
 /**
- * Description
+ * Pan view of stage.
+ *
  * @method pan
- * @param {} dx
- * @param {} dy
- * @return 
+ * @param {Number} dx displacement x
+ * @param {Number} dy displacement y
  */
 Render.prototype.pan = function(dx, dy) {
   this._stage.x += dx;
@@ -1949,40 +2028,45 @@ Render.prototype.pan = function(dx, dy) {
 };
 
 /**
- * Description
+ * Get stage width.
+ *
  * @method getWidth
- * @return MemberExpression
+ * @return {Number} width
  */
 Render.prototype.getWidth = function() {
   return this._stage.width;
 };
 
 /**
- * Description
+ * Get stage height.
+ *
  * @method getHeight
- * @return MemberExpression
+ * @return {Number} height
  */
 Render.prototype.getHeight = function() {
   return this._stage.height;
 };
 
 /**
- * Description
+ * Convert screen coordinates to world coordinates.
+ *
  * @method screenToWorld
- * @param {} x
- * @param {} y
- * @return ObjectExpression
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} world coordinate {x:x,y:y}
  */
 Render.prototype.screenToWorld = function(x, y) {
   return {x: (x - this._stage.x) / this._stage.scale.x,
           y: (y - this._stage.y) / this._stage.scale.y};
 };
+
 /**
- * Description
+ * Convert world coordinates to screen coordinates.
+ *
  * @method worldToScreen
- * @param {} x
- * @param {} y
- * @return ObjectExpression
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} screen coordinate {x:x,y:y}
  */
 Render.prototype.worldToScreen = function(x, y) {
   return {x: x * this._stage.scale.x + this._stage.x,
@@ -2021,10 +2105,14 @@ var Fonts = Base.Fonts;
 var Wall = LinePrototype(Colors.Wall);
 
 /**
- * Description
- * @method CreateFromModel
- * @param {} wall
- * @return NewExpression
+ * Wall render view.
+ *
+ * @class Wall
+ * @module Render
+ * @submodule Wall
+ * @constructor
+ * @param {Wall} wall
+ * @return {Wall}
  */
 Wall.CreateFromModel = function(wall) {
   return new Wall(wall);
@@ -2062,3235 +2150,3261 @@ module.exports = Wall;
 'use strict';
 var CrowdSim = require('CrowdSim');
 
+/**
+ * Example worlds to show simulator capabilities
+ *
+ * @module CrowdSimApp
+ * @submodule Worlds
+ */
 var Worlds = {
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /****************************************************************************
+   * One single Group
+   *
+   * @property {Object}
+   */
   groupSimple: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 100,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 4,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 100,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 4,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 78.9000015258789,
-        "1": 41.70000076293945
+      'id': 'G0',
+      'pos': {
+        '0': 78.9000015258789,
+        '1': 41.70000076293945
       },
-      "entities": {
-        "path": null,
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': null,
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [],
-    "walls": []
+    'paths': [],
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Groups of different sizes
+  */
   groupSizes: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsMaxVel": 2,
-        "agentsMaxAccel": 0.5,
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.3,
-        "agentsSizeMax": 0.9,
-        "agentsCount": 200,
-        "agentsMax": 200,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0,
-        "near": 10
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsMaxVel': 2,
+        'agentsMaxAccel': 0.5,
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.3,
+        'agentsSizeMax': 0.9,
+        'agentsCount': 200,
+        'agentsMax': 200,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0,
+        'near': 10
       },
-      "id": "G1",
-      "pos": {
-        "0": 51,
-        "1": 43
+      'id': 'G1',
+      'pos': {
+        '0': 51,
+        '1': 43
       },
-      "entities": {
-        "path": null,
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': null,
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [],
-    "walls": []
+    'paths': [],
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Groups with different velocity
+  */
   groupSizeVel: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsMaxVel": 2,
-        "agentsMaxAccel": 0.5,
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.4,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 100,
-        "agentsMax": 300,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 8,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0,
-        "near": 10
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsMaxVel': 2,
+        'agentsMaxAccel': 0.5,
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.4,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 100,
+        'agentsMax': 300,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 8,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0,
+        'near': 10
       },
-      "id": "G0",
-      "pos": {
-        "0": 28.899999618530273,
-        "1": 39.900001525878906
+      'id': 'G0',
+      'pos': {
+        '0': 28.899999618530273,
+        '1': 39.900001525878906
       },
-      "entities": {
-        "path": "P0",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P0',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsMaxVel": 0.9,
-        "agentsMaxAccel": 0.5,
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.8,
-        "agentsCount": 100,
-        "agentsMax": 300,
-        "debug": false,
-        "pathStart": 2,
-        "pathReverse": true,
-        "pathCircular": false,
-        "radius": 8,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0,
-        "near": 10
+      'options': {
+        'agentsMaxVel': 0.9,
+        'agentsMaxAccel': 0.5,
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.8,
+        'agentsCount': 100,
+        'agentsMax': 300,
+        'debug': false,
+        'pathStart': 2,
+        'pathReverse': true,
+        'pathCircular': false,
+        'radius': 8,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0,
+        'near': 10
       },
-      "id": "G1",
-      "pos": {
-        "0": 115.5,
-        "1": 40.29999923706055
+      'id': 'G1',
+      'pos': {
+        '0': 115.5,
+        '1': 40.29999923706055
       },
-      "entities": {
-        "path": "P0",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P0',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P0",
-      "pos": {
-        "0": 98.5,
-        "1": 40.20000076293945
+      'id': 'P0',
+      'pos': {
+        '0': 98.5,
+        '1': 40.20000076293945
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 7,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 7,
+            'scalable': true
           },
-          "pos": {
-            "0": 46.900001525878906,
-            "1": 39.900001525878906
+          'pos': {
+            '0': 46.900001525878906,
+            '1': 39.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 8,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 8,
+            'scalable': true
           },
-          "pos": {
-            "0": 83.30000305175781,
-            "1": 40.29999923706055
+          'pos': {
+            '0': 83.30000305175781,
+            '1': 40.29999923706055
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 7,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 7,
+            'scalable': true
           },
-          "pos": {
-            "0": 99.5999984741211,
-            "1": 40.20000076293945
+          'pos': {
+            '0': 99.5999984741211,
+            '1': 40.20000076293945
           },
-          "entities": {},
-          "children": {},
-          "id": "J4"
+          'entities': {},
+          'children': {},
+          'id': 'J4'
         }]
       }
     }],
-    "walls": []
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} One start context
+  */
   contextIn: {
-    "contexts": [{
-      "options": {
-        "width": 39,
-        "height": 17.000001525878908
+    'contexts': [{
+      'options': {
+        'width': 39,
+        'height': 17.000001525878908
       },
-      "id": "C0",
-      "pos": {
-        "0": 75.5999984741211,
-        "1": 23.100000381469727
+      'id': 'C0',
+      'pos': {
+        '0': 75.5999984741211,
+        '1': 23.100000381469727
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.2,
-        "startRate": 5,
-        "endProb": 0,
-        "endRate": 0
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0.2,
+        'startRate': 5,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 75.5999984741211,
-        "1": 61.599998474121094
+      'id': 'G0',
+      'pos': {
+        '0': 75.5999984741211,
+        '1': 61.599998474121094
       },
-      "entities": {
-        "path": null,
-        "startContext": "C0",
-        "endContext": null
+      'entities': {
+        'path': null,
+        'startContext': 'C0',
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [],
-    "walls": []
+    'paths': [],
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} One end context
+  */
   contextOut: {
-    "contexts": [{
-      "options": {
-        "width": 11.999996948242199,
-        "height": 44.599999999999994
+    'contexts': [{
+      'options': {
+        'width': 11.999996948242199,
+        'height': 44.599999999999994
       },
-      "id": "C0",
-      "pos": {
-        "0": 82,
-        "1": 48.29999923706055
+      'id': 'C0',
+      'pos': {
+        '0': 82,
+        '1': 48.29999923706055
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 100,
-        "agentsMax": 1000,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 30,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0.2,
-        "endRate": 5
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 100,
+        'agentsMax': 1000,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 30,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0.2,
+        'endRate': 5
       },
-      "id": "G0",
-      "pos": {
-        "0": 41.099998474121094,
-        "1": 48.400001525878906
+      'id': 'G0',
+      'pos': {
+        '0': 41.099998474121094,
+        '1': 48.400001525878906
       },
-      "entities": {
-        "path": null,
-        "startContext": null,
-        "endContext": "C0"
+      'entities': {
+        'path': null,
+        'startContext': null,
+        'endContext': 'C0'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [],
-    "walls": []
+    'paths': [],
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Start and end context
+  */
   contextInOut: {
-    "contexts": [{
-      "options": {
-        "width": 18.60000305175781,
-        "height": 61.39999847412109
+    'contexts': [{
+      'options': {
+        'width': 18.60000305175781,
+        'height': 61.39999847412109
       },
-      "id": "C0",
-      "pos": {
-        "0": 44.29999923706055,
-        "1": 45.70000076293945
+      'id': 'C0',
+      'pos': {
+        '0': 44.29999923706055,
+        '1': 45.70000076293945
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "width": 15.199996948242188,
-        "height": 72.4000015258789
+      'options': {
+        'width': 15.199996948242188,
+        'height': 72.4000015258789
       },
-      "id": "C4",
-      "pos": {
-        "0": 108.69999694824219,
-        "1": 49
+      'id': 'C4',
+      'pos': {
+        '0': 108.69999694824219,
+        '1': 49
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 200,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.5,
-        "startRate": 10,
-        "endProb": 0.5,
-        "endRate": 5
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 200,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0.5,
+        'startRate': 10,
+        'endProb': 0.5,
+        'endRate': 5
       },
-      "id": "G2",
-      "pos": {
-        "0": 81.30000305175781,
-        "1": 83
+      'id': 'G2',
+      'pos': {
+        '0': 81.30000305175781,
+        '1': 83
       },
-      "entities": {
-        "path": null,
-        "startContext": "C0",
-        "endContext": "C4"
+      'entities': {
+        'path': null,
+        'startContext': 'C0',
+        'endContext': 'C4'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [],
-    "walls": []
+    'paths': [],
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Contexts with different mobility
+  */
   contextMobility: {
-    "contexts": [{
-      "options": {
-        "width": 39,
-        "height": 17.000001525878908,
-        "mobility": 1,
-        "hazardLevel": 0
+    'contexts': [{
+      'options': {
+        'width': 39,
+        'height': 17.000001525878908,
+        'mobility': 1,
+        'hazardLevel': 0
       },
-      "id": "C0",
-      "pos": {
-        "0": 75.5999984741211,
-        "1": 23.100000381469727
+      'id': 'C0',
+      'pos': {
+        '0': 75.5999984741211,
+        '1': 23.100000381469727
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "mobility": 0.5,
-        "hazardLevel": 0,
-        "width": 10,
-        "height": 10
+      'options': {
+        'mobility': 0.5,
+        'hazardLevel': 0,
+        'width': 10,
+        'height': 10
       },
-      "id": "C1",
-      "pos": {
-        "0": 76.5999984741211,
-        "1": 44.20000076293945
+      'id': 'C1',
+      'pos': {
+        '0': 76.5999984741211,
+        '1': 44.20000076293945
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.2,
-        "startRate": 5,
-        "endProb": 0,
-        "endRate": 0
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0.2,
+        'startRate': 5,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 75.5999984741211,
-        "1": 61.599998474121094
+      'id': 'G0',
+      'pos': {
+        '0': 75.5999984741211,
+        '1': 61.599998474121094
       },
-      "entities": {
-        "path": null,
-        "startContext": "C0",
-        "endContext": null
+      'entities': {
+        'path': null,
+        'startContext': 'C0',
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [],
-    "walls": []
+    'paths': [],
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Context that triggers stops on empty
+  */
   contextTrigger: {
-    "contexts": [{
-      "options": {
-        "width": 24,
-        "height": 2.0000015258789077,
-        "mobility": 1,
-        "hazardLevel": 0,
-        "triggerOnEmpty": true
+    'contexts': [{
+      'options': {
+        'width': 24,
+        'height': 2.0000015258789077,
+        'mobility': 1,
+        'hazardLevel': 0,
+        'triggerOnEmpty': true
       },
-      "id": "C0",
-      "pos": {
-        "0": 75.1729736328125,
-        "1": 46.50312423706055
+      'id': 'C0',
+      'pos': {
+        '0': 75.1729736328125,
+        '1': 46.50312423706055
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 5,
-        "endProb": 0,
-        "endRate": 0,
-        "near": 10
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 5,
+        'endProb': 0,
+        'endRate': 0,
+        'near': 10
       },
-      "id": "G0",
-      "pos": {
-        "0": 75.47578430175781,
-        "1": 61.03791427612305
+      'id': 'G0',
+      'pos': {
+        '0': 75.47578430175781,
+        '1': 61.03791427612305
       },
-      "entities": {
-        "path": null,
-        "startContext": "C0",
-        "endContext": null
+      'entities': {
+        'path': null,
+        'startContext': 'C0',
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [],
-    "walls": []
+    'paths': [],
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Contexts with different rates
+  */
   contextRate: {
-    "contexts": [{
-      "options": {
-        "width": 9.799996948242182,
-        "height": 10.599999999999994
+    'contexts': [{
+      'options': {
+        'width': 9.799996948242182,
+        'height': 10.599999999999994
       },
-      "id": "C0",
-      "pos": {
-        "0": 41.400001525878906,
-        "1": 31.700000762939453
+      'id': 'C0',
+      'pos': {
+        '0': 41.400001525878906,
+        '1': 31.700000762939453
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "width": 16.9999969482422,
-        "height": 19.00000076293945
+      'options': {
+        'width': 16.9999969482422,
+        'height': 19.00000076293945
       },
-      "id": "C1",
-      "pos": {
-        "0": 95.4000015258789,
-        "1": 31
+      'id': 'C1',
+      'pos': {
+        '0': 95.4000015258789,
+        '1': 31
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "width": 16.200001525878903,
-        "height": 14.800001525878912
+      'options': {
+        'width': 16.200001525878903,
+        'height': 14.800001525878912
       },
-      "id": "C2",
-      "pos": {
-        "0": 42.5,
-        "1": 59
+      'id': 'C2',
+      'pos': {
+        '0': 42.5,
+        '1': 59
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "width": 13.600003051757824,
-        "height": 13.799996948242182
+      'options': {
+        'width': 13.600003051757824,
+        'height': 13.799996948242182
       },
-      "id": "C3",
-      "pos": {
-        "0": 94.30000305175781,
-        "1": 57.900001525878906
+      'id': 'C3',
+      'pos': {
+        '0': 94.30000305175781,
+        '1': 57.900001525878906
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 200,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.5,
-        "startRate": 1,
-        "endProb": 0.1,
-        "endRate": 2
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 200,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0.5,
+        'startRate': 1,
+        'endProb': 0.1,
+        'endRate': 2
       },
-      "id": "G0",
-      "pos": {
-        "0": 62.79999923706055,
-        "1": 17.5
+      'id': 'G0',
+      'pos': {
+        '0': 62.79999923706055,
+        '1': 17.5
       },
-      "entities": {
-        "path": null,
-        "startContext": "C0",
-        "endContext": "C1"
+      'entities': {
+        'path': null,
+        'startContext': 'C0',
+        'endContext': 'C1'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 2,
-        "startProb": 0.1,
-        "startRate": 1,
-        "endProb": 0.15,
-        "endRate": 1
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 2,
+        'startProb': 0.1,
+        'startRate': 1,
+        'endProb': 0.15,
+        'endRate': 1
       },
-      "id": "G1",
-      "pos": {
-        "0": 68,
-        "1": 72.9000015258789
+      'id': 'G1',
+      'pos': {
+        '0': 68,
+        '1': 72.9000015258789
       },
-      "entities": {
-        "path": null,
-        "startContext": "C3",
-        "endContext": "C2"
+      'entities': {
+        'path': null,
+        'startContext': 'C3',
+        'endContext': 'C2'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [],
-    "walls": []
+    'paths': [],
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Contexts mobility and path
+  */
   pathCtxMobility: {
-  "contexts": [
+  'contexts': [
     {
-      "options": {
-        "mobility": 3,
-        "triggerOnEmpty": false,
-        "width": 44.72726912064988,
-        "height": 19.8181811246005
+      'options': {
+        'mobility': 3,
+        'triggerOnEmpty': false,
+        'width': 44.72726912064988,
+        'height': 19.8181811246005
       },
-      "id": "C0",
-      "pos": {
-        "0": 82.34545135498047,
-        "1": 26.045454025268555
+      'id': 'C0',
+      'pos': {
+        '0': 82.34545135498047,
+        '1': 26.045454025268555
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     },
     {
-      "options": {
-        "mobility": 0.5,
-        "triggerOnEmpty": false,
-        "width": 42.36364246715199,
-        "height": 16.545458013361156
+      'options': {
+        'mobility': 0.5,
+        'triggerOnEmpty': false,
+        'width': 42.36364246715199,
+        'height': 16.545458013361156
       },
-      "id": "C2",
-      "pos": {
-        "0": 81.61817932128906,
-        "1": 55.40909194946289
+      'id': 'C2',
+      'pos': {
+        '0': 81.61817932128906,
+        '1': 55.40909194946289
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }
   ],
-  "groups": [
+  'groups': [
     {
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 13,
-        "startProb": 0.2,
-        "startRate": 5,
-        "endProb": 0,
-        "endRate": 0,
-        "agentsMaxVel": 1,
-        "agentsMaxAccel": 0.5,
-        "near": 10
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 13,
+        'startProb': 0.2,
+        'startRate': 5,
+        'endProb': 0,
+        'endRate': 0,
+        'agentsMaxVel': 1,
+        'agentsMaxAccel': 0.5,
+        'near': 10
       },
-      "id": "G0",
-      "pos": {
-        "0": 55.79999923706055,
-        "1": 25.200000762939453
+      'id': 'G0',
+      'pos': {
+        '0': 55.79999923706055,
+        '1': 25.200000762939453
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }
   ],
-  "paths": [
+  'paths': [
     {
-      "options": {
-        "width": 0.2,
-        "radius": 4
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 55.16363525390625,
-        "1": 54.95454406738281
+      'id': 'P1',
+      'pos': {
+        '0': 55.16363525390625,
+        '1': 54.95454406738281
       },
-      "entities": {},
-      "children": {
-        "joints": [
+      'entities': {},
+      'children': {
+        'joints': [
           {
-            "options": {
-              "width": 0.2,
-              "radius": 4,
-              "scalable": true
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
             },
-            "pos": {
-              "0": 110.34545135498047,
-              "1": 26.68181800842285
+            'pos': {
+              '0': 110.34545135498047,
+              '1': 26.68181800842285
             },
-            "entities": {},
-            "children": {},
-            "id": "J3"
+            'entities': {},
+            'children': {},
+            'id': 'J3'
           },
           {
-            "options": {
-              "width": 0.2,
-              "radius": 4,
-              "scalable": true
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
             },
-            "pos": {
-              "0": 110.25454711914062,
-              "1": 54.95454406738281
+            'pos': {
+              '0': 110.25454711914062,
+              '1': 54.95454406738281
             },
-            "entities": {},
-            "children": {},
-            "id": "J4"
+            'entities': {},
+            'children': {},
+            'id': 'J4'
           },
           {
-            "options": {
-              "width": 0.2,
-              "radius": 4,
-              "scalable": true
+            'options': {
+              'width': 0.2,
+              'radius': 4,
+              'scalable': true
             },
-            "pos": {
-              "0": 55.16363525390625,
-              "1": 54.95454406738281
+            'pos': {
+              '0': 55.16363525390625,
+              '1': 54.95454406738281
             },
-            "entities": {},
-            "children": {},
-            "id": "J7"
+            'entities': {},
+            'children': {},
+            'id': 'J7'
           }
         ]
       }
     }
   ],
-  "walls": []
+  'walls': []
 },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} One circular path and two opposite groups
+  */
   pathLoop: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 6,
-        "pathReverse": true,
-        "pathCircular": true,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 6,
+        'pathReverse': true,
+        'pathCircular': true,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 43.099998474121094,
-        "1": 28.799999237060547
+      'id': 'G0',
+      'pos': {
+        '0': 43.099998474121094,
+        '1': 28.799999237060547
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": true,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': true,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G1",
-      "pos": {
-        "0": 103.30000305175781,
-        "1": 28.200000762939453
+      'id': 'G1',
+      'pos': {
+        '0': 103.30000305175781,
+        '1': 28.200000762939453
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 62.5,
-        "1": 43.70000076293945
+      'id': 'P1',
+      'pos': {
+        '0': 62.5,
+        '1': 43.70000076293945
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 91,
-            "1": 43.5
+          'pos': {
+            '0': 91,
+            '1': 43.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 115.30000305175781,
-            "1": 48.400001525878906
+          'pos': {
+            '0': 115.30000305175781,
+            '1': 48.400001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 107,
-            "1": 74.9000015258789
+          'pos': {
+            '0': 107,
+            '1': 74.9000015258789
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 68,
-            "1": 77.9000015258789
+          'pos': {
+            '0': 68,
+            '1': 77.9000015258789
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 41.900001525878906,
-            "1": 72.4000015258789
+          'pos': {
+            '0': 41.900001525878906,
+            '1': 72.4000015258789
           },
-          "entities": {},
-          "children": {},
-          "id": "J4"
+          'entities': {},
+          'children': {},
+          'id': 'J4'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 44.5,
-            "1": 45.400001525878906
+          'pos': {
+            '0': 44.5,
+            '1': 45.400001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J5"
+          'entities': {},
+          'children': {},
+          'id': 'J5'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 62.5,
-            "1": 43.70000076293945
+          'pos': {
+            '0': 62.5,
+            '1': 43.70000076293945
           },
-          "entities": {},
-          "children": {},
-          "id": "J6"
+          'entities': {},
+          'children': {},
+          'id': 'J6'
         }]
       }
     }],
-    "walls": []
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} One path assigned to a group
+  */
   pathGroup: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsAspect": 32255,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 50,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 1,
-        "pathReverse": false,
-        "pathCircular": true,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsAspect': 32255,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 50,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 1,
+        'pathReverse': false,
+        'pathCircular': true,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 67,
-        "1": 28.200000762939453
+      'id': 'G0',
+      'pos': {
+        '0': 67,
+        '1': 28.200000762939453
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 261637,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 50,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 2,
-        "pathReverse": true,
-        "pathCircular": true,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+      'options': {
+        'agentsAspect': 261637,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 50,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 2,
+        'pathReverse': true,
+        'pathCircular': true,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G1",
-      "pos": {
-        "0": 96.4000015258789,
-        "1": 72.9000015258789
+      'id': 'G1',
+      'pos': {
+        '0': 96.4000015258789,
+        '1': 72.9000015258789
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 126.0999984741211,
-        "1": 47.5
+      'id': 'P1',
+      'pos': {
+        '0': 126.0999984741211,
+        '1': 47.5
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 36.599998474121094,
-            "1": 46.29999923706055
+          'pos': {
+            '0': 36.599998474121094,
+            '1': 46.29999923706055
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 67.30000305175781,
-            "1": 46.900001525878906
+          'pos': {
+            '0': 67.30000305175781,
+            '1': 46.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 95.69999694824219,
-            "1": 47.5
+          'pos': {
+            '0': 95.69999694824219,
+            '1': 47.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 126.0999984741211,
-            "1": 47.5
+          'pos': {
+            '0': 126.0999984741211,
+            '1': 47.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }]
       }
     }],
-    "walls": []
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Different waypoint sizes
+  */
   pathSize: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 500,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": true,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 500,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': true,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 35.425113677978516,
-        "1": 50.41111373901367
+      'id': 'G0',
+      'pos': {
+        '0': 35.425113677978516,
+        '1': 50.41111373901367
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 126.98758697509766,
-        "1": 51.00733184814453
+      'id': 'P1',
+      'pos': {
+        '0': 126.98758697509766,
+        '1': 51.00733184814453
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 2,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 2,
+            'scalable': true
           },
-          "pos": {
-            "0": 47.26435470581055,
-            "1": 50.581459045410156
+          'pos': {
+            '0': 47.26435470581055,
+            '1': 50.581459045410156
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 8,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 8,
+            'scalable': true
           },
-          "pos": {
-            "0": 68.132080078125,
-            "1": 39.423614501953125
+          'pos': {
+            '0': 68.132080078125,
+            '1': 39.423614501953125
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 2,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 2,
+            'scalable': true
           },
-          "pos": {
-            "0": 88.7442855834961,
-            "1": 63.01692199707031
+          'pos': {
+            '0': 88.7442855834961,
+            '1': 63.01692199707031
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 7,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 7,
+            'scalable': true
           },
-          "pos": {
-            "0": 106.54573059082031,
-            "1": 36.357337951660156
+          'pos': {
+            '0': 106.54573059082031,
+            '1': 36.357337951660156
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 2,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 2,
+            'scalable': true
           },
-          "pos": {
-            "0": 129.20211791992188,
-            "1": 50.581459045410156
+          'pos': {
+            '0': 129.20211791992188,
+            '1': 50.581459045410156
           },
-          "entities": {},
-          "children": {},
-          "id": "J4"
+          'entities': {},
+          'children': {},
+          'id': 'J4'
         }]
       }
     }],
-    "walls": []
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Multiple paths
+  */
   paths: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": true,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': true,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 81.80000305175781,
-        "1": 44
+      'id': 'G0',
+      'pos': {
+        '0': 81.80000305175781,
+        '1': 44
       },
-      "entities": {
-        "path": "P6",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P6',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": true,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': true,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G1",
-      "pos": {
-        "0": 52.599998474121094,
-        "1": 22.700000762939453
+      'id': 'G1',
+      'pos': {
+        '0': 52.599998474121094,
+        '1': 22.700000762939453
       },
-      "entities": {
-        "path": "P5",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P5',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": true,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': true,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G2",
-      "pos": {
-        "0": 17.799999237060547,
-        "1": 22.700000762939453
+      'id': 'G2',
+      'pos': {
+        '0': 17.799999237060547,
+        '1': 22.700000762939453
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 26.899999618530273,
-        "1": 59.5
+      'id': 'P1',
+      'pos': {
+        '0': 26.899999618530273,
+        '1': 59.5
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 26,
-            "1": 43.900001525878906
+          'pos': {
+            '0': 26,
+            '1': 43.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 27.600000381469727,
-            "1": 22.5
+          'pos': {
+            '0': 27.600000381469727,
+            '1': 22.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 42.400001525878906,
-            "1": 12.600000381469727
+          'pos': {
+            '0': 42.400001525878906,
+            '1': 12.600000381469727
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 73,
-            "1": 12.300000190734863
+          'pos': {
+            '0': 73,
+            '1': 12.300000190734863
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 99.4000015258789,
-            "1": 13.199999809265137
+          'pos': {
+            '0': 99.4000015258789,
+            '1': 13.199999809265137
           },
-          "entities": {},
-          "children": {},
-          "id": "J4"
+          'entities': {},
+          'children': {},
+          'id': 'J4'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 120,
-            "1": 12.100000381469727
+          'pos': {
+            '0': 120,
+            '1': 12.100000381469727
           },
-          "entities": {},
-          "children": {},
-          "id": "J5"
+          'entities': {},
+          'children': {},
+          'id': 'J5'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 133.10000610351562,
-            "1": 16.299999237060547
+          'pos': {
+            '0': 133.10000610351562,
+            '1': 16.299999237060547
           },
-          "entities": {},
-          "children": {},
-          "id": "J6"
+          'entities': {},
+          'children': {},
+          'id': 'J6'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 139.6999969482422,
-            "1": 36.900001525878906
+          'pos': {
+            '0': 139.6999969482422,
+            '1': 36.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J7"
+          'entities': {},
+          'children': {},
+          'id': 'J7'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 139.10000610351562,
-            "1": 62.79999923706055
+          'pos': {
+            '0': 139.10000610351562,
+            '1': 62.79999923706055
           },
-          "entities": {},
-          "children": {},
-          "id": "J8"
+          'entities': {},
+          'children': {},
+          'id': 'J8'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 134.10000610351562,
-            "1": 81.9000015258789
+          'pos': {
+            '0': 134.10000610351562,
+            '1': 81.9000015258789
           },
-          "entities": {},
-          "children": {},
-          "id": "J9"
+          'entities': {},
+          'children': {},
+          'id': 'J9'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 104.30000305175781,
-            "1": 88.5999984741211
+          'pos': {
+            '0': 104.30000305175781,
+            '1': 88.5999984741211
           },
-          "entities": {},
-          "children": {},
-          "id": "J10"
+          'entities': {},
+          'children': {},
+          'id': 'J10'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 63.5,
-            "1": 87.5
+          'pos': {
+            '0': 63.5,
+            '1': 87.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J11"
+          'entities': {},
+          'children': {},
+          'id': 'J11'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 45.099998474121094,
-            "1": 84.69999694824219
+          'pos': {
+            '0': 45.099998474121094,
+            '1': 84.69999694824219
           },
-          "entities": {},
-          "children": {},
-          "id": "J12"
+          'entities': {},
+          'children': {},
+          'id': 'J12'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 26.899999618530273,
-            "1": 70.80000305175781
+          'pos': {
+            '0': 26.899999618530273,
+            '1': 70.80000305175781
           },
-          "entities": {},
-          "children": {},
-          "id": "J13"
+          'entities': {},
+          'children': {},
+          'id': 'J13'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 26.899999618530273,
-            "1": 59.5
+          'pos': {
+            '0': 26.899999618530273,
+            '1': 59.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J14"
+          'entities': {},
+          'children': {},
+          'id': 'J14'
         }]
       }
     }, {
-      "options": {
-        "width": 0.2,
-        "radius": 4
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P5",
-      "pos": {
-        "0": 47.5,
-        "1": 56.900001525878906
+      'id': 'P5',
+      'pos': {
+        '0': 47.5,
+        '1': 56.900001525878906
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 48.79999923706055,
-            "1": 41
+          'pos': {
+            '0': 48.79999923706055,
+            '1': 41
           },
-          "entities": {},
-          "children": {},
-          "id": "J39"
+          'entities': {},
+          'children': {},
+          'id': 'J39'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 77.5999984741211,
-            "1": 32.900001525878906
+          'pos': {
+            '0': 77.5999984741211,
+            '1': 32.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J40"
+          'entities': {},
+          'children': {},
+          'id': 'J40'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 96.30000305175781,
-            "1": 32.900001525878906
+          'pos': {
+            '0': 96.30000305175781,
+            '1': 32.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J41"
+          'entities': {},
+          'children': {},
+          'id': 'J41'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 122.80000305175781,
-            "1": 47.29999923706055
+          'pos': {
+            '0': 122.80000305175781,
+            '1': 47.29999923706055
           },
-          "entities": {},
-          "children": {},
-          "id": "J42"
+          'entities': {},
+          'children': {},
+          'id': 'J42'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 122.4000015258789,
-            "1": 65
+          'pos': {
+            '0': 122.4000015258789,
+            '1': 65
           },
-          "entities": {},
-          "children": {},
-          "id": "J43"
+          'entities': {},
+          'children': {},
+          'id': 'J43'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 97.30000305175781,
-            "1": 72
+          'pos': {
+            '0': 97.30000305175781,
+            '1': 72
           },
-          "entities": {},
-          "children": {},
-          "id": "J44"
+          'entities': {},
+          'children': {},
+          'id': 'J44'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 62.900001525878906,
-            "1": 71.5999984741211
+          'pos': {
+            '0': 62.900001525878906,
+            '1': 71.5999984741211
           },
-          "entities": {},
-          "children": {},
-          "id": "J45"
+          'entities': {},
+          'children': {},
+          'id': 'J45'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 47.5,
-            "1": 56.900001525878906
+          'pos': {
+            '0': 47.5,
+            '1': 56.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J46"
+          'entities': {},
+          'children': {},
+          'id': 'J46'
         }]
       }
     }, {
-      "options": {
-        "width": 0.2,
-        "radius": 4
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P6",
-      "pos": {
-        "0": 101.30000305175781,
-        "1": 51
+      'id': 'P6',
+      'pos': {
+        '0': 101.30000305175781,
+        '1': 51
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 67.5999984741211,
-            "1": 51.70000076293945
+          'pos': {
+            '0': 67.5999984741211,
+            '1': 51.70000076293945
           },
-          "entities": {},
-          "children": {},
-          "id": "J47"
+          'entities': {},
+          'children': {},
+          'id': 'J47'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 101.30000305175781,
-            "1": 51
+          'pos': {
+            '0': 101.30000305175781,
+            '1': 51
           },
-          "entities": {},
-          "children": {},
-          "id": "J48"
+          'entities': {},
+          'children': {},
+          'id': 'J48'
         }]
       }
     }],
-    "walls": []
+    'walls': []
   },
 
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} One wall in the path of agents
+  */
   wall: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 68.80000305175781,
-        "1": 65.5
+      'id': 'G0',
+      'pos': {
+        '0': 68.80000305175781,
+        '1': 65.5
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 48,
-        "1": 40.900001525878906
+      'id': 'P1',
+      'pos': {
+        '0': 48,
+        '1': 40.900001525878906
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 90.0999984741211,
-            "1": 40.79999923706055
+          'pos': {
+            '0': 90.0999984741211,
+            '1': 40.79999923706055
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 48,
-            "1": 40.900001525878906
+          'pos': {
+            '0': 48,
+            '1': 40.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }]
       }
     }],
-    "walls": [{
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
+    'walls': [{
+      'options': {
+        'width': 0.2,
+        'radius': 1,
+        'scalable': false
       },
-      "id": "W0",
-      "pos": {
-        "0": 67.30000305175781,
-        "1": 53.20000076293945
+      'id': 'W0',
+      'pos': {
+        '0': 67.30000305175781,
+        '1': 53.20000076293945
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 67.4000015258789,
-            "1": 32
+          'pos': {
+            '0': 67.4000015258789,
+            '1': 32
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 67.30000305175781,
-            "1": 53.20000076293945
+          'pos': {
+            '0': 67.30000305175781,
+            '1': 53.20000076293945
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }]
       }
     }]
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Paths that get closer
+  */
   wallPass: {
-    "contexts": [{
-      "options": {
-        "mobility": 1,
-        "triggerOnEmpty": false,
-        "width": 11.423812252927874,
-        "height": 24.94855936539136
+    'contexts': [{
+      'options': {
+        'mobility': 1,
+        'triggerOnEmpty': false,
+        'width': 11.423812252927874,
+        'height': 24.94855936539136
       },
-      "id": "C0",
-      "pos": {
-        "0": 38.53074645996094,
-        "1": 44.29106140136719
+      'id': 'C0',
+      'pos': {
+        '0': 38.53074645996094,
+        '1': 44.29106140136719
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.8,
-        "agentsCount": 100,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 2,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0,
-        "near": 10
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.8,
+        'agentsCount': 100,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 2,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0,
+        'near': 10
       },
-      "id": "G0",
-      "pos": {
-        "0": 28.354360580444336,
-        "1": 44.29106140136719
+      'id': 'G0',
+      'pos': {
+        '0': 28.354360580444336,
+        '1': 44.29106140136719
       },
-      "entities": {
-        "path": "P2",
-        "startContext": "C0",
-        "endContext": null
+      'entities': {
+        'path': 'P2',
+        'startContext': 'C0',
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P2",
-      "pos": {
-        "0": 52.597679138183594,
-        "1": 44.46891784667969
+      'id': 'P2',
+      'pos': {
+        '0': 52.597679138183594,
+        '1': 44.46891784667969
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 0.5,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 0.5,
+            'scalable': true
           },
-          "pos": {
-            "0": 53.67130661010742,
-            "1": 43.89921951293945
+          'pos': {
+            '0': 53.67130661010742,
+            '1': 43.89921951293945
           },
-          "entities": {},
-          "children": {},
-          "id": "J16"
+          'entities': {},
+          'children': {},
+          'id': 'J16'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': true
           },
-          "pos": {
-            "0": 67.78925323486328,
-            "1": 43.67342758178711
+          'pos': {
+            '0': 67.78925323486328,
+            '1': 43.67342758178711
           },
-          "entities": {},
-          "children": {},
-          "id": "J18"
+          'entities': {},
+          'children': {},
+          'id': 'J18'
         }]
       }
     }],
-    "walls": [{
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
+    'walls': [{
+      'options': {
+        'width': 0.2,
+        'radius': 1,
+        'scalable': false
       },
-      "id": "W0",
-      "pos": {
-        "0": 54.961639404296875,
-        "1": 27.42833137512207
+      'id': 'W0',
+      'pos': {
+        '0': 54.961639404296875,
+        '1': 27.42833137512207
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 52.41826248168945,
-            "1": 25.48590850830078
+          'pos': {
+            '0': 52.41826248168945,
+            '1': 25.48590850830078
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 0.1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 0.1,
+            'scalable': false
           },
-          "pos": {
-            "0": 53.86460876464844,
-            "1": 42.5235710144043
+          'pos': {
+            '0': 53.86460876464844,
+            '1': 42.5235710144043
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 0.1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 0.1,
+            'scalable': false
           },
-          "pos": {
-            "0": 54.79446792602539,
-            "1": 42.49207305908203
+          'pos': {
+            '0': 54.79446792602539,
+            '1': 42.49207305908203
           },
-          "entities": {},
-          "children": {},
-          "id": "J4"
+          'entities': {},
+          'children': {},
+          'id': 'J4'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 54.73858642578125,
-            "1": 25.48590850830078
+          'pos': {
+            '0': 54.73858642578125,
+            '1': 25.48590850830078
           },
-          "entities": {},
-          "children": {},
-          "id": "J6"
+          'entities': {},
+          'children': {},
+          'id': 'J6'
         }]
       }
     }, {
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
+      'options': {
+        'width': 0.2,
+        'radius': 1,
+        'scalable': false
       },
-      "id": "W2",
-      "pos": {
-        "0": 54.961639404296875,
-        "1": 56.580596923828125
+      'id': 'W2',
+      'pos': {
+        '0': 54.961639404296875,
+        '1': 56.580596923828125
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 52.9486198425293,
-            "1": 61.61668395996094
+          'pos': {
+            '0': 52.9486198425293,
+            '1': 61.61668395996094
           },
-          "entities": {},
-          "children": {},
-          "id": "J8"
+          'entities': {},
+          'children': {},
+          'id': 'J8'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 0.1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 0.1,
+            'scalable': false
           },
-          "pos": {
-            "0": 54.020259857177734,
-            "1": 44.71683883666992
+          'pos': {
+            '0': 54.020259857177734,
+            '1': 44.71683883666992
           },
-          "entities": {},
-          "children": {},
-          "id": "J10"
+          'entities': {},
+          'children': {},
+          'id': 'J10'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 0.1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 0.1,
+            'scalable': false
           },
-          "pos": {
-            "0": 54.90620803833008,
-            "1": 44.72572326660156
+          'pos': {
+            '0': 54.90620803833008,
+            '1': 44.72572326660156
           },
-          "entities": {},
-          "children": {},
-          "id": "J12"
+          'entities': {},
+          'children': {},
+          'id': 'J12'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 55.26894760131836,
-            "1": 61.55038833618164
+          'pos': {
+            '0': 55.26894760131836,
+            '1': 61.55038833618164
           },
-          "entities": {},
-          "children": {},
-          "id": "J14"
+          'entities': {},
+          'children': {},
+          'id': 'J14'
         }]
       }
     }]
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Paths closer with group and path
+  */
   wallsPathGr: {
-    "contexts": [],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 200,
-        "agentsMax": 200,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 12,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+    'contexts': [],
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 200,
+        'agentsMax': 200,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 12,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G0",
-      "pos": {
-        "0": 47.6134147644043,
-        "1": 47.2495002746582
+      'id': 'G0',
+      'pos': {
+        '0': 47.6134147644043,
+        '1': 47.2495002746582
       },
-      "entities": {
-        "path": "P1",
-        "startContext": null,
-        "endContext": null
+      'entities': {
+        'path': 'P1',
+        'startContext': null,
+        'endContext': null
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 200
+      'agentsCount': 200
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 86.5999984741211,
-        "1": 45.400001525878906
+      'id': 'P1',
+      'pos': {
+        '0': 86.5999984741211,
+        '1': 45.400001525878906
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': true
           },
-          "pos": {
-            "0": 86.5999984741211,
-            "1": 45.400001525878906
+          'pos': {
+            '0': 86.5999984741211,
+            '1': 45.400001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 10,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 10,
+            'scalable': true
           },
-          "pos": {
-            "0": 116.0999984741211,
-            "1": 45.29999923706055
+          'pos': {
+            '0': 116.0999984741211,
+            '1': 45.29999923706055
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }]
       }
     }],
-    "walls": [{
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
+    'walls': [{
+      'options': {
+        'width': 0.2,
+        'radius': 1,
+        'scalable': false
       },
-      "id": "W0",
-      "pos": {
-        "0": 118.80000305175781,
-        "1": 22.700000762939453
+      'id': 'W0',
+      'pos': {
+        '0': 118.80000305175781,
+        '1': 22.700000762939453
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 53.099998474121094,
-            "1": 22.399999618530273
+          'pos': {
+            '0': 53.099998474121094,
+            '1': 22.399999618530273
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 80.21202087402344,
-            "1": 42.68868637084961
+          'pos': {
+            '0': 80.21202087402344,
+            '1': 42.68868637084961
           },
-          "entities": {},
-          "children": {},
-          "id": "J5"
+          'entities': {},
+          'children': {},
+          'id': 'J5'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 92.69818115234375,
-            "1": 43.51112747192383
+          'pos': {
+            '0': 92.69818115234375,
+            '1': 43.51112747192383
           },
-          "entities": {},
-          "children": {},
-          "id": "J6"
+          'entities': {},
+          'children': {},
+          'id': 'J6'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 118.80000305175781,
-            "1": 22.700000762939453
+          'pos': {
+            '0': 118.80000305175781,
+            '1': 22.700000762939453
           },
-          "entities": {},
-          "children": {},
-          "id": "J8"
+          'entities': {},
+          'children': {},
+          'id': 'J8'
         }]
       }
     }, {
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
+      'options': {
+        'width': 0.2,
+        'radius': 1,
+        'scalable': false
       },
-      "id": "W1",
-      "pos": {
-        "0": 115.30000305175781,
-        "1": 70.69999694824219
+      'id': 'W1',
+      'pos': {
+        '0': 115.30000305175781,
+        '1': 70.69999694824219
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 52.599998474121094,
-            "1": 70.9000015258789
+          'pos': {
+            '0': 52.599998474121094,
+            '1': 70.9000015258789
           },
-          "entities": {},
-          "children": {},
-          "id": "J9"
+          'entities': {},
+          'children': {},
+          'id': 'J9'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 80.36155700683594,
-            "1": 48.14670944213867
+          'pos': {
+            '0': 80.36155700683594,
+            '1': 48.14670944213867
           },
-          "entities": {},
-          "children": {},
-          "id": "J11"
+          'entities': {},
+          'children': {},
+          'id': 'J11'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 93.072021484375,
-            "1": 46.72612762451172
+          'pos': {
+            '0': 93.072021484375,
+            '1': 46.72612762451172
           },
-          "entities": {},
-          "children": {},
-          "id": "J12"
+          'entities': {},
+          'children': {},
+          'id': 'J12'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 115.30000305175781,
-            "1": 70.69999694824219
+          'pos': {
+            '0': 115.30000305175781,
+            '1': 70.69999694824219
           },
-          "entities": {},
-          "children": {},
-          "id": "J13"
+          'entities': {},
+          'children': {},
+          'id': 'J13'
         }]
       }
     }]
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Groups, paths and contexts.
+  */
   pathContexts: {
-    "contexts": [{
-      "options": {
-        "width": 10.800003051757812,
-        "height": 28.400001525878906
+    'contexts': [{
+      'options': {
+        'width': 10.800003051757812,
+        'height': 28.400001525878906
       },
-      "id": "C0",
-      "pos": {
-        "0": 34.400001525878906,
-        "1": 45
+      'id': 'C0',
+      'pos': {
+        '0': 34.400001525878906,
+        '1': 45
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "width": 9.600000000000023,
-        "height": 31.400001525878906
+      'options': {
+        'width': 9.600000000000023,
+        'height': 31.400001525878906
       },
-      "id": "C1",
-      "pos": {
-        "0": 130.8000030517578,
-        "1": 45.20000076293945
+      'id': 'C1',
+      'pos': {
+        '0': 130.8000030517578,
+        '1': 45.20000076293945
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 500,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.1,
-        "startRate": 10,
-        "endProb": 0.2,
-        "endRate": 5
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 500,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0.1,
+        'startRate': 10,
+        'endProb': 0.2,
+        'endRate': 5
       },
-      "id": "G0",
-      "pos": {
-        "0": 83.80000305175781,
-        "1": 72
+      'id': 'G0',
+      'pos': {
+        '0': 83.80000305175781,
+        '1': 72
       },
-      "entities": {
-        "path": "P1",
-        "startContext": "C0",
-        "endContext": "C1"
+      'entities': {
+        'path': 'P1',
+        'startContext': 'C0',
+        'endContext': 'C1'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 117.5,
-        "1": 45.400001525878906
+      'id': 'P1',
+      'pos': {
+        '0': 117.5,
+        '1': 45.400001525878906
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 48.79999923706055,
-            "1": 45.5
+          'pos': {
+            '0': 48.79999923706055,
+            '1': 45.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 82.4000015258789,
-            "1": 45.70000076293945
+          'pos': {
+            '0': 82.4000015258789,
+            '1': 45.70000076293945
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 117.5,
-            "1": 45.400001525878906
+          'pos': {
+            '0': 117.5,
+            '1': 45.400001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }]
       }
     }],
-    "walls": []
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Paths contexts and groups
+  */
   pathCtxGro: {
-    "contexts": [{
-      "options": {
-        "width": 14.399999237060541,
-        "height": 37.400000000000006
+    'contexts': [{
+      'options': {
+        'width': 14.399999237060541,
+        'height': 37.400000000000006
       },
-      "id": "C0",
-      "pos": {
-        "0": 30,
-        "1": 43.20000076293945
+      'id': 'C0',
+      'pos': {
+        '0': 30,
+        '1': 43.20000076293945
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "width": 8.600003051757824,
-        "height": 53.79999923706055
+      'options': {
+        'width': 8.600003051757824,
+        'height': 53.79999923706055
       },
-      "id": "C1",
-      "pos": {
-        "0": 127.5999984741211,
-        "1": 48.29999923706055
+      'id': 'C1',
+      'pos': {
+        '0': 127.5999984741211,
+        '1': 48.29999923706055
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 6,
-        "startProb": 0.05,
-        "startRate": 2,
-        "endProb": 0.1,
-        "endRate": 2
+    'groups': [{
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 6,
+        'startProb': 0.05,
+        'startRate': 2,
+        'endProb': 0.1,
+        'endRate': 2
       },
-      "id": "G0",
-      "pos": {
-        "0": 80.0999984741211,
-        "1": 19.899999618530273
+      'id': 'G0',
+      'pos': {
+        '0': 80.0999984741211,
+        '1': 19.899999618530273
       },
-      "entities": {
-        "path": "P1",
-        "startContext": "C0",
-        "endContext": "C1"
+      'entities': {
+        'path': 'P1',
+        'startContext': 'C0',
+        'endContext': 'C1'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 0,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 3,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 6,
-        "startProb": 0.05,
-        "startRate": 2,
-        "endProb": 0.1,
-        "endRate": 2
+      'options': {
+        'agentsAspect': 0,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 3,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 6,
+        'startProb': 0.05,
+        'startRate': 2,
+        'endProb': 0.1,
+        'endRate': 2
       },
-      "id": "G1",
-      "pos": {
-        "0": 80.5,
-        "1": 68.5
+      'id': 'G1',
+      'pos': {
+        '0': 80.5,
+        '1': 68.5
       },
-      "entities": {
-        "path": "P1",
-        "startContext": "C1",
-        "endContext": "C0"
+      'entities': {
+        'path': 'P1',
+        'startContext': 'C1',
+        'endContext': 'C0'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 115.80000305175781,
-        "1": 46.599998474121094
+      'id': 'P1',
+      'pos': {
+        '0': 115.80000305175781,
+        '1': 46.599998474121094
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 46.099998474121094,
-            "1": 46.70000076293945
+          'pos': {
+            '0': 46.099998474121094,
+            '1': 46.70000076293945
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 8,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 8,
+            'scalable': true
           },
-          "pos": {
-            "0": 67.9000015258789,
-            "1": 46.5
+          'pos': {
+            '0': 67.9000015258789,
+            '1': 46.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 8,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 8,
+            'scalable': true
           },
-          "pos": {
-            "0": 95.0999984741211,
-            "1": 46.29999923706055
+          'pos': {
+            '0': 95.0999984741211,
+            '1': 46.29999923706055
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 115.80000305175781,
-            "1": 46.599998474121094
+          'pos': {
+            '0': 115.80000305175781,
+            '1': 46.599998474121094
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }]
       }
     }],
-    "walls": []
+    'walls': []
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  * @property {Object} Complex scene with multiple entities.
+  */
   rooms: {
-    "contexts": [{
-      "options": {
-        "width": 17.263547386260512,
-        "height": 10.835629013243675
+    'contexts': [{
+      'options': {
+        'width': 17.263547386260512,
+        'height': 10.835629013243675
       },
-      "id": "C0",
-      "pos": {
-        "0": 58,
-        "1": 13
+      'id': 'C0',
+      'pos': {
+        '0': 58,
+        '1': 13
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "width": 12.00000076293945,
-        "height": 21.599999999999994
+      'options': {
+        'width': 12.00000076293945,
+        'height': 21.599999999999994
       },
-      "id": "C1",
-      "pos": {
-        "0": 20.299999237060547,
-        "1": 45.5
+      'id': 'C1',
+      'pos': {
+        '0': 20.299999237060547,
+        '1': 45.5
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }, {
-      "options": {
-        "width": 14.399996948242176,
-        "height": 13.20000610351562
+      'options': {
+        'width': 14.399996948242176,
+        'height': 13.20000610351562
       },
-      "id": "C2",
-      "pos": {
-        "0": 114,
-        "1": 74
+      'id': 'C2',
+      'pos': {
+        '0': 114,
+        '1': 74
       },
-      "entities": {},
-      "children": {}
+      'entities': {},
+      'children': {}
     }],
-    "groups": [{
-      "options": {
-        "agentsAspect": 16711680,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.01,
-        "startRate": 5,
-        "endProb": 0.8,
-        "endRate": 1
+    'groups': [{
+      'options': {
+        'agentsAspect': 16711680,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0.01,
+        'startRate': 5,
+        'endProb': 0.8,
+        'endRate': 1
       },
-      "id": "G0",
-      "pos": {
-        "0": 81,
-        "1": 9
+      'id': 'G0',
+      'pos': {
+        '0': 81,
+        '1': 9
       },
-      "entities": {
-        "path": "P2",
-        "startContext": "C0",
-        "endContext": "C2"
+      'entities': {
+        'path': 'P2',
+        'startContext': 'C0',
+        'endContext': 'C2'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 65280,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 2,
-        "pathReverse": true,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.05,
-        "startRate": 2,
-        "endProb": 0.1,
-        "endRate": 3
+      'options': {
+        'agentsAspect': 65280,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 2,
+        'pathReverse': true,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0.05,
+        'startRate': 2,
+        'endProb': 0.1,
+        'endRate': 3
       },
-      "id": "G2",
-      "pos": {
-        "0": 110,
-        "1": 16
+      'id': 'G2',
+      'pos': {
+        '0': 110,
+        '1': 16
       },
-      "entities": {
-        "path": "P2",
-        "startContext": "C2",
-        "endContext": "C0"
+      'entities': {
+        'path': 'P2',
+        'startContext': 'C2',
+        'endContext': 'C0'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 11184810,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 0,
-        "pathReverse": false,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0,
-        "startRate": 0,
-        "endProb": 0,
-        "endRate": 0
+      'options': {
+        'agentsAspect': 11184810,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 0,
+        'pathReverse': false,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0,
+        'startRate': 0,
+        'endProb': 0,
+        'endRate': 0
       },
-      "id": "G3",
-      "pos": {
-        "0": 38.79999923706055,
-        "1": 79.19999694824219
+      'id': 'G3',
+      'pos': {
+        '0': 38.79999923706055,
+        '1': 79.19999694824219
       },
-      "entities": {
-        "path": "P1",
-        "startContext": "C1",
-        "endContext": "C2"
+      'entities': {
+        'path': 'P1',
+        'startContext': 'C1',
+        'endContext': 'C2'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }, {
-      "options": {
-        "agentsAspect": 255,
-        "agentsSizeMin": 0.5,
-        "agentsSizeMax": 0.5,
-        "agentsCount": 10,
-        "agentsMax": 100,
-        "debug": false,
-        "pathStart": 3,
-        "pathReverse": true,
-        "pathCircular": false,
-        "radius": 3,
-        "startProb": 0.5,
-        "startRate": 1,
-        "endProb": 0.5,
-        "endRate": 2
+      'options': {
+        'agentsAspect': 255,
+        'agentsSizeMin': 0.5,
+        'agentsSizeMax': 0.5,
+        'agentsCount': 10,
+        'agentsMax': 100,
+        'debug': false,
+        'pathStart': 3,
+        'pathReverse': true,
+        'pathCircular': false,
+        'radius': 3,
+        'startProb': 0.5,
+        'startRate': 1,
+        'endProb': 0.5,
+        'endRate': 2
       },
-      "id": "G4",
-      "pos": {
-        "0": 73,
-        "1": 82.80000305175781
+      'id': 'G4',
+      'pos': {
+        '0': 73,
+        '1': 82.80000305175781
       },
-      "entities": {
-        "path": "P1",
-        "startContext": "C2",
-        "endContext": "C1"
+      'entities': {
+        'path': 'P1',
+        'startContext': 'C2',
+        'endContext': 'C1'
       },
-      "children": {},
-      "behavior": {
-        "options": {
-          "A": 2000,
-          "B": 0.08,
-          "kn": 120000,
-          "Kv": 240000,
-          "relaxationTime": 0.3
+      'children': {},
+      'behavior': {
+        'options': {
+          'A': 2000,
+          'B': 0.08,
+          'kn': 120000,
+          'Kv': 240000,
+          'relaxationTime': 0.3
         }
       },
-      "agentsCount": 10
+      'agentsCount': 10
     }],
-    "paths": [{
-      "options": {
-        "width": 0.2,
-        "radius": 4
+    'paths': [{
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P1",
-      "pos": {
-        "0": 102,
-        "1": 60
+      'id': 'P1',
+      'pos': {
+        '0': 102,
+        '1': 60
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 3,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 3,
+            'scalable': true
           },
-          "pos": {
-            "0": 29.700000762939453,
-            "1": 45.599998474121094
+          'pos': {
+            '0': 29.700000762939453,
+            '1': 45.599998474121094
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 3,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 3,
+            'scalable': true
           },
-          "pos": {
-            "0": 51.79999923706055,
-            "1": 47
+          'pos': {
+            '0': 51.79999923706055,
+            '1': 47
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 3,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 3,
+            'scalable': true
           },
-          "pos": {
-            "0": 84.5,
-            "1": 47.70000076293945
+          'pos': {
+            '0': 84.5,
+            '1': 47.70000076293945
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 100.0999984741211,
-            "1": 59.5
+          'pos': {
+            '0': 100.0999984741211,
+            '1': 59.5
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }]
       }
     }, {
-      "options": {
-        "width": 0.2,
-        "radius": 4
+      'options': {
+        'width': 0.2,
+        'radius': 4
       },
-      "id": "P2",
-      "pos": {
-        "0": 111,
-        "1": 57
+      'id': 'P2',
+      'pos': {
+        '0': 111,
+        '1': 57
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 58,
-            "1": 24
+          'pos': {
+            '0': 58,
+            '1': 24
           },
-          "entities": {},
-          "children": {},
-          "id": "J4"
+          'entities': {},
+          'children': {},
+          'id': 'J4'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 3,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 3,
+            'scalable': true
           },
-          "pos": {
-            "0": 69.5,
-            "1": 43.900001525878906
+          'pos': {
+            '0': 69.5,
+            '1': 43.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J5"
+          'entities': {},
+          'children': {},
+          'id': 'J5'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 4,
-            "scalable": true
+          'options': {
+            'width': 0.2,
+            'radius': 4,
+            'scalable': true
           },
-          "pos": {
-            "0": 111,
-            "1": 57
+          'pos': {
+            '0': 111,
+            '1': 57
           },
-          "entities": {},
-          "children": {},
-          "id": "J6"
+          'entities': {},
+          'children': {},
+          'id': 'J6'
         }]
       }
     }],
-    "walls": [{
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
+    'walls': [{
+      'options': {
+        'width': 0.2,
+        'radius': 1,
+        'scalable': false
       },
-      "id": "W0",
-      "pos": {
-        "0": 31,
-        "1": 41
+      'id': 'W0',
+      'pos': {
+        '0': 31,
+        '1': 41
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 29.600000381469727,
-            "1": 20
+          'pos': {
+            '0': 29.600000381469727,
+            '1': 20
           },
-          "entities": {},
-          "children": {},
-          "id": "J0"
+          'entities': {},
+          'children': {},
+          'id': 'J0'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 48,
-            "1": 20
+          'pos': {
+            '0': 48,
+            '1': 20
           },
-          "entities": {},
-          "children": {},
-          "id": "J1"
+          'entities': {},
+          'children': {},
+          'id': 'J1'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 48,
-            "1": 35
+          'pos': {
+            '0': 48,
+            '1': 35
           },
-          "entities": {},
-          "children": {},
-          "id": "J2"
+          'entities': {},
+          'children': {},
+          'id': 'J2'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 31,
-            "1": 35
+          'pos': {
+            '0': 31,
+            '1': 35
           },
-          "entities": {},
-          "children": {},
-          "id": "J3"
+          'entities': {},
+          'children': {},
+          'id': 'J3'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 31,
-            "1": 41
+          'pos': {
+            '0': 31,
+            '1': 41
           },
-          "entities": {},
-          "children": {},
-          "id": "J4"
+          'entities': {},
+          'children': {},
+          'id': 'J4'
         }]
       }
     }, {
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
+      'options': {
+        'width': 0.2,
+        'radius': 1,
+        'scalable': false
       },
-      "id": "W1",
-      "pos": {
-        "0": 99,
-        "1": 67
+      'id': 'W1',
+      'pos': {
+        '0': 99,
+        '1': 67
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 32,
-            "1": 53
+          'pos': {
+            '0': 32,
+            '1': 53
           },
-          "entities": {},
-          "children": {},
-          "id": "J5"
+          'entities': {},
+          'children': {},
+          'id': 'J5'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 60,
-            "1": 53
+          'pos': {
+            '0': 60,
+            '1': 53
           },
-          "entities": {},
-          "children": {},
-          "id": "J6"
+          'entities': {},
+          'children': {},
+          'id': 'J6'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 77,
-            "1": 54
+          'pos': {
+            '0': 77,
+            '1': 54
           },
-          "entities": {},
-          "children": {},
-          "id": "J7"
+          'entities': {},
+          'children': {},
+          'id': 'J7'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 81,
-            "1": 67
+          'pos': {
+            '0': 81,
+            '1': 67
           },
-          "entities": {},
-          "children": {},
-          "id": "J8"
+          'entities': {},
+          'children': {},
+          'id': 'J8'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 99,
-            "1": 67
+          'pos': {
+            '0': 99,
+            '1': 67
           },
-          "entities": {},
-          "children": {},
-          "id": "J9"
+          'entities': {},
+          'children': {},
+          'id': 'J9'
         }]
       }
     }, {
-      "options": {
-        "width": 0.2,
-        "radius": 1,
-        "scalable": false
+      'options': {
+        'width': 0.2,
+        'radius': 1,
+        'scalable': false
       },
-      "id": "W2",
-      "pos": {
-        "0": 124,
-        "1": 66
+      'id': 'W2',
+      'pos': {
+        '0': 124,
+        '1': 66
       },
-      "entities": {},
-      "children": {
-        "joints": [{
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+      'entities': {},
+      'children': {
+        'joints': [{
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 70,
-            "1": 22
+          'pos': {
+            '0': 70,
+            '1': 22
           },
-          "entities": {},
-          "children": {},
-          "id": "J10"
+          'entities': {},
+          'children': {},
+          'id': 'J10'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 70,
-            "1": 37
+          'pos': {
+            '0': 70,
+            '1': 37
           },
-          "entities": {},
-          "children": {},
-          "id": "J11"
+          'entities': {},
+          'children': {},
+          'id': 'J11'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 97,
-            "1": 37
+          'pos': {
+            '0': 97,
+            '1': 37
           },
-          "entities": {},
-          "children": {},
-          "id": "J12"
+          'entities': {},
+          'children': {},
+          'id': 'J12'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 123.5999984741211,
-            "1": 37.900001525878906
+          'pos': {
+            '0': 123.5999984741211,
+            '1': 37.900001525878906
           },
-          "entities": {},
-          "children": {},
-          "id": "J13"
+          'entities': {},
+          'children': {},
+          'id': 'J13'
         }, {
-          "options": {
-            "width": 0.2,
-            "radius": 1,
-            "scalable": false
+          'options': {
+            'width': 0.2,
+            'radius': 1,
+            'scalable': false
           },
-          "pos": {
-            "0": 124,
-            "1": 66
+          'pos': {
+            '0': 124,
+            '1': 66
           },
-          "entities": {},
-          "children": {},
-          "id": "J14"
+          'entities': {},
+          'children': {},
+          'id': 'J14'
         }]
       }
     }]
   },
-  /*******************************************************************************************************************/
-  /**
-   * ****************************************************************************************************************
-   * @method testFun
-   * @param {} world
-   * @param {} debug
-   * @return 
+
+   /*****************************************************************************************************************
+   * @method testFun Test function to programatically create worlds
+   * @param {World} world
+   * @param {Boolean} debug
    */
   testFun: function(world, debug) {
     // wire world events and adding entities functions
@@ -5358,8 +5472,9 @@ var Worlds = {
     var wall = new CrowdSim.Wall(null, null, world);
     wall.addJoints(room1);
   },
-  /*******************************************************************************************************************/
-  /*******************************************************************************************************************/
+  /*******************************************************************************************************************
+  *@property {Object} JSON exported world from testFun
+  */
   testJson: {
     'contexts': [{
       'options': {

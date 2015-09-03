@@ -2,6 +2,8 @@
 
 /**
  * @class CrowdSim
+ * @main CrowdSim
+ * @module CrowdSim
  * @type {Object}
  */
 var CrowdSim = {

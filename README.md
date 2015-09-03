@@ -3,6 +3,8 @@ crowd-sim
 
 [![Build Status](https://travis-ci.org/Jacq/crowd-sim.svg?branch=master)](https://travis-ci.org/Jacq/crowd-sim)
 
+CrowdSim is a 2D crowd simulator implemented in JavaScript. It is implemented as a low level library (CrowdSim.js) and a low level application (CrowdSimApp.js). Both JavaScript modules are integrated into a web aplication that is located in the *demo* folder.
+
 ## Features ##
 - A 2D simulator crowd simulator lib with a demo application using Pixi.js for rendering.
 - Definition of areas (Contexts) types (enter, exit, passing)
@@ -20,13 +22,17 @@ crowd-sim
 
 ## Tools  ##
 - Pixi.js : 2D render
-- Gulp : Js task manager running and compiling.
-- Bower : dependency manager
+- Gulp : as task manager running and compiling.
+- Browserify: for module packaging.
+- Bower : as dependency manager
 
 # Demo #
 Select different examples from left panel "Examples" select box in:
 
 **https://rawgit.com/Jacq/crowd-sim/master/demo/index.html**
+
+# Screenshot #
+<img src="editor.png">[Screenshot]
 
 ## References
 
@@ -46,9 +52,6 @@ Select different examples from left panel "Examples" select box in:
 - "Collective Information Processing and Pattern Formation in Swarms, Flocks, and Crowds", Mehdi Moussaid, Simon Garnier,Guy Theraulaz,Dirk Helbinga, Topics in Cognitive Science 1 (2009) 469–497
 - "Experimental study of the behavioural mechanisms underlying self-organization in human crowds", Mehdi Moussaïd, Dirk Helbing, Simon Garnier, Anders Johansson, Maud Combe and Guy Theraulaz, Procedings of the Royal Society 2009.
 - "The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics", Mehdi Moussaı, Niriaska Perozo, Simon Garnier, Dirk Helbing, Guy Theraulaz, PLOS One 2010 Vol 5 Issue 4
-
-
-
 - "Modeling Individual Behaviors in Crowd Simulation", Adriana Braun, Soraia R. Musse, Luiz P. L. de Oliveira and Bardo E. J. Bodmann Av. Unisinos, 950 – São Leopoldo, RS, Brazil  http://web.cse.ohio-state.edu/~parent/classes/888/SIG07/BehavioralAnimation.pdf
 
 ### Js libs

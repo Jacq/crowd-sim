@@ -9,8 +9,10 @@ var Colors = Base.Colors;
 /**
  * Line rendering for paths and walls prototype.
  *
- * @class Render.Line
+ * @class LinePrototype
  * @constructor
+ * @module Render
+ * @submodule LinePrototype
  * @param {Number} color
  * @return {LinePrototype} Line prototype
  */

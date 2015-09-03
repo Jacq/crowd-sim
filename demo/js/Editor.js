@@ -4,6 +4,8 @@ var CrowdSimEditor = (function($) {
 
  /**
  * @class Editor
+ * @main Editor
+ * @static
  * @type {Object}
  */
   var Editor = {};

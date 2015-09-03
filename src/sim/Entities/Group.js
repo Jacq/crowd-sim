@@ -12,6 +12,8 @@ var Panic = require('../Behavior/Panic');
  * Group Entity where agents belong.
  *
  * @class Group
+ * @module Entities
+ * @submodule Group
  * @constructor
  * @param {Number} x coordinate
  * @param {Number} y coordinate

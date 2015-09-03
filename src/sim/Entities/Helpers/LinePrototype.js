@@ -8,6 +8,8 @@ var Joint = require('./Joint');
  * Base class to extend Wall and Path entities with common functionalities.
  *
  * @method LinePrototype
+ * @module Entities
+ * @submodule LinePrototype
  * @param {String} idPrefix 'W' for walls, 'P' for paths
  * @param {String} type 'wall' for walls, 'path' for paths
  * @param {Object} defaults options

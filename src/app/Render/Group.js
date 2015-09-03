@@ -9,7 +9,9 @@ var Colors = Base.Colors;
 /**
  * Create a group render view from a group entity.
  *
- * @class Render.Group
+ * @class Group
+ * @module Render
+ * @submodule Group
  * @constructor
  * @param {Group} group
  */

@@ -1,9 +1,18 @@
 var Vec2 = require('../Common/Vec2');
 
 /**
+ * Module with all the entities
+ *
+ * @module CrowdSim
+ * @submodule Entities
+*/
+
+/**
  * Base entity
  *
  * @class Entity
+ * @module Entities
+ * @submodule Entity
  * @constructor
  * @param {Number} x coordinate
  * @param {Number} y coordinate

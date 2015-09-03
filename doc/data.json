@@ -1,11 +1,26 @@
 {
-    "project": {},
+    "project": {
+        "name": "CrowdSim",
+        "description": "YUIDoc documentation for CrowdSim",
+        "version": "0.3",
+        "url": "https://github.com/Jacq/crowd-sim"
+    },
     "files": {
         "src\\app\\Render\\Agent.js": {
             "name": "src\\app\\Render\\Agent.js",
             "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\app\\Render\\Base.js": {
+            "name": "src\\app\\Render\\Base.js",
+            "modules": {
+                "Base": 1
+            },
             "classes": {
-                "Render.Agent": 1
+                "Colors": 1,
+                "Fonts": 1
             },
             "fors": {},
             "namespaces": {}
@@ -13,9 +28,7 @@
         "src\\app\\Render\\Context.js": {
             "name": "src\\app\\Render\\Context.js",
             "modules": {},
-            "classes": {
-                "Render.Context": 1
-            },
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
@@ -31,27 +44,21 @@
         "src\\app\\Render\\Entity.js": {
             "name": "src\\app\\Render\\Entity.js",
             "modules": {},
-            "classes": {
-                "Render.Entity": 1
-            },
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
         "src\\app\\Render\\Group.js": {
             "name": "src\\app\\Render\\Group.js",
             "modules": {},
-            "classes": {
-                "Render.Group": 1
-            },
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
         "src\\app\\Render\\Joint.js": {
             "name": "src\\app\\Render\\Joint.js",
             "modules": {},
-            "classes": {
-                "Render.Joint": 1
-            },
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
@@ -59,7 +66,7 @@
             "name": "src\\app\\Render\\LinePrototype.js",
             "modules": {},
             "classes": {
-                "Render.Line": 1
+                "LinePrototype": 1
             },
             "fors": {},
             "namespaces": {}
@@ -68,7 +75,7 @@
             "name": "src\\app\\Render\\Path.js",
             "modules": {},
             "classes": {
-                "Render.Path": 1
+                "Path": 1
             },
             "fors": {},
             "namespaces": {}
@@ -86,14 +93,16 @@
             "name": "src\\app\\Render\\Wall.js",
             "modules": {},
             "classes": {
-                "Render.Wall": 1
+                "Wall": 1
             },
             "fors": {},
             "namespaces": {}
         },
         "src\\app\\CrowdSimApp.js": {
             "name": "src\\app\\CrowdSimApp.js",
-            "modules": {},
+            "modules": {
+                "CrowdSimApp": 1
+            },
             "classes": {
                 "CrowdSimApp": 1
             },
@@ -102,7 +111,9 @@
         },
         "src\\app\\Worlds.js": {
             "name": "src\\app\\Worlds.js",
-            "modules": {},
+            "modules": {
+                "Worlds": 1
+            },
             "classes": {},
             "fors": {},
             "namespaces": {}
@@ -111,7 +122,7 @@
             "name": "src\\sim\\Behavior\\Behavior.js",
             "modules": {},
             "classes": {
-                "Behaviour": 1
+                "Behavior": 1
             },
             "fors": {},
             "namespaces": {}
@@ -155,7 +166,9 @@
         },
         "src\\sim\\Entities\\Helpers\\LinePrototype.js": {
             "name": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "modules": {},
+            "modules": {
+                "LinePrototype": 1
+            },
             "classes": {
                 "Line": 1
             },
@@ -183,7 +196,9 @@
         },
         "src\\sim\\Entities\\Entity.js": {
             "name": "src\\sim\\Entities\\Entity.js",
-            "modules": {},
+            "modules": {
+                "Entities": 1
+            },
             "classes": {
                 "Entity": 1
             },
@@ -199,6 +214,24 @@
             "fors": {},
             "namespaces": {}
         },
+        "src\\sim\\Entities\\Path.js": {
+            "name": "src\\sim\\Entities\\Path.js",
+            "modules": {
+                "Path": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src\\sim\\Entities\\Wall.js": {
+            "name": "src\\sim\\Entities\\Wall.js",
+            "modules": {
+                "Wall": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src\\sim\\Agent.js": {
             "name": "src\\sim\\Agent.js",
             "modules": {},
@@ -210,7 +243,9 @@
         },
         "src\\sim\\CrowdSim.js": {
             "name": "src\\sim\\CrowdSim.js",
-            "modules": {},
+            "modules": {
+                "CrowdSim": 1
+            },
             "classes": {
                 "CrowdSim": 1
             },
@@ -236,19 +271,400 @@
             "namespaces": {}
         }
     },
-    "modules": {},
+    "modules": {
+        "Render": {
+            "name": "Render",
+            "submodules": {
+                "Base": 1,
+                "Detail": 1
+            },
+            "elements": {},
+            "classes": {
+                "Wall": 1,
+                "Colors": 1,
+                "Fonts": 1,
+                "Detail": 1,
+                "LinePrototype": 1,
+                "Path": 1,
+                "Render": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "module": "CrowdSimApp",
+            "file": "src\\app\\Render\\Wall.js",
+            "line": 13,
+            "description": "Initialices rendering and animate entities."
+        },
+        "Agent": {
+            "name": "Agent",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Agent": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "CrowdSim",
+            "namespace": "",
+            "description": "The agents that live in the simulation engine.",
+            "file": "src\\sim\\Agent.js",
+            "line": 5
+        },
+        "Base": {
+            "name": "Base",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Colors": 1,
+                "Fonts": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Render",
+            "namespace": "",
+            "file": "src\\app\\Render\\Base.js",
+            "line": 24
+        },
+        "Context": {
+            "name": "Context",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Context": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Entities",
+            "namespace": "",
+            "description": "Context entity",
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 6
+        },
+        "Detail": {
+            "name": "Detail",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Detail": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Render",
+            "namespace": "",
+            "description": "Detail manager.",
+            "file": "src\\app\\Render\\Detail.js",
+            "line": 3
+        },
+        "Entity": {
+            "name": "Entity",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Entity": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Entities",
+            "namespace": "",
+            "description": "Base entity",
+            "file": "src\\sim\\Entities\\Entity.js",
+            "line": 10
+        },
+        "Group": {
+            "name": "Group",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Group": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Entities",
+            "namespace": "",
+            "description": "Group Entity where agents belong.",
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 11
+        },
+        "Joint": {
+            "name": "Joint",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Joint": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Entities",
+            "namespace": "",
+            "description": "Joint helper entity children of Wall and Path",
+            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "line": 4
+        },
+        "LinePrototype": {
+            "name": "LinePrototype",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "LinePrototype": 1,
+                "Line": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Entities",
+            "namespace": "",
+            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
+            "line": 20,
+            "description": "Base class to extend Wall and Path entities with common functionalities.",
+            "itemtype": "method",
+            "params": [
+                {
+                    "name": "idPrefix",
+                    "description": "'W' for walls, 'P' for paths",
+                    "type": "String"
+                },
+                {
+                    "name": "type",
+                    "description": "'wall' for walls, 'path' for paths",
+                    "type": "String"
+                },
+                {
+                    "name": "defaults",
+                    "description": "options",
+                    "type": "Object"
+                },
+                {
+                    "name": "id",
+                    "description": "to use insted of autogenerate it, used when loading worlds",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Line"
+            }
+        },
+        "Path": {
+            "name": "Path",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Path": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Entities",
+            "namespace": "",
+            "file": "src\\app\\Render\\Path.js",
+            "line": 12,
+            "description": "Create a Path render view from an Entity."
+        },
+        "CrowdSimApp": {
+            "name": "CrowdSimApp",
+            "submodules": {
+                "Worlds": 1
+            },
+            "elements": {},
+            "classes": {
+                "CrowdSimApp": 1,
+                "Render": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src\\app\\CrowdSimApp.js",
+            "line": 7
+        },
+        "Wall": {
+            "name": "Wall",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Wall": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "Entities",
+            "namespace": "",
+            "file": "src\\app\\Render\\Wall.js",
+            "line": 13,
+            "description": "Wall render view."
+        },
+        "Worlds": {
+            "name": "Worlds",
+            "submodules": {},
+            "elements": {},
+            "classes": {},
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "CrowdSimApp",
+            "namespace": "",
+            "file": "src\\app\\Worlds.js",
+            "line": 4,
+            "description": "Example worlds to show simulator capabilities"
+        },
+        "CrowdSim": {
+            "name": "CrowdSim",
+            "submodules": {
+                "Agent": 1,
+                "Behavior": 1,
+                "Panic": 1,
+                "Common": 1,
+                "Engine": 1,
+                "World": 1
+            },
+            "elements": {},
+            "classes": {
+                "Agent": 1,
+                "Behavior": 1,
+                "Panic": 1,
+                "Grid": 1,
+                "Common utilities": 1,
+                "2 Dimensional Vector": 1,
+                "CrowdSim": 1,
+                "Engine": 1,
+                "World": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "file": "src\\sim\\World.js",
+            "line": 9,
+            "tag": "main",
+            "itemtype": "main"
+        },
+        "Behavior": {
+            "name": "Behavior",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Behavior": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "CrowdSim",
+            "namespace": "",
+            "description": "Base behavior",
+            "file": "src\\sim\\Behavior\\Behavior.js",
+            "line": 3
+        },
+        "Panic": {
+            "name": "Panic",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Panic": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "CrowdSim",
+            "namespace": "",
+            "description": "Helbing-Farkas,Vicsek Simulating dynamical features of escape panic",
+            "file": "src\\sim\\Behavior\\Panic.js",
+            "line": 6
+        },
+        "Common": {
+            "name": "Common",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Grid": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "CrowdSim",
+            "namespace": "",
+            "description": "Grid hashmap to store entities indexed by their position.",
+            "file": "src\\sim\\Common\\Grid.js",
+            "line": 5
+        },
+        "Entities": {
+            "name": "Entities",
+            "submodules": {
+                "Entities": 1,
+                "Context": 1,
+                "Entity": 1,
+                "Group": 1,
+                "Joint": 1,
+                "LinePrototype": 1,
+                "Path": 1,
+                "Wall": 1
+            },
+            "elements": {},
+            "classes": {
+                "Entity": 1,
+                "Context": 1,
+                "Group": 1,
+                "Joint": 1,
+                "Line": 1,
+                "AssignableToGroup": 1,
+                "EntityPrototype": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "module": "Entities",
+            "file": "src\\sim\\Entities\\Helpers\\Traits.js",
+            "line": 16,
+            "description": "Module with all the entities"
+        },
+        "Engine": {
+            "name": "Engine",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Engine": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "CrowdSim",
+            "namespace": "",
+            "description": "The simulation engine. Manages the state running of the simulation",
+            "file": "src\\sim\\Engine.js",
+            "line": 5
+        },
+        "World": {
+            "name": "World",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "World": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "CrowdSim",
+            "namespace": "",
+            "description": "The world where al entities live",
+            "file": "src\\sim\\World.js",
+            "line": 9
+        }
+    },
     "classes": {
-        "Render.Agent": {
-            "name": "Render.Agent",
-            "shortname": "Render.Agent",
+        "Agent": {
+            "name": "Agent",
+            "shortname": "Agent",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src\\app\\Render\\Agent.js",
-            "line": 8,
-            "description": "Agent render view.",
+            "module": "CrowdSim",
+            "file": "src\\sim\\Agent.js",
+            "line": 5,
+            "description": "The agents that live in the simulation engine.",
+            "submodule": "Agent",
             "itemtype": "method",
             "params": [
                 {
@@ -256,19 +672,51 @@
                     "description": "",
                     "type": "Agent"
                 }
-            ]
+            ],
+            "is_constructor": 1
         },
-        "Render.Context": {
-            "name": "Render.Context",
-            "shortname": "Render.Context",
+        "Colors": {
+            "name": "Colors",
+            "shortname": "Colors",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src\\app\\Render\\Context.js",
-            "line": 9,
-            "description": "Context render view.",
+            "module": "Render",
+            "submodule": "Base",
+            "namespace": "",
+            "file": "src\\app\\Render\\Base.js",
+            "line": 3
+        },
+        "Fonts": {
+            "name": "Fonts",
+            "shortname": "Fonts",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Render",
+            "submodule": "Base",
+            "namespace": "",
+            "file": "src\\app\\Render\\Base.js",
+            "line": 24
+        },
+        "Context": {
+            "name": "Context",
+            "shortname": "Context",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Entities",
+            "namespace": "",
+            "file": "src\\sim\\Entities\\Context.js",
+            "line": 6,
+            "description": "Context entity",
+            "submodule": "Context",
             "itemtype": "method",
             "params": [
                 {
@@ -276,7 +724,9 @@
                     "description": "",
                     "type": "Context"
                 }
-            ]
+            ],
+            "is_constructor": 1,
+            "extends": "Entity"
         },
         "Detail": {
             "name": "Detail",
@@ -286,9 +736,12 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "Render",
+            "namespace": "",
             "file": "src\\app\\Render\\Detail.js",
             "line": 3,
             "description": "Detail manager.",
+            "submodule": "Detail",
             "is_constructor": 1,
             "params": [
                 {
@@ -303,17 +756,20 @@
                 }
             ]
         },
-        "Render.Entity": {
-            "name": "Render.Entity",
-            "shortname": "Render.Entity",
+        "Entity": {
+            "name": "Entity",
+            "shortname": "Entity",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src\\app\\Render\\Entity.js",
-            "line": 5,
-            "description": "Base render prototype",
+            "module": "Entities",
+            "namespace": "",
+            "file": "src\\sim\\Entities\\Entity.js",
+            "line": 10,
+            "description": "Base entity",
+            "submodule": "Entity",
             "is_constructor": 1,
             "params": [
                 {
@@ -323,17 +779,20 @@
                 }
             ]
         },
-        "Render.Group": {
-            "name": "Render.Group",
-            "shortname": "Render.Group",
+        "Group": {
+            "name": "Group",
+            "shortname": "Group",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src\\app\\Render\\Group.js",
-            "line": 9,
-            "description": "Create a group render view from a group entity.",
+            "module": "Entities",
+            "namespace": "",
+            "file": "src\\sim\\Entities\\Group.js",
+            "line": 11,
+            "description": "Group Entity where agents belong.",
+            "submodule": "Group",
             "is_constructor": 1,
             "params": [
                 {
@@ -341,19 +800,23 @@
                     "description": "",
                     "type": "Group"
                 }
-            ]
+            ],
+            "extends": "Entity"
         },
-        "Render.Joint": {
-            "name": "Render.Joint",
-            "shortname": "Render.Joint",
+        "Joint": {
+            "name": "Joint",
+            "shortname": "Joint",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src\\app\\Render\\Joint.js",
-            "line": 9,
-            "description": "Joint render view",
+            "module": "Entities",
+            "namespace": "",
+            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
+            "line": 4,
+            "description": "Joint helper entity children of Wall and Path",
+            "submodule": "Joint",
             "is_constructor": 1,
             "params": [
                 {
@@ -366,19 +829,23 @@
                     "description": "",
                     "type": "Pixi.Texture"
                 }
-            ]
+            ],
+            "extends": "Entity"
         },
-        "Render.Line": {
-            "name": "Render.Line",
-            "shortname": "Render.Line",
+        "LinePrototype": {
+            "name": "LinePrototype",
+            "shortname": "LinePrototype",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "Render",
+            "namespace": "",
             "file": "src\\app\\Render\\LinePrototype.js",
             "line": 9,
             "description": "Line rendering for paths and walls prototype.",
+            "submodule": "LinePrototype",
             "is_constructor": 1,
             "params": [
                 {
@@ -392,23 +859,26 @@
                 "type": "LinePrototype"
             }
         },
-        "Render.Path": {
-            "name": "Render.Path",
-            "shortname": "Render.Path",
+        "Path": {
+            "name": "Path",
+            "shortname": "Path",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "Render",
+            "namespace": "",
             "file": "src\\app\\Render\\Path.js",
             "line": 12,
             "description": "Create a Path render view from an Entity.",
+            "submodule": "Path",
             "itemtype": "method",
             "params": [
                 {
                     "name": "path",
                     "description": "",
-                    "type": "Particleh"
+                    "type": "Path"
                 }
             ],
             "return": {
@@ -424,9 +894,12 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSimApp",
+            "namespace": "",
             "file": "src\\app\\Render\\Render.js",
             "line": 6,
             "description": "Initialices rendering and animate entities.",
+            "submodule": "Render",
             "is_constructor": 1,
             "params": [
                 {
@@ -451,17 +924,20 @@
                 }
             ]
         },
-        "Render.Wall": {
-            "name": "Render.Wall",
-            "shortname": "Render.Wall",
+        "Wall": {
+            "name": "Wall",
+            "shortname": "Wall",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "Render",
+            "namespace": "",
             "file": "src\\app\\Render\\Wall.js",
             "line": 13,
             "description": "Wall render view.",
+            "submodule": "Wall",
             "is_constructor": 1,
             "params": [
                 {
@@ -472,7 +948,7 @@
             ],
             "return": {
                 "description": "",
-                "type": "Render.Wall"
+                "type": "Wall"
             }
         },
         "CrowdSimApp": {
@@ -483,21 +959,31 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSimApp",
+            "namespace": "",
             "file": "src\\app\\CrowdSimApp.js",
             "line": 7,
+            "mainName": "CrowdSimApp",
+            "tag": "main",
+            "itemtype": "main",
+            "_main": true,
+            "static": 1,
             "type": "{Object}"
         },
-        "Behaviour": {
-            "name": "Behaviour",
-            "shortname": "Behaviour",
+        "Behavior": {
+            "name": "Behavior",
+            "shortname": "Behavior",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSim",
+            "namespace": "",
             "file": "src\\sim\\Behavior\\Behavior.js",
             "line": 3,
-            "description": "Base behavior.",
+            "description": "Base behavior",
+            "submodule": "Behavior",
             "is_constructor": 1,
             "params": [
                 {
@@ -515,9 +1001,12 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSim",
+            "namespace": "",
             "file": "src\\sim\\Behavior\\Panic.js",
             "line": 6,
             "description": "Helbing-Farkas,Vicsek Simulating dynamical features of escape panic",
+            "submodule": "Panic",
             "is_constructor": 1,
             "params": [
                 {
@@ -527,8 +1016,40 @@
                 },
                 {
                     "name": "options",
-                    "description": "",
-                    "type": "Object"
+                    "description": "for the behavior model algorithm",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "A",
+                            "description": "repulsive force constant",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "B",
+                            "description": "repulsive force constant",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "kn",
+                            "description": "compression large constant",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "Kv",
+                            "description": "friction large constant",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "relaxationTime",
+                            "description": "time to simulate progressive stopping",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
                 }
             ],
             "extends": "Behavior"
@@ -541,9 +1062,12 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSim",
+            "namespace": "",
             "file": "src\\sim\\Common\\Grid.js",
             "line": 5,
             "description": "Grid hashmap to store entities indexed by their position.",
+            "submodule": "Common",
             "is_constructor": 1,
             "params": [
                 {
@@ -561,6 +1085,8 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSim",
+            "namespace": "",
             "file": "src\\sim\\Common\\Vec2.js",
             "line": 21
         },
@@ -572,50 +1098,10 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSim",
+            "namespace": "",
             "file": "src\\sim\\Common\\Vec2.js",
             "line": 56
-        },
-        "Joint": {
-            "name": "Joint",
-            "shortname": "Joint",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src\\sim\\Entities\\Helpers\\Joint.js",
-            "line": 4,
-            "description": "Joint helper entity children of Wall and Path",
-            "is_constructor": 1,
-            "params": [
-                {
-                    "name": "x",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "y",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "parent",
-                    "description": "world",
-                    "type": "World"
-                },
-                {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object",
-                    "optional": true
-                },
-                {
-                    "name": "id",
-                    "description": "to use insted of autogenerate it, used when loading worlds",
-                    "type": "String"
-                }
-            ],
-            "extends": "Entity"
         },
         "Line": {
             "name": "Line",
@@ -625,8 +1111,11 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "Entities",
+            "submodule": "LinePrototype",
+            "namespace": "",
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 18,
+            "line": 20,
             "description": "Line Base",
             "is_constructor": 1,
             "params": [
@@ -667,6 +1156,8 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "Entities",
+            "namespace": "",
             "file": "src\\sim\\Entities\\Helpers\\Traits.js",
             "line": 3,
             "description": "To extend object with assignable to group trait.",
@@ -690,6 +1181,8 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "Entities",
+            "namespace": "",
             "file": "src\\sim\\Entities\\Helpers\\Traits.js",
             "line": 16,
             "description": "Create entity at position.",
@@ -725,160 +1218,6 @@
                 "description": ""
             }
         },
-        "Context": {
-            "name": "Context",
-            "shortname": "Context",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src\\sim\\Entities\\Context.js",
-            "line": 6,
-            "description": "Context entity",
-            "is_constructor": 1,
-            "params": [
-                {
-                    "name": "x",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "y",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "parent",
-                    "description": "world",
-                    "type": "World"
-                },
-                {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object",
-                    "optional": true
-                },
-                {
-                    "name": "id",
-                    "description": "to use insted of autogenerate it, used when loading worlds",
-                    "type": "String"
-                }
-            ],
-            "extends": "Entity"
-        },
-        "Entity": {
-            "name": "Entity",
-            "shortname": "Entity",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src\\sim\\Entities\\Entity.js",
-            "line": 3,
-            "description": "Base entity",
-            "is_constructor": 1,
-            "params": [
-                {
-                    "name": "x",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "y",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "parent",
-                    "description": "",
-                    "type": "Entity"
-                },
-                {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object"
-                }
-            ]
-        },
-        "Group": {
-            "name": "Group",
-            "shortname": "Group",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src\\sim\\Entities\\Group.js",
-            "line": 11,
-            "description": "Group Entity where agents belong.",
-            "is_constructor": 1,
-            "params": [
-                {
-                    "name": "x",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "y",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "parent",
-                    "description": "world",
-                    "type": "World"
-                },
-                {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object",
-                    "optional": true
-                },
-                {
-                    "name": "id",
-                    "description": "to use insted of autogenerate it, used when loading worlds",
-                    "type": "String"
-                }
-            ],
-            "extends": "Entity"
-        },
-        "Agent": {
-            "name": "Agent",
-            "shortname": "Agent",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src\\sim\\Agent.js",
-            "line": 5,
-            "description": "The agents that live in the simulation engine.",
-            "is_constructor": 1,
-            "params": [
-                {
-                    "name": "x",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "y",
-                    "description": "coordinate",
-                    "type": "Number"
-                },
-                {
-                    "name": "group",
-                    "description": "parent",
-                    "type": "Group"
-                },
-                {
-                    "name": "options",
-                    "description": "",
-                    "type": "Object"
-                }
-            ]
-        },
         "CrowdSim": {
             "name": "CrowdSim",
             "shortname": "CrowdSim",
@@ -887,8 +1226,14 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSim",
+            "namespace": "",
             "file": "src\\sim\\CrowdSim.js",
             "line": 3,
+            "mainName": "CrowdSim",
+            "tag": "main",
+            "itemtype": "main",
+            "_main": true,
             "type": "{Object}"
         },
         "Engine": {
@@ -899,9 +1244,12 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSim",
+            "namespace": "",
             "file": "src\\sim\\Engine.js",
             "line": 5,
             "description": "The simulation engine. Manages the state running of the simulation",
+            "submodule": "Engine",
             "is_constructor": 1,
             "params": [
                 {
@@ -924,9 +1272,12 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
+            "module": "CrowdSim",
+            "namespace": "",
             "file": "src\\sim\\World.js",
             "line": 9,
             "description": "The world where al entities live",
+            "submodule": "World",
             "is_constructor": 1,
             "params": [
                 {
@@ -946,23 +1297,27 @@
     "classitems": [
         {
             "file": "src\\app\\Render\\Agent.js",
-            "line": 33,
+            "line": 35,
             "description": "Destroy agent.",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Render.Agent"
+            "class": "Agent",
+            "module": "Render",
+            "submodule": "Agent"
         },
         {
             "file": "src\\app\\Render\\Agent.js",
-            "line": 47,
+            "line": 49,
             "description": "Animate agent.",
             "itemtype": "method",
             "name": "render",
-            "class": "Render.Agent"
+            "class": "Agent",
+            "module": "Render",
+            "submodule": "Agent"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 23,
+            "line": 25,
             "description": "Create context view from context entity.",
             "itemtype": "method",
             "name": "CreateFromModel",
@@ -977,11 +1332,13 @@
                 "description": "",
                 "type": "Render.Context"
             },
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 34,
+            "line": 36,
             "description": "Create context view and context entity.",
             "itemtype": "method",
             "name": "CreateFromPoint",
@@ -1011,19 +1368,23 @@
                 "description": "",
                 "type": "Render.Context"
             },
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 49,
+            "line": 51,
             "description": "Destroy Context.",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 59,
+            "line": 61,
             "description": "Create graphics.",
             "itemtype": "method",
             "name": "createGraphics",
@@ -1034,11 +1395,13 @@
                     "type": "Context"
                 }
             ],
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 75,
+            "line": 77,
             "description": "Get context center for dragging actions.",
             "itemtype": "method",
             "name": "getAnchor",
@@ -1046,11 +1409,13 @@
                 "description": "anchor",
                 "type": "Vec2"
             },
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 86,
+            "line": 88,
             "description": "Drag render context.",
             "itemtype": "method",
             "name": "dragTo",
@@ -1069,11 +1434,13 @@
             "return": {
                 "description": ""
             },
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 100,
+            "line": 102,
             "description": "Animate context, update position and size.",
             "itemtype": "method",
             "name": "render",
@@ -1084,11 +1451,13 @@
                     "type": "Object"
                 }
             ],
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 135,
+            "line": 137,
             "description": "Set context area, from its center.",
             "itemtype": "method",
             "name": "setArea",
@@ -1104,11 +1473,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 146,
+            "line": 148,
             "description": "Get context entity.",
             "itemtype": "method",
             "name": "getContext",
@@ -1116,11 +1487,13 @@
                 "description": "context",
                 "type": "Context"
             },
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Context.js",
-            "line": 156,
+            "line": 158,
             "description": "Get context center.",
             "itemtype": "method",
             "name": "getPos",
@@ -1128,11 +1501,13 @@
                 "description": "position",
                 "type": "Vec2"
             },
-            "class": "Render.Context"
+            "class": "Context",
+            "module": "Render",
+            "submodule": "Context"
         },
         {
             "file": "src\\app\\Render\\Detail.js",
-            "line": 16,
+            "line": 18,
             "description": "Cycle detail levels.",
             "itemtype": "method",
             "name": "cycleDetail",
@@ -1143,19 +1518,23 @@
                     "type": "Number"
                 }
             ],
-            "class": "Detail"
+            "class": "Detail",
+            "module": "Render",
+            "submodule": "Detail"
         },
         {
             "file": "src\\app\\Render\\Entity.js",
-            "line": 21,
+            "line": 23,
             "description": "Destroy entity.",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Render.Entity"
+            "class": "Entity",
+            "module": "Render",
+            "submodule": "Entity"
         },
         {
             "file": "src\\app\\Render\\Entity.js",
-            "line": 34,
+            "line": 36,
             "description": "Create base grahpics.",
             "itemtype": "method",
             "name": "createGraphics",
@@ -1175,11 +1554,13 @@
                 "description": "graphics",
                 "type": "Pixi.Graphics"
             },
-            "class": "Render.Entity"
+            "class": "Entity",
+            "module": "Render",
+            "submodule": "Entity"
         },
         {
             "file": "src\\app\\Render\\Entity.js",
-            "line": 53,
+            "line": 55,
             "description": "Destroy base graphics.",
             "itemtype": "method",
             "name": "destroyGraphics",
@@ -1195,11 +1576,13 @@
                     "type": "Pixi.Graphics"
                 }
             ],
-            "class": "Render.Entity"
+            "class": "Entity",
+            "module": "Render",
+            "submodule": "Entity"
         },
         {
             "file": "src\\app\\Render\\Entity.js",
-            "line": 69,
+            "line": 71,
             "description": "Set render entity as interactive.",
             "itemtype": "method",
             "name": "setInteractive",
@@ -1210,11 +1593,13 @@
                     "type": "Pixi.DisplayObject"
                 }
             ],
-            "class": "Render.Entity"
+            "class": "Entity",
+            "module": "Render",
+            "submodule": "Entity"
         },
         {
             "file": "src\\app\\Render\\Entity.js",
-            "line": 85,
+            "line": 87,
             "description": "Animate entity.",
             "itemtype": "method",
             "name": "render",
@@ -1225,11 +1610,13 @@
                     "type": "Pixi.Graphics"
                 }
             ],
-            "class": "Render.Entity"
+            "class": "Entity",
+            "module": "Render",
+            "submodule": "Entity"
         },
         {
             "file": "src\\app\\Render\\Entity.js",
-            "line": 95,
+            "line": 97,
             "description": "Get entity position.",
             "itemtype": "method",
             "name": "getPos",
@@ -1237,11 +1624,13 @@
                 "description": "position.",
                 "type": "Vec2"
             },
-            "class": "Render.Entity"
+            "class": "Entity",
+            "module": "Render",
+            "submodule": "Entity"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 23,
+            "line": 25,
             "description": "Create a group render view from a group entity.",
             "itemtype": "method",
             "name": "CreateFromModel",
@@ -1256,11 +1645,13 @@
                 "description": "",
                 "type": "Render.Group"
             },
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 33,
+            "line": 35,
             "description": "Create a group render and entity in a point.",
             "itemtype": "method",
             "name": "CreateFromPoint",
@@ -1290,19 +1681,23 @@
                 "description": "",
                 "type": "Render.Group"
             },
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 48,
+            "line": 50,
             "description": "Destroy render group.",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 58,
+            "line": 60,
             "description": "Create base graphics for group.",
             "itemtype": "method",
             "name": "createGraphics",
@@ -1313,11 +1708,13 @@
                     "type": "Group"
                 }
             ],
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 74,
+            "line": 76,
             "description": "Animate group, update position and radius.",
             "itemtype": "method",
             "name": "render",
@@ -1331,11 +1728,13 @@
             "return": {
                 "description": ""
             },
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 128,
+            "line": 130,
             "description": "Get render group anchor.",
             "itemtype": "method",
             "name": "getAnchor",
@@ -1343,11 +1742,13 @@
                 "description": "anchor",
                 "type": "Vec2"
             },
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 139,
+            "line": 141,
             "description": "Drag action in groups.",
             "itemtype": "method",
             "name": "dragTo",
@@ -1363,11 +1764,13 @@
                     "type": "Vec2"
                 }
             ],
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 152,
+            "line": 154,
             "description": "Get group position.",
             "itemtype": "method",
             "name": "getPos",
@@ -1375,11 +1778,13 @@
                 "description": "position",
                 "type": "Vec2"
             },
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Group.js",
-            "line": 162,
+            "line": 164,
             "description": "Get associated group entity.",
             "itemtype": "method",
             "name": "getGroup",
@@ -1387,11 +1792,13 @@
                 "description": "",
                 "type": "Group"
             },
-            "class": "Render.Group"
+            "class": "Group",
+            "module": "Render",
+            "submodule": "Group"
         },
         {
             "file": "src\\app\\Render\\Joint.js",
-            "line": 25,
+            "line": 27,
             "description": "Destroy base graphics.",
             "itemtype": "method",
             "name": "destroy",
@@ -1402,11 +1809,13 @@
                     "type": "Pixi.Graphics"
                 }
             ],
-            "class": "Render.Joint"
+            "class": "Joint",
+            "module": "Render",
+            "submodule": "Joint"
         },
         {
             "file": "src\\app\\Render\\Joint.js",
-            "line": 39,
+            "line": 41,
             "description": "Create base graphics.",
             "itemtype": "method",
             "name": "createGraphics",
@@ -1417,19 +1826,23 @@
                     "type": "Pixi.Graphics"
                 }
             ],
-            "class": "Render.Joint"
+            "class": "Joint",
+            "module": "Render",
+            "submodule": "Joint"
         },
         {
             "file": "src\\app\\Render\\Joint.js",
-            "line": 60,
+            "line": 62,
             "description": "Animate joint, update position and radius.",
             "itemtype": "method",
             "name": "render",
-            "class": "Render.Joint"
+            "class": "Joint",
+            "module": "Render",
+            "submodule": "Joint"
         },
         {
             "file": "src\\app\\Render\\Joint.js",
-            "line": 77,
+            "line": 79,
             "description": "Get joint anchor for dragging actions.",
             "itemtype": "method",
             "name": "getAnchor",
@@ -1437,11 +1850,13 @@
                 "description": "anchor",
                 "type": "Vec2"
             },
-            "class": "Render.Joint"
+            "class": "Joint",
+            "module": "Render",
+            "submodule": "Joint"
         },
         {
             "file": "src\\app\\Render\\Joint.js",
-            "line": 87,
+            "line": 89,
             "description": "Draggin actino.",
             "itemtype": "method",
             "name": "dragTo",
@@ -1457,11 +1872,13 @@
                     "type": "Vec2"
                 }
             ],
-            "class": "Render.Joint"
+            "class": "Joint",
+            "module": "Render",
+            "submodule": "Joint"
         },
         {
             "file": "src\\app\\Render\\Joint.js",
-            "line": 107,
+            "line": 109,
             "description": "Get joint associated entity.",
             "itemtype": "method",
             "name": "getJoint",
@@ -1469,11 +1886,13 @@
                 "description": "joint",
                 "type": "Joint"
             },
-            "class": "Render.Joint"
+            "class": "Joint",
+            "module": "Render",
+            "submodule": "Joint"
         },
         {
             "file": "src\\app\\Render\\Joint.js",
-            "line": 117,
+            "line": 119,
             "description": "Get joint position.",
             "itemtype": "method",
             "name": "getPos",
@@ -1481,11 +1900,13 @@
                 "description": "position",
                 "type": "Vec2"
             },
-            "class": "Render.Joint"
+            "class": "Joint",
+            "module": "Render",
+            "submodule": "Joint"
         },
         {
             "file": "src\\app\\Render\\Joint.js",
-            "line": 127,
+            "line": 129,
             "description": "Shows or hides render joint.",
             "itemtype": "method",
             "name": "show",
@@ -1496,11 +1917,13 @@
                     "type": "Boolean"
                 }
             ],
-            "class": "Render.Joint"
+            "class": "Joint",
+            "module": "Render",
+            "submodule": "Joint"
         },
         {
             "file": "src\\app\\Render\\LinePrototype.js",
-            "line": 19,
+            "line": 21,
             "description": "Line rendering for paths and walls.",
             "is_constructor": 1,
             "itemtype": "method",
@@ -1512,11 +1935,13 @@
                     "type": "Wall|Path"
                 }
             ],
-            "class": "Render.Line"
+            "class": "LinePrototype",
+            "module": "Render",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\app\\Render\\LinePrototype.js",
-            "line": 33,
+            "line": 35,
             "description": "Create base graphics.",
             "itemtype": "method",
             "name": "createGraphics",
@@ -1527,19 +1952,23 @@
                     "type": "Wall|Path"
                 }
             ],
-            "class": "Render.Line"
+            "class": "LinePrototype",
+            "module": "Render",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\app\\Render\\LinePrototype.js",
-            "line": 54,
+            "line": 56,
             "description": "Destroy base graphics.",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Render.Line"
+            "class": "LinePrototype",
+            "module": "Render",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\app\\Render\\LinePrototype.js",
-            "line": 67,
+            "line": 69,
             "description": "Add a render joint from a joint entity.",
             "itemtype": "method",
             "name": "addJointFromModel",
@@ -1554,11 +1983,13 @@
                 "description": "render joint",
                 "type": "Render.Joint"
             },
-            "class": "Render.Line"
+            "class": "LinePrototype",
+            "module": "Render",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\app\\Render\\LinePrototype.js",
-            "line": 80,
+            "line": 82,
             "description": "Create a joint in a position.",
             "itemtype": "method",
             "name": "addJoint",
@@ -1583,11 +2014,13 @@
                 "description": "",
                 "type": "Render.Joint"
             },
-            "class": "Render.Line"
+            "class": "LinePrototype",
+            "module": "Render",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\app\\Render\\LinePrototype.js",
-            "line": 95,
+            "line": 97,
             "description": "Animate joint, position and radius.",
             "itemtype": "method",
             "name": "render",
@@ -1598,11 +2031,13 @@
                     "type": "Object"
                 }
             ],
-            "class": "Render.Line"
+            "class": "LinePrototype",
+            "module": "Render",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\app\\Render\\Path.js",
-            "line": 24,
+            "line": 26,
             "description": "Create a Path at a position.",
             "itemtype": "method",
             "name": "CreateFromPoint",
@@ -1632,11 +2067,13 @@
                 "description": "render path",
                 "type": "Path"
             },
-            "class": "Render.Path"
+            "class": "Path",
+            "module": "Render",
+            "submodule": "Path"
         },
         {
             "file": "src\\app\\Render\\Path.js",
-            "line": 39,
+            "line": 41,
             "description": "Get the path position, last joint added.",
             "itemtype": "method",
             "name": "getPos",
@@ -1644,11 +2081,13 @@
                 "description": "position",
                 "type": "Vec2"
             },
-            "class": "Render.Path"
+            "class": "Path",
+            "module": "Render",
+            "submodule": "Path"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 52,
+            "line": 54,
             "description": "Initialice render.",
             "itemtype": "method",
             "name": "init",
@@ -1664,35 +2103,43 @@
                     "type": "Array"
                 }
             ],
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 117,
+            "line": 119,
             "description": "Start rendering loop.",
             "itemtype": "method",
             "name": "start",
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 127,
+            "line": 129,
             "description": "Rendering loop.",
             "itemtype": "method",
             "name": "animate",
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 164,
+            "line": 166,
             "description": "Stop rendering loop.",
             "itemtype": "method",
             "name": "stop",
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 173,
+            "line": 175,
             "description": "Set current rendered world.",
             "itemtype": "method",
             "name": "setWorld",
@@ -1703,11 +2150,13 @@
                     "type": "World"
                 }
             ],
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 183,
+            "line": 185,
             "description": "Resize rendering stage.",
             "itemtype": "method",
             "name": "resize",
@@ -1723,11 +2172,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 194,
+            "line": 196,
             "description": "Draw a helper line from 0 to 1.",
             "itemtype": "method",
             "name": "drawHelperLine",
@@ -1753,11 +2204,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 213,
+            "line": 215,
             "description": "Zoom-in, zoom-out stage.",
             "itemtype": "method",
             "name": "zoom",
@@ -1778,11 +2231,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 231,
+            "line": 233,
             "description": "Pan view of stage.",
             "itemtype": "method",
             "name": "pan",
@@ -1798,11 +2253,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 243,
+            "line": 245,
             "description": "Get stage width.",
             "itemtype": "method",
             "name": "getWidth",
@@ -1810,11 +2267,13 @@
                 "description": "width",
                 "type": "Number"
             },
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 253,
+            "line": 255,
             "description": "Get stage height.",
             "itemtype": "method",
             "name": "getHeight",
@@ -1822,11 +2281,13 @@
                 "description": "height",
                 "type": "Number"
             },
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 263,
+            "line": 265,
             "description": "Convert screen coordinates to world coordinates.",
             "itemtype": "method",
             "name": "screenToWorld",
@@ -1846,11 +2307,13 @@
                 "description": "world coordinate {x:x,y:y}",
                 "type": "Object"
             },
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Render.js",
-            "line": 276,
+            "line": 278,
             "description": "Convert world coordinates to screen coordinates.",
             "itemtype": "method",
             "name": "worldToScreen",
@@ -1870,11 +2333,13 @@
                 "description": "screen coordinate {x:x,y:y}",
                 "type": "Object"
             },
-            "class": "Render"
+            "class": "Render",
+            "module": "CrowdSimApp",
+            "submodule": "Render"
         },
         {
             "file": "src\\app\\Render\\Wall.js",
-            "line": 25,
+            "line": 27,
             "description": "Description",
             "itemtype": "method",
             "name": "CreateFromPoint",
@@ -1899,22 +2364,26 @@
             "return": {
                 "description": "NewExpression"
             },
-            "class": "Render.Wall"
+            "class": "Wall",
+            "module": "Render",
+            "submodule": "Wall"
         },
         {
             "file": "src\\app\\Render\\Wall.js",
-            "line": 39,
+            "line": 41,
             "description": "Description",
             "itemtype": "method",
             "name": "getPos",
             "return": {
                 "description": "CallExpression"
             },
-            "class": "Render.Wall"
+            "class": "Wall",
+            "module": "Render",
+            "submodule": "Wall"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 31,
+            "line": 34,
             "description": "Callback on simulation stop.",
             "itemtype": "method",
             "name": "onStop",
@@ -1925,11 +2394,12 @@
                     "type": "Entity"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 75,
+            "line": 78,
             "description": "Inicialization of application.",
             "itemtype": "method",
             "name": "init",
@@ -1945,11 +2415,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 125,
+            "line": 128,
             "description": "Resizes the scene.",
             "itemtype": "method",
             "name": "resize",
@@ -1970,11 +2441,12 @@
                     "type": "Number"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 142,
+            "line": 145,
             "description": "Zoom in a position.",
             "itemtype": "method",
             "name": "zoom",
@@ -1995,11 +2467,12 @@
                     "type": "Number"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 154,
+            "line": 157,
             "description": "Displace scene view.",
             "itemtype": "method",
             "name": "pan",
@@ -2015,11 +2488,12 @@
                     "type": "Number"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 165,
+            "line": 168,
             "description": "Convert screen to world coordinates.",
             "itemtype": "method",
             "name": "screenToWorld",
@@ -2039,11 +2513,12 @@
                 "description": "world coordinates",
                 "type": "Vec2"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 176,
+            "line": 179,
             "description": "Convert world toscreen coordinates.",
             "itemtype": "method",
             "name": "worldToScreen",
@@ -2063,11 +2538,12 @@
                 "description": "screen coordinates",
                 "type": "Vec2"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 188,
+            "line": 191,
             "description": "Start/stop simulation.",
             "itemtype": "method",
             "name": "toggleRun",
@@ -2075,11 +2551,12 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 202,
+            "line": 205,
             "description": "Gets engine running state.",
             "itemtype": "method",
             "name": "isRunning",
@@ -2087,11 +2564,12 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 212,
+            "line": 215,
             "description": "Start simulation.",
             "itemtype": "method",
             "name": "run",
@@ -2099,11 +2577,12 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 222,
+            "line": 225,
             "description": "Stop simulation.",
             "itemtype": "method",
             "name": "stop",
@@ -2111,11 +2590,12 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 232,
+            "line": 235,
             "description": "Step and stop simulation.",
             "itemtype": "method",
             "name": "step",
@@ -2123,11 +2603,12 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 242,
+            "line": 245,
             "description": "Resert simulation.",
             "itemtype": "method",
             "name": "reset",
@@ -2135,11 +2616,12 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 252,
+            "line": 255,
             "description": "Get simulation statistics.",
             "itemtype": "method",
             "name": "getStats",
@@ -2147,11 +2629,12 @@
                 "description": "stats",
                 "type": "Object"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 272,
+            "line": 275,
             "description": "Cycle an entity detail level.",
             "itemtype": "method",
             "name": "cycleDetail",
@@ -2162,11 +2645,12 @@
                     "type": "EntityTypes"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 282,
+            "line": 285,
             "description": "Get simulation engine time settings.",
             "itemtype": "method",
             "name": "getEngineSettings",
@@ -2174,11 +2658,12 @@
                 "description": "[engine.options]",
                 "type": "Object"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 292,
+            "line": 295,
             "description": "Save current world.",
             "itemtype": "method",
             "name": "save",
@@ -2193,11 +2678,12 @@
                 "description": "raw",
                 "type": "String"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 305,
+            "line": 308,
             "description": "Load an example world by its name.",
             "itemtype": "method",
             "name": "loadExample",
@@ -2208,11 +2694,12 @@
                     "type": "String"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 317,
+            "line": 320,
             "description": "Get a list of example worlds.",
             "itemtype": "method",
             "name": "listExamples",
@@ -2220,19 +2707,21 @@
                 "description": "world names",
                 "type": "Array"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 327,
+            "line": 330,
             "description": "Clear current world.",
             "itemtype": "method",
             "name": "clear",
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 341,
+            "line": 344,
             "description": "Load a world.",
             "itemtype": "method",
             "name": "load",
@@ -2248,11 +2737,12 @@
                     "type": "Boolean"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 363,
+            "line": 366,
             "description": "Callback on create agents.",
             "itemtype": "method",
             "name": "onCreateAgents",
@@ -2263,11 +2753,12 @@
                     "type": "Array"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 375,
+            "line": 378,
             "description": "Callback on destroy agents.",
             "itemtype": "method",
             "name": "onDestroyAgents",
@@ -2278,11 +2769,12 @@
                     "type": "Array"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 387,
+            "line": 390,
             "description": "Callback on create entity.",
             "itemtype": "method",
             "name": "onCreateEntity",
@@ -2293,11 +2785,12 @@
                     "type": "Entity"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 399,
+            "line": 402,
             "description": "Callback on destroy entity.",
             "itemtype": "method",
             "name": "onDestroyEntity",
@@ -2308,11 +2801,12 @@
                     "type": "Entity"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 414,
+            "line": 417,
             "description": "Request to create an entity at a give pos.",
             "itemtype": "method",
             "name": "createEntityStart",
@@ -2332,11 +2826,12 @@
                 "description": "",
                 "type": "Render.Entity"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 428,
+            "line": 431,
             "description": "Request current entity creation of null if finished",
             "itemtype": "method",
             "name": "getCreatingEntity",
@@ -2344,11 +2839,12 @@
                 "description": "",
                 "type": "Render.Entity"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 438,
+            "line": 441,
             "description": "Request to end the creation of the current entity.",
             "itemtype": "method",
             "name": "createEntityEnd",
@@ -2356,11 +2852,12 @@
                 "description": "null",
                 "type": "Object"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 450,
+            "line": 453,
             "description": "Destroy an entity.",
             "itemtype": "method",
             "name": "destroyEntity",
@@ -2371,11 +2868,12 @@
                     "type": "Render.Entity"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 463,
+            "line": 466,
             "description": "Edit an entity starting is creation mode.",
             "itemtype": "method",
             "name": "editEntity",
@@ -2386,11 +2884,12 @@
                     "type": "Render.Entity"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 482,
+            "line": 485,
             "description": "Add a existing entity.",
             "itemtype": "method",
             "name": "addEntity",
@@ -2401,11 +2900,12 @@
                     "type": "Entity"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 493,
+            "line": 496,
             "description": "Sets the current selected entitiy.",
             "itemtype": "method",
             "name": "selectEntity",
@@ -2416,11 +2916,12 @@
                     "type": "Render.Entity"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 517,
+            "line": 520,
             "description": "Gets the current selected entity.",
             "itemtype": "method",
             "name": "getSelectedEntity",
@@ -2428,11 +2929,12 @@
                 "description": "",
                 "type": "Render.Entity"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 527,
+            "line": 530,
             "description": "Set the current selected entity by its id",
             "itemtype": "method",
             "name": "selectEntityById",
@@ -2443,11 +2945,12 @@
                     "type": "String"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 543,
+            "line": 546,
             "description": "Entity mouse down event.",
             "itemtype": "method",
             "name": "mousedown",
@@ -2462,11 +2965,12 @@
                 "description": "",
                 "type": "Boolean"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 569,
+            "line": 572,
             "description": "Stage entity click event, creation of new entities.",
             "itemtype": "method",
             "name": "entityClick",
@@ -2487,11 +2991,12 @@
                     "type": "Render.Entity"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 617,
+            "line": 620,
             "description": "Stage mouse down event, creation of entities steps",
             "itemtype": "method",
             "name": "mousedown",
@@ -2502,11 +3007,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 645,
+            "line": 648,
             "description": "Entity mouse move event",
             "itemtype": "method",
             "name": "mousemove",
@@ -2517,11 +3023,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 668,
+            "line": 671,
             "description": "Stage mouse move event, helper lines.",
             "itemtype": "method",
             "name": "mousemove",
@@ -2532,11 +3039,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 684,
+            "line": 687,
             "description": "Stage mouse wheel event, zoom and radius change.",
             "itemtype": "method",
             "name": "mousewheel",
@@ -2547,11 +3055,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 709,
+            "line": 712,
             "description": "Entity mouse up evenp.",
             "itemtype": "method",
             "name": "mouseup",
@@ -2566,11 +3075,12 @@
                 "description": "",
                 "type": "Boolean"
             },
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 732,
+            "line": 735,
             "description": "Stage mouse up event.",
             "itemtype": "method",
             "name": "mouseup",
@@ -2581,11 +3091,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 746,
+            "line": 749,
             "description": "Entity mouse out event.",
             "itemtype": "method",
             "name": "mouseout",
@@ -2596,11 +3107,12 @@
                     "type": "Object"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\CrowdSimApp.js",
-            "line": 763,
+            "line": 766,
             "description": "Entity mouse over event.",
             "itemtype": "method",
             "name": "mouseover",
@@ -2611,247 +3123,244 @@
                     "type": "Object"
                 }
             ],
-            "class": "CrowdSimApp"
+            "class": "CrowdSimApp",
+            "module": "CrowdSimApp"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 5,
-            "class": "Behaviour"
+            "line": 11,
+            "description": "One single Group",
+            "itemtype": "property",
+            "name": "",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 6,
-            "class": "Behaviour"
+            "line": 60,
+            "itemtype": "property",
+            "name": "Groups of different sizes",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 51,
-            "class": "Behaviour"
+            "line": 110,
+            "itemtype": "property",
+            "name": "Groups with different velocity",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 52,
-            "class": "Behaviour"
+            "line": 254,
+            "itemtype": "property",
+            "name": "One start context",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 100,
-            "class": "Behaviour"
+            "line": 313,
+            "itemtype": "property",
+            "name": "One end context",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 101,
-            "class": "Behaviour"
+            "line": 372,
+            "itemtype": "property",
+            "name": "Start and end context",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 243,
-            "class": "Behaviour"
+            "line": 443,
+            "itemtype": "property",
+            "name": "Contexts with different mobility",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 244,
-            "class": "Behaviour"
+            "line": 518,
+            "itemtype": "property",
+            "name": "Context that triggers stops on empty",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 301,
-            "class": "Behaviour"
+            "line": 581,
+            "itemtype": "property",
+            "name": "Contexts with different rates",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 302,
-            "class": "Behaviour"
+            "line": 714,
+            "itemtype": "property",
+            "name": "Contexts mobility and path",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 359,
-            "class": "Behaviour"
+            "line": 856,
+            "itemtype": "property",
+            "name": "One circular path and two opposite groups",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 360,
-            "class": "Behaviour"
+            "line": 1046,
+            "itemtype": "property",
+            "name": "One path assigned to a group",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 429,
-            "class": "Behaviour"
+            "line": 1197,
+            "itemtype": "property",
+            "name": "Different waypoint sizes",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 430,
-            "class": "Behaviour"
+            "line": 1323,
+            "itemtype": "property",
+            "name": "Multiple paths",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 503,
-            "class": "Behaviour"
+            "line": 1814,
+            "itemtype": "property",
+            "name": "One wall in the path of agents",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 504,
-            "class": "Behaviour"
+            "line": 1942,
+            "itemtype": "property",
+            "name": "Paths that get closer",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 565,
-            "class": "Behaviour"
+            "line": 2178,
+            "itemtype": "property",
+            "name": "Paths closer with group and path",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 566,
-            "class": "Behaviour"
+            "line": 2399,
+            "itemtype": "property",
+            "name": "Groups, paths and contexts.",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 697,
-            "class": "Behaviour"
+            "line": 2523,
+            "itemtype": "property",
+            "name": "Paths contexts and groups",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 698,
-            "class": "Behaviour"
+            "line": 2698,
+            "itemtype": "property",
+            "name": "Complex scene with multiple entities.",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 838,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 839,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1027,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1028,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1177,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1178,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1302,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1303,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1792,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1793,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1919,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 1920,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 2154,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 2155,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 2374,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 2375,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 2497,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 2498,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 2671,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 2672,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 3226,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 3227,
-            "description": "****************************************************************************************************************",
+            "line": 3255,
             "itemtype": "method",
-            "name": "testFun",
+            "name": "testFun Test function to programatically create worlds",
             "params": [
                 {
                     "name": "world",
-                    "description": ""
+                    "description": "",
+                    "type": "World"
                 },
                 {
                     "name": "debug",
-                    "description": ""
+                    "description": "",
+                    "type": "Boolean"
                 }
             ],
-            "return": {
-                "description": ""
-            },
-            "class": "Behaviour"
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\app\\Worlds.js",
-            "line": 3300,
-            "class": "Behaviour"
-        },
-        {
-            "file": "src\\app\\Worlds.js",
-            "line": 3301,
-            "class": "Behaviour"
+            "line": 3326,
+            "itemtype": "property",
+            "name": "JSON exported world from testFun",
+            "type": "Object",
+            "class": "Behavior",
+            "module": "CrowdSimApp",
+            "submodule": "Worlds"
         },
         {
             "file": "src\\sim\\Behavior\\Behavior.js",
-            "line": 14,
+            "line": 16,
             "description": "Return the acceleration result for a agent going to its target.",
             "itemtype": "method",
             "name": "getAccel",
@@ -2871,11 +3380,39 @@
                 "description": "acceleration result of the model",
                 "type": "Vec2"
             },
-            "class": "Behaviour"
+            "class": "Behavior",
+            "module": "CrowdSim",
+            "submodule": "Behavior"
         },
         {
             "file": "src\\sim\\Behavior\\Panic.js",
-            "line": 99,
+            "line": 27,
+            "description": "Return the acceleration result for a agent going to its target.",
+            "itemtype": "method",
+            "name": "getAccel",
+            "params": [
+                {
+                    "name": "agent",
+                    "description": "",
+                    "type": "Agent"
+                },
+                {
+                    "name": "target",
+                    "description": "a destination with target.pos and target.in = function => path point, point, other agent",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "acceleration result of the model",
+                "type": "Vec2"
+            },
+            "class": "Panic",
+            "module": "CrowdSim",
+            "submodule": "Panic"
+        },
+        {
+            "file": "src\\sim\\Behavior\\Panic.js",
+            "line": 106,
             "description": "Calculate the social force between two agents i,j.",
             "itemtype": "method",
             "name": "calculateAgentForce",
@@ -2895,11 +3432,13 @@
                 "description": "force",
                 "type": "Vec2"
             },
-            "class": "Panic"
+            "class": "Panic",
+            "module": "CrowdSim",
+            "submodule": "Panic"
         },
         {
             "file": "src\\sim\\Behavior\\Panic.js",
-            "line": 133,
+            "line": 140,
             "description": "Calculate the social force between an agent and a wall.",
             "itemtype": "method",
             "name": "calculateWallForce",
@@ -2924,11 +3463,13 @@
                 "description": "force",
                 "type": "Vec2"
             },
-            "class": "Panic"
+            "class": "Panic",
+            "module": "CrowdSim",
+            "submodule": "Panic"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 17,
+            "line": 19,
             "description": "Insert entities in the hashmap.",
             "itemtype": "method",
             "name": "insert",
@@ -2939,11 +3480,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 35,
+            "line": 37,
             "description": "Insert one entity.",
             "itemtype": "method",
             "name": "insertOne",
@@ -2964,11 +3507,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 52,
+            "line": 54,
             "description": "Helper to update multiple contexts area points by sampling their area with the cell size.",
             "itemtype": "method",
             "name": "updateContextsHelper",
@@ -2979,11 +3524,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 73,
+            "line": 75,
             "description": "Helper to update multiple walls area points by sampling their path with the cell size.",
             "itemtype": "method",
             "name": "updateWallsHelper",
@@ -2994,11 +3541,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 100,
+            "line": 102,
             "description": "Clear the hashamp and insert entities.",
             "itemtype": "method",
             "name": "updateAll",
@@ -3009,11 +3558,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 111,
+            "line": 113,
             "description": "Update given entities mapping.",
             "itemtype": "method",
             "name": "update",
@@ -3024,19 +3575,23 @@
                     "type": "Array"
                 }
             ],
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 122,
+            "line": 124,
             "description": "Clear the hashmap.",
             "itemtype": "method",
             "name": "clear",
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 131,
+            "line": 133,
             "description": "Remove the given entities.",
             "itemtype": "method",
             "name": "remove",
@@ -3047,11 +3602,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 147,
+            "line": 149,
             "description": "Gets neighbours to (x,y) point or Entity.",
             "itemtype": "method",
             "name": "neighbours",
@@ -3076,11 +3633,13 @@
                 "description": "neighbours",
                 "type": "LazySequence"
             },
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 167,
+            "line": 169,
             "description": "Gets neighbours to a context by sampling its position with the cell size.",
             "itemtype": "method",
             "name": "neighboursContext",
@@ -3095,11 +3654,13 @@
                 "description": "neighbours",
                 "type": "LazySequence"
             },
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 187,
+            "line": 189,
             "description": "Builds the keys of the neighbours of the position (x,y).",
             "itemtype": "method",
             "name": "_keyNeighbours",
@@ -3119,11 +3680,13 @@
                 "description": "neighbours keys",
                 "type": "Array"
             },
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Grid.js",
-            "line": 205,
+            "line": 207,
             "description": "Build the key to map coordinates to the hashmap.",
             "itemtype": "method",
             "name": "_key",
@@ -3148,7 +3711,9 @@
                 "description": "key",
                 "type": "String"
             },
-            "class": "Grid"
+            "class": "Grid",
+            "module": "CrowdSim",
+            "submodule": "Common"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3166,7 +3731,8 @@
             "return": {
                 "description": ""
             },
-            "class": "Common utilities"
+            "class": "Common utilities",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3183,7 +3749,8 @@
             "return": {
                 "description": "BinaryExpression"
             },
-            "class": "Common utilities"
+            "class": "Common utilities",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3194,7 +3761,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3212,7 +3780,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3235,7 +3804,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3258,7 +3828,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3286,7 +3857,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3314,7 +3886,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3342,7 +3915,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3350,7 +3924,8 @@
             "description": "Alias for {@link vec2.subtract}",
             "itemtype": "method",
             "name": "",
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3378,7 +3953,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3386,7 +3962,8 @@
             "description": "Alias for {@link vec2.multiply}",
             "itemtype": "method",
             "name": "",
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3414,7 +3991,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3422,7 +4000,8 @@
             "description": "Alias for {@link vec2.divide}",
             "itemtype": "method",
             "name": "",
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3450,7 +4029,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3478,7 +4058,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3506,7 +4087,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3539,7 +4121,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3562,7 +4145,8 @@
             "return": {
                 "description": "CallExpression"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3570,7 +4154,8 @@
             "description": "Alias for {@link vec2.distance}",
             "itemtype": "method",
             "name": "",
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3593,7 +4178,8 @@
             "return": {
                 "description": "BinaryExpression"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3601,7 +4187,8 @@
             "description": "Alias for {@link vec2.squaredDistance}",
             "itemtype": "method",
             "name": "",
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3619,7 +4206,8 @@
             "return": {
                 "description": "CallExpression"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3627,7 +4215,8 @@
             "description": "Alias for {@link vec2.length}",
             "itemtype": "method",
             "name": "",
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3645,7 +4234,8 @@
             "return": {
                 "description": "BinaryExpression"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3653,7 +4243,8 @@
             "description": "Alias for {@link vec2.squaredLength}",
             "itemtype": "method",
             "name": "",
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3676,7 +4267,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3699,7 +4291,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3722,7 +4315,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3745,7 +4339,8 @@
             "return": {
                 "description": "BinaryExpression"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3773,7 +4368,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3806,7 +4402,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3828,7 +4425,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3856,7 +4454,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3884,7 +4483,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3912,7 +4512,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3940,7 +4541,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -3985,7 +4587,8 @@
             },
             "itemtype": "method",
             "name": "",
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -4002,7 +4605,8 @@
             "return": {
                 "description": "BinaryExpression"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -4035,7 +4639,8 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -4067,7 +4672,8 @@
             "return": {
                 "description": "CallExpression"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Common\\Vec2.js",
@@ -4094,19 +4700,22 @@
             "return": {
                 "description": "out"
             },
-            "class": "2 Dimensional Vector"
+            "class": "2 Dimensional Vector",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Joint.js",
-            "line": 24,
+            "line": 26,
             "description": "Destroy the Joint",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Joint"
+            "class": "Joint",
+            "module": "Entities",
+            "submodule": "Joint"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Joint.js",
-            "line": 35,
+            "line": 37,
             "description": "Get radius",
             "itemtype": "method",
             "name": "getRadius",
@@ -4114,11 +4723,13 @@
                 "description": "radius",
                 "type": "Number"
             },
-            "class": "Joint"
+            "class": "Joint",
+            "module": "Entities",
+            "submodule": "Joint"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Joint.js",
-            "line": 45,
+            "line": 47,
             "description": "Checks if a point is inside a joint.",
             "itemtype": "method",
             "name": "in",
@@ -4133,11 +4744,13 @@
                 "description": "true if inside; false otherwise",
                 "type": "Boolean"
             },
-            "class": "Joint"
+            "class": "Joint",
+            "module": "Entities",
+            "submodule": "Joint"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Joint.js",
-            "line": 57,
+            "line": 59,
             "description": "Set radius.",
             "itemtype": "method",
             "name": "setRadius",
@@ -4148,11 +4761,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Joint"
+            "class": "Joint",
+            "module": "Entities",
+            "submodule": "Joint"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Joint.js",
-            "line": 69,
+            "line": 71,
             "description": "Increment radius.",
             "itemtype": "method",
             "name": "incrRadius",
@@ -4163,52 +4778,23 @@
                     "type": "Number"
                 }
             ],
-            "class": "Joint"
+            "class": "Joint",
+            "module": "Entities",
+            "submodule": "Joint"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 7,
-            "description": "Base class to extend Wall and Path entities with common functionalities.",
-            "itemtype": "method",
-            "name": "LinePrototype",
-            "params": [
-                {
-                    "name": "idPrefix",
-                    "description": "'W' for walls, 'P' for paths",
-                    "type": "String"
-                },
-                {
-                    "name": "type",
-                    "description": "'wall' for walls, 'path' for paths",
-                    "type": "String"
-                },
-                {
-                    "name": "defaults",
-                    "description": "options",
-                    "type": "Object"
-                },
-                {
-                    "name": "id",
-                    "description": "to use insted of autogenerate it, used when loading worlds",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "Line"
-            },
-            "class": "Line"
-        },
-        {
-            "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 41,
+            "line": 43,
             "description": "Destroy the line",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 55,
+            "line": 57,
             "description": "Request to add a children Joint entity.",
             "itemtype": "method",
             "name": "addEntity",
@@ -4224,11 +4810,13 @@
                     "type": "Object"
                 }
             ],
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 76,
+            "line": 78,
             "description": "Request to remove a children Joint entity.",
             "itemtype": "method",
             "name": "removeEntity",
@@ -4239,11 +4827,13 @@
                     "type": "Joint"
                 }
             ],
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 100,
+            "line": 102,
             "description": "Request to add a list of  children Joint entities.",
             "itemtype": "method",
             "name": "addJoints",
@@ -4254,11 +4844,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 119,
+            "line": 121,
             "description": "Helper to create a new Joint.",
             "itemtype": "method",
             "name": "addJoint",
@@ -4288,11 +4880,13 @@
                 "description": "joint",
                 "type": "Joint"
             },
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 136,
+            "line": 138,
             "description": "Gets the childen joints.",
             "itemtype": "method",
             "name": "getJoints",
@@ -4300,11 +4894,13 @@
                 "description": "joints",
                 "type": "Array"
             },
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 146,
+            "line": 148,
             "description": "Get a joint index in the path/wall",
             "itemtype": "method",
             "name": "getJointIdx",
@@ -4319,11 +4915,13 @@
                 "description": "index or -1 if not found",
                 "type": "Number"
             },
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 156,
+            "line": 158,
             "description": "Get a joint by index in the path.",
             "itemtype": "method",
             "name": "getJointByIdx",
@@ -4338,11 +4936,13 @@
                 "description": "joint or null",
                 "type": "Joint"
             },
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 167,
+            "line": 169,
             "description": "Get [options.width].",
             "itemtype": "method",
             "name": "getWidth",
@@ -4350,19 +4950,23 @@
                 "description": "width",
                 "type": "Number"
             },
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 177,
+            "line": 179,
             "description": "Reverse the internal joints lists.",
             "itemtype": "method",
             "name": "reverse",
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\LinePrototype.js",
-            "line": 186,
+            "line": 188,
             "description": "Get the projection from a point to a given segment.",
             "itemtype": "method",
             "name": "getProjection",
@@ -4382,7 +4986,9 @@
                 "description": "projection from point to segment",
                 "type": "Vec2"
             },
-            "class": "Line"
+            "class": "Line",
+            "module": "Entities",
+            "submodule": "LinePrototype"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Traits.js",
@@ -4394,7 +5000,8 @@
                 "description": "previous destructor",
                 "type": "Object"
             },
-            "class": "EntityPrototype"
+            "class": "EntityPrototype",
+            "module": "Entities"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Traits.js",
@@ -4409,7 +5016,8 @@
                     "type": "Entity"
                 }
             ],
-            "class": "EntityPrototype"
+            "class": "EntityPrototype",
+            "module": "Entities"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Traits.js",
@@ -4424,7 +5032,8 @@
                     "type": "Group"
                 }
             ],
-            "class": "EntityPrototype"
+            "class": "EntityPrototype",
+            "module": "Entities"
         },
         {
             "file": "src\\sim\\Entities\\Helpers\\Traits.js",
@@ -4436,19 +5045,22 @@
                 "description": "groups",
                 "type": "Array"
             },
-            "class": "EntityPrototype"
+            "class": "EntityPrototype",
+            "module": "Entities"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 25,
+            "line": 27,
             "description": "Destroy the Context",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 34,
+            "line": 36,
             "description": "Sets the context size.",
             "itemtype": "method",
             "name": "setArea",
@@ -4464,11 +5076,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 46,
+            "line": 48,
             "description": "Increment the context width and height.",
             "itemtype": "method",
             "name": "incrSize",
@@ -4479,11 +5093,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 57,
+            "line": 59,
             "description": "Gets width.",
             "itemtype": "method",
             "name": "getWidth",
@@ -4491,11 +5107,13 @@
                 "description": "width",
                 "type": "Number"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 67,
+            "line": 69,
             "description": "Gets height.",
             "itemtype": "method",
             "name": "getHeight",
@@ -4503,11 +5121,13 @@
                 "description": "height",
                 "type": "Number"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 77,
+            "line": 79,
             "description": "Gets the context minimum X,Y coordinate.",
             "itemtype": "method",
             "name": "getMinXY",
@@ -4515,11 +5135,13 @@
                 "description": "point",
                 "type": "Vec2"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 89,
+            "line": 91,
             "description": "Gets the context maximun X,Y coordinate.",
             "itemtype": "method",
             "name": "getMaxXY",
@@ -4527,11 +5149,13 @@
                 "description": "point",
                 "type": "Vec2"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 101,
+            "line": 103,
             "description": "Get a random point in the context.",
             "itemtype": "method",
             "name": "getRandomPoint",
@@ -4539,11 +5163,13 @@
                 "description": "point",
                 "type": "Vec2"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 113,
+            "line": 115,
             "description": "Get the nearest point in the context to another.",
             "itemtype": "method",
             "name": "getNearestPoint",
@@ -4563,11 +5189,13 @@
                 "description": "nearest point in the context to the given point",
                 "type": "Vec2"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 144,
+            "line": 146,
             "description": "Get context mobility factor.",
             "itemtype": "method",
             "name": "getMobility",
@@ -4575,11 +5203,13 @@
                 "description": "",
                 "type": "Number"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 154,
+            "line": 156,
             "description": "Get context trigger option.",
             "itemtype": "method",
             "name": "getTrigger",
@@ -4587,11 +5217,13 @@
                 "description": "true if contexts stops simulation on empty of agents",
                 "type": "Boolean"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Context.js",
-            "line": 164,
+            "line": 166,
             "description": "Check if a point is inside the context.",
             "itemtype": "method",
             "name": "in",
@@ -4606,11 +5238,13 @@
                 "description": "true if pos is inside",
                 "type": "Boolean"
             },
-            "class": "Context"
+            "class": "Context",
+            "module": "Entities",
+            "submodule": "Context"
         },
         {
             "file": "src\\sim\\Entities\\Entity.js",
-            "line": 26,
+            "line": 35,
             "description": "Description",
             "itemtype": "method",
             "name": "calcNewId",
@@ -4623,22 +5257,26 @@
             "return": {
                 "description": "CallExpression"
             },
-            "class": "Entity"
+            "class": "Entity",
+            "module": "Entities",
+            "submodule": "Entity"
         },
         {
             "file": "src\\sim\\Entities\\Entity.js",
-            "line": 36,
+            "line": 45,
             "description": "Description",
             "itemtype": "method",
             "name": "destroy",
             "return": {
                 "description": ""
             },
-            "class": "Entity"
+            "class": "Entity",
+            "module": "Entities",
+            "submodule": "Entity"
         },
         {
             "file": "src\\sim\\Entities\\Entity.js",
-            "line": 48,
+            "line": 57,
             "description": "Description",
             "itemtype": "method",
             "name": "updatePos",
@@ -4655,11 +5293,13 @@
             "return": {
                 "description": ""
             },
-            "class": "Entity"
+            "class": "Entity",
+            "module": "Entities",
+            "submodule": "Entity"
         },
         {
             "file": "src\\sim\\Entities\\Entity.js",
-            "line": 61,
+            "line": 70,
             "description": "Description",
             "itemtype": "method",
             "name": "addEntity",
@@ -4672,11 +5312,13 @@
             "return": {
                 "description": ""
             },
-            "class": "Entity"
+            "class": "Entity",
+            "module": "Entities",
+            "submodule": "Entity"
         },
         {
             "file": "src\\sim\\Entities\\Entity.js",
-            "line": 70,
+            "line": 79,
             "description": "Description",
             "itemtype": "method",
             "name": "removeEntity",
@@ -4689,19 +5331,23 @@
             "return": {
                 "description": ""
             },
-            "class": "Entity"
+            "class": "Entity",
+            "module": "Entities",
+            "submodule": "Entity"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 36,
+            "line": 38,
             "description": "Destroy the Group",
             "itemtype": "method",
             "name": "destroy",
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 53,
+            "line": 55,
             "description": "Get radius",
             "itemtype": "method",
             "name": "getRadius",
@@ -4709,11 +5355,13 @@
                 "description": "radius",
                 "type": "Number"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 63,
+            "line": 65,
             "description": "Set radius",
             "itemtype": "method",
             "name": "setRadius",
@@ -4724,11 +5372,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 73,
+            "line": 75,
             "description": "Increment radius by dr.",
             "itemtype": "method",
             "name": "incrRadius",
@@ -4739,11 +5389,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 83,
+            "line": 85,
             "description": "Gets the end context where agents are destoyed optionally.",
             "itemtype": "method",
             "name": "getStartContext",
@@ -4751,11 +5403,13 @@
                 "description": "end context",
                 "type": "Context"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 93,
+            "line": 95,
             "description": "Sets the start context where agents are created",
             "itemtype": "method",
             "name": "assignStartContext",
@@ -4766,11 +5420,13 @@
                     "type": "Context"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 109,
+            "line": 111,
             "description": "Gets the start context where agents are created",
             "itemtype": "method",
             "name": "getEndContext",
@@ -4778,11 +5434,13 @@
                 "description": "end context",
                 "type": "Context"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 119,
+            "line": 121,
             "description": "Sets the end context where agents are destroyed.",
             "itemtype": "method",
             "name": "assignEndContext",
@@ -4793,11 +5451,13 @@
                     "type": "Context"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 135,
+            "line": 137,
             "description": "Gets the path asigned to the group that agents will follow.",
             "itemtype": "method",
             "name": "getPath",
@@ -4805,11 +5465,13 @@
                 "description": "paths",
                 "type": "Array"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 145,
+            "line": 147,
             "description": "Assign a path to the group and its agents.",
             "itemtype": "method",
             "name": "assignPath",
@@ -4825,11 +5487,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 166,
+            "line": 168,
             "description": "Gets the flag pathReverse from options.",
             "itemtype": "method",
             "name": "isPathReverse",
@@ -4837,11 +5501,13 @@
                 "description": "true if path is reversed",
                 "type": "Boolean"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 176,
+            "line": 178,
             "description": "Gets the flag pathCircular from options.",
             "itemtype": "method",
             "name": "isPathCircular",
@@ -4849,11 +5515,13 @@
                 "description": "true if path is circular",
                 "type": "Boolean"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 186,
+            "line": 188,
             "description": "Gets the start index of the agents in the group path.",
             "itemtype": "method",
             "name": "getPathStartIdx",
@@ -4861,11 +5529,13 @@
                 "description": "start index",
                 "type": "Number"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 196,
+            "line": 198,
             "description": "Unassing a start, end contexts or a path from the group.",
             "itemtype": "method",
             "name": "unAssign",
@@ -4876,11 +5546,13 @@
                     "type": "Entity"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 220,
+            "line": 222,
             "description": "Assign a behavior model to the group.",
             "itemtype": "method",
             "name": "assignBehavior",
@@ -4891,11 +5563,13 @@
                     "type": "Behavior"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 230,
+            "line": 232,
             "description": "Generate a number of agents in a context. Used internally by the group.",
             "itemtype": "method",
             "name": "generateAgents",
@@ -4914,11 +5588,13 @@
             "return": {
                 "description": "newAgents"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 249,
+            "line": 251,
             "description": "Generates a random init position in the group radius centered at pos.",
             "itemtype": "method",
             "name": "myInitPos",
@@ -4933,11 +5609,13 @@
                 "description": "point",
                 "type": "Vec2"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 262,
+            "line": 264,
             "description": "Generates a position within the group start context.",
             "itemtype": "method",
             "name": "myContextPos",
@@ -4945,11 +5623,13 @@
                 "description": "point",
                 "type": "Vec2"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 301,
+            "line": 303,
             "description": "Add agents to the group.",
             "itemtype": "method",
             "name": "addAgents",
@@ -4960,19 +5640,23 @@
                     "type": "Number"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 313,
+            "line": 315,
             "description": "Removes all agents from the group.",
             "itemtype": "method",
             "name": "emptyAgents",
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 323,
+            "line": 325,
             "description": "Remove the given agents from the group.",
             "itemtype": "method",
             "name": "removeAgents",
@@ -4983,11 +5667,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 337,
+            "line": 339,
             "description": "Check if am agent is within a group area.",
             "itemtype": "method",
             "name": "in",
@@ -5002,11 +5688,13 @@
                 "description": "true if inside; false otherwise",
                 "type": "Boolean"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 348,
+            "line": 350,
             "description": "Adds a single agent to the group.",
             "itemtype": "method",
             "name": "addAgent",
@@ -5017,11 +5705,13 @@
                     "type": "Agent"
                 }
             ],
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 358,
+            "line": 360,
             "description": "Gets the smaller rectangle area that contains the group agents",
             "itemtype": "method",
             "name": "getArea",
@@ -5029,19 +5719,23 @@
                 "description": "array of two {Vec2} [[Xmin,Xmax][Ymin,YMax]]",
                 "type": "Array"
             },
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Entities\\Group.js",
-            "line": 377,
+            "line": 379,
             "description": "Advances the simulation of the group by creating/destroying agents in its contexts.",
             "itemtype": "method",
             "name": "step",
-            "class": "Group"
+            "class": "Group",
+            "module": "Entities",
+            "submodule": "Group"
         },
         {
             "file": "src\\sim\\Agent.js",
-            "line": 38,
+            "line": 40,
             "description": "Sets as the agent target the nearest point of a Context.",
             "itemtype": "method",
             "name": "setTargetInContext",
@@ -5052,11 +5746,13 @@
                     "type": "Context"
                 }
             ],
-            "class": "Agent"
+            "class": "Agent",
+            "module": "CrowdSim",
+            "submodule": "Agent"
         },
         {
             "file": "src\\sim\\Agent.js",
-            "line": 51,
+            "line": 53,
             "description": "Gets the aspect property. Used for color codes could be used for other purposes",
             "itemtype": "method",
             "name": "getAspect",
@@ -5064,11 +5760,13 @@
                 "description": "aspect",
                 "type": "Number"
             },
-            "class": "Agent"
+            "class": "Agent",
+            "module": "CrowdSim",
+            "submodule": "Agent"
         },
         {
             "file": "src\\sim\\Agent.js",
-            "line": 61,
+            "line": 63,
             "description": "Get radius",
             "itemtype": "method",
             "name": "getRadius",
@@ -5076,11 +5774,13 @@
                 "description": "radius",
                 "type": "Number"
             },
-            "class": "Agent"
+            "class": "Agent",
+            "module": "CrowdSim",
+            "submodule": "Agent"
         },
         {
             "file": "src\\sim\\Agent.js",
-            "line": 70,
+            "line": 72,
             "description": "Set mobility correction applied to the current velocity",
             "itemtype": "method",
             "name": "setCurrentMobility",
@@ -5091,11 +5791,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Agent"
+            "class": "Agent",
+            "module": "CrowdSim",
+            "submodule": "Agent"
         },
         {
             "file": "src\\sim\\Agent.js",
-            "line": 80,
+            "line": 82,
             "description": "Set the agent to follow a give path starting at index.",
             "itemtype": "method",
             "name": "followPath",
@@ -5111,19 +5813,23 @@
                     "type": "Number"
                 }
             ],
-            "class": "Agent"
+            "class": "Agent",
+            "module": "CrowdSim",
+            "submodule": "Agent"
         },
         {
             "file": "src\\sim\\Agent.js",
-            "line": 99,
+            "line": 101,
             "description": "Helper to set the path start that takes into account inverse paths.",
             "itemtype": "method",
             "name": "_startPath",
-            "class": "Agent"
+            "class": "Agent",
+            "module": "CrowdSim",
+            "submodule": "Agent"
         },
         {
             "file": "src\\sim\\Agent.js",
-            "line": 115,
+            "line": 117,
             "description": "Advances the simulation of the agent one stepSize and moves the agent to its next possition defined by the group behavior mode.",
             "itemtype": "method",
             "name": "step",
@@ -5134,11 +5840,13 @@
                     "type": "Number"
                 }
             ],
-            "class": "Agent"
+            "class": "Agent",
+            "module": "CrowdSim",
+            "submodule": "Agent"
         },
         {
             "file": "src\\sim\\Agent.js",
-            "line": 164,
+            "line": 166,
             "description": "Moves the agent with the given accel => speed => position",
             "itemtype": "method",
             "name": "move",
@@ -5154,19 +5862,22 @@
                     "type": "Number"
                 }
             ],
-            "class": "Agent"
+            "class": "Agent",
+            "module": "CrowdSim",
+            "submodule": "Agent"
         },
         {
             "file": "src\\sim\\CrowdSim.js",
-            "line": 20,
+            "line": 22,
             "description": "Restarts the generation of entities ids. Usefull when loading new worlds.",
             "itemtype": "method",
             "name": "restartIds",
-            "class": "CrowdSim"
+            "class": "CrowdSim",
+            "module": "CrowdSim"
         },
         {
             "file": "src\\sim\\Engine.js",
-            "line": 23,
+            "line": 25,
             "description": "Get the engine settings, configured in constructor [options]",
             "itemtype": "method",
             "name": "getSettings",
@@ -5174,11 +5885,13 @@
                 "description": "options",
                 "type": "Object"
             },
-            "class": "Engine"
+            "class": "Engine",
+            "module": "CrowdSim",
+            "submodule": "Engine"
         },
         {
             "file": "src\\sim\\Engine.js",
-            "line": 33,
+            "line": 35,
             "description": "Sets the simulation world",
             "itemtype": "method",
             "name": "setWorld",
@@ -5189,11 +5902,13 @@
                     "type": "World"
                 }
             ],
-            "class": "Engine"
+            "class": "Engine",
+            "module": "CrowdSim",
+            "submodule": "Engine"
         },
         {
             "file": "src\\sim\\Engine.js",
-            "line": 43,
+            "line": 45,
             "description": "Gets the simulation world",
             "itemtype": "method",
             "name": "getWorld",
@@ -5201,11 +5916,13 @@
                 "description": "",
                 "type": "World"
             },
-            "class": "Engine"
+            "class": "Engine",
+            "module": "CrowdSim",
+            "submodule": "Engine"
         },
         {
             "file": "src\\sim\\Engine.js",
-            "line": 53,
+            "line": 55,
             "description": "Starts the simulation",
             "itemtype": "method",
             "name": "run",
@@ -5220,11 +5937,13 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "Engine"
+            "class": "Engine",
+            "module": "CrowdSim",
+            "submodule": "Engine"
         },
         {
             "file": "src\\sim\\Engine.js",
-            "line": 73,
+            "line": 75,
             "description": "Advance one step the simulation and stops.",
             "itemtype": "method",
             "name": "step",
@@ -5232,19 +5951,23 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "Engine"
+            "class": "Engine",
+            "module": "CrowdSim",
+            "submodule": "Engine"
         },
         {
             "file": "src\\sim\\Engine.js",
-            "line": 87,
+            "line": 89,
             "description": "Internal step of the simulation engine. Periodically called.",
             "itemtype": "method",
             "name": "_step",
-            "class": "Engine"
+            "class": "Engine",
+            "module": "CrowdSim",
+            "submodule": "Engine"
         },
         {
             "file": "src\\sim\\Engine.js",
-            "line": 119,
+            "line": 121,
             "description": "Stops the simulation",
             "itemtype": "method",
             "name": "stop",
@@ -5259,11 +5982,13 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "Engine"
+            "class": "Engine",
+            "module": "CrowdSim",
+            "submodule": "Engine"
         },
         {
             "file": "src\\sim\\Engine.js",
-            "line": 138,
+            "line": 140,
             "description": "Resets=Restarts the state of the simulation.",
             "itemtype": "method",
             "name": "reset",
@@ -5271,11 +5996,13 @@
                 "description": "true if running; false otherwise",
                 "type": "Boolean"
             },
-            "class": "Engine"
+            "class": "Engine",
+            "module": "CrowdSim",
+            "submodule": "Engine"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 35,
+            "line": 37,
             "description": "Gets and resets the number of steps executed since last call",
             "itemtype": "method",
             "name": "changesNumber",
@@ -5283,11 +6010,13 @@
                 "description": "changes",
                 "type": "Number"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 46,
+            "line": 48,
             "description": "Get/set if the world is not running (Frozen). This is set from the Engine",
             "itemtype": "method",
             "name": "freeze",
@@ -5302,11 +6031,13 @@
                 "description": "true if world is static",
                 "type": "Boolean"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 58,
+            "line": 60,
             "description": "Returns the first group created.",
             "itemtype": "method",
             "name": "getDefaultGroup",
@@ -5314,11 +6045,13 @@
                 "description": "group",
                 "type": "Object"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 68,
+            "line": 70,
             "description": "Get the list of Agents.",
             "itemtype": "method",
             "name": "getAgents",
@@ -5326,11 +6059,13 @@
                 "description": "agents",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 78,
+            "line": 80,
             "description": "Gets a iterator for all entities.",
             "itemtype": "method",
             "name": "getEntitiesIterator",
@@ -5338,11 +6073,13 @@
                 "description": "Lazy iterator",
                 "type": "Object"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 88,
+            "line": 90,
             "description": "Get the list of contexts.",
             "itemtype": "method",
             "name": "getContexts",
@@ -5350,11 +6087,13 @@
                 "description": "contexts",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 98,
+            "line": 100,
             "description": "Get the list of groups.",
             "itemtype": "method",
             "name": "getGroups",
@@ -5362,11 +6101,13 @@
                 "description": "groups",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 108,
+            "line": 110,
             "description": "Get the list of paths.",
             "itemtype": "method",
             "name": "getPaths",
@@ -5374,11 +6115,13 @@
                 "description": "paths",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 118,
+            "line": 120,
             "description": "Get the list of walls.",
             "itemtype": "method",
             "name": "getWalls",
@@ -5386,11 +6129,13 @@
                 "description": "walls",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 128,
+            "line": 130,
             "description": "Add an array of Agents from the world.",
             "itemtype": "method",
             "name": "addAgents",
@@ -5401,11 +6146,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 142,
+            "line": 144,
             "description": "Remove an array of agents from the World.",
             "itemtype": "method",
             "name": "removeAgents",
@@ -5416,11 +6163,13 @@
                     "type": "Array"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 159,
+            "line": 161,
             "description": "Get the list of agents in a given Context",
             "itemtype": "method",
             "name": "agentsInContext",
@@ -5435,11 +6184,13 @@
                 "description": "all entities",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 172,
+            "line": 174,
             "description": "Callback trigger when an entity is created",
             "itemtype": "method",
             "name": "_onCreate",
@@ -5450,11 +6201,13 @@
                     "type": "Entity"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 184,
+            "line": 186,
             "description": "Callback trigger when an entity is destroyed",
             "itemtype": "method",
             "name": "_onDestroy",
@@ -5465,11 +6218,13 @@
                     "type": "Entity"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 196,
+            "line": 198,
             "description": "Returns the property that holds the entity list, used internally.",
             "itemtype": "method",
             "name": "_getEntityList",
@@ -5480,11 +6235,13 @@
                     "type": "Entity"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 216,
+            "line": 218,
             "description": "Remove an entity from the world. Called by entities on destroy.",
             "itemtype": "method",
             "name": "removeEntity",
@@ -5495,11 +6252,13 @@
                     "type": "Entity"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 232,
+            "line": 234,
             "description": "Add an entity from the world. Called by entities on constructor.",
             "itemtype": "method",
             "name": "addEntity",
@@ -5510,11 +6269,13 @@
                     "type": "Entity"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 245,
+            "line": 247,
             "description": "Add a Context to the world.",
             "itemtype": "method",
             "name": "addContext",
@@ -5525,11 +6286,13 @@
                     "type": "Context"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 256,
+            "line": 258,
             "description": "Add a Group to the world.",
             "itemtype": "method",
             "name": "addGroup",
@@ -5540,11 +6303,13 @@
                     "type": "Group"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 267,
+            "line": 269,
             "description": "Add a Path to the world.",
             "itemtype": "method",
             "name": "addPath",
@@ -5555,11 +6320,13 @@
                     "type": "Path"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 278,
+            "line": 280,
             "description": "Add a Wall to the world.",
             "itemtype": "method",
             "name": "addWall",
@@ -5570,11 +6337,13 @@
                     "type": "Wall"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 289,
+            "line": 291,
             "description": "Search an entity in the world by its id.",
             "itemtype": "method",
             "name": "getEntityById",
@@ -5589,11 +6358,13 @@
                 "description": "",
                 "type": "Entity"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 300,
+            "line": 302,
             "description": "Search an context in the world by its id.",
             "itemtype": "method",
             "name": "getContextById",
@@ -5608,11 +6379,13 @@
                 "description": "contexts",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 311,
+            "line": 313,
             "description": "Search an path in the world by its id.",
             "itemtype": "method",
             "name": "getPathById",
@@ -5627,11 +6400,13 @@
                 "description": "paths",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 322,
+            "line": 324,
             "description": "Returns the agents near to another.\nThe near property is given in the options constructor parameter",
             "itemtype": "method",
             "name": "getNearAgents",
@@ -5646,11 +6421,13 @@
                 "description": "agents",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 334,
+            "line": 336,
             "description": "Returns the agents near to another.\n\nThe near property is given in the options constructor parameter",
             "itemtype": "method",
             "name": "getNearWalls",
@@ -5665,11 +6442,13 @@
                 "description": "walls",
                 "type": "Array"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 347,
+            "line": 349,
             "description": "Save the world state without agents.",
             "itemtype": "method",
             "name": "save",
@@ -5680,11 +6459,13 @@
                     "type": "Boolean"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 363,
+            "line": 365,
             "description": "Load the world state from a loader.",
             "itemtype": "method",
             "name": "load",
@@ -5700,11 +6481,13 @@
                     "type": "Boolean"
                 }
             ],
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 429,
+            "line": 431,
             "description": "Save helper to remove loops and agents from world data.",
             "itemtype": "method",
             "name": "_saveHelper",
@@ -5719,11 +6502,13 @@
                 "description": "JSON data that represents the world.entities",
                 "type": "String"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         },
         {
             "file": "src\\sim\\World.js",
-            "line": 462,
+            "line": 464,
             "description": "Advances the simulation of the world entities one stepSize.\nIf one contexts configured to nofify when agentsIn === 0",
             "itemtype": "method",
             "name": "step",
@@ -5738,7 +6523,9 @@
                 "description": "contextEmpty that triggers step",
                 "type": "Context|Null"
             },
-            "class": "World"
+            "class": "World",
+            "module": "CrowdSim",
+            "submodule": "World"
         }
     ],
     "warnings": [
@@ -5785,178 +6572,6 @@
         {
             "message": "replacing incorrect tag: function with method",
             "line": " src\\sim\\Common\\Vec2.js:505"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:5"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:6"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:51"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:52"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:100"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:101"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:243"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:244"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:301"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:302"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:359"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:360"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:429"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:430"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:503"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:504"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:565"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:566"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:697"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:698"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:838"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:839"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1027"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1028"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1177"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1178"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1302"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1303"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1792"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1793"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1919"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:1920"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:2154"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:2155"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:2374"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:2375"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:2497"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:2498"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:2671"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:2672"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:3226"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:3300"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src\\app\\Worlds.js:3301"
         }
     ]
 }

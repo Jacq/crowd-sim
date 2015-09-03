@@ -1,9 +1,11 @@
 'use strict';
 
 /**
- * Base behavior.
+ * Base behavior
  *
- * @class Behaviour
+ * @class Behavior
+ * @module CrowdSim
+ * @submodule Behavior
  * @constructor
  * @param {World} world parent
  */

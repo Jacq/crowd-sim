@@ -8,8 +8,15 @@ var Behavior = require('./Behavior');
  *
  * @class Panic
  * @constructor
+ * @module CrowdSim
+ * @submodule Panic
  * @param {World} world parent
- * @param {Object} options
+ * @param {Object} options for the behavior model algorithm
+ * @param {Object} [options.A] repulsive force constant
+ * @param {Object} [options.B] repulsive force constant
+ * @param {Object} [options.kn] compression large constant
+ * @param {Object} [options.Kv] friction large constant
+ * @param {Object} [options.relaxationTime] time to simulate progressive stopping
  * @extends Behavior
  */
 var Panic = function(world, options) {
@@ -17,7 +24,7 @@ var Panic = function(world, options) {
   this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
-/*
+/**
  * Return the acceleration result for a agent going to its target.
  *
  * @method getAccel

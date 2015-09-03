@@ -6,6 +6,8 @@ var Vec2 = require('./Vec2');
  * Grid hashmap to store entities indexed by their position.
  *
  * @class Grid
+ * @module CrowdSim
+ * @submodule Common
  * @constructor
  * @param {Number} near is the cell size for the hashmap. Also the maximum distance to be consider "neighbours"
  */

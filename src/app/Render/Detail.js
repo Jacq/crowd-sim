@@ -2,9 +2,11 @@
 
 /**
  * Detail manager.
- * 
+ *
  * @class Detail
  * @constructor
+ * @module Render
+ * @submodule Detail
  * @param {Number} maxDetail
  * @param {Number} detail
  */

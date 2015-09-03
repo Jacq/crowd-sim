@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Joint</title>
+    <title>Joint - CrowdSim</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -14,10 +14,10 @@
 <div id="doc">
     <div id="hd" class="yui3-g header">
         <div class="yui3-u-3-4">
-                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+                <h1><img src="../assets/css/logo.png" title="CrowdSim" width="117" height="52"></h1>
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: </em>
+            <em>API Docs for: 0.3</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -41,7 +41,8 @@
                                 <li><a href="../classes/2 Dimensional Vector.html">2 Dimensional Vector</a></li>
                                 <li><a href="../classes/Agent.html">Agent</a></li>
                                 <li><a href="../classes/AssignableToGroup.html">AssignableToGroup</a></li>
-                                <li><a href="../classes/Behaviour.html">Behaviour</a></li>
+                                <li><a href="../classes/Behavior.html">Behavior</a></li>
+                                <li><a href="../classes/Colors.html">Colors</a></li>
                                 <li><a href="../classes/Common utilities.html">Common utilities</a></li>
                                 <li><a href="../classes/Context.html">Context</a></li>
                                 <li><a href="../classes/CrowdSim.html">CrowdSim</a></li>
@@ -50,25 +51,41 @@
                                 <li><a href="../classes/Engine.html">Engine</a></li>
                                 <li><a href="../classes/Entity.html">Entity</a></li>
                                 <li><a href="../classes/EntityPrototype.html">EntityPrototype</a></li>
+                                <li><a href="../classes/Fonts.html">Fonts</a></li>
                                 <li><a href="../classes/Grid.html">Grid</a></li>
                                 <li><a href="../classes/Group.html">Group</a></li>
                                 <li><a href="../classes/Joint.html">Joint</a></li>
                                 <li><a href="../classes/Line.html">Line</a></li>
+                                <li><a href="../classes/LinePrototype.html">LinePrototype</a></li>
                                 <li><a href="../classes/Panic.html">Panic</a></li>
+                                <li><a href="../classes/Path.html">Path</a></li>
                                 <li><a href="../classes/Render.html">Render</a></li>
-                                <li><a href="../classes/Render.Agent.html">Render.Agent</a></li>
-                                <li><a href="../classes/Render.Context.html">Render.Context</a></li>
-                                <li><a href="../classes/Render.Entity.html">Render.Entity</a></li>
-                                <li><a href="../classes/Render.Group.html">Render.Group</a></li>
-                                <li><a href="../classes/Render.Joint.html">Render.Joint</a></li>
-                                <li><a href="../classes/Render.Line.html">Render.Line</a></li>
-                                <li><a href="../classes/Render.Path.html">Render.Path</a></li>
-                                <li><a href="../classes/Render.Wall.html">Render.Wall</a></li>
+                                <li><a href="../classes/Wall.html">Wall</a></li>
                                 <li><a href="../classes/World.html">World</a></li>
                             </ul>
                 
                 
                             <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/Agent.html">Agent</a></li>
+                                <li><a href="../modules/Base.html">Base</a></li>
+                                <li><a href="../modules/Behavior.html">Behavior</a></li>
+                                <li><a href="../modules/Common.html">Common</a></li>
+                                <li><a href="../modules/Context.html">Context</a></li>
+                                <li><a href="../modules/CrowdSim.html">CrowdSim</a></li>
+                                <li><a href="../modules/CrowdSimApp.html">CrowdSimApp</a></li>
+                                <li><a href="../modules/Detail.html">Detail</a></li>
+                                <li><a href="../modules/Engine.html">Engine</a></li>
+                                <li><a href="../modules/Entities.html">Entities</a></li>
+                                <li><a href="../modules/Entity.html">Entity</a></li>
+                                <li><a href="../modules/Group.html">Group</a></li>
+                                <li><a href="../modules/Joint.html">Joint</a></li>
+                                <li><a href="../modules/LinePrototype.html">LinePrototype</a></li>
+                                <li><a href="../modules/Panic.html">Panic</a></li>
+                                <li><a href="../modules/Path.html">Path</a></li>
+                                <li><a href="../modules/Render.html">Render</a></li>
+                                <li><a href="../modules/Wall.html">Wall</a></li>
+                                <li><a href="../modules/World.html">World</a></li>
+                                <li><a href="../modules/Worlds.html">Worlds</a></li>
                             </ul>
                         </div>
                     </div>
@@ -113,6 +130,8 @@
             Defined in: <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l4"><code>src\sim\Entities\Helpers\Joint.js:4</code></a>
         </div>
 
+            Module: <a href="../modules/Joint.html">Joint</a><br>
+            Parent Module: <a href="../modules/Entities.html">Entities</a>
 
 </div>
 
@@ -130,19 +149,10 @@
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
                 <li class="arg">
-                        <code>x</code>
+                        <code>joint</code>
                 </li>
                 <li class="arg">
-                        <code>y</code>
-                </li>
-                <li class="arg">
-                        <code>parent</code>
-                </li>
-                <li class="arg">
-                        <code class="optional">[options]</code>
-                </li>
-                <li class="arg">
-                        <code>id</code>
+                        <code>texture</code>
                 </li>
             </ul><span class="paren">)</span>
         </div>
@@ -173,42 +183,8 @@
 
             <ul class="params-list">
                 <li class="param">
-                        <code class="param-name">x</code>
-                        <span class="type">Number</span>
-
-
-                    <div class="param-description">
-                        <p>coordinate</p>
-
-                    </div>
-
-                </li>
-                <li class="param">
-                        <code class="param-name">y</code>
-                        <span class="type">Number</span>
-
-
-                    <div class="param-description">
-                        <p>coordinate</p>
-
-                    </div>
-
-                </li>
-                <li class="param">
-                        <code class="param-name">parent</code>
-                        <span class="type"><a href="../classes/World.html" class="crosslink">World</a></span>
-
-
-                    <div class="param-description">
-                        <p>world</p>
-
-                    </div>
-
-                </li>
-                <li class="param">
-                        <code class="param-name optional">[options]</code>
-                        <span class="type">Object</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                        <code class="param-name">joint</code>
+                        <span class="type"><a href="../classes/Joint.html" class="crosslink">Joint</a></span>
 
 
                     <div class="param-description">
@@ -217,13 +193,12 @@
 
                 </li>
                 <li class="param">
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
+                        <code class="param-name">texture</code>
+                        <span class="type">Pixi.Texture</span>
 
 
                     <div class="param-description">
-                        <p>to use insted of autogenerate it, used when loading worlds</p>
-
+                         
                     </div>
 
                 </li>
@@ -259,7 +234,35 @@
 
                             </li>
                             <li class="index-item method inherited">
+                                <a href="#method_createGraphics">createGraphics</a>
+
+                            </li>
+                            <li class="index-item method inherited">
                                 <a href="#method_destroy">destroy</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_destroy">destroy</a>
+
+                            </li>
+                            <li class="index-item method inherited">
+                                <a href="#method_destroyGraphics">destroyGraphics</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_dragTo">dragTo</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_getAnchor">getAnchor</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_getJoint">getJoint</a>
+
+                            </li>
+                            <li class="index-item method inherited">
+                                <a href="#method_getPos">getPos</a>
 
                             </li>
                             <li class="index-item method">
@@ -278,8 +281,20 @@
                                 <a href="#method_removeEntity">removeEntity</a>
 
                             </li>
+                            <li class="index-item method inherited">
+                                <a href="#method_render">render</a>
+
+                            </li>
+                            <li class="index-item method inherited">
+                                <a href="#method_setInteractive">setInteractive</a>
+
+                            </li>
                             <li class="index-item method">
                                 <a href="#method_setRadius">setRadius</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_show">show</a>
 
                             </li>
                             <li class="index-item method inherited">
@@ -320,7 +335,7 @@
     <div class="meta">
                 <p>Inherited from
                 <a href="../classes/Entity.html#method_addEntity">Entity</a>:
-        <a href="../files/src_sim_Entities_Entity.js.html#l61"><code>src\sim\Entities\Entity.js:61</code></a>
+        <a href="../files/src_sim_Entities_Entity.js.html#l70"><code>src\sim\Entities\Entity.js:70</code></a>
         </p>
 
 
@@ -328,7 +343,8 @@
     </div>
 
     <div class="description">
-        Description
+        <p>Description</p>
+
     </div>
 
         <div class="params">
@@ -337,7 +353,7 @@
             <ul class="params-list">
                 <li class="param">
                         <code class="param-name">joint</code>
-                        <span class="type">Object</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
 
                     <div class="param-description">
@@ -381,7 +397,7 @@
     <div class="meta">
                 <p>Inherited from
                 <a href="../classes/Entity.html#method_calcNewId">Entity</a>:
-        <a href="../files/src_sim_Entities_Entity.js.html#l26"><code>src\sim\Entities\Entity.js:26</code></a>
+        <a href="../files/src_sim_Entities_Entity.js.html#l35"><code>src\sim\Entities\Entity.js:35</code></a>
         </p>
 
 
@@ -389,7 +405,8 @@
     </div>
 
     <div class="description">
-        Description
+        <p>Description</p>
+
     </div>
 
         <div class="params">
@@ -398,7 +415,7 @@
             <ul class="params-list">
                 <li class="param">
                         <code class="param-name">id</code>
-                        <span class="type">Object</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
 
                     <div class="param-description">
@@ -413,9 +430,122 @@
             <h4>Returns:</h4>
 
             <div class="returns-description">
-                    CallExpression
+                    <p>CallExpression</p>
+
             </div>
         </div>
+
+
+</div>
+<div id="method_createGraphics" class="method item">
+    <h3 class="name"><code>createGraphics</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>graphics</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+
+
+
+
+
+
+
+    <div class="meta">
+            <p>Inherited from
+            <a href="../classes/Entity.html#method_createGraphics">
+                Entity
+            </a>
+            but overwritten in
+        <a href="../files/src_app_Render_Joint.js.html#l41"><code>src\app\Render\Joint.js:41</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Create base graphics.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">graphics</code>
+                        <span class="type">Pixi.Graphics</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+
+
+</div>
+<div id="method_destroy" class="method item">
+    <h3 class="name"><code>destroy</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>graphics</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+
+
+
+
+
+
+
+    <div class="meta">
+            <p>Inherited from
+            <a href="../classes/Entity.html#method_destroy">
+                Entity
+            </a>
+            but overwritten in
+        <a href="../files/src_app_Render_Joint.js.html#l27"><code>src\app\Render\Joint.js:27</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Destroy base graphics.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">graphics</code>
+                        <span class="type">Pixi.Graphics</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
 
 
 </div>
@@ -432,12 +562,9 @@
 
 
     <div class="meta">
-            <p>Inherited from
-            <a href="../classes/Entity.html#method_destroy">
-                Entity
-            </a>
-            but overwritten in
-        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l24"><code>src\sim\Entities\Helpers\Joint.js:24</code></a>
+                <p>
+                Defined in
+        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l26"><code>src\sim\Entities\Helpers\Joint.js:26</code></a>
         </p>
 
 
@@ -453,13 +580,145 @@
 
 
 </div>
-<div id="method_getRadius" class="method item">
-    <h3 class="name"><code>getRadius</code></h3>
+<div id="method_destroyGraphics" class="method item inherited">
+    <h3 class="name"><code>destroyGraphics</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>container</code>
+                </li>
+                <li class="arg">
+                        <code>graphics</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>Inherited from
+                <a href="../classes/Entity.html#method_destroyGraphics">Entity</a>:
+        <a href="../files/src_app_Render_Entity.js.html#l55"><code>src\app\Render\Entity.js:55</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Destroy base graphics.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">container</code>
+                        <span class="type">Pixi.Container</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+                <li class="param">
+                        <code class="param-name">graphics</code>
+                        <span class="type">Pixi.Graphics</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+
+
+</div>
+<div id="method_dragTo" class="method item">
+    <h3 class="name"><code>dragTo</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>pos</code>
+                </li>
+                <li class="arg">
+                        <code>anchor</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_app_Render_Joint.js.html#l89"><code>src\app\Render\Joint.js:89</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Draggin actino.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">pos</code>
+                        <span class="type">Vec2</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+                <li class="param">
+                        <code class="param-name">anchor</code>
+                        <span class="type">Vec2</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+
+
+</div>
+<div id="method_getAnchor" class="method item">
+    <h3 class="name"><code>getAnchor</code></h3>
 
         <span class="paren">()</span>
 
         <span class="returns-inline">
-            <span class="type">Number</span>
+            <span class="type">Vec2</span>
         </span>
 
 
@@ -471,7 +730,139 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l35"><code>src\sim\Entities\Helpers\Joint.js:35</code></a>
+        <a href="../files/src_app_Render_Joint.js.html#l79"><code>src\app\Render\Joint.js:79</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Get joint anchor for dragging actions.</p>
+
+    </div>
+
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Vec2</span>:
+                    <p>anchor</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_getJoint" class="method item">
+    <h3 class="name"><code>getJoint</code></h3>
+
+        <span class="paren">()</span>
+
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Joint.html" class="crosslink">Joint</a></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_app_Render_Joint.js.html#l109"><code>src\app\Render\Joint.js:109</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Get joint associated entity.</p>
+
+    </div>
+
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type"><a href="../classes/Joint.html" class="crosslink">Joint</a></span>:
+                    <p>joint</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_getPos" class="method item">
+    <h3 class="name"><code>getPos</code></h3>
+
+        <span class="paren">()</span>
+
+        <span class="returns-inline">
+            <span class="type">Vec2</span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+            <p>Inherited from
+            <a href="../classes/Entity.html#method_getPos">
+                Entity
+            </a>
+            but overwritten in
+        <a href="../files/src_app_Render_Joint.js.html#l119"><code>src\app\Render\Joint.js:119</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Get joint position.</p>
+
+    </div>
+
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Vec2</span>:
+                    <p>position</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_getRadius" class="method item">
+    <h3 class="name"><code>getRadius</code></h3>
+
+        <span class="paren">()</span>
+
+        <span class="returns-inline">
+            <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l37"><code>src\sim\Entities\Helpers\Joint.js:37</code></a>
         </p>
 
 
@@ -488,7 +879,7 @@
             <h4>Returns:</h4>
 
             <div class="returns-description">
-                        <span class="type">Number</span>:
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>:
                     <p>radius</p>
 
             </div>
@@ -508,7 +899,7 @@
         </div>
 
         <span class="returns-inline">
-            <span class="type">Boolean</span>
+            <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
         </span>
 
 
@@ -520,7 +911,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l45"><code>src\sim\Entities\Helpers\Joint.js:45</code></a>
+        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l47"><code>src\sim\Entities\Helpers\Joint.js:47</code></a>
         </p>
 
 
@@ -553,7 +944,7 @@
             <h4>Returns:</h4>
 
             <div class="returns-description">
-                        <span class="type">Boolean</span>:
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>:
                     <p>true if inside; false otherwise</p>
 
             </div>
@@ -582,7 +973,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l69"><code>src\sim\Entities\Helpers\Joint.js:69</code></a>
+        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l71"><code>src\sim\Entities\Helpers\Joint.js:71</code></a>
         </p>
 
 
@@ -600,7 +991,7 @@
             <ul class="params-list">
                 <li class="param">
                         <code class="param-name">dr</code>
-                        <span class="type">Number</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
 
 
                     <div class="param-description">
@@ -638,7 +1029,7 @@
     <div class="meta">
                 <p>Inherited from
                 <a href="../classes/Entity.html#method_removeEntity">Entity</a>:
-        <a href="../files/src_sim_Entities_Entity.js.html#l70"><code>src\sim\Entities\Entity.js:70</code></a>
+        <a href="../files/src_sim_Entities_Entity.js.html#l79"><code>src\sim\Entities\Entity.js:79</code></a>
         </p>
 
 
@@ -646,7 +1037,8 @@
     </div>
 
     <div class="description">
-        Description
+        <p>Description</p>
+
     </div>
 
         <div class="params">
@@ -655,7 +1047,7 @@
             <ul class="params-list">
                 <li class="param">
                         <code class="param-name">joint</code>
-                        <span class="type">Object</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
 
                     <div class="param-description">
@@ -672,6 +1064,93 @@
             <div class="returns-description">
             </div>
         </div>
+
+
+</div>
+<div id="method_render" class="method item">
+    <h3 class="name"><code>render</code></h3>
+
+        <span class="paren">()</span>
+
+
+
+
+
+
+
+
+    <div class="meta">
+            <p>Inherited from
+            <a href="../classes/Entity.html#method_render">
+                Entity
+            </a>
+            but overwritten in
+        <a href="../files/src_app_Render_Joint.js.html#l62"><code>src\app\Render\Joint.js:62</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Animate joint, update position and radius.</p>
+
+    </div>
+
+
+
+
+</div>
+<div id="method_setInteractive" class="method item inherited">
+    <h3 class="name"><code>setInteractive</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>displayObject</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>Inherited from
+                <a href="../classes/Entity.html#method_setInteractive">Entity</a>:
+        <a href="../files/src_app_Render_Entity.js.html#l71"><code>src\app\Render\Entity.js:71</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Set render entity as interactive.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">displayObject</code>
+                        <span class="type">Pixi.DisplayObject</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
 
 
 </div>
@@ -696,7 +1175,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l57"><code>src\sim\Entities\Helpers\Joint.js:57</code></a>
+        <a href="../files/src_sim_Entities_Helpers_Joint.js.html#l59"><code>src\sim\Entities\Helpers\Joint.js:59</code></a>
         </p>
 
 
@@ -714,11 +1193,65 @@
             <ul class="params-list">
                 <li class="param">
                         <code class="param-name">radius</code>
-                        <span class="type">Number</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
 
 
                     <div class="param-description">
                          
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+
+
+</div>
+<div id="method_show" class="method item">
+    <h3 class="name"><code>show</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>show</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_app_Render_Joint.js.html#l129"><code>src\app\Render\Joint.js:129</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Shows or hides render joint.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">show</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a></span>
+
+
+                    <div class="param-description">
+                        <p>true for visible</p>
+
                     </div>
 
                 </li>
@@ -755,7 +1288,7 @@
     <div class="meta">
                 <p>Inherited from
                 <a href="../classes/Entity.html#method_updatePos">Entity</a>:
-        <a href="../files/src_sim_Entities_Entity.js.html#l48"><code>src\sim\Entities\Entity.js:48</code></a>
+        <a href="../files/src_sim_Entities_Entity.js.html#l57"><code>src\sim\Entities\Entity.js:57</code></a>
         </p>
 
 
@@ -763,7 +1296,8 @@
     </div>
 
     <div class="description">
-        Description
+        <p>Description</p>
+
     </div>
 
         <div class="params">
@@ -772,7 +1306,7 @@
             <ul class="params-list">
                 <li class="param">
                         <code class="param-name">x</code>
-                        <span class="type">Object</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
 
                     <div class="param-description">
@@ -782,7 +1316,7 @@
                 </li>
                 <li class="param">
                         <code class="param-name">y</code>
-                        <span class="type">Object</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
 
                     <div class="param-description">

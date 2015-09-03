@@ -6,8 +6,10 @@ var Colors = Base.Colors;
 /**
  * Initialices rendering and animate entities.
  *
- * @constructor
  * @class Render
+ * @constructor
+ * @module CrowdSimApp
+ * @submodule Render
  * @param {Canvas} canvas
  * @param {Number} w width
  * @param {Number} h height

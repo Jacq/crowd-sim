@@ -13,10 +13,12 @@ var Wall = LinePrototype(Colors.Wall);
 /**
  * Wall render view.
  *
- * @class Render.Wall
+ * @class Wall
+ * @module Render
+ * @submodule Wall
  * @constructor
  * @param {Wall} wall
- * @return {Render.Wall}
+ * @return {Wall}
  */
 Wall.CreateFromModel = function(wall) {
   return new Wall(wall);

@@ -6,6 +6,8 @@
  * The simulation engine. Manages the state running of the simulation
  *
  * @class Engine
+ * @module CrowdSim
+ * @submodule Engine
  * @constructor
  * @param {World} world
  * @param {Object} options

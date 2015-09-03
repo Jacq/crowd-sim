@@ -3,6 +3,10 @@
 var LinePrototype = require('./Helpers/LinePrototype');
 var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
+/**
+ * @module Entities
+ * @submodule Path
+ */
 var Path = LinePrototype('P','path',{
   width: 0.2,
   radius: 4

@@ -8,7 +8,9 @@ var Colors = Base.Colors;
 /**
  * Agent render view.
  *
- * @class Render.Agent
+ * @class Agent
+ * @module Render
+ * @submodule Agent
  * @method Agent
  * @param {Agent} agent
  */

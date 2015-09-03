@@ -12,9 +12,11 @@ var Path = LinePrototype(Colors.Path);
 /**
  * Create a Path render view from an Entity.
  *
- * @class Render.Path
+ * @class Path
+ * @module Render
+ * @submodule Path
  * @method CreateFromModel
- * @param {particleh} path
+ * @param {Path} path
  * @return {Path} render path
  */
 Path.CreateFromModel = function(path) {

@@ -9,7 +9,9 @@ var Colors = Base.Colors;
 /**
  * Context render view.
  *
- * @class Render.Context
+ * @class Context
+ * @module Render
+ * @submodule Context
  * @method Context
  * @param {Context} context
  */

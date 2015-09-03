@@ -6,6 +6,9 @@ var Vec2 = require('./Common/Vec2');
 /**
  * The agents that live in the simulation engine.
  *
+ * @class Agent
+ * @module CrowdSim
+ * @submodule Agent
  * @constructor
  * @param {Number} x coordinate
  * @param {Number} y coordinate
@@ -97,7 +100,9 @@ Agent.prototype.followPath = function(path, index) {
 };
 
 /**
- * Helper to set the path start that takes into account inverse paths
+ * Helper to set the path start that takes into account inverse paths.
+ *
+ * @method _startPath
  */
 Agent.prototype._startPath = function() {
   this.joints = this.path.getJoints();
@@ -194,8 +199,11 @@ module.exports = Agent;
 'use strict';
 
 /**
- * Base behavior.
+ * Base behavior
  *
+ * @class Behavior
+ * @module CrowdSim
+ * @submodule Behavior
  * @constructor
  * @param {World} world parent
  */
@@ -224,9 +232,17 @@ var Behavior = require('./Behavior');
 /**
  * Helbing-Farkas,Vicsek Simulating dynamical features of escape panic
  *
+ * @class Panic
  * @constructor
+ * @module CrowdSim
+ * @submodule Panic
  * @param {World} world parent
- * @param {Object} options
+ * @param {Object} options for the behavior model algorithm
+ * @param {Object} [options.A] repulsive force constant
+ * @param {Object} [options.B] repulsive force constant
+ * @param {Object} [options.kn] compression large constant
+ * @param {Object} [options.Kv] friction large constant
+ * @param {Object} [options.relaxationTime] time to simulate progressive stopping
  * @extends Behavior
  */
 var Panic = function(world, options) {
@@ -234,7 +250,7 @@ var Panic = function(world, options) {
   this.options = Lazy(options).defaults(Panic.defaults).toObject();
 };
 
-/*
+/**
  * Return the acceleration result for a agent going to its target.
  *
  * @method getAccel
@@ -395,6 +411,9 @@ var Vec2 = require('./Vec2');
 /**
  * Grid hashmap to store entities indexed by their position.
  *
+ * @class Grid
+ * @module CrowdSim
+ * @submodule Common
  * @constructor
  * @param {Number} near is the cell size for the hashmap. Also the maximum distance to be consider "neighbours"
  */
@@ -574,7 +593,9 @@ Grid.prototype.neighboursContext = function(context) {
 };
 
 /**
- * Builds the keys of the neighbours of the position (x,y)
+ * Builds the keys of the neighbours of the position (x,y).
+ *
+ * @method _keyNeighbours
  * @param  {Number} x coordinate
  * @param  {Number} y coordinate
  * @return {Array} neighbours keys
@@ -591,7 +612,8 @@ Grid.prototype._keyNeighbours = function(x, y) {
 
 /**
  * Build the key to map coordinates to the hashmap.
- * 
+ *
+ * @method _key
  * @param  {Entity} entity
  * @param  {Number} x coordinate, if null entity.pos[0] is used
  * @param  {Number} y coordinate, if null entity.pos[1] is used
@@ -1231,6 +1253,9 @@ vec2.normalizeAndScale = function(out, a, b) {
 /**
  * The simulation engine. Manages the state running of the simulation
  *
+ * @class Engine
+ * @module CrowdSim
+ * @submodule Engine
  * @constructor
  * @param {World} world
  * @param {Object} options
@@ -1311,6 +1336,7 @@ Engine.prototype.step = function() {
 
 /**
  * Internal step of the simulation engine. Periodically called.
+ * @method _step
  */
 Engine.prototype._step = function() {
   // calculate next execution
@@ -1396,6 +1422,9 @@ var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 /**
  * Context entity
  *
+ * @class Context
+ * @module Entities
+ * @submodule Context
  * @constructor
  * @param {Number} x coordinate
  * @param {Number} y coordinate
@@ -1581,8 +1610,18 @@ module.exports = Context;
 var Vec2 = require('../Common/Vec2');
 
 /**
+ * Module with all the entities
+ *
+ * @module CrowdSim
+ * @submodule Entities
+*/
+
+/**
  * Base entity
  *
+ * @class Entity
+ * @module Entities
+ * @submodule Entity
  * @constructor
  * @param {Number} x coordinate
  * @param {Number} y coordinate
@@ -1670,6 +1709,9 @@ var Panic = require('../Behavior/Panic');
 /**
  * Group Entity where agents belong.
  *
+ * @class Group
+ * @module Entities
+ * @submodule Group
  * @constructor
  * @param {Number} x coordinate
  * @param {Number} y coordinate
@@ -1878,6 +1920,7 @@ Group.prototype.unAssign = function(entity) {
 /**
  * Assign a behavior model to the group.
  *
+ * @method assignBehavior
  * @param {Behavior} behavior
  */
 Group.prototype.assignBehavior = function(behavior) {
@@ -2097,7 +2140,10 @@ var Vec2 = require('../../Common/Vec2');
 /**
  * Joint helper entity children of Wall and Path
  *
+ * @class Joint
  * @constructor
+ * @module Entities
+ * @submodule Joint
  * @param {Number} x coordinate
  * @param {Number} y coordinate
  * @param {World} parent world
@@ -2191,6 +2237,8 @@ var Joint = require('./Joint');
  * Base class to extend Wall and Path entities with common functionalities.
  *
  * @method LinePrototype
+ * @module Entities
+ * @submodule LinePrototype
  * @param {String} idPrefix 'W' for walls, 'P' for paths
  * @param {String} type 'wall' for walls, 'path' for paths
  * @param {Object} defaults options
@@ -2201,6 +2249,7 @@ var LinePrototype = function(idPrefix, type, defaults, id) {
   /**
    * Line Base
    *
+   * @class Line
    * @constructor
    * @param {Number} x coordinate
    * @param {Number} y coordinate
@@ -2392,9 +2441,11 @@ module.exports = LinePrototype;
 
 
 /**
- * Description
+ * To extend object with assignable to group trait.
+ *
+ * @class AssignableToGroup
  * @method AssignableToGroup
- * @param {} EntityPrototype
+ * @param {Entity} EntityPrototype
  * @return EntityPrototype
  */
 var AssignableToGroup = function(EntityPrototype) {
@@ -2403,13 +2454,16 @@ var AssignableToGroup = function(EntityPrototype) {
   var oldDestroy = EntityPrototype.prototype.destroy;
 
   /**
-   * Description
-   * @param {} x
-   * @param {} y
-   * @param {} parent
-   * @param {} options
-   * @param {} id
-   * @return 
+   * Create entity at position.
+   *
+   * @class EntityPrototype
+   * @constructor
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Entity} parent
+   * @param {Object} options
+   * @param {String} id optional to set
+   * @return
    */
   EntityPrototype = function(x, y, parent, options, id) {
     oldConstruct.constructor.call(this,x, y, parent, options, id);
@@ -2418,9 +2472,10 @@ var AssignableToGroup = function(EntityPrototype) {
   EntityPrototype.prototype = oldConstruct;
 
   /**
-   * Description
+   * Destroy Entity.
+   *
    * @method destroy
-   * @return CallExpression
+   * @return {Object} previous destructor
    */
   EntityPrototype.prototype.destroy = function() {
     // additionally unAssignFromGroup
@@ -2433,10 +2488,10 @@ var AssignableToGroup = function(EntityPrototype) {
   };
 
   /**
-   * Description
+   * Assing to group.
+   *
    * @method assignToGroup
-   * @param {} entity
-   * @return 
+   * @param {Entity} entity
    */
   EntityPrototype.prototype.assignToGroup = function(entity) {
     var idx = this.entities.groups.indexOf(entity);
@@ -2448,10 +2503,10 @@ var AssignableToGroup = function(EntityPrototype) {
   };
 
   /**
-   * Description
+   * Unassing grom group.
+   *
    * @method unassignFromGroup
-   * @param {} group
-   * @return 
+   * @param {Group} group
    */
   EntityPrototype.prototype.unassignFromGroup = function(group) {
     var idx = this.entities.groups.indexOf(group);
@@ -2463,9 +2518,10 @@ var AssignableToGroup = function(EntityPrototype) {
   };
 
   /**
-   * Description
+   * Get assigned groups.
+   *
    * @method getAssignedGroups
-   * @return MemberExpression
+   * @return {Array} groups
    */
   EntityPrototype.prototype.getAssignedGroups = function() {
     return this.entities.groups;
@@ -2482,6 +2538,10 @@ module.exports.AssignableToGroup = AssignableToGroup;
 var LinePrototype = require('./Helpers/LinePrototype');
 var AssignableToGroup = require('./Helpers/Traits').AssignableToGroup;
 
+/**
+ * @module Entities
+ * @submodule Path
+ */
 var Path = LinePrototype('P','path',{
   width: 0.2,
   radius: 4
@@ -2500,6 +2560,10 @@ module.exports = Path;
 
 var LinePrototype = require('./Helpers/LinePrototype');
 
+/**
+ * @module Entities
+ * @submodule Wall
+ */
 var Wall = LinePrototype('W','wall',{
   width: 0.2,
   radius: 1,
@@ -2521,6 +2585,9 @@ var Grid = require('./Common/Grid');
 /**
  * The world where al entities live
  *
+ * @class World
+ * @module CrowdSim
+ * @submodule World
  * @constructor
  * @param {Object} parent entity
  * @param {Object} options
@@ -2683,6 +2750,7 @@ World.prototype.agentsInContext = function(context) {
 /**
  * Callback trigger when an entity is created
  *
+ * @method _onCreate
  * @param  {Entity} entity Context, Group, Wall or Path
  */
 World.prototype._onCreate = function(entity) {
@@ -2694,6 +2762,7 @@ World.prototype._onCreate = function(entity) {
 /**
  * Callback trigger when an entity is destroyed
  *
+ * @method _onDestroy
  * @param  {Entity} entity Context, Group, Wall or Path
  */
 World.prototype._onDestroy = function(entity) {
@@ -2705,6 +2774,7 @@ World.prototype._onDestroy = function(entity) {
 /**
  * Returns the property that holds the entity list, used internally.
  *
+ * @method _getEntityList
  * @param  {Entity} entity Context, Group, Wall or Path
  */
 World.prototype._getEntityList = function(entity) {
@@ -2937,6 +3007,7 @@ World.prototype.load = function(loader, loadDefault) {
 /**
  * Save helper to remove loops and agents from world data.
  *
+ * @method _saveHelper
  * @param  {Object} o the world.entities property
  * @return {String} JSON data that represents the world.entities
  */
@@ -3023,6 +3094,12 @@ module.exports = World;
 },{"./Common/Grid":4,"./Entities/Context":7,"./Entities/Group":9,"./Entities/Path":13,"./Entities/Wall":14}],"CrowdSim":[function(require,module,exports){
 /* global window,module, exports : true, define */
 
+/**
+ * @class CrowdSim
+ * @main CrowdSim
+ * @module CrowdSim
+ * @type {Object}
+ */
 var CrowdSim = {
   Agent: require('./Agent'),
   Entity: require('./Entities/Entity'),

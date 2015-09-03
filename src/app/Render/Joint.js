@@ -9,8 +9,10 @@ var Colors = Base.Colors;
 /**
  * Joint render view
  *
- * @class Render.Joint
+ * @class Joint
  * @constructor
+ * @module Render
+ * @submodule Joint
  * @param {Joint} joint
  * @param {Pixi.Texture} texture
  */

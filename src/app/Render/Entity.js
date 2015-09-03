@@ -5,7 +5,9 @@ var Base = require('./Base');
 /**
  * Base render prototype
  *
- * @class Render.Entity
+ * @class Entity
+ * @module Render
+ * @submodule Entity
  * @constructor
  * @param {Entity} entity
  */

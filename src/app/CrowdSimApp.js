@@ -6,6 +6,9 @@ var Worlds = require('./Worlds');
 
 /**
  * @class CrowdSimApp
+ * @main CrowdSimApp
+ * @static
+ * @module CrowdSimApp
  * @type {Object}
  */
 var App = {};

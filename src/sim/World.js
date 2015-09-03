@@ -10,6 +10,8 @@ var Grid = require('./Common/Grid');
  * The world where al entities live
  *
  * @class World
+ * @module CrowdSim
+ * @submodule World
  * @constructor
  * @param {Object} parent entity
  * @param {Object} options

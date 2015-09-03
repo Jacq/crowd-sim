@@ -6,6 +6,8 @@ var Vec2 = require('../../Common/Vec2');
  *
  * @class Joint
  * @constructor
+ * @module Entities
+ * @submodule Joint
  * @param {Number} x coordinate
  * @param {Number} y coordinate
  * @param {World} parent world

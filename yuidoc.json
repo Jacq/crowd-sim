@@ -8,7 +8,7 @@
     "attributesEmit": "true",
     "ignorePaths": [ "bower_components" , "node_modules"],
     "paths": [
-      "./src"
+      "./src",
       "./demo/js/lib/Editor.js"
     ],
     "outdir": "./doc"
