@@ -1,8 +1,6 @@
 crowd-sim
 =========
 
-[![Build Status](https://travis-ci.org/Jacq/crowd-sim.svg?branch=master)](https://travis-ci.org/Jacq/crowd-sim)
-
 CrowdSim is a 2D crowd simulator implemented in JavaScript. It is implemented as a low level library (CrowdSim.js) and a low level application (CrowdSimApp.js). Both JavaScript modules are integrated into a web aplication that is located in the *demo* folder.
 
 ## Features ##
