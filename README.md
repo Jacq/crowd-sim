@@ -41,7 +41,6 @@ Select different examples from left panel "Examples" select box in:
 - http://www.tbx.com.sg/crowdsapi/
 - http://gamma.cs.unc.edu/research/crowds/
 - https://github.com/makokal/crowdsim
-- https://github.com/aelse/python-crowd
 - http://itp.uni-frankfurt.de/~gros/JavaApplets/PedestrianCrowdDynamics/PedestrianApplet.html
 
 
