@@ -43,6 +43,9 @@ Select different examples from left panel "Examples" select box in:
 - https://github.com/makokal/crowdsim
 - http://itp.uni-frankfurt.de/~gros/JavaApplets/PedestrianCrowdDynamics/PedestrianApplet.html
 
+#### 2D rigid body physics
+- Matter.js: https://github.com/liabru/matter-js
+- p2.js: https://github.com/schteppe/p2.js
 
 ### Books/papers
 - "Crowd Simulation", Daniel Thalmann, Soraia Raupp, Ed. Springer2007
